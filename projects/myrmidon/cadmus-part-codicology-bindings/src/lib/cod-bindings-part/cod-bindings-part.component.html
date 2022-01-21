@@ -16,7 +16,7 @@
               color="primary"
               (click)="addBinding()"
             >
-              <mat-icon>add_circle</mat-icon> add Binding
+              <mat-icon>add_circle</mat-icon> add binding
             </button>
           </div>
           <table *ngIf="entries?.value?.length">
@@ -80,8 +80,21 @@
         </mat-tab>
 
         <mat-tab label="unit" *ngIf="editedBinding">
-          TODO: editor control with: [model]="editedBinding"
-          (modelChange)="onBindingSave($event)" (editorClose)="onBindingClose()"
+          <cadmus-cod-binding-editor
+            [tagEntries]="tagEntries"
+            [coverEntries]="coverEntries"
+            [boardEntries]="boardEntries"
+            [ctTagEntries]="ctTagEntries"
+            [assTagEntries]="assTagEntries"
+            [refTypeEntries]="refTypeEntries"
+            [refTagEntries]="refTagEntries"
+            [szTagEntries]="szTagEntries"
+            [szDimTagEntries]="szDimTagEntries"
+            [szUnitEntries]="szUnitEntries"
+            [binding]="editedBinding"
+            (bindingChange)="onBindingSave($event)"
+            (editorClose)="onBindingClose()"
+          ></cadmus-cod-binding-editor>
         </mat-tab>
       </mat-tab-group>
     </mat-card-content>

@@ -16,7 +16,7 @@ import {
 /**
  * CodBindingsPart editor component.
  * Thesauri: cod-binding-tags, cod-binding-cover-materials, cod-binding-board-materials;
- * assertion-tags, doc-reference-types, doc-reference-tags;
+ * chronotope-tags, assertion-tags, doc-reference-types, doc-reference-tags;
  * physical-size-tags, physical-size-dim-tags, physical-size-units (all optional).
  */
 @Component({
@@ -39,6 +39,8 @@ export class CodBindingsPartComponent
   public coverEntries: ThesaurusEntry[] | undefined;
   // cod-binding-board-materials
   public boardEntries: ThesaurusEntry[] | undefined;
+  // chronotope-tags
+  public ctTagEntries: ThesaurusEntry[] | undefined;
   // assertion-tags
   public assTagEntries: ThesaurusEntry[] | undefined;
   // doc-reference-types
@@ -107,6 +109,12 @@ export class CodBindingsPartComponent
       this.boardEntries = this.thesauri[key].entries;
     } else {
       this.boardEntries = undefined;
+    }
+    key = 'chronotope-tags';
+    if (this.thesauri && this.thesauri[key]) {
+      this.ctTagEntries = this.thesauri[key].entries;
+    } else {
+      this.ctTagEntries = undefined;
     }
     key = 'assertion-tags';
     if (this.thesauri && this.thesauri[key]) {

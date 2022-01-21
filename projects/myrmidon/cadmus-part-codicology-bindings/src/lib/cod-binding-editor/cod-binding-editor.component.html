@@ -1,0 +1,163 @@
+<form [formGroup]="form" (submit)="save()">
+  <!-- tag (bound) -->
+  <div>
+    <mat-form-field *ngIf="tagEntries?.length" style="width: 8em">
+      <mat-select [formControl]="tag" placeholder="tag">
+        <mat-option *ngFor="let e of tagEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <!-- tag (free) -->
+    <mat-form-field *ngIf="!tagEntries?.length">
+      <input matInput [formControl]="tag" placeholder="tag" />
+      <mat-error
+        *ngIf="$any(tag).errors?.maxLength && (tag.dirty || tag.touched)"
+        >tag too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <div>
+    <!-- cover (bound) -->
+    <mat-form-field *ngIf="coverEntries?.length" style="width: 8em">
+      <mat-select [formControl]="coverMaterial" placeholder="cover">
+        <mat-option *ngFor="let e of coverEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="
+          $any(coverMaterial).errors?.required &&
+          (coverMaterial.dirty || coverMaterial.touched)
+        "
+        >cover material required</mat-error
+      >
+    </mat-form-field>
+    <!-- cover (free) -->
+    <mat-form-field *ngIf="!coverEntries?.length">
+      <input
+        matInput
+        [formControl]="coverMaterial"
+        placeholder="cover material"
+      />
+      <mat-error
+        *ngIf="
+          $any(coverMaterial).errors?.required &&
+          (coverMaterial.dirty || coverMaterial.touched)
+        "
+        >cover material required</mat-error
+      >
+      <mat-error
+        *ngIf="
+          $any(coverMaterial).errors?.maxLength &&
+          (coverMaterial.dirty || coverMaterial.touched)
+        "
+        >cover material too long</mat-error
+      >
+    </mat-form-field>
+
+    &nbsp;
+    <!-- board (bound) -->
+    <mat-form-field *ngIf="boardEntries?.length" style="width: 8em">
+      <mat-select [formControl]="boardMaterial" placeholder="board">
+        <mat-option *ngFor="let e of boardEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="
+          $any(boardMaterial).errors?.required &&
+          (boardMaterial.dirty || boardMaterial.touched)
+        "
+        >board material required</mat-error
+      >
+    </mat-form-field>
+    <!-- board (free) -->
+    <mat-form-field>
+      <input
+        matInput
+        [formControl]="boardMaterial"
+        placeholder="boardMaterial"
+      />
+      <mat-error
+        *ngIf="
+          $any(boardMaterial).errors?.required &&
+          (boardMaterial.dirty || boardMaterial.touched)
+        "
+        >board material required</mat-error
+      >
+      <mat-error
+        *ngIf="
+          $any(boardMaterial).errors?.maxLength &&
+          (boardMaterial.dirty || boardMaterial.touched)
+        "
+        >board material too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <!-- size -->
+  <div>
+    <cadmus-mat-physical-size
+      [tagEntries]="szTagEntries"
+      [dimTagEntries]="szDimTagEntries"
+      [unitEntries]="szUnitEntries"
+      [size]="initialSize"
+      (sizeChange)="onSizeChange($event)"
+    ></cadmus-mat-physical-size>
+  </div>
+
+  <!-- description -->
+  <div>
+    <mat-form-field>
+      <textarea
+        rows="3"
+        matInput
+        [formControl]="description"
+        placeholder="description"
+      ></textarea>
+      <mat-error
+        *ngIf="
+          $any(description).errors?.maxLength &&
+          (description.dirty || description.touched)
+        "
+        >description too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <!-- chronotope -->
+  <div>
+    <cadmus-refs-asserted-chronotope
+      [tagEntries]="ctTagEntries"
+      [assTagEntries]="assTagEntries"
+      [refTagEntries]="refTagEntries"
+      [refTypeEntries]="refTypeEntries"
+      [chronotope]="initialChronotope"
+      (chronotopeChange)="onChronotopeChange($event)"
+    ></cadmus-refs-asserted-chronotope>
+  </div>
+
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      color="warn"
+      mat-icon-button
+      matTooltip="Discard changes"
+      (click)="cancel()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      color="primary"
+      mat-icon-button
+      matTooltip="Accept changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon>check_circle</mat-icon>
+    </button>
+  </div>
+</form>
