@@ -12,3 +12,8 @@ Quick Docker image build:
 1. `npm run build-all`
 2. `ng build`
 3. `docker build . -t vedph2020/cadmus-codicology-shell:1.0.0 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
+
+## Shell Architecture
+
+- each part is a library named after it following the pattern `cadmus-part-codicology-<PARTNAME>`.
+- a pages library `cadmus-part-codicology-pg` imports all these libraries and provides routing.
