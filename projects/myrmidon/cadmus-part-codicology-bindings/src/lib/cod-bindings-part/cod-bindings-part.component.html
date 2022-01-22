@@ -23,7 +23,11 @@
             <thead>
               <tr>
                 <th></th>
-                TODO: add model properties
+                <th>tag</th>
+                <th>cover</th>
+                <th>board</th>
+                <th>place</th>
+                <th>date</th>
               </tr>
             </thead>
             <tbody>
@@ -73,7 +77,12 @@
                     <mat-icon>remove_circle</mat-icon>
                   </button>
                 </td>
-                TODO: properties
+                <td>{{ entry.tag }}</td>
+                <td>{{ entry.coverMaterial }}</td>
+                <td>{{ entry.boardMaterial }}</td>
+                <td>{{ entry.chronotope.place.value }}</td>
+                <td>{{ entry.chronotope.date | historicalDate }}</td>
+                <td></td>
               </tr>
             </tbody>
           </table>

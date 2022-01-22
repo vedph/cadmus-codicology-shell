@@ -17,6 +17,7 @@ import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-assert
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { CodBindingsPartComponent } from './cod-bindings-part/cod-bindings-part.component';
 import { CodBindingEditorComponent } from './cod-binding-editor/cod-binding-editor.component';
+import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { CodBindingEditorComponent } from './cod-binding-editor/cod-binding-edit
     // Cadmus
     CadmusUiModule,
     CadmusRefsAssertedChronotopeModule,
+    CadmusRefsHistoricalDateModule,
     CadmusMatPhysicalSizeModule
   ],
   exports: [
