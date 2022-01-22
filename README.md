@@ -16,4 +16,4 @@ Quick Docker image build:
 ## Shell Architecture
 
 - each part is a library named after it following the pattern `cadmus-part-codicology-<PARTNAME>`.
-- a pages library `cadmus-part-codicology-pg` imports all these libraries and provides routing.
+- a pages library `cadmus-part-codicology-pg` imports all these libraries and provides routing: `ng g library @myrmidon/cadmus-part-codicology-pg --prefix cadmus`.

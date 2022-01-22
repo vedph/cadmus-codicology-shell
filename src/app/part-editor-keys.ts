@@ -1,5 +1,7 @@
 import { PartEditorKeys } from '@myrmidon/cadmus-core';
 
+import { COD_BINDINGS_PART_TYPEID } from 'projects/myrmidon/cadmus-part-codicology-bindings/src/public-api';
+
 const CODICOLOGY = 'codicology';
 
 /**
@@ -9,7 +11,7 @@ const CODICOLOGY = 'codicology';
  * with the mappings between fragment type IDs and their editor keys.
  */
 export const PART_EDITOR_KEYS: PartEditorKeys = {
-  // [BIBLIOGRAPHY_PART_TYPEID]: {
-  //   part: GENERAL,
-  // },
+  [COD_BINDINGS_PART_TYPEID]: {
+    part: CODICOLOGY,
+  },
 };

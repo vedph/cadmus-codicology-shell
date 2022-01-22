@@ -10,19 +10,24 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+// cadmus
+import { CadmusStateModule } from '@myrmidon/cadmus-state';
+import { CadmusUiModule } from '@myrmidon/cadmus-ui';
+import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
+// bricks
 import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
 import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
-
-// general Cadmus modules
-import { CadmusUiModule } from '@myrmidon/cadmus-ui';
+import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
+// locals
 import { CodBindingsPartComponent } from './cod-bindings-part/cod-bindings-part.component';
 import { CodBindingEditorComponent } from './cod-binding-editor/cod-binding-editor.component';
-import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
+import { CodBindingsPartFeatureComponent } from './cod-bindings-part-feature/cod-bindings-part-feature.component';
 
 @NgModule({
   declarations: [
     CodBindingsPartComponent,
-    CodBindingEditorComponent
+    CodBindingEditorComponent,
+    CodBindingsPartFeatureComponent
   ],
   imports: [
     CommonModule,
@@ -37,14 +42,17 @@ import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical
     MatTabsModule,
     MatTooltipModule,
     // Cadmus
+    CadmusStateModule,
     CadmusUiModule,
+    CadmusUiPgModule,
+    CadmusMatPhysicalSizeModule,
     CadmusRefsAssertedChronotopeModule,
     CadmusRefsHistoricalDateModule,
-    CadmusMatPhysicalSizeModule
   ],
   exports: [
     CodBindingsPartComponent,
-    CodBindingEditorComponent
+    CodBindingEditorComponent,
+    CodBindingsPartFeatureComponent
   ],
 })
 export class CadmusPartCodicologyBindingsModule {}

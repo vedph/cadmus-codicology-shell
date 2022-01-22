@@ -1,0 +1,23 @@
+{
+  "name": "@myrmidon/cadmus-part-codicology-pg",
+  "version": "0.0.1",
+  "description": "Cadmus codicology - wrappers for part editors.",
+  "keywords": [
+    "Cadmus"
+  ],
+  "homepage": "https://github.com/vedph/cadmus_pura_app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vedph/cadmus_pura_app"
+  },
+  "author": {
+    "name": "Daniele Fusi"
+  },
+  "peerDependencies": {
+    "@angular/common": "^13.1.0",
+    "@angular/core": "^13.1.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  }
+}

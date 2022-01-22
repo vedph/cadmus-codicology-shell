@@ -79,21 +79,21 @@ const routes: Routes = [
       ),
     canActivate: [EditorGuardService],
   },
-  // cadmus - parts
-  // {
-  //   path: 'items/:iid/general',
-  //   loadChildren: () =>
-  //     import('@myrmidon/cadmus-part-general-pg').then(
-  //       (module) => module.CadmusPartGeneralPgModule
-  //     ),
-  //   canActivate: [AuthJwtGuardService],
-  // },
   // cadmus - graph
   {
     path: 'graph',
     loadChildren: () =>
       import('@myrmidon/cadmus-graph-pg').then(
         (module) => module.CadmusGraphPgModule
+      ),
+    canActivate: [AuthJwtGuardService],
+  },
+  // cadmus - parts
+  {
+    path: 'items/:iid/codicology',
+    loadChildren: () =>
+      import('@myrmidon/cadmus-part-codicology-pg').then(
+        (module) => module.CadmusPartCodicologyPgModule
       ),
     canActivate: [AuthJwtGuardService],
   },

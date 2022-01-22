@@ -80,8 +80,8 @@
                 <td>{{ entry.tag }}</td>
                 <td>{{ entry.coverMaterial }}</td>
                 <td>{{ entry.boardMaterial }}</td>
-                <td>{{ entry.chronotope.place.value }}</td>
-                <td>{{ entry.chronotope.date | historicalDate }}</td>
+                <td>{{ entry.chronotope?.place?.value }}</td>
+                <td>{{ entry.chronotope?.date | historicalDate }}</td>
                 <td></td>
               </tr>
             </tbody>

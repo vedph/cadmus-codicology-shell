@@ -6,6 +6,10 @@
       "@myrmidon/cadmus-part-codicology-bindings": [
         "dist/myrmidon/cadmus-part-codicology-bindings/myrmidon-cadmus-part-codicology-bindings",
         "dist/myrmidon/cadmus-part-codicology-bindings"
+      ],
+      "@myrmidon/cadmus-part-codicology-pg": [
+        "dist/myrmidon/cadmus-part-codicology-pg/myrmidon-cadmus-part-codicology-pg",
+        "dist/myrmidon/cadmus-part-codicology-pg"
       ]
     },
     "baseUrl": "./",

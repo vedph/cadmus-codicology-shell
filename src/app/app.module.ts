@@ -61,9 +61,7 @@ import { CadmusRefsDocReferencesModule } from '@myrmidon/cadmus-refs-doc-referen
 import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
 import { CadmusRefsExternalIdsModule } from '@myrmidon/cadmus-refs-external-ids';
 
-// libraries in this workspace
-// notice that when you import the libraries into another workspace, you must change
-// these imports with @myrmidon/... rather than projects/myrmidon/... .
+// cadmus
 import { CadmusApiModule } from '@myrmidon/cadmus-api';
 import { CadmusCoreModule } from '@myrmidon/cadmus-core';
 import { CadmusProfileCoreModule } from '@myrmidon/cadmus-profile-core';
@@ -78,6 +76,11 @@ import { CadmusItemSearchModule } from '@myrmidon/cadmus-item-search';
 import { CadmusThesaurusEditorModule } from '@myrmidon/cadmus-thesaurus-editor';
 import { CadmusThesaurusListModule } from '@myrmidon/cadmus-thesaurus-list';
 import { CadmusThesaurusUiModule } from '@myrmidon/cadmus-thesaurus-ui';
+
+// libraries in this workspace
+// notice that when you import the libraries into another workspace, you must change
+// these imports with @myrmidon/... rather than projects/myrmidon/... .
+import { CadmusPartCodicologyBindingsModule } from 'projects/myrmidon/cadmus-part-codicology-bindings/src/public-api';
 
 // locals
 import { AppRoutingModule } from './app-routing.module';
@@ -173,6 +176,8 @@ import { ITEM_BROWSER_KEYS } from './item-browser-keys';
     CadmusThesaurusEditorModule,
     CadmusThesaurusListModule,
     CadmusThesaurusUiModule,
+    // parts
+    CadmusPartCodicologyBindingsModule
   ],
   providers: [
     // environment service
