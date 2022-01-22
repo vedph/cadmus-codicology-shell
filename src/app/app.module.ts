@@ -77,11 +77,6 @@ import { CadmusThesaurusEditorModule } from '@myrmidon/cadmus-thesaurus-editor';
 import { CadmusThesaurusListModule } from '@myrmidon/cadmus-thesaurus-list';
 import { CadmusThesaurusUiModule } from '@myrmidon/cadmus-thesaurus-ui';
 
-// libraries in this workspace
-// notice that when you import the libraries into another workspace, you must change
-// these imports with @myrmidon/... rather than projects/myrmidon/... .
-import { CadmusPartCodicologyBindingsModule } from 'projects/myrmidon/cadmus-part-codicology-bindings/src/public-api';
-
 // locals
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -176,8 +171,6 @@ import { ITEM_BROWSER_KEYS } from './item-browser-keys';
     CadmusThesaurusEditorModule,
     CadmusThesaurusListModule,
     CadmusThesaurusUiModule,
-    // parts
-    CadmusPartCodicologyBindingsModule
   ],
   providers: [
     // environment service

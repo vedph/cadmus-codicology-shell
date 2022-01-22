@@ -1,0 +1,105 @@
+<form [formGroup]="form!" (submit)="save()">
+  <mat-card>
+    <mat-card-header>
+      <div mat-card-avatar>
+        <mat-icon>picture_in_picture</mat-icon>
+      </div>
+      <mat-card-title>Shelfmarks Part</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-tab-group [(selectedIndex)]="tabIndex">
+        <mat-tab label="Shelfmarks">
+          <div>
+            <button
+              type="button"
+              mat-icon-button
+              color="primary"
+              (click)="addShelfmark()"
+            >
+              <mat-icon>add_circle</mat-icon> add shelfmark
+            </button>
+          </div>
+          <table *ngIf="shelfmarks?.value?.length">
+            <thead>
+              <tr>
+                <th></th>
+                <th>tag</th>
+                <th>city</th>
+                <th>library</th>
+                <th>location</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let entry of shelfmarks?.value;
+                  let i = index;
+                  let first = first;
+                  let last = last
+                "
+              >
+                <td>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    color="primary"
+                    matTooltip="Edit this shelfmark"
+                    (click)="editShelfmark(i)"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Move this shelfmark up"
+                    [disabled]="first"
+                    (click)="moveShelfmarkUp(i)"
+                  >
+                    <mat-icon>arrow_upward</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Move this shelfmark down"
+                    [disabled]="last"
+                    (click)="moveShelfmarkDown(i)"
+                  >
+                    <mat-icon>arrow_downward</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    color="warn"
+                    matTooltip="Delete this shelfmark"
+                    (click)="deleteShelfmark(i)"
+                  >
+                    <mat-icon>remove_circle</mat-icon>
+                  </button>
+                </td>
+                <td>{{ entry.tag }}</td>
+                <td>{{ entry.city }}</td>
+                <td>{{ entry.library }}</td>
+                <td>{{ entry.location }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </mat-tab>
+
+        <mat-tab label="unit" *ngIf="editedShelfmark">
+          <cadmus-cod-shelfmark-editor
+            [shelfmark]="editedShelfmark"
+            (shelfmarkChange)="onShelfmarkSave($event)"
+            (editorClose)="onShelfmarkClose()"
+          ></cadmus-cod-shelfmark-editor>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+    <mat-card-actions>
+      <cadmus-close-save-buttons
+        [form]="form"
+        [noSave]="userLevel < 2"
+        (closeRequest)="close()"
+      ></cadmus-close-save-buttons>
+    </mat-card-actions>
+  </mat-card>
+</form>

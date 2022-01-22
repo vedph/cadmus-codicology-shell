@@ -1,0 +1,114 @@
+<form [formGroup]="form" (submit)="save()">
+  <div>
+    <!-- tag (bound) -->
+    <mat-form-field *ngIf="tagEntries?.length" style="width: 8em">
+      <mat-select [formControl]="tag" placeholder="tag">
+        <mat-option *ngFor="let e of tagEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <!-- tag (free) -->
+    <mat-form-field *ngIf="!tagEntries?.length">
+      <input matInput [formControl]="tag" placeholder="tag" />
+      <mat-error
+        *ngIf="$any(tag).errors?.maxLength && (tag.dirty || tag.touched)"
+        >tag too long</mat-error
+      >
+    </mat-form-field>
+    <!-- city -->
+    &nbsp;
+    <mat-form-field>
+      <input matInput [formControl]="city" placeholder="city" />
+      <mat-error
+        *ngIf="$any(city).errors?.required && (city.dirty || city.touched)"
+        >city required</mat-error
+      >
+      <mat-error
+        *ngIf="$any(city).errors?.maxLength && (city.dirty || city.touched)"
+        >city too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+  <div>
+    <!-- library (bound) -->
+    <mat-form-field *ngIf="libEntries?.length" style="width: 8em">
+      <mat-select [formControl]="library" placeholder="library">
+        <mat-option *ngFor="let e of libEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="
+          $any(library).errors?.required && (library.dirty || library.touched)
+        "
+        >library required</mat-error
+      >
+    </mat-form-field>
+    <!-- library (free) -->
+    <mat-form-field *ngIf="!libEntries?.length">
+      <input matInput [formControl]="library" placeholder="library" />
+      <mat-error
+        *ngIf="
+          $any(library).errors?.required && (library.dirty || library.touched)
+        "
+        >library required</mat-error
+      >
+      <mat-error
+        *ngIf="
+          $any(library).errors?.maxLength && (library.dirty || library.touched)
+        "
+        >library too long</mat-error
+      >
+    </mat-form-field>
+    <!-- fund -->
+    &nbsp;
+    <mat-form-field>
+      <input matInput [formControl]="fund" placeholder="fund" />
+      <mat-error
+        *ngIf="$any(fund).errors?.maxLength && (fund.dirty || fund.touched)"
+        >fund too long</mat-error
+      >
+    </mat-form-field>
+    <!-- location -->
+    &nbsp;
+    <mat-form-field>
+      <input matInput [formControl]="location" placeholder="location" />
+      <mat-error
+        *ngIf="
+          $any(location).errors?.required &&
+          (location.dirty || location.touched)
+        "
+        >location required</mat-error
+      >
+      <mat-error
+        *ngIf="
+          $any(location).errors?.maxLength &&
+          (location.dirty || location.touched)
+        "
+        >location too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      color="warn"
+      mat-icon-button
+      matTooltip="Discard changes"
+      (click)="cancel()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      color="primary"
+      mat-icon-button
+      matTooltip="Accept changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon>check_circle</mat-icon>
+    </button>
+  </div>
+</form>

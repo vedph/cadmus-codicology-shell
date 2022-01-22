@@ -1,6 +1,7 @@
 import { PartEditorKeys } from '@myrmidon/cadmus-core';
 
 import { COD_BINDINGS_PART_TYPEID } from 'projects/myrmidon/cadmus-part-codicology-bindings/src/public-api';
+import { COD_SHELFMARKS_PART_TYPEID } from 'projects/myrmidon/cadmus-part-codicology-shelfmarks/src/public-api';
 
 const CODICOLOGY = 'codicology';
 
@@ -12,6 +13,9 @@ const CODICOLOGY = 'codicology';
  */
 export const PART_EDITOR_KEYS: PartEditorKeys = {
   [COD_BINDINGS_PART_TYPEID]: {
+    part: CODICOLOGY,
+  },
+  [COD_SHELFMARKS_PART_TYPEID]: {
     part: CODICOLOGY,
   },
 };

@@ -13,12 +13,22 @@ import {
   CodBindingsPartFeatureComponent,
   COD_BINDINGS_PART_TYPEID,
 } from '@myrmidon/cadmus-part-codicology-bindings';
+import {
+  CodShelfmarksPartFeatureComponent,
+  COD_SHELFMARKS_PART_TYPEID,
+} from '@myrmidon/cadmus-part-codicology-shelfmarks';
 
 export const RouterModuleForChild = RouterModule.forChild([
   {
     path: `${COD_BINDINGS_PART_TYPEID}/:pid`,
     pathMatch: 'full',
     component: CodBindingsPartFeatureComponent,
+    canDeactivate: [PendingChangesGuard],
+  },
+  {
+    path: `${COD_SHELFMARKS_PART_TYPEID}/:pid`,
+    pathMatch: 'full',
+    component: CodShelfmarksPartFeatureComponent,
     canDeactivate: [PendingChangesGuard],
   },
 ]);

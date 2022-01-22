@@ -10,6 +10,10 @@
       "@myrmidon/cadmus-part-codicology-pg": [
         "dist/myrmidon/cadmus-part-codicology-pg/myrmidon-cadmus-part-codicology-pg",
         "dist/myrmidon/cadmus-part-codicology-pg"
+      ],
+      "@myrmidon/cadmus-part-codicology-shelfmarks": [
+        "dist/myrmidon/cadmus-part-codicology-shelfmarks/myrmidon-cadmus-part-codicology-shelfmarks",
+        "dist/myrmidon/cadmus-part-codicology-shelfmarks"
       ]
     },
     "baseUrl": "./",
