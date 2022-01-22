@@ -1,6 +1,6 @@
 <form [formGroup]="form" (submit)="save()">
-  <!-- tag (bound) -->
   <div>
+    <!-- tag (bound) -->
     <mat-form-field *ngIf="tagEntries?.length" style="width: 8em">
       <mat-select [formControl]="tag" placeholder="tag">
         <mat-option *ngFor="let e of tagEntries" [value]="e.id">{{
@@ -16,9 +16,8 @@
         >tag too long</mat-error
       >
     </mat-form-field>
-  </div>
+    &nbsp;
 
-  <div>
     <!-- cover (bound) -->
     <mat-form-field *ngIf="coverEntries?.length" style="width: 8em">
       <mat-select [formControl]="coverMaterial" placeholder="cover">
@@ -74,11 +73,11 @@
       >
     </mat-form-field>
     <!-- board (free) -->
-    <mat-form-field>
+    <mat-form-field *ngIf="!boardEntries?.length">
       <input
         matInput
         [formControl]="boardMaterial"
-        placeholder="boardMaterial"
+        placeholder="board material"
       />
       <mat-error
         *ngIf="
@@ -98,7 +97,8 @@
   </div>
 
   <!-- size -->
-  <div>
+  <fieldset>
+    <legend>size</legend>
     <cadmus-mat-physical-size
       [tagEntries]="szTagEntries"
       [dimTagEntries]="szDimTagEntries"
@@ -106,11 +106,12 @@
       [size]="initialSize"
       (sizeChange)="onSizeChange($event)"
     ></cadmus-mat-physical-size>
-  </div>
+  </fieldset>
 
   <!-- description -->
+  <br />
   <div>
-    <mat-form-field>
+    <mat-form-field style="width: 100%">
       <textarea
         rows="3"
         matInput
@@ -128,6 +129,7 @@
   </div>
 
   <!-- chronotope -->
+  <h3>chronotope</h3>
   <div>
     <cadmus-refs-asserted-chronotope
       [tagEntries]="ctTagEntries"

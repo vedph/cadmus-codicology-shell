@@ -134,10 +134,12 @@ export class CodBindingEditorComponent implements OnInit {
 
   public onSizeChange(size: PhysicalSize): void {
     this.size.setValue(size);
+    this.size.markAsDirty();
   }
 
   public onChronotopeChange(chronotope: AssertedChronotope | undefined): void {
     this.chronotope.setValue(chronotope);
+    this.chronotope.markAsDirty();
   }
 
   public cancel(): void {

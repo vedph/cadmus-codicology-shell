@@ -8,7 +8,7 @@
     </mat-card-header>
     <mat-card-content>
       <mat-tab-group [(selectedIndex)]="tabIndex">
-        <mat-tab label="Bindings">
+        <mat-tab label="bindings">
           <div>
             <button
               type="button"
@@ -88,7 +88,7 @@
           </table>
         </mat-tab>
 
-        <mat-tab label="unit" *ngIf="editedBinding">
+        <mat-tab label="binding" *ngIf="editedBinding">
           <cadmus-cod-binding-editor
             [tagEntries]="tagEntries"
             [coverEntries]="coverEntries"
