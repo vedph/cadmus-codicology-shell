@@ -97,7 +97,8 @@
   </div>
 
   <!-- size -->
-  <fieldset>
+  <mat-checkbox [formControl]="hasSize">has size</mat-checkbox>
+  <fieldset *ngIf="hasSize?.value">
     <legend>size</legend>
     <cadmus-mat-physical-size
       [tagEntries]="szTagEntries"

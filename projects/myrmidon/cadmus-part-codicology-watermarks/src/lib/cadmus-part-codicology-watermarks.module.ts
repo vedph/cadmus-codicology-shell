@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -38,6 +39,7 @@ import { CodWatermarksPartFeatureComponent } from './cod-watermarks-part-feature
     // material
     MatButtonModule,
     MatCardModule,
+    MatCheckboxModule,
     MatIconModule,
     MatInputModule,
     MatSelectModule,

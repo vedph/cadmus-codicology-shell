@@ -61,25 +61,32 @@
     ></cadmus-refs-external-ids>
   </div>
   <div>
-    <h3>size</h3>
-    <cadmus-mat-physical-size
-      [tagEntries]="szTagEntries"
-      [unitEntries]="szUnitEntries"
-      [dimTagEntries]="szDimTagEntries"
-      [size]="initialSize"
-      (sizeChange)="onSizeChange($event)"
-    ></cadmus-mat-physical-size>
+    <mat-checkbox [formControl]="hasSize">has size</mat-checkbox>
+    <fieldset *ngIf="hasSize?.value">
+      <legend>size</legend>
+      <cadmus-mat-physical-size
+        [tagEntries]="szTagEntries"
+        [unitEntries]="szUnitEntries"
+        [dimTagEntries]="szDimTagEntries"
+        [size]="initialSize"
+        (sizeChange)="onSizeChange($event)"
+      ></cadmus-mat-physical-size>
+    </fieldset>
   </div>
   <div>
-    <h3>chronotope</h3>
-    <cadmus-refs-asserted-chronotope
-      [tagEntries]="ctTagEntries"
-      [assTagEntries]="assTagEntries"
-      [refTagEntries]="refTagEntries"
-      [refTypeEntries]="refTypeEntries"
-      [chronotope]="initialChronotope"
-      (chronotopeChange)="onChronotopeChange($event)"
-    ></cadmus-refs-asserted-chronotope>
+    <mat-checkbox [formControl]="hasChronotope">has chronotope</mat-checkbox>
+    <fieldset *ngIf="hasChronotope?.value">
+      <legend>chronotope</legend>
+      <cadmus-refs-asserted-chronotope
+        *ngIf="hasChronotope?.value"
+        [tagEntries]="ctTagEntries"
+        [assTagEntries]="assTagEntries"
+        [refTagEntries]="refTagEntries"
+        [refTypeEntries]="refTypeEntries"
+        [chronotope]="initialChronotope"
+        (chronotopeChange)="onChronotopeChange($event)"
+      ></cadmus-refs-asserted-chronotope>
+    </fieldset>
   </div>
 
   <!-- buttons -->

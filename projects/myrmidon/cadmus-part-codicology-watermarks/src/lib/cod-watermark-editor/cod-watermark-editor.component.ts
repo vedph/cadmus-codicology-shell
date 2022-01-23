@@ -68,7 +68,9 @@ export class CodWatermarkEditorComponent implements OnInit {
   public ranges: FormControl;
   public description: FormControl;
   public ids: FormControl;
+  public hasSize: FormControl;
   public size: FormControl;
+  public hasChronotope: FormControl;
   public chronotope: FormControl;
   public form: FormGroup;
 
@@ -90,7 +92,9 @@ export class CodWatermarkEditorComponent implements OnInit {
     this.ranges = formBuilder.control(null);
     this.description = formBuilder.control(null, Validators.maxLength(5000));
     this.ids = formBuilder.control([]);
+    this.hasSize = formBuilder.control(false);
     this.size = formBuilder.control(null);
+    this.hasChronotope = formBuilder.control(false);
     this.chronotope = formBuilder.control(null);
     this.form = formBuilder.group({
       name: this.name,
@@ -98,7 +102,9 @@ export class CodWatermarkEditorComponent implements OnInit {
       ranges: this.ranges,
       description: this.description,
       ids: this.ids,
+      hasSize: this.hasSize,
       size: this.size,
+      hasChronotope: this.hasChronotope,
       chronotope: this.chronotope,
     });
   }
@@ -120,7 +126,9 @@ export class CodWatermarkEditorComponent implements OnInit {
     this.initialRanges = model.ranges;
     this.initialIds = model.ids;
     this.initialSize = model.size;
+    this.hasSize.setValue(model.size ? true : false);
     this.initialChronotope = model.chronotope;
+    this.hasChronotope.setValue(model.chronotope ? true : false);
     this.description.setValue(model.description);
 
     this.form.markAsPristine();
@@ -157,8 +165,8 @@ export class CodWatermarkEditorComponent implements OnInit {
       sampleRange: this.sampleRange.value,
       ranges: this.ranges.value?.length ? this.ranges.value : undefined,
       ids: this.ids.value?.length ? this.ids.value : undefined,
-      size: this.size.value,
-      chronotope: this.chronotope.value,
+      size: this.hasSize.value ? this.size.value : undefined,
+      chronotope: this.hasChronotope.value ? this.chronotope.value : undefined,
     };
   }
 

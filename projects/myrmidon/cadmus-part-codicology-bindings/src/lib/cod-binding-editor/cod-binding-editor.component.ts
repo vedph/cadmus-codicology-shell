@@ -68,6 +68,7 @@ export class CodBindingEditorComponent implements OnInit {
   public boardMaterial: FormControl;
   public chronotope: FormControl;
   public size: FormControl;
+  public hasSize: FormControl;
   public description: FormControl;
   public form: FormGroup;
 
@@ -89,6 +90,7 @@ export class CodBindingEditorComponent implements OnInit {
     ]);
     this.chronotope = formBuilder.control(null, Validators.required);
     this.size = formBuilder.control(null);
+    this.hasSize = formBuilder.control(false);
     this.description = formBuilder.control(null, Validators.maxLength(5000));
     this.form = formBuilder.group({
       tag: this.tag,
@@ -96,6 +98,7 @@ export class CodBindingEditorComponent implements OnInit {
       boardMaterial: this.boardMaterial,
       chronotope: this.chronotope,
       size: this.size,
+      hasSize: this.hasSize,
       description: this.description,
     });
   }
@@ -117,6 +120,7 @@ export class CodBindingEditorComponent implements OnInit {
     this.boardMaterial.setValue(model.boardMaterial);
     this.description.setValue(model.description);
     this.initialSize = model.size;
+    this.hasSize.setValue(model.size ? true : false);
     this.initialChronotope = model.chronotope;
     this.form.markAsPristine();
   }
@@ -127,7 +131,7 @@ export class CodBindingEditorComponent implements OnInit {
       coverMaterial: this.coverMaterial.value?.trim(),
       boardMaterial: this.boardMaterial.value?.trim(),
       chronotope: this.chronotope.value,
-      size: this.size.value,
+      size: this.hasSize.value ? this.size.value : undefined,
       description: this.description.value?.trim(),
     };
   }
