@@ -1,0 +1,104 @@
+<form [formGroup]="form" (submit)="save()">
+  <div>
+    <!-- name -->
+    <mat-form-field>
+      <input matInput [formControl]="name" placeholder="name" />
+      <mat-error
+        *ngIf="$any(name).errors?.required && (name.dirty || name.touched)"
+        >name required</mat-error
+      >
+      <mat-error
+        *ngIf="$any(name).errors?.maxLength && (name.dirty || name.touched)"
+        >name too long</mat-error
+      >
+    </mat-form-field>
+    &nbsp;
+    <!-- sampleRange -->
+    <cadmus-cod-location
+      [single]="true"
+      [required]="true"
+      [location]="initialSampleRange ? [initialSampleRange] : []"
+      (locationChange)="onSampleRangesChange($event)"
+    ></cadmus-cod-location>
+  </div>
+  <div>
+    <!-- ranges -->
+    <cadmus-cod-location
+      [location]="initialRanges || []"
+      (locationChange)="onRangesChange($event)"
+    ></cadmus-cod-location>
+  </div>
+  <div>
+    <!-- description -->
+    <mat-form-field class="long-text">
+      <textarea
+        matInput
+        rows="2"
+        [formControl]="description"
+        placeholder="description"
+      ></textarea>
+      <mat-error
+        *ngIf="
+          $any(description).errors?.maxLength &&
+          (description.dirty || description.touched)
+        "
+        >description too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+  <div>
+    <h3>identifiers</h3>
+    <cadmus-refs-external-ids
+      [tagEntries]="idTagEntries"
+      [scopeEntries]="idScopeEntries"
+      [assTagEntries]="assTagEntries"
+      [refTagEntries]="refTagEntries"
+      [refTypeEntries]="refTypeEntries"
+      [ids]="initialIds || []"
+      (idsChange)="onIdsChange($event)"
+    ></cadmus-refs-external-ids>
+  </div>
+  <div>
+    <h3>size</h3>
+    <cadmus-mat-physical-size
+      [tagEntries]="szTagEntries"
+      [unitEntries]="szUnitEntries"
+      [dimTagEntries]="szDimTagEntries"
+      [size]="initialSize"
+      (sizeChange)="onSizeChange($event)"
+    ></cadmus-mat-physical-size>
+  </div>
+  <div>
+    <h3>chronotope</h3>
+    <cadmus-refs-asserted-chronotope
+      [tagEntries]="ctTagEntries"
+      [assTagEntries]="assTagEntries"
+      [refTagEntries]="refTagEntries"
+      [refTypeEntries]="refTypeEntries"
+      [chronotope]="initialChronotope"
+      (chronotopeChange)="onChronotopeChange($event)"
+    ></cadmus-refs-asserted-chronotope>
+  </div>
+
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      color="warn"
+      mat-icon-button
+      matTooltip="Discard changes"
+      (click)="cancel()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      color="primary"
+      mat-icon-button
+      matTooltip="Accept changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon>check_circle</mat-icon>
+    </button>
+  </div>
+</form>

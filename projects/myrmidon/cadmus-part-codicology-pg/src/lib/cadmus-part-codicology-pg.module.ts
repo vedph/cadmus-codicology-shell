@@ -17,6 +17,10 @@ import {
   CodShelfmarksPartFeatureComponent,
   COD_SHELFMARKS_PART_TYPEID,
 } from '@myrmidon/cadmus-part-codicology-shelfmarks';
+import {
+  CodWatermarksPartFeatureComponent,
+  COD_WATERMARKS_PART_TYPEID,
+} from '@myrmidon/cadmus-part-codicology-watermarks';
 
 export const RouterModuleForChild = RouterModule.forChild([
   {
@@ -29,6 +33,12 @@ export const RouterModuleForChild = RouterModule.forChild([
     path: `${COD_SHELFMARKS_PART_TYPEID}/:pid`,
     pathMatch: 'full',
     component: CodShelfmarksPartFeatureComponent,
+    canDeactivate: [PendingChangesGuard],
+  },
+  {
+    path: `${COD_WATERMARKS_PART_TYPEID}/:pid`,
+    pathMatch: 'full',
+    component: CodWatermarksPartFeatureComponent,
     canDeactivate: [PendingChangesGuard],
   },
 ]);

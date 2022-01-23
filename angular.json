@@ -204,6 +204,37 @@
           }
         }
       }
+    },
+    "@myrmidon/cadmus-part-codicology-watermarks": {
+      "projectType": "library",
+      "root": "projects/myrmidon/cadmus-part-codicology-watermarks",
+      "sourceRoot": "projects/myrmidon/cadmus-part-codicology-watermarks/src",
+      "prefix": "cadmus",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/myrmidon/cadmus-part-codicology-watermarks/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/myrmidon/cadmus-part-codicology-watermarks/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/myrmidon/cadmus-part-codicology-watermarks/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/myrmidon/cadmus-part-codicology-watermarks/src/test.ts",
+            "tsConfig": "projects/myrmidon/cadmus-part-codicology-watermarks/tsconfig.spec.json",
+            "karmaConfig": "projects/myrmidon/cadmus-part-codicology-watermarks/karma.conf.js"
+          }
+        }
+      }
     }
   },
   "defaultProject": "cadmus-codicology-shell"

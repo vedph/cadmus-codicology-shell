@@ -14,6 +14,10 @@
       "@myrmidon/cadmus-part-codicology-shelfmarks": [
         "dist/myrmidon/cadmus-part-codicology-shelfmarks/myrmidon-cadmus-part-codicology-shelfmarks",
         "dist/myrmidon/cadmus-part-codicology-shelfmarks"
+      ],
+      "@myrmidon/cadmus-part-codicology-watermarks": [
+        "dist/myrmidon/cadmus-part-codicology-watermarks/myrmidon-cadmus-part-codicology-watermarks",
+        "dist/myrmidon/cadmus-part-codicology-watermarks"
       ]
     },
     "baseUrl": "./",
