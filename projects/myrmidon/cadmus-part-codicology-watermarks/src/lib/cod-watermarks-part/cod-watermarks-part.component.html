@@ -8,7 +8,7 @@
     </mat-card-header>
     <mat-card-content>
       <mat-tab-group [(selectedIndex)]="tabIndex">
-        <mat-tab label="Watermarks">
+        <mat-tab label="watermarks">
           <div>
             <button
               type="button"
@@ -85,7 +85,7 @@
           </table>
         </mat-tab>
 
-        <mat-tab label="unit" *ngIf="editedWatermark">
+        <mat-tab label="watermark" *ngIf="editedWatermark">
           <cadmus-cod-watermark-editor
             [idTagEntries]="idTagEntries"
             [idScopeEntries]="idScopeEntries"

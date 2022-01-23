@@ -15,6 +15,7 @@
     &nbsp;
     <!-- sampleRange -->
     <cadmus-cod-location
+      label="sample"
       [single]="true"
       [required]="true"
       [location]="initialSampleRange ? [initialSampleRange] : []"
@@ -24,6 +25,7 @@
   <div>
     <!-- ranges -->
     <cadmus-cod-location
+      label="ranges"
       [location]="initialRanges || []"
       (locationChange)="onRangesChange($event)"
     ></cadmus-cod-location>
