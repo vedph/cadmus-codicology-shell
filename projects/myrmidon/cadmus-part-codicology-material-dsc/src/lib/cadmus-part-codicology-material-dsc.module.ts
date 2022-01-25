@@ -17,9 +17,10 @@ import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
 // bricks: TODO: customize
 import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
 import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
+import { CodMaterialDscPartComponent } from './cod-material-dsc-part/cod-material-dsc-part.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [CodMaterialDscPartComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -39,6 +40,6 @@ import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical
     CadmusRefsAssertedChronotopeModule,
     CadmusRefsHistoricalDateModule,
   ],
-  exports: [],
+  exports: [CodMaterialDscPartComponent],
 })
 export class CadmusPartCodicologyMaterialDscModule {}
