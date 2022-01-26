@@ -1,0 +1,176 @@
+<form [formGroup]="form" (submit)="save()">
+  <div>
+    <!-- eid -->
+    <mat-form-field>
+      <input matInput [formControl]="eid" placeholder="EID" />
+      <mat-error
+        *ngIf="$any(eid).errors?.maxLength && (eid.dirty || eid.touched)"
+        >EID too long</mat-error
+      >
+    </mat-form-field>
+    &nbsp;
+    <!-- tag (bound) -->
+    <mat-form-field *ngIf="tagEntries?.length" style="width: 8em">
+      <mat-select [formControl]="tag" placeholder="tag">
+        <mat-option *ngFor="let e of tagEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <!-- tag (free) -->
+    <mat-form-field *ngIf="!tagEntries?.length">
+      <input matInput [formControl]="tag" placeholder="tag" />
+      <mat-error
+        *ngIf="$any(tag).errors?.maxLength && (tag.dirty || tag.touched)"
+        >tag too long</mat-error
+      >
+    </mat-form-field>
+    &nbsp;
+    <!-- noGregory -->
+    <mat-checkbox [formControl]="noGregory">no Gregory</mat-checkbox>
+  </div>
+  <div>
+    <!-- material (bound) -->
+    <mat-form-field *ngIf="materialEntries?.length" style="width: 8em">
+      <mat-select [formControl]="material" placeholder="material">
+        <mat-option *ngFor="let e of materialEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="
+          $any(material).errors?.required &&
+          (material.dirty || material.touched)
+        "
+        >material required</mat-error
+      >
+    </mat-form-field>
+
+    <!-- material (free) -->
+    <mat-form-field *ngIf="!materialEntries?.length">
+      <input matInput [formControl]="material" placeholder="material" />
+      <mat-error
+        *ngIf="
+          $any(material).errors?.required &&
+          (material.dirty || material.touched)
+        "
+        >material required</mat-error
+      >
+      <mat-error
+        *ngIf="
+          $any(material).errors?.maxLength &&
+          (material.dirty || material.touched)
+        "
+        >material too long</mat-error
+      >
+    </mat-form-field>
+
+    &nbsp;
+    <!-- format (bound) -->
+    <mat-form-field *ngIf="formatEntries?.length" style="width: 8em">
+      <mat-select [formControl]="format" placeholder="format">
+        <mat-option *ngFor="let e of formatEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="
+          $any(format).errors?.required && (format.dirty || format.touched)
+        "
+        >format required</mat-error
+      >
+    </mat-form-field>
+    <!-- format (free) -->
+    <mat-form-field *ngIf="!formatEntries?.length">
+      <input matInput [formControl]="format" placeholder="format" />
+      <mat-error
+        *ngIf="
+          $any(format).errors?.required && (format.dirty || format.touched)
+        "
+        >format required</mat-error
+      >
+      <mat-error
+        *ngIf="
+          $any(format).errors?.maxLength && (format.dirty || format.touched)
+        "
+        >format too long</mat-error
+      >
+    </mat-form-field>
+
+    &nbsp;
+    <!-- state (bound) -->
+    <mat-form-field *ngIf="stateEntries?.length" style="width: 8em">
+      <mat-select [formControl]="state" placeholder="state">
+        <mat-option *ngFor="let e of stateEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="$any(state).errors?.required && (state.dirty || state.touched)"
+        >state required</mat-error
+      >
+    </mat-form-field>
+
+    <!-- state (free) -->
+    <mat-form-field *ngIf="!stateEntries?.length">
+      <input matInput [formControl]="state" placeholder="state" />
+      <mat-error
+        *ngIf="$any(state).errors?.required && (state.dirty || state.touched)"
+        >state required</mat-error
+      >
+      <mat-error
+        *ngIf="$any(state).errors?.maxLength && (state.dirty || state.touched)"
+        >state too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+  <div>
+    <!-- range -->
+    <cadmus-cod-location
+      label="range"
+      [required]="true"
+      [location]="initialRange ? [initialRange] : []"
+      (locationChange)="onLocationChange($event)"
+    ></cadmus-cod-location>
+  </div>
+  <div>
+    <!-- chronotopes -->
+    TODO
+  </div>
+  <div>
+    <!-- note -->
+    <mat-form-field class="long-text">
+      <textarea
+        matInput
+        [formControl]="note"
+        placeholder="note"
+        rows="2"
+      ></textarea>
+      <mat-error
+        *ngIf="$any(note).errors?.maxLength && (note.dirty || note.touched)"
+        >note too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      color="warn"
+      mat-icon-button
+      matTooltip="Discard changes"
+      (click)="cancel()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      color="primary"
+      mat-icon-button
+      matTooltip="Accept changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon>check_circle</mat-icon>
+    </button>
+  </div>
+</form>
