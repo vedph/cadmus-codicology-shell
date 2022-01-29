@@ -1,1 +1,307 @@
-<p>cod-layout-editor works!</p>
+<form [formGroup]="form" (submit)="save()">
+  <div>
+    <!-- tag (bound) -->
+    <mat-form-field *ngIf="tagEntries?.length" style="width: 8em">
+      <mat-select [formControl]="tag" placeholder="tag">
+        <mat-option *ngFor="let e of tagEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="$any(tag).errors?.required && (tag.dirty || tag.touched)"
+        >tag required</mat-error
+      >
+    </mat-form-field>
+    <!-- tag (free) -->
+    <mat-form-field *ngIf="!tagEntries?.length">
+      <mat-error
+        *ngIf="$any(tag).errors?.maxLength && (tag.dirty || tag.touched)"
+        >tag too long</mat-error
+      >
+    </mat-form-field>
+    &nbsp;
+    <!-- sample -->
+    <cadmus-cod-location
+      label="sample"
+      [single]="true"
+      [required]="true"
+      [location]="initialSample ? [initialSample] : []"
+      (locationChange)="onLocationChange($event)"
+    ></cadmus-cod-location>
+    &nbsp;
+    <!-- ranges -->
+    <cadmus-cod-location
+      label="range(s)"
+      [required]="true"
+      [location]="initialRanges || null"
+      (locationChange)="onLocationChange($event)"
+    ></cadmus-cod-location>
+  </div>
+  <div>
+    <!-- rulingTechnique (bound) -->
+    <mat-form-field *ngIf="rulTechEntries?.length" style="width: 8em">
+      <mat-select [formControl]="rulingTechnique" placeholder="rulingTechnique">
+        <mat-option *ngFor="let e of rulTechEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <!-- rulingTechnique (free) -->
+    <mat-form-field *ngIf="!rulTechEntries?.length">
+      <input
+        matInput
+        [formControl]="rulingTechnique"
+        placeholder="rulingTechnique"
+      />
+      <mat-error
+        *ngIf="
+          $any(rulingTechnique).errors?.maxLength &&
+          (rulingTechnique.dirty || rulingTechnique.touched)
+        "
+        >rulingTechnique too long</mat-error
+      >
+    </mat-form-field>
+    &nbsp;
+    <!-- derolez (bound) -->
+    <mat-form-field *ngIf="drzEntries?.length" style="width: 8em">
+      <mat-select [formControl]="derolez" placeholder="derolez">
+        <mat-option *ngFor="let e of drzEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <!-- derolez (free) -->
+    <mat-form-field *ngIf="!drzEntries?.length">
+      <input matInput [formControl]="derolez" placeholder="derolez" />
+      <mat-error
+        *ngIf="
+          $any(derolez).errors?.maxLength && (derolez.dirty || derolez.touched)
+        "
+        >derolez too long</mat-error
+      >
+    </mat-form-field>
+
+    &nbsp;
+    <!-- pricking (bound) -->
+    <mat-form-field *ngIf="prkEntries?.length" style="width: 8em">
+      <mat-select [formControl]="pricking" placeholder="pricking">
+        <mat-option *ngFor="let e of prkEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <!-- pricking (free) -->
+    <mat-form-field *ngIf="!prkEntries?.length">
+      <input matInput [formControl]="pricking" placeholder="pricking" />
+      <mat-error
+        *ngIf="
+          $any(pricking).errors?.maxLength &&
+          (pricking.dirty || pricking.touched)
+        "
+        >pricking too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+  <div>
+    <!-- columnCount -->
+    <mat-form-field>
+      <input
+        matInput
+        type="number"
+        min="0"
+        max="18"
+        [formControl]="columnCount"
+        placeholder="cols"
+      />
+      <mat-error
+        *ngIf="
+          $any(columnCount).errors?.required &&
+          (columnCount.dirty || columnCount.touched)
+        "
+        >count required</mat-error
+      >
+    </mat-form-field>
+  </div>
+  <div>
+    <!-- counts -->
+    <cadmus-refs-decorated-counts
+      [tagEntries]="cntTagEntries"
+      [counts]="initialCounts"
+      (countsChange)="onCountsChange($event)"
+    ></cadmus-refs-decorated-counts>
+  </div>
+  <div>
+    <!-- dimensions -->
+    <div formArrayName="dimensions">
+      <div>
+        <button
+          type="button"
+          mat-icon-button
+          color="primary"
+          (click)="addDimension()"
+        >
+          <mat-icon>add_circle</mat-icon>
+          add dimension
+        </button>
+      </div>
+      <div
+        *ngFor="
+          let item of dimensions.controls;
+          let i = index;
+          let first = first;
+          let last = last
+        "
+      >
+        <!-- child form -->
+        <div [formGroupName]="i">
+          <!-- child actions -->
+          {{ i + 1 }}.
+          <button
+            mat-icon-button
+            type="button"
+            matTooltip="Remove this dimension"
+            color="warn"
+            (click)="removeDimension(i)"
+          >
+            <mat-icon>remove_circle</mat-icon>
+          </button>
+          <button
+            [disabled]="first"
+            mat-icon-button
+            type="button"
+            matTooltip="Move dimension up"
+            (click)="moveDimensionUp(i)"
+          >
+            <mat-icon>arrow_upward</mat-icon>
+          </button>
+          <button
+            [disabled]="last"
+            mat-icon-button
+            type="button"
+            matTooltip="Move dimension down"
+            (click)="moveDimensionDown(i)"
+          >
+            <mat-icon>arrow_downward</mat-icon>
+          </button>
+
+          <!-- child controls -->
+          <!-- tag (bound) -->
+          <mat-form-field *ngIf="szDimTagEntries?.length" style="width: 8em">
+            <mat-select formControlName="tag" placeholder="tag">
+              <mat-option *ngFor="let e of szDimTagEntries" [value]="e.id">{{
+                e.value
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <!-- tag (free) -->
+          <mat-form-field *ngIf="!szDimTagEntries?.length">
+            <input matInput formControlName="tag" placeholder="tag" />
+            <mat-error
+              *ngIf="
+                $any(item)['controls'].tag.errors?.maxLength &&
+                ($any(item)['controls'].tag.dirty ||
+                  $any(item)['controls'].tag.touched)
+              "
+              >tag too long</mat-error
+            >
+          </mat-form-field>
+          &nbsp;
+          <!-- value -->
+          <mat-form-field>
+            <input
+              type="number"
+              min="0"
+              matInput
+              formControlName="value"
+              placeholder="value"
+            />
+            <mat-error
+              *ngIf="
+                $any(item)['controls'].value.errors?.required &&
+                ($any(item)['controls'].value.dirty ||
+                  $any(item)['controls'].value.touched)
+              "
+              >value required</mat-error
+            >
+            <mat-error
+              *ngIf="
+                $any(item)['controls'].value.errors?.maxLength &&
+                ($any(item)['controls'].value.dirty ||
+                  $any(item)['controls'].value.touched)
+              "
+              >value too long</mat-error
+            >
+          </mat-form-field>
+          &nbsp;
+          <!-- unit (bound) -->
+          <mat-form-field *ngIf="szUnitEntries?.length" style="width: 8em">
+            <mat-select formControlName="unit" placeholder="unit">
+              <mat-option *ngFor="let e of szUnitEntries" [value]="e.id">{{
+                e.value
+              }}</mat-option>
+            </mat-select>
+            <mat-error
+              *ngIf="
+                $any(item)['controls'].unit.errors?.required &&
+                ($any(item)['controls'].unit.dirty ||
+                  $any(item)['controls'].unit.touched)
+              "
+              >unit required</mat-error
+            >
+          </mat-form-field>
+          <!-- unit (free) -->
+          <mat-form-field *ngIf="!szUnitEntries?.length">
+            <input matInput formControlName="unit" placeholder="unit" />
+            <mat-error
+              *ngIf="
+                $any(item)['controls'].unit.errors?.required &&
+                ($any(item)['controls'].unit.dirty ||
+                  $any(item)['controls'].unit.touched)
+              "
+              >unit required</mat-error
+            >
+            <mat-error
+              *ngIf="
+                $any(item)['controls'].unit.errors?.maxLength &&
+                ($any(item)['controls'].unit.dirty ||
+                  $any(item)['controls'].unit.touched)
+              "
+              >unit too long</mat-error
+            >
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <!-- note -->
+    <mat-form-field class="long-text">
+      <input matInput [formControl]="note" placeholder="note" />
+      <mat-error
+        *ngIf="$any(note).errors?.maxLength && (note.dirty || note.touched)"
+        >note too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      color="warn"
+      mat-icon-button
+      matTooltip="Discard changes"
+      (click)="cancel()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      color="primary"
+      mat-icon-button
+      matTooltip="Accept changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon>check_circle</mat-icon>
+    </button>
+  </div>
+</form>

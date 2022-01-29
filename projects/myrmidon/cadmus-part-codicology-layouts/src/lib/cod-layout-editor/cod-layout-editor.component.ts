@@ -6,7 +6,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { CodLocation, CodLocationRange } from '@myrmidon/cadmus-cod-location';
+import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { PhysicalDimension } from '@myrmidon/cadmus-mat-physical-size';
 import { DecoratedCount } from '@myrmidon/cadmus-refs-decorated-counts';
@@ -31,6 +31,28 @@ export class CodLayoutEditorComponent implements OnInit {
     this.updateForm(value);
   }
 
+  // cod-layout-tags
+  @Input()
+  public tagEntries: ThesaurusEntry[] | undefined;
+  // cod-layout-ruling-techniques
+  @Input()
+  public rulTechEntries: ThesaurusEntry[] | undefined;
+  // cod-layout-derolez
+  @Input()
+  public drzEntries: ThesaurusEntry[] | undefined;
+  // cod-layout-prickings
+  @Input()
+  public prkEntries: ThesaurusEntry[] | undefined;
+  // decorated-count-tags
+  @Input()
+  public cntTagEntries: ThesaurusEntry[] | undefined;
+  // physical-size-dim-tags
+  @Input()
+  public szDimTagEntries: ThesaurusEntry[] | undefined;
+  // physical-size-units
+  @Input()
+  public szUnitEntries: ThesaurusEntry[] | undefined;
+
   @Output()
   public layoutChange: EventEmitter<CodLayout>;
   @Output()
@@ -48,7 +70,7 @@ export class CodLayoutEditorComponent implements OnInit {
   public note: FormControl;
   public form: FormGroup;
 
-  public initialSample?: CodLocation;
+  public initialSample?: CodLocationRange;
   public initialRanges?: CodLocationRange[];
   public initialCounts?: DecoratedCount[];
 
@@ -95,7 +117,12 @@ export class CodLayoutEditorComponent implements OnInit {
       return;
     }
 
-    this.initialSample = layout.sample;
+    this.initialSample = layout.sample
+      ? {
+          start: layout.sample,
+          end: layout.sample,
+        }
+      : undefined;
     this.initialRanges = layout.ranges;
     this.rulingTechnique.setValue(layout.rulingTechnique);
     this.derolez.setValue(layout.derolez);
@@ -128,6 +155,11 @@ export class CodLayoutEditorComponent implements OnInit {
       tag: this.tag.value?.trim(),
       note: this.note.value?.trim(),
     };
+  }
+
+  public onLocationChange(ranges: CodLocationRange[] | null): void {
+    this.sample.setValue(ranges ? ranges[0] : null);
+    this.sample.markAsDirty();
   }
 
   private getDimensionGroup(item?: PhysicalDimension): FormGroup {
@@ -182,6 +214,10 @@ export class CodLayoutEditorComponent implements OnInit {
       });
     }
     return entries.length ? entries : undefined;
+  }
+
+  public onCountsChange(counts: DecoratedCount[]): void {
+    this.counts.setValue(counts);
   }
 
   public cancel(): void {
