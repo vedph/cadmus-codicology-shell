@@ -19,9 +19,10 @@ import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
 import { NgToolsModule } from '@myrmidon/ng-tools';
+import { CodLayoutEditorComponent } from './cod-layout-editor/cod-layout-editor.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [CodLayoutEditorComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -46,6 +47,6 @@ import { NgToolsModule } from '@myrmidon/ng-tools';
     CadmusRefsHistoricalDateModule,
     CadmusCodLocationModule,
   ],
-  exports: [],
+  exports: [CodLayoutEditorComponent],
 })
 export class CadmusPartCodicologyLayoutsModule {}
