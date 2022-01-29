@@ -79,7 +79,195 @@ export const COD_LAYOUTS_PART_SCHEMA = {
       type: ['string', 'null'],
       pattern: '^([a-z][-0-9a-z._]*)?$',
     },
-
-    // TODO: add properties and fill the "required" array as needed
+    layouts: {
+      type: 'array',
+      items: {
+        anyOf: [
+          {
+            type: 'object',
+            required: ['sample', 'ranges', 'columnCount'],
+            properties: {
+              sample: {
+                type: 'object',
+                required: ['n'],
+                properties: {
+                  endleaf: {
+                    type: 'integer',
+                  },
+                  s: {
+                    type: 'string',
+                  },
+                  n: {
+                    type: 'integer',
+                  },
+                  rmn: {
+                    type: 'boolean',
+                  },
+                  sfx: {
+                    type: 'string',
+                  },
+                  v: {
+                    type: 'boolean',
+                  },
+                  c: {
+                    type: 'integer',
+                  },
+                  l: {
+                    type: 'integer',
+                  },
+                  word: {
+                    type: 'string',
+                  },
+                },
+              },
+              ranges: {
+                type: 'array',
+                items: {
+                  anyOf: [
+                    {
+                      type: 'object',
+                      required: ['start', 'end'],
+                      properties: {
+                        start: {
+                          type: 'object',
+                          required: ['n'],
+                          properties: {
+                            endleaf: {
+                              type: 'integer',
+                            },
+                            s: {
+                              type: 'string',
+                            },
+                            n: {
+                              type: 'integer',
+                            },
+                            rmn: {
+                              type: 'boolean',
+                            },
+                            sfx: {
+                              type: 'string',
+                            },
+                            v: {
+                              type: 'boolean',
+                            },
+                            c: {
+                              type: 'integer',
+                            },
+                            l: {
+                              type: 'integer',
+                            },
+                            word: {
+                              type: 'string',
+                            },
+                          },
+                        },
+                        end: {
+                          type: 'object',
+                          required: ['n'],
+                          properties: {
+                            endleaf: {
+                              type: 'integer',
+                            },
+                            s: {
+                              type: 'string',
+                            },
+                            n: {
+                              type: 'integer',
+                            },
+                            rmn: {
+                              type: 'boolean',
+                            },
+                            sfx: {
+                              type: 'string',
+                            },
+                            v: {
+                              type: 'boolean',
+                            },
+                            c: {
+                              type: 'integer',
+                            },
+                            l: {
+                              type: 'integer',
+                            },
+                            word: {
+                              type: 'string',
+                            },
+                          },
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              dimensions: {
+                type: 'array',
+                items: {
+                  anyOf: [
+                    {
+                      type: 'object',
+                      required: ['value', 'unit'],
+                      properties: {
+                        tag: {
+                          type: 'string',
+                        },
+                        value: {
+                          type: 'integer',
+                        },
+                        unit: {
+                          type: 'string',
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              rulingTechnique: {
+                type: 'string',
+              },
+              derolez: {
+                type: 'string',
+              },
+              pricking: {
+                type: 'string',
+              },
+              columnCount: {
+                type: 'integer',
+              },
+              counts: {
+                type: 'array',
+                items: {
+                  anyOf: [
+                    {
+                      type: 'object',
+                      required: ['id', 'value', 'tag', 'note'],
+                      properties: {
+                        id: {
+                          type: 'string',
+                        },
+                        value: {
+                          type: 'integer',
+                        },
+                        tag: {
+                          type: 'string',
+                        },
+                        note: {
+                          type: 'string',
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              tag: {
+                type: 'string',
+              },
+              note: {
+                type: 'string',
+              },
+            },
+          },
+        ],
+      },
+    },
   },
 };
