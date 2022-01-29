@@ -23,9 +23,14 @@ import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical
 
 import { CodMaterialDscPartComponent } from './cod-material-dsc-part/cod-material-dsc-part.component';
 import { CodUnitEditorComponent } from './cod-unit-editor/cod-unit-editor.component';
+import { CodPalimpsestEditorComponent } from './cod-palimpsest-editor/cod-palimpsest-editor.component';
 
 @NgModule({
-  declarations: [CodMaterialDscPartComponent, CodUnitEditorComponent],
+  declarations: [
+    CodMaterialDscPartComponent,
+    CodUnitEditorComponent,
+    CodPalimpsestEditorComponent,
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -46,8 +51,12 @@ import { CodUnitEditorComponent } from './cod-unit-editor/cod-unit-editor.compon
     CadmusUiPgModule,
     CadmusRefsAssertedChronotopeModule,
     CadmusRefsHistoricalDateModule,
-    CadmusCodLocationModule
+    CadmusCodLocationModule,
   ],
-  exports: [CodMaterialDscPartComponent, CodUnitEditorComponent],
+  exports: [
+    CodMaterialDscPartComponent,
+    CodUnitEditorComponent,
+    CodPalimpsestEditorComponent,
+  ],
 })
 export class CadmusPartCodicologyMaterialDscModule {}

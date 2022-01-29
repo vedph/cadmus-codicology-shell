@@ -1,0 +1,57 @@
+<form [formGroup]="form" (submit)="save()">
+  <div>
+    <!-- range -->
+    <cadmus-cod-location
+      label="range"
+      [required]="true"
+      [location]="initialRange ? [initialRange] : []"
+      (locationChange)="onLocationChange($event)"
+    ></cadmus-cod-location>
+  </div>
+  <!-- chronotope -->
+  <div>
+    <fieldset>
+      <legend>chronotope</legend>
+      <cadmus-refs-asserted-chronotope
+        [tagEntries]="ctTagEntries"
+        [assTagEntries]="assTagEntries"
+        [refTagEntries]="refTagEntries"
+        [refTypeEntries]="refTypeEntries"
+        [chronotope]="initialChronotope"
+        (chronotopeChange)="onChronotopeChange($event)"
+      ></cadmus-refs-asserted-chronotope>
+    </fieldset>
+  </div>
+  <!-- note -->
+  <div>
+    <mat-form-field class="long-text">
+      <input matInput [formControl]="note" placeholder="note" />
+      <mat-error
+        *ngIf="$any(note).errors?.maxLength && (note.dirty || note.touched)"
+        >note too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      color="warn"
+      mat-icon-button
+      matTooltip="Discard changes"
+      (click)="cancel()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      color="primary"
+      mat-icon-button
+      matTooltip="Accept changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon>check_circle</mat-icon>
+    </button>
+  </div>
+</form>

@@ -29,14 +29,30 @@ export class CodUnitEditorComponent implements OnInit {
     this.updateForm(value);
   }
 
+  // cod-unit-tags
   @Input()
   public tagEntries: ThesaurusEntry[] | undefined;
+  // cod-unit-materials
   @Input()
   public materialEntries: ThesaurusEntry[] | undefined;
+  // cod-unit-formats
   @Input()
   public formatEntries: ThesaurusEntry[] | undefined;
+  // cod-unit-states
   @Input()
   public stateEntries: ThesaurusEntry[] | undefined;
+  // chronotope-tags
+  @Input()
+  public ctTagEntries: ThesaurusEntry[] | undefined;
+  // assertion-tags
+  @Input()
+  public assTagEntries: ThesaurusEntry[] | undefined;
+  // doc-reference-types
+  @Input()
+  public refTypeEntries: ThesaurusEntry[] | undefined;
+  // doc-reference-tags
+  @Input()
+  public refTagEntries: ThesaurusEntry[] | undefined;
 
   @Output()
   public unitChange: EventEmitter<CodUnit>;
@@ -121,6 +137,12 @@ export class CodUnitEditorComponent implements OnInit {
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
     this.range.setValue(ranges?.length ? ranges[0] : undefined);
+    this.range.markAsDirty();
+  }
+
+  public onChronotopesChange(chronotopes: AssertedChronotope[]): void {
+    this.chronotopes.setValue(chronotopes);
+    this.chronotopes.markAsDirty();
   }
 
   private getModel(): CodUnit | null {

@@ -135,7 +135,15 @@
   </div>
   <div>
     <!-- chronotopes -->
-    TODO
+    <h3>chronotopes</h3>
+    <cadmus-asserted-chronotope-set
+      [tagEntries]="ctTagEntries"
+      [assTagEntries]="assTagEntries"
+      [refTagEntries]="refTagEntries"
+      [refTypeEntries]="refTypeEntries"
+      [chronotopes]="initialChronotopes"
+      (chronotopesChange)="onChronotopesChange($event)"
+    ></cadmus-asserted-chronotope-set>
   </div>
   <div>
     <!-- note -->
