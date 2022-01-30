@@ -1,0 +1,10 @@
+<cadmus-current-item-bar></cadmus-current-item-bar>
+<cadmus-cod-material-dsc-part
+  [itemId]="itemId"
+  [roleId]="roleId"
+  [model]="$any(part$ | async)"
+  (modelChange)="save($event)"
+  [thesauri]="(thesauri$ | async) || undefined"
+  (editorClose)="close()"
+  (dirtyChange)="onDirtyChange($event)"
+></cadmus-cod-material-dsc-part>

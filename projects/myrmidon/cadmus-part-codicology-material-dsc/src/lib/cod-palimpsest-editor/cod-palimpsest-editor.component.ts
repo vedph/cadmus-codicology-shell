@@ -42,7 +42,7 @@ export class CodPalimpsestEditorComponent implements OnInit {
   public refTagEntries: ThesaurusEntry[] | undefined;
 
   @Output()
-  public unitChange: EventEmitter<CodPalimpsest>;
+  public palimpsestChange: EventEmitter<CodPalimpsest>;
   @Output()
   public editorClose: EventEmitter<any>;
 
@@ -55,7 +55,7 @@ export class CodPalimpsestEditorComponent implements OnInit {
   public initialChronotope?: AssertedChronotope;
 
   constructor(formBuilder: FormBuilder) {
-    this.unitChange = new EventEmitter<CodPalimpsest>();
+    this.palimpsestChange = new EventEmitter<CodPalimpsest>();
     this.editorClose = new EventEmitter<any>();
     // form
     this.range = formBuilder.control(null, Validators.required);
@@ -117,6 +117,6 @@ export class CodPalimpsestEditorComponent implements OnInit {
     if (!model) {
       return;
     }
-    this.unitChange.emit(model);
+    this.palimpsestChange.emit(model);
   }
 }

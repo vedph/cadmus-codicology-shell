@@ -1,1 +1,202 @@
-<p>cod-material-dsc-part works!</p>
+<form [formGroup]="form!" (submit)="save()">
+  <mat-card>
+    <mat-card-header>
+      <div mat-card-avatar>
+        <mat-icon>picture_in_picture</mat-icon>
+      </div>
+      <mat-card-title>Material Description Part</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-tab-group [(selectedIndex)]="tabIndex">
+        <mat-tab label="units/palimpsests">
+          <h3>Units</h3>
+          <div>
+            <button
+              type="button"
+              mat-icon-button
+              color="primary"
+              (click)="addUnit()"
+            >
+              <mat-icon>add_circle</mat-icon> add unit
+            </button>
+          </div>
+          <table *ngIf="units?.value?.length">
+            <thead>
+              <tr>
+                <th></th>
+                <th>extent</th>
+                <th>material</th>
+                <th>place</th>
+                <th>date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let entry of units?.value;
+                  let i = index;
+                  let first = first;
+                  let last = last
+                "
+              >
+                <td>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    color="primary"
+                    matTooltip="Edit this unit"
+                    (click)="editUnit(i)"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Move this unit up"
+                    [disabled]="first"
+                    (click)="moveUnitUp(i)"
+                  >
+                    <mat-icon>arrow_upward</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Move this unit down"
+                    [disabled]="last"
+                    (click)="moveUnitDown(i)"
+                  >
+                    <mat-icon>arrow_downward</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    color="warn"
+                    matTooltip="Delete this Unit"
+                    (click)="deleteUnit(i)"
+                  >
+                    <mat-icon>remove_circle</mat-icon>
+                  </button>
+                </td>
+                <td>{{ entry.range | codLocationRange }}</td>
+                <td>{{ entry.material }}</td>
+                <td>{{ entry.chronotope?.place }}</td>
+                <td>{{ entry.chronotope?.date | historicalDate }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>Palimpsests</mat-expansion-panel-header>
+            <div>
+              <button
+                type="button"
+                mat-icon-button
+                color="primary"
+                (click)="addPalimpsest()"
+              >
+                <mat-icon>add_circle</mat-icon> add palimpsest
+              </button>
+            </div>
+            <table *ngIf="palimpsests?.value?.length">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>extent</th>
+                  <th>place</th>
+                  <th>date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="
+                    let entry of palimpsests?.value;
+                    let i = index;
+                    let first = first;
+                    let last = last
+                  "
+                >
+                  <td>
+                    <button
+                      type="button"
+                      mat-icon-button
+                      color="primary"
+                      matTooltip="Edit this palimpsest"
+                      (click)="editPalimpsest(i)"
+                    >
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button
+                      type="button"
+                      mat-icon-button
+                      matTooltip="Move this palimpsest up"
+                      [disabled]="first"
+                      (click)="movePalimpsestUp(i)"
+                    >
+                      <mat-icon>arrow_upward</mat-icon>
+                    </button>
+                    <button
+                      type="button"
+                      mat-icon-button
+                      matTooltip="Move this palimpsest down"
+                      [disabled]="last"
+                      (click)="movePalimpsestDown(i)"
+                    >
+                      <mat-icon>arrow_downward</mat-icon>
+                    </button>
+                    <button
+                      type="button"
+                      mat-icon-button
+                      color="warn"
+                      matTooltip="Delete this palimpsest"
+                      (click)="deletePalimpsest(i)"
+                    >
+                      <mat-icon>remove_circle</mat-icon>
+                    </button>
+                  </td>
+                  <td>{{ entry.range | codLocationRange }}</td>
+                  <td>{{ entry.chronotope?.place?.value }}</td>
+                  <td>{{ entry.chronotope?.date | historicalDate }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </mat-expansion-panel>
+        </mat-tab>
+
+        <mat-tab label="unit" *ngIf="editedUt">
+          <cadmus-cod-unit-editor
+            [tagEntries]="tagEntries"
+            [materialEntries]="materialEntries"
+            [formatEntries]="formatEntries"
+            [stateEntries]="stateEntries"
+            [ctTagEntries]="ctTagEntries"
+            [assTagEntries]="assTagEntries"
+            [refTypeEntries]="refTypeEntries"
+            [refTagEntries]="refTagEntries"
+            [unit]="editedUt"
+            (unitChange)="onUnitSave($event)"
+            (editorClose)="onUnitClose()"
+          ></cadmus-cod-unit-editor>
+        </mat-tab>
+
+        <mat-tab label="palimpsest" *ngIf="editedPs">
+          <cadmus-cod-palimpsest-editor
+            [ctTagEntries]="ctTagEntries"
+            [assTagEntries]="assTagEntries"
+            [refTagEntries]="refTagEntries"
+            [refTypeEntries]="refTypeEntries"
+            [palimpsest]="editedPs"
+            (palimpsestChange)="onPalimpsestSave($event)"
+            (editorClose)="onPalimpsestClose()"
+          ></cadmus-cod-palimpsest-editor>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+    <mat-card-actions>
+      <cadmus-close-save-buttons
+        [form]="form"
+        [noSave]="userLevel < 2"
+        (closeRequest)="close()"
+      ></cadmus-close-save-buttons>
+    </mat-card-actions>
+  </mat-card>
+</form>

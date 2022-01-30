@@ -1,7 +1,8 @@
 import { PartEditorKeys } from '@myrmidon/cadmus-core';
-import { COD_LAYOUTS_PART_TYPEID } from '@myrmidon/cadmus-part-codicology-layouts';
 
 import { COD_BINDINGS_PART_TYPEID } from 'projects/myrmidon/cadmus-part-codicology-bindings/src/public-api';
+import { COD_LAYOUTS_PART_TYPEID } from '@myrmidon/cadmus-part-codicology-layouts';
+import { COD_MATERIAL_DSC_PART_TYPEID } from '@myrmidon/cadmus-part-codicology-material-dsc';
 import { COD_SHELFMARKS_PART_TYPEID } from 'projects/myrmidon/cadmus-part-codicology-shelfmarks/src/public-api';
 import { COD_WATERMARKS_PART_TYPEID } from 'projects/myrmidon/cadmus-part-codicology-watermarks/src/public-api';
 
@@ -18,6 +19,9 @@ export const PART_EDITOR_KEYS: PartEditorKeys = {
     part: CODICOLOGY,
   },
   [COD_LAYOUTS_PART_TYPEID]: {
+    part: CODICOLOGY,
+  },
+  [COD_MATERIAL_DSC_PART_TYPEID]: {
     part: CODICOLOGY,
   },
   [COD_SHELFMARKS_PART_TYPEID]: {
