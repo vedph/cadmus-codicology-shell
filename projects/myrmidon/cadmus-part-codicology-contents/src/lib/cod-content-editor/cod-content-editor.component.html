@@ -1,37 +1,234 @@
 <form [formGroup]="form" (submit)="save()">
   <div>
     <!-- eid -->
+    <mat-form-field>
+      <input matInput [formControl]="eid" placeholder="EID" />
+      <mat-error
+        *ngIf="$any(eid).errors?.maxLength && (eid.dirty || eid.touched)"
+        >EID too long</mat-error
+      >
+    </mat-form-field>
     &nbsp;
     <!-- range -->
+    <cadmus-cod-location
+      label="sample"
+      [single]="true"
+      [required]="true"
+      [location]="initialRange ? [initialRange] : []"
+      (locationChange)="onLocationChange($event)"
+    ></cadmus-cod-location>
     &nbsp;
     <!-- tag (bound) -->
+    <mat-form-field *ngIf="tagEntries?.length" style="width: 8em">
+      <mat-select [formControl]="tag" placeholder="tag">
+        <mat-option *ngFor="let e of tagEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
     <!-- tag (free) -->
+    <mat-form-field *ngIf="!tagEntries?.length">
+      <input matInput [formControl]="tag" placeholder="tag" />
+      <mat-error
+        *ngIf="$any(tag).errors?.maxLength && (tag.dirty || tag.touched)"
+        >tag too long</mat-error
+      >
+    </mat-form-field>
   </div>
   <div>
     <!-- title -->
+    <mat-form-field>
+      <input matInput [formControl]="title" placeholder="title" />
+      <mat-error
+        *ngIf="$any(title).errors?.required && (title.dirty || title.touched)"
+        >title required</mat-error
+      >
+      <mat-error
+        *ngIf="$any(title).errors?.maxLength && (title.dirty || title.touched)"
+        >title too long</mat-error
+      >
+    </mat-form-field>
     &nbsp;
     <!-- location -->
+    <mat-form-field style="width: 6em">
+      <input matInput [formControl]="location" placeholder="location" />
+      <mat-error
+        *ngIf="
+          $any(location).errors?.maxLength &&
+          (location.dirty || location.touched)
+        "
+        >location too long</mat-error
+      >
+    </mat-form-field>
   </div>
   <div>
     <!-- claimedAuthor -->
+    <mat-form-field>
+      <input
+        matInput
+        [formControl]="claimedAuthor"
+        placeholder="claimed author"
+      />
+      <mat-error
+        *ngIf="
+          $any(claimedAuthor).errors?.maxLength &&
+          (claimedAuthor.dirty || claimedAuthor.touched)
+        "
+        >author too long</mat-error
+      >
+    </mat-form-field>
+
     &nbsp;
     <!-- claimedTitle -->
+    <mat-form-field>
+      <input
+        matInput
+        [formControl]="claimedTitle"
+        placeholder="claimed title"
+      />
+      <mat-error
+        *ngIf="
+          $any(claimedTitle).errors?.maxLength &&
+          (claimedTitle.dirty || claimedTitle.touched)
+        "
+        >title too long</mat-error
+      >
+    </mat-form-field>
   </div>
   <div>
     <!-- note -->
+    <mat-form-field class="long-text">
+      <input matInput [formControl]="note" placeholder="note" />
+      <mat-error
+        *ngIf="$any(note).errors?.maxLength && (note.dirty || note.touched)"
+        >note too long</mat-error
+      >
+    </mat-form-field>
   </div>
   <div>
     <!-- incipit -->
+    <mat-form-field>
+      <textarea
+        rows="2"
+        matInput
+        [formControl]="incipit"
+        placeholder="incipit"
+      ></textarea>
+      <mat-error
+        *ngIf="
+          $any(incipit).errors?.maxLength && (incipit.dirty || incipit.touched)
+        "
+        >incipit too long</mat-error
+      >
+    </mat-form-field>
   </div>
   <div>
     <!-- explicit -->
+    <mat-form-field>
+      <textarea
+        rows="2"
+        matInput
+        [formControl]="explicit"
+        placeholder="explicit"
+      ></textarea>
+      <mat-error
+        *ngIf="
+          $any(explicit).errors?.maxLength &&
+          (explicit.dirty || explicit.touched)
+        "
+        >explicit too long</mat-error
+      >
+    </mat-form-field>
   </div>
   <div>
     <!-- states -->
+    <cadmus-ui-flags-picker
+      [flags]="stateFlags"
+      [selectedIds]="initialStates"
+      (selectedIdsChange)="onStateIdsChange($event)"
+    ></cadmus-ui-flags-picker>
   </div>
   <!-- annotations -->
   <mat-expansion-panel>
     <mat-expansion-panel-header>annotations</mat-expansion-panel-header>
+    <div>
+      <button
+        type="button"
+        mat-icon-button
+        color="primary"
+        (click)="addAnnotation()"
+      >
+        <mat-icon>add_circle</mat-icon> add annotation
+      </button>
+    </div>
+    <table *ngIf="annotations?.value?.length">
+      <thead>
+        <tr>
+          <th></th>
+          <th>type</th>
+          <th>extent</th>
+          <th>text</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="
+            let entry of annotations?.value;
+            let i = index;
+            let first = first;
+            let last = last
+          "
+        >
+          <td>
+            <button
+              type="button"
+              mat-icon-button
+              color="primary"
+              matTooltip="Edit this annotation"
+              (click)="editAnnotation(i)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              matTooltip="Move this annotation up"
+              [disabled]="first"
+              (click)="moveAnnotationUp(i)"
+            >
+              <mat-icon>arrow_upward</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              matTooltip="Move this annotation down"
+              [disabled]="last"
+              (click)="moveAnnotationDown(i)"
+            >
+              <mat-icon>arrow_downward</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              color="warn"
+              matTooltip="Delete this annotation"
+              (click)="deleteAnnotation(i)"
+            >
+              <mat-icon>remove_circle</mat-icon>
+            </button>
+          </td>
+          <td>{{ entry.type }}</td>
+          <td>{{ entry.range | codLocationRange }}</td>
+          <td>
+            {{
+              entry.text?.length > 40
+                ? entry.text.substr(0, 40) + "..."
+                : entry.text
+            }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </mat-expansion-panel>
 
   <!-- buttons -->

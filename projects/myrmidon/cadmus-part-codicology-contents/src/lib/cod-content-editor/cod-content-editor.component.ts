@@ -5,7 +5,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { take } from 'rxjs';
+import { last, take } from 'rxjs';
 
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
@@ -23,6 +23,7 @@ import { CodContent, CodContentAnnotation } from '../cod-contents-part';
 export class CodContentEditorComponent implements OnInit {
   private _content: CodContent | undefined;
   private _editedAnnotationIndex: number;
+  private _stateEntries: ThesaurusEntry[] | undefined;
 
   @Input()
   public get content(): CodContent | undefined {
@@ -35,7 +36,17 @@ export class CodContentEditorComponent implements OnInit {
 
   // cod-content-states
   @Input()
-  public stateEntries: ThesaurusEntry[] | undefined;
+  public get stateEntries(): ThesaurusEntry[] | undefined {
+    return this._stateEntries;
+  }
+  public set stateEntries(value: ThesaurusEntry[] | undefined) {
+    this._stateEntries = value;
+    this.stateFlags = value
+      ? value.map((e) => {
+          return { id: e.id, label: e.value } as Flag;
+        })
+      : [];
+  }
   // cod-content-tags
   @Input()
   public tagEntries: ThesaurusEntry[] | undefined;
@@ -62,14 +73,15 @@ export class CodContentEditorComponent implements OnInit {
   public annotations: FormControl;
   public form: FormGroup;
 
+  public stateFlags: Flag[];
+  public initialStates?: string[];
   public initialRange?: CodLocationRange;
-  public initialStates: Flag[];
   public editedAnnotation?: CodContentAnnotation;
 
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
     this.contentChange = new EventEmitter<CodContent>();
     this.editorClose = new EventEmitter<any>();
-    this.initialStates = [];
+    this.stateFlags = [];
     this._editedAnnotationIndex = -1;
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
@@ -134,6 +146,7 @@ export class CodContentEditorComponent implements OnInit {
 
     this.eid.setValue(content.eid);
     this.initialRange = content.range;
+    this.initialStates = content.states || [];
     this.tag.setValue(content.tag);
     this.title.setValue(content.title);
     this.location.setValue(content.location);
@@ -143,16 +156,6 @@ export class CodContentEditorComponent implements OnInit {
     this.incipit.setValue(content.incipit);
     this.explicit.setValue(content.explicit);
     this.annotations.setValue(content.annotations || []);
-
-    // states
-    this.initialStates = content.states
-      ? content.states.map((id) => {
-          return {
-            id,
-            label: this.getFlagLabel(id) || id,
-          } as Flag;
-        })
-      : [];
 
     this.form.markAsPristine();
   }
@@ -174,6 +177,15 @@ export class CodContentEditorComponent implements OnInit {
         ? this.annotations.value
         : undefined,
     };
+  }
+
+  public onLocationChange(ranges: CodLocationRange[] | null): void {
+    this.range.setValue(ranges ? ranges[0] : null);
+    this.range.markAsDirty();
+  }
+
+  public onStateIdsChange(ids: string[]): void {
+    this.states.setValue(ids);
   }
 
   //#region Annotations
