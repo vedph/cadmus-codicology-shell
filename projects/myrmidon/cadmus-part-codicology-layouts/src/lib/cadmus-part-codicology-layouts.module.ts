@@ -22,9 +22,14 @@ import { NgToolsModule } from '@myrmidon/ng-tools';
 
 import { CodLayoutEditorComponent } from './cod-layout-editor/cod-layout-editor.component';
 import { CodLayoutsPartComponent } from './cod-layouts-part/cod-layouts-part.component';
+import { CodLayoutsPartFeatureComponent } from './cod-layouts-part-feature/cod-layouts-part-feature.component';
 
 @NgModule({
-  declarations: [CodLayoutEditorComponent, CodLayoutsPartComponent],
+  declarations: [
+    CodLayoutEditorComponent,
+    CodLayoutsPartComponent,
+    CodLayoutsPartFeatureComponent,
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -49,6 +54,10 @@ import { CodLayoutsPartComponent } from './cod-layouts-part/cod-layouts-part.com
     CadmusRefsHistoricalDateModule,
     CadmusCodLocationModule,
   ],
-  exports: [CodLayoutEditorComponent, CodLayoutsPartComponent],
+  exports: [
+    CodLayoutEditorComponent,
+    CodLayoutsPartComponent,
+    CodLayoutsPartFeatureComponent,
+  ],
 })
 export class CadmusPartCodicologyLayoutsModule {}
