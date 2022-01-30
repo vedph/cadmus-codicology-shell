@@ -124,9 +124,18 @@ export class CodLayoutEditorComponent implements OnInit {
         }
       : undefined;
     this.initialRanges = layout.ranges;
-    this.rulingTechnique.setValue(layout.rulingTechnique);
-    this.derolez.setValue(layout.derolez);
-    this.pricking.setValue(layout.pricking);
+    this.rulingTechnique.setValue(
+      layout.rulingTechnique?.length ??
+        (this.rulTechEntries ? this.rulTechEntries[0].id : undefined)
+    );
+    this.derolez.setValue(
+      layout.derolez ??
+        (this.drzEntries?.length ? this.drzEntries[0].id : undefined)
+    );
+    this.pricking.setValue(
+      layout.pricking ??
+        (this.prkEntries?.length ? this.prkEntries[0].id : undefined)
+    );
     this.columnCount.setValue(layout.columnCount);
     this.initialCounts = layout.counts;
     this.tag.setValue(layout.tag);
@@ -166,10 +175,11 @@ export class CodLayoutEditorComponent implements OnInit {
     return this._formBuilder.group({
       tag: this._formBuilder.control(item?.tag, Validators.maxLength(50)),
       value: this._formBuilder.control(item?.value || 0, Validators.required),
-      unit: this._formBuilder.control(item?.unit, [
-        Validators.required,
-        Validators.maxLength(50),
-      ]),
+      unit: this._formBuilder.control(
+        item?.unit ??
+          (this.szUnitEntries?.length ? this.szUnitEntries[0].id : undefined),
+        [Validators.required, Validators.maxLength(50)]
+      ),
     });
   }
 

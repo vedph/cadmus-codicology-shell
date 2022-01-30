@@ -8,7 +8,7 @@
     </mat-card-header>
     <mat-card-content>
       <mat-tab-group [(selectedIndex)]="tabIndex">
-        <mat-tab label="Layouts">
+        <mat-tab label="layouts">
           <div>
             <button
               type="button"
@@ -16,7 +16,7 @@
               color="primary"
               (click)="addLayout()"
             >
-              <mat-icon>add_circle</mat-icon> add Layout
+              <mat-icon>add_circle</mat-icon> add layout
             </button>
           </div>
           <table *ngIf="entries?.value?.length">

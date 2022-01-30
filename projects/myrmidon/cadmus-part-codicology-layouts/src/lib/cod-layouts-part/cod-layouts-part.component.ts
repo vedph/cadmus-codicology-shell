@@ -123,7 +123,7 @@ export class CodLayoutsPartComponent
     } else {
       this.szDimTagEntries = undefined;
     }
-    key = 'physical-size-unit';
+    key = 'physical-size-units';
     if (this.thesauri && this.thesauri[key]) {
       this.szUnitEntries = this.thesauri[key].entries;
     } else {

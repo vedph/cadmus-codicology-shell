@@ -14,6 +14,7 @@
     </mat-form-field>
     <!-- tag (free) -->
     <mat-form-field *ngIf="!tagEntries?.length">
+      <input matInput [formControl]="tag" placeholder="tag" />
       <mat-error
         *ngIf="$any(tag).errors?.maxLength && (tag.dirty || tag.touched)"
         >tag too long</mat-error
@@ -40,7 +41,7 @@
   <div>
     <!-- rulingTechnique (bound) -->
     <mat-form-field *ngIf="rulTechEntries?.length" style="width: 8em">
-      <mat-select [formControl]="rulingTechnique" placeholder="rulingTechnique">
+      <mat-select [formControl]="rulingTechnique" placeholder="ruling">
         <mat-option *ngFor="let e of rulTechEntries" [value]="e.id">{{
           e.value
         }}</mat-option>
@@ -48,17 +49,13 @@
     </mat-form-field>
     <!-- rulingTechnique (free) -->
     <mat-form-field *ngIf="!rulTechEntries?.length">
-      <input
-        matInput
-        [formControl]="rulingTechnique"
-        placeholder="rulingTechnique"
-      />
+      <input matInput [formControl]="rulingTechnique" placeholder="ruling" />
       <mat-error
         *ngIf="
           $any(rulingTechnique).errors?.maxLength &&
           (rulingTechnique.dirty || rulingTechnique.touched)
         "
-        >rulingTechnique too long</mat-error
+        >ruling too long</mat-error
       >
     </mat-form-field>
     &nbsp;
@@ -104,7 +101,7 @@
   </div>
   <div>
     <!-- columnCount -->
-    <mat-form-field>
+    <mat-form-field style="width: 3em;">
       <input
         matInput
         type="number"
