@@ -1,0 +1,58 @@
+<form [formGroup]="form" (submit)="save()">
+  <div>
+    <!-- eid -->
+    &nbsp;
+    <!-- range -->
+    &nbsp;
+    <!-- tag (bound) -->
+    <!-- tag (free) -->
+  </div>
+  <div>
+    <!-- title -->
+    &nbsp;
+    <!-- location -->
+  </div>
+  <div>
+    <!-- claimedAuthor -->
+    &nbsp;
+    <!-- claimedTitle -->
+  </div>
+  <div>
+    <!-- note -->
+  </div>
+  <div>
+    <!-- incipit -->
+  </div>
+  <div>
+    <!-- explicit -->
+  </div>
+  <div>
+    <!-- states -->
+  </div>
+  <!-- annotations -->
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>annotations</mat-expansion-panel-header>
+  </mat-expansion-panel>
+
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      color="warn"
+      mat-icon-button
+      matTooltip="Discard changes"
+      (click)="cancel()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      color="primary"
+      mat-icon-button
+      matTooltip="Accept changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon>check_circle</mat-icon>
+    </button>
+  </div>
+</form>
