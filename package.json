@@ -8,6 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "build-bindings": "ng build @myrmidon/cadmus-part-codicology-bindings",
+    "build-contents": "ng build @myrmidon/cadmus-part-codicology-contents",
     "build-layouts": "ng build @myrmidon/cadmus-part-codicology-layouts",
     "build-material": "ng build @myrmidon/cadmus-part-codicology-material-dsc",
     "build-shelfmarks": "ng build @myrmidon/cadmus-part-codicology-shelfmarks",

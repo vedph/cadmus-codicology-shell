@@ -20,9 +20,15 @@ import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
 import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
 
 import { CodContentEditorComponent } from './cod-content-editor/cod-content-editor.component';
+import { CodContentsPartComponent } from './cod-contents-part/cod-contents-part.component';
+import { CodContentsPartFeatureComponent } from './cod-contents-part-feature/cod-contents-part-feature.component';
 
 @NgModule({
-  declarations: [CodContentEditorComponent],
+  declarations: [
+    CodContentEditorComponent,
+    CodContentsPartComponent,
+    CodContentsPartFeatureComponent,
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -45,6 +51,10 @@ import { CodContentEditorComponent } from './cod-content-editor/cod-content-edit
     CadmusCodLocationModule,
     CadmusUiFlagsPickerModule,
   ],
-  exports: [CodContentEditorComponent],
+  exports: [
+    CodContentEditorComponent,
+    CodContentsPartComponent,
+    CodContentsPartFeatureComponent,
+  ],
 })
 export class CadmusPartCodicologyContentsModule {}

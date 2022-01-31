@@ -14,6 +14,10 @@ import {
   COD_BINDINGS_PART_TYPEID,
 } from '@myrmidon/cadmus-part-codicology-bindings';
 import {
+  CodContentsPartFeatureComponent,
+  COD_CONTENTS_PART_TYPEID,
+} from '@myrmidon/cadmus-part-codicology-contents';
+import {
   CodLayoutsPartFeatureComponent,
   COD_LAYOUTS_PART_TYPEID,
 } from '@myrmidon/cadmus-part-codicology-layouts';
@@ -35,6 +39,12 @@ export const RouterModuleForChild = RouterModule.forChild([
     path: `${COD_BINDINGS_PART_TYPEID}/:pid`,
     pathMatch: 'full',
     component: CodBindingsPartFeatureComponent,
+    canDeactivate: [PendingChangesGuard],
+  },
+  {
+    path: `${COD_CONTENTS_PART_TYPEID}/:pid`,
+    pathMatch: 'full',
+    component: CodContentsPartFeatureComponent,
     canDeactivate: [PendingChangesGuard],
   },
   {
