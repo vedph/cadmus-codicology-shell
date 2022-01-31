@@ -11,6 +11,10 @@
         "dist/myrmidon/cadmus-part-codicology-contents/myrmidon-cadmus-part-codicology-contents",
         "dist/myrmidon/cadmus-part-codicology-contents"
       ],
+      "@myrmidon/cadmus-part-codicology-edits": [
+        "dist/myrmidon/cadmus-part-codicology-edits/myrmidon-cadmus-part-codicology-edits",
+        "dist/myrmidon/cadmus-part-codicology-edits"
+      ],
       "@myrmidon/cadmus-part-codicology-layouts": [
         "dist/myrmidon/cadmus-part-codicology-layouts/myrmidon-cadmus-part-codicology-layouts",
         "dist/myrmidon/cadmus-part-codicology-layouts"
