@@ -1,5 +1,6 @@
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
-import { DocReference, Part } from '@myrmidon/cadmus-core';
+import { Part } from '@myrmidon/cadmus-core';
+import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
 import { HistoricalDateModel } from '@myrmidon/cadmus-refs-historical-date';
 
 export interface CodEdit {

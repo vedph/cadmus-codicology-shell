@@ -15,9 +15,10 @@ import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
+import { CodEditEditorComponent } from './cod-edit-editor/cod-edit-editor.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [CodEditEditorComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -38,6 +39,6 @@ import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
     CadmusCodLocationModule,
     CadmusRefsHistoricalDateModule,
   ],
-  exports: [],
+  exports: [CodEditEditorComponent],
 })
 export class CadmusPartCodicologyEditsModule {}
