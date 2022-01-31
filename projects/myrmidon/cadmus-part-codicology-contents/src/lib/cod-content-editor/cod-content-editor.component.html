@@ -1,25 +1,27 @@
 <form [formGroup]="form" (submit)="save()">
-  <div>
+  <div style="display: flex; gap: 8px">
     <!-- eid -->
-    <mat-form-field>
+    <mat-form-field style="flex: 0 0 auto">
       <input matInput [formControl]="eid" placeholder="EID" />
       <mat-error
         *ngIf="$any(eid).errors?.maxLength && (eid.dirty || eid.touched)"
         >EID too long</mat-error
       >
     </mat-form-field>
-    &nbsp;
     <!-- range -->
     <cadmus-cod-location
+      style="flex: 0 0 auto"
       label="sample"
       [single]="true"
       [required]="true"
       [location]="initialRange ? [initialRange] : []"
       (locationChange)="onLocationChange($event)"
     ></cadmus-cod-location>
-    &nbsp;
     <!-- tag (bound) -->
-    <mat-form-field *ngIf="tagEntries?.length" style="width: 8em">
+    <mat-form-field
+      *ngIf="tagEntries?.length"
+      style="width: 8em; flex: 0 0 auto"
+    >
       <mat-select [formControl]="tag" placeholder="tag">
         <mat-option *ngFor="let e of tagEntries" [value]="e.id">{{
           e.value
@@ -27,7 +29,7 @@
       </mat-select>
     </mat-form-field>
     <!-- tag (free) -->
-    <mat-form-field *ngIf="!tagEntries?.length">
+    <mat-form-field *ngIf="!tagEntries?.length" style="flex: 0 0 auto">
       <input matInput [formControl]="tag" placeholder="tag" />
       <mat-error
         *ngIf="$any(tag).errors?.maxLength && (tag.dirty || tag.touched)"
