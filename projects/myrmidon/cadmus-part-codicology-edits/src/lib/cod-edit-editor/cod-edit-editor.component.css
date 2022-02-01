@@ -1,0 +1,9 @@
+.form-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.long-text {
+  width: 100%;
+  max-width: 800px;
+}

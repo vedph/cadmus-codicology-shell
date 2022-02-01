@@ -1,1 +1,170 @@
-<p>cod-edit-editor works!</p>
+<form [formGroup]="form" (submit)="save()">
+  <div class="form-row">
+    <!-- eid -->
+    <mat-form-field style="flex: 0 0 auto">
+      <input matInput [formControl]="eid" placeholder="eid" />
+      <mat-error
+        *ngIf="$any(eid).errors?.maxLength && (eid.dirty || eid.touched)"
+        >eid too long</mat-error
+      >
+    </mat-form-field>
+
+    <!-- type (bound) -->
+    <mat-form-field *ngIf="typeEntries?.length" style="flex: 0 0 auto">
+      <mat-select [formControl]="type" placeholder="type">
+        <mat-option *ngFor="let e of typeEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="$any(type).errors?.required && (type.dirty || type.touched)"
+        >type required</mat-error
+      >
+    </mat-form-field>
+    <!-- type (free) -->
+    <mat-form-field *ngIf="!typeEntries?.length" style="flex: 0 0 auto">
+      <input matInput [formControl]="type" placeholder="type" />
+      <mat-error
+        *ngIf="$any(type).errors?.required && (type.dirty || type.touched)"
+        >type required</mat-error
+      >
+      <mat-error
+        *ngIf="$any(type).errors?.maxLength && (type.dirty || type.touched)"
+        >type too long</mat-error
+      >
+    </mat-form-field>
+
+    <!-- tag (bound) -->
+    <mat-form-field *ngIf="tagEntries?.length" style="flex: 0 0 auto">
+      <mat-select [formControl]="tag" placeholder="tag">
+        <mat-option *ngFor="let e of tagEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <!-- tag (free) -->
+    <mat-form-field *ngIf="!tagEntries?.length" style="flex: 0 0 auto">
+      <input matInput [formControl]="tag" placeholder="tag" />
+      <mat-error
+        *ngIf="$any(tag).errors?.maxLength && (tag.dirty || tag.touched)"
+        >tag too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <div class="form-row">
+    <!-- techniques -->
+    <cadmus-ui-flags-picker
+      style="flex: 0 0 auto"
+      [flags]="availTechs"
+      [selectedIds]="initialTechIds"
+      (selectedIdsChange)="onTechIdsChange($event)"
+    ></cadmus-ui-flags-picker>
+    <!-- ranges -->
+    <cadmus-cod-location
+      style="flex: 0 0 auto"
+      [required]="true"
+      [location]="initialRanges || null"
+      (locationChange)="onLocationChange($event)"
+    ></cadmus-cod-location>
+  </div>
+
+  <div class="form-row">
+    <!-- language (bound) -->
+    <mat-form-field *ngIf="langEntries?.length" style="flex: 0 0 auto">
+      <mat-select [formControl]="language" placeholder="language">
+        <mat-option *ngFor="let e of langEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <!-- language (free) -->
+    <mat-form-field *ngIf="!langEntries?.length" style="flex: 0 0 auto">
+      <input matInput [formControl]="language" placeholder="language" />
+      <mat-error
+        *ngIf="
+          $any(language).errors?.maxLength &&
+          (language.dirty || language.touched)
+        "
+        >language too long</mat-error
+      >
+    </mat-form-field>
+    <!-- date -->
+    <cadmus-refs-historical-date style="flex: 0 0 auto"
+      [date]="initialDate"
+      (dateChange)="onDateChange($event)"
+    ></cadmus-refs-historical-date>
+  </div>
+
+  <!-- colors -->
+  <cadmus-ui-flags-picker
+    [flags]="availColors"
+    [selectedIds]="initialColorIds"
+    (selectedIdsChange)="onColorIdsChange($event)"
+  ></cadmus-ui-flags-picker>
+
+  <!-- description -->
+  <div>
+    <mat-form-field class="long-text">
+      <textarea
+        rows="2"
+        matInput
+        [formControl]="description"
+        placeholder="description"
+      ></textarea>
+      <mat-error
+        *ngIf="
+          $any(description).errors?.maxLength &&
+          (description.dirty || description.touched)
+        "
+        >description too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <!-- text -->
+  <div>
+    <mat-form-field class="long-text">
+      <textarea
+        matInput
+        rows="2"
+        [formControl]="text"
+        placeholder="text"
+      ></textarea>
+      <mat-error
+        *ngIf="$any(text).errors?.maxLength && (text.dirty || text.touched)"
+        >text too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <!-- references -->
+  <cadmus-refs-doc-references
+    [tagEntries]="refTagEntries"
+    [typeEntries]="refTypeEntries"
+    [references]="initialReferences || []"
+    (referencesChange)="onReferencesChange($event)"
+  ></cadmus-refs-doc-references>
+
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      color="warn"
+      mat-icon-button
+      matTooltip="Discard changes"
+      (click)="cancel()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      color="primary"
+      mat-icon-button
+      matTooltip="Accept changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon>check_circle</mat-icon>
+    </button>
+  </div>
+</form>

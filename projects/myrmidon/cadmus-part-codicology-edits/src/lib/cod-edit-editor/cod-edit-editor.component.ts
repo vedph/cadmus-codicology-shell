@@ -10,6 +10,8 @@ import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
 import { HistoricalDateModel } from '@myrmidon/cadmus-refs-historical-date';
+import { Flag } from '@myrmidon/cadmus-ui-flags-picker';
+import { NgToolsValidators } from '@myrmidon/ng-tools';
 
 import { CodEdit } from '../cod-edits-part';
 
@@ -20,6 +22,8 @@ import { CodEdit } from '../cod-edits-part';
 })
 export class CodEditEditorComponent implements OnInit {
   private _model: CodEdit | undefined;
+  private _colorEntries: ThesaurusEntry[] | undefined;
+  private _techEntries: ThesaurusEntry[] | undefined;
 
   @Input()
   public get model(): CodEdit | undefined {
@@ -30,21 +34,47 @@ export class CodEditEditorComponent implements OnInit {
     this.updateForm(value);
   }
 
+  // cod-edit-colors
+  @Input()
+  public get colorEntries(): ThesaurusEntry[] | undefined {
+    return this._colorEntries;
+  }
+  public set colorEntries(value: ThesaurusEntry[] | undefined) {
+    this._colorEntries = value;
+    this.availColors = value?.length
+      ? value.map((e) => {
+          return {
+            id: e.id,
+            label: e.value,
+          } as Flag;
+        })
+      : [];
+  }
+  // cod-edit-techniques
+  @Input()
+  public get techEntries(): ThesaurusEntry[] | undefined {
+    return this._techEntries;
+  }
+  public set techEntries(value: ThesaurusEntry[] | undefined) {
+    this._techEntries = value;
+    this.availTechs = value?.length
+      ? value.map((e) => {
+          return {
+            id: e.id,
+            label: e.value,
+          } as Flag;
+        })
+      : [];
+  }
   // cod-edit-types
   @Input()
   public typeEntries: ThesaurusEntry[] | undefined;
   // cod-edit-tags
   @Input()
   public tagEntries: ThesaurusEntry[] | undefined;
-  // cod-edit-techniques
-  @Input()
-  public techEntries: ThesaurusEntry[] | undefined;
   // cod-edit-languages
   @Input()
   public langEntries: ThesaurusEntry[] | undefined;
-  // cod-edit-colors
-  @Input()
-  public colorEntries: ThesaurusEntry[] | undefined;
   // doc-reference-types
   @Input()
   public refTypeEntries: ThesaurusEntry[] | undefined;
@@ -73,7 +103,10 @@ export class CodEditEditorComponent implements OnInit {
   public initialTechniques?: string[];
   public initialRanges?: CodLocationRange[];
   public initialDate?: HistoricalDateModel;
-  public initialColors?: string[];
+  public availColors?: Flag[];
+  public initialColorIds?: string[];
+  public availTechs?: Flag[];
+  public initialTechIds?: string[];
   public initialReferences?: DocReference[];
 
   constructor(formBuilder: FormBuilder) {
@@ -87,7 +120,10 @@ export class CodEditEditorComponent implements OnInit {
     ]);
     this.tag = formBuilder.control(null, Validators.maxLength(50));
     this.techniques = formBuilder.control([]);
-    this.ranges = formBuilder.control([]);
+    this.ranges = formBuilder.control(
+      [],
+      NgToolsValidators.strictMinLengthValidator(1)
+    );
     this.language = formBuilder.control(null, Validators.maxLength(50));
     this.colors = formBuilder.control([]);
     this.date = formBuilder.control(null);
@@ -128,7 +164,7 @@ export class CodEditEditorComponent implements OnInit {
     this.initialRanges = model.ranges || [];
     this.language.setValue(model.language);
     this.initialDate = model.date;
-    this.initialColors = model.colors || [];
+    this.initialColorIds = model.colors || [];
     this.description.setValue(model.description);
     this.text.setValue(model.text);
     this.initialReferences = model.references || [];
@@ -154,6 +190,26 @@ export class CodEditEditorComponent implements OnInit {
         ? this.references.value
         : undefined,
     };
+  }
+
+  public onLocationChange(ranges: CodLocationRange[] | null): void {
+    this.ranges.setValue(ranges || []);
+  }
+
+  public onColorIdsChange(ids: string[]): void {
+    this.colors.setValue(ids);
+  }
+
+  public onTechIdsChange(ids: string[]): void {
+    this.techniques.setValue(ids);
+  }
+
+  public onReferencesChange(references: DocReference[]): void {
+    this.references.setValue(references);
+  }
+
+  public onDateChange(date: HistoricalDateModel): void {
+    this.date.setValue(date);
   }
 
   public cancel(): void {
