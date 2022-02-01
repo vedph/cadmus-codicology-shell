@@ -103,7 +103,30 @@ export class CodEditsPartComponent
     } else {
       this.typeEntries = undefined;
     }
-    // TODO
+    key = 'cod-edit-tags';
+    if (this.thesauri && this.thesauri[key]) {
+      this.tagEntries = this.thesauri[key].entries;
+    } else {
+      this.tagEntries = undefined;
+    }
+    key = 'cod-edit-languages';
+    if (this.thesauri && this.thesauri[key]) {
+      this.langEntries = this.thesauri[key].entries;
+    } else {
+      this.langEntries = undefined;
+    }
+    key = 'doc-reference-types';
+    if (this.thesauri && this.thesauri[key]) {
+      this.refTypeEntries = this.thesauri[key].entries;
+    } else {
+      this.refTypeEntries = undefined;
+    }
+    key = 'doc-reference-tags';
+    if (this.thesauri && this.thesauri[key]) {
+      this.refTagEntries = this.thesauri[key].entries;
+    } else {
+      this.refTagEntries = undefined;
+    }
   }
 
   protected getModelFromForm(): CodEditsPart {
@@ -127,7 +150,8 @@ export class CodEditsPartComponent
 
   public addEdit(): void {
     const edit: CodEdit = {
-      // TODO set properties
+      type: this.typeEntries?.length ? this.typeEntries[0].id : '',
+      ranges: [],
     };
     this.edits.setValue([...this.edits.value, edit]);
     this.editEdit(this.edits.value.length - 1);

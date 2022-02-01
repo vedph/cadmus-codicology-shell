@@ -8,7 +8,7 @@ export interface CodEdit {
   type: string;
   tag?: string;
   techniques?: string[];
-  ranges?: CodLocationRange[];
+  ranges: CodLocationRange[];
   language?: string;
   colors?: string[];
   date?: HistoricalDateModel;

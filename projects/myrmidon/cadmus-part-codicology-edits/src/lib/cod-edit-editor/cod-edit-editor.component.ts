@@ -21,16 +21,16 @@ import { CodEdit } from '../cod-edits-part';
   styleUrls: ['./cod-edit-editor.component.css'],
 })
 export class CodEditEditorComponent implements OnInit {
-  private _model: CodEdit | undefined;
+  private _edit: CodEdit | undefined;
   private _colorEntries: ThesaurusEntry[] | undefined;
   private _techEntries: ThesaurusEntry[] | undefined;
 
   @Input()
-  public get model(): CodEdit | undefined {
-    return this._model;
+  public get edit(): CodEdit | undefined {
+    return this._edit;
   }
-  public set model(value: CodEdit | undefined) {
-    this._model = value;
+  public set edit(value: CodEdit | undefined) {
+    this._edit = value;
     this.updateForm(value);
   }
 
@@ -83,7 +83,7 @@ export class CodEditEditorComponent implements OnInit {
   public refTagEntries: ThesaurusEntry[] | undefined;
 
   @Output()
-  public modelChange: EventEmitter<CodEdit>;
+  public editChange: EventEmitter<CodEdit>;
   @Output()
   public editorClose: EventEmitter<any>;
 
@@ -110,7 +110,7 @@ export class CodEditEditorComponent implements OnInit {
   public initialReferences?: DocReference[];
 
   constructor(formBuilder: FormBuilder) {
-    this.modelChange = new EventEmitter<CodEdit>();
+    this.editChange = new EventEmitter<CodEdit>();
     this.editorClose = new EventEmitter<any>();
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
@@ -146,8 +146,8 @@ export class CodEditEditorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this._model) {
-      this.updateForm(this._model);
+    if (this._edit) {
+      this.updateForm(this._edit);
     }
   }
 
@@ -224,6 +224,6 @@ export class CodEditEditorComponent implements OnInit {
     if (!model) {
       return;
     }
-    this.modelChange.emit(model);
+    this.editChange.emit(model);
   }
 }
