@@ -359,6 +359,68 @@
           }
         }
       }
+    },
+    "@myrmidon/cadmus-part-codicology-decorations": {
+      "projectType": "library",
+      "root": "projects/myrmidon/cadmus-part-codicology-decorations",
+      "sourceRoot": "projects/myrmidon/cadmus-part-codicology-decorations/src",
+      "prefix": "cadmus",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/myrmidon/cadmus-part-codicology-decorations/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/myrmidon/cadmus-part-codicology-decorations/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/myrmidon/cadmus-part-codicology-decorations/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/myrmidon/cadmus-part-codicology-decorations/src/test.ts",
+            "tsConfig": "projects/myrmidon/cadmus-part-codicology-decorations/tsconfig.spec.json",
+            "karmaConfig": "projects/myrmidon/cadmus-part-codicology-decorations/karma.conf.js"
+          }
+        }
+      }
+    },
+    "@myrmidon/cadmus-part-codicology-ui": {
+      "projectType": "library",
+      "root": "projects/myrmidon/cadmus-part-codicology-ui",
+      "sourceRoot": "projects/myrmidon/cadmus-part-codicology-ui/src",
+      "prefix": "cadmus",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/myrmidon/cadmus-part-codicology-ui/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/myrmidon/cadmus-part-codicology-ui/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/myrmidon/cadmus-part-codicology-ui/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/myrmidon/cadmus-part-codicology-ui/src/test.ts",
+            "tsConfig": "projects/myrmidon/cadmus-part-codicology-ui/tsconfig.spec.json",
+            "karmaConfig": "projects/myrmidon/cadmus-part-codicology-ui/karma.conf.js"
+          }
+        }
+      }
     }
   },
   "defaultProject": "cadmus-codicology-shell"

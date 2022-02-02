@@ -1,7 +1,7 @@
 {
-  "name": "@myrmidon/cadmus-part-codicology-contents",
+  "name": "@myrmidon/cadmus-part-codicology-ui",
   "version": "0.0.1",
-  "description": "Cadmus codicology - contents.",
+  "description": "Cadmus codicology - general UI components.",
   "keywords": [
     "Cadmus"
   ],
