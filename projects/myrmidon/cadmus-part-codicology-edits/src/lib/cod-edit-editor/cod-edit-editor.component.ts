@@ -194,22 +194,27 @@ export class CodEditEditorComponent implements OnInit {
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
     this.ranges.setValue(ranges || []);
+    this.ranges.markAsDirty();
   }
 
   public onColorIdsChange(ids: string[]): void {
     this.colors.setValue(ids);
+    this.colors.markAsDirty();
   }
 
   public onTechIdsChange(ids: string[]): void {
     this.techniques.setValue(ids);
+    this.techniques.markAsDirty();
   }
 
   public onReferencesChange(references: DocReference[]): void {
     this.references.setValue(references);
+    this.references.markAsDirty();
   }
 
   public onDateChange(date: HistoricalDateModel): void {
     this.date.setValue(date);
+    this.date.markAsDirty();
   }
 
   public cancel(): void {

@@ -4,7 +4,7 @@
       <div mat-card-avatar>
         <mat-icon>picture_in_picture</mat-icon>
       </div>
-      <mat-card-title>Manscript Edits Part</mat-card-title>
+      <mat-card-title>Manuscript Edits Part</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <mat-tab-group [(selectedIndex)]="tabIndex">
@@ -78,8 +78,11 @@
                 <td>{{ entry.type }}</td>
                 <td>{{ entry.ranges | codLocationRange }}</td>
                 <td>
-                  {{entry.text?.length > 40? entry.text.substr(0, 40) + '...' :
-                  entry.text
+                  {{
+                    entry.text?.length > 40
+                      ? entry.text.substr(0, 40) + "..."
+                      : entry.text
+                  }}
                 </td>
               </tr>
             </tbody>

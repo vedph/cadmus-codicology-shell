@@ -20,9 +20,14 @@ import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
 
 import { CodEditEditorComponent } from './cod-edit-editor/cod-edit-editor.component';
 import { CodEditsPartComponent } from './cod-edits-part/cod-edits-part.component';
+import { CodEditsPartFeatureComponent } from './cod-edits-part-feature/cod-edits-part-feature.component';
 
 @NgModule({
-  declarations: [CodEditEditorComponent, CodEditsPartComponent],
+  declarations: [
+    CodEditEditorComponent,
+    CodEditsPartComponent,
+    CodEditsPartFeatureComponent,
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -45,6 +50,10 @@ import { CodEditsPartComponent } from './cod-edits-part/cod-edits-part.component
     CadmusRefsHistoricalDateModule,
     CadmusUiFlagsPickerModule,
   ],
-  exports: [CodEditEditorComponent, CodEditsPartComponent],
+  exports: [
+    CodEditEditorComponent,
+    CodEditsPartComponent,
+    CodEditsPartFeatureComponent,
+  ],
 })
 export class CadmusPartCodicologyEditsModule {}

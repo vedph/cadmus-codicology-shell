@@ -50,16 +50,7 @@
         >tag too long</mat-error
       >
     </mat-form-field>
-  </div>
 
-  <div class="form-row">
-    <!-- techniques -->
-    <cadmus-ui-flags-picker
-      style="flex: 0 0 auto"
-      [flags]="availTechs"
-      [selectedIds]="initialTechIds"
-      (selectedIdsChange)="onTechIdsChange($event)"
-    ></cadmus-ui-flags-picker>
     <!-- ranges -->
     <cadmus-cod-location
       style="flex: 0 0 auto"
@@ -67,6 +58,18 @@
       [location]="initialRanges || null"
       (locationChange)="onLocationChange($event)"
     ></cadmus-cod-location>
+  </div>
+
+  <div>
+    <!-- techniques -->
+    <fieldset>
+      <legend>techniques</legend>
+      <cadmus-ui-flags-picker
+        [flags]="availTechs"
+        [selectedIds]="initialTechIds"
+        (selectedIdsChange)="onTechIdsChange($event)"
+      ></cadmus-ui-flags-picker>
+    </fieldset>
   </div>
 
   <div class="form-row">
@@ -90,18 +93,22 @@
       >
     </mat-form-field>
     <!-- date -->
-    <cadmus-refs-historical-date style="flex: 0 0 auto"
+    <cadmus-refs-historical-date
+      style="flex: 0 0 auto"
       [date]="initialDate"
       (dateChange)="onDateChange($event)"
     ></cadmus-refs-historical-date>
   </div>
 
   <!-- colors -->
-  <cadmus-ui-flags-picker
-    [flags]="availColors"
-    [selectedIds]="initialColorIds"
-    (selectedIdsChange)="onColorIdsChange($event)"
-  ></cadmus-ui-flags-picker>
+  <fieldset>
+    <legend>colors</legend>
+    <cadmus-ui-flags-picker
+      [flags]="availColors"
+      [selectedIds]="initialColorIds"
+      (selectedIdsChange)="onColorIdsChange($event)"
+    ></cadmus-ui-flags-picker>
+  </fieldset>
 
   <!-- description -->
   <div>

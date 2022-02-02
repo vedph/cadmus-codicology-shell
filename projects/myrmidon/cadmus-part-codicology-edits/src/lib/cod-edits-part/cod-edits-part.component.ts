@@ -16,7 +16,9 @@ import {
 
 /**
  * CodEditsPart editor component.
- * Thesauri: TODO.
+ * Thesauri: cod-edit-colors, cod-edit-techniques, cod-edit-types,
+ * cod-edit-tags, cod-edit-languages, doc-reference-types,
+ * doc-reference-tags.
  */
 @Component({
   selector: 'cadmus-cod-edits-part',

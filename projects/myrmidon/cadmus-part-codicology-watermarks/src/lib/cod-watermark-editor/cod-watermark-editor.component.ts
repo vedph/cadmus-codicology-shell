@@ -7,7 +7,8 @@ import {
 } from '@angular/forms';
 
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
-import { PhysicalSize, ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { PhysicalSize } from '@myrmidon/cadmus-mat-physical-size';
 import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
 import { RankedExternalId } from '@myrmidon/cadmus-refs-external-ids';
 
