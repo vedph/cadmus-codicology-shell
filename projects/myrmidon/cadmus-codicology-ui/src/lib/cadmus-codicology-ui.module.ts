@@ -30,4 +30,4 @@ import { CodImagesComponent } from './components/cod-images/cod-images.component
   ],
   exports: [CodImagesComponent],
 })
-export class CadmusPartCodicologyUiModule {}
+export class CadmusCodicologyUiModule {}

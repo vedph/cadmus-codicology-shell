@@ -25,7 +25,7 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, '../../../coverage/myrmidon/cadmus-part-codicology-ui'),
+      dir: require('path').join(__dirname, '../../../coverage/myrmidon/cadmus-codicology-ui'),
       subdir: '.',
       reporters: [
         { type: 'html' },

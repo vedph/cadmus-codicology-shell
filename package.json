@@ -15,7 +15,7 @@
     "build-shelfmarks": "ng build @myrmidon/cadmus-part-codicology-shelfmarks",
     "build-watermarks": "ng build @myrmidon/cadmus-part-codicology-watermarks",
     "build-pg": "ng build @myrmidon/cadmus-part-codicology-pg",
-    "build-ui": "ng build @myrmidon/cadmus-part-codicology-ui"
+    "build-ui": "ng build @myrmidon/cadmus-codicology-ui"
   },
   "private": true,
   "dependencies": {
