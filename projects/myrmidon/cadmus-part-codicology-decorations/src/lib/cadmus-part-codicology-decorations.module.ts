@@ -20,11 +20,14 @@ import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
+import { CadmusCodLocationModule } from '@myrmidon/cadmus-cod-location';
+import { CadmusUiFlagsPickerModule } from '@myrmidon/cadmus-ui-flags-picker';
 
 import { CodDecorationElementComponent } from './cod-decoration-element/cod-decoration-element.component';
+import { TextOrEntrySelectorComponent } from './text-or-entry-selector/text-or-entry-selector.component';
 
 @NgModule({
-  declarations: [CodDecorationElementComponent],
+  declarations: [CodDecorationElementComponent, TextOrEntrySelectorComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -47,8 +50,10 @@ import { CodDecorationElementComponent } from './cod-decoration-element/cod-deco
     CadmusMatPhysicalSizeModule,
     CadmusRefsAssertedChronotopeModule,
     CadmusRefsHistoricalDateModule,
+    CadmusUiFlagsPickerModule,
+    CadmusCodLocationModule,
     CadmusCodicologyUiModule,
   ],
-  exports: [CodDecorationElementComponent],
+  exports: [CodDecorationElementComponent, TextOrEntrySelectorComponent],
 })
 export class CadmusPartCodicologyDecorationsModule {}

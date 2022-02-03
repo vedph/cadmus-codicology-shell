@@ -1,1 +1,156 @@
-<p>cod-decoration-element works!</p>
+<form [formGroup]="form" (submit)="save()">
+  <div class="type-head">{{ typeIdToString(type?.value) }}</div>
+  <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event)">
+    <!-- GENERAL -->
+    <mat-tab label="general">
+      <!-- type (bound) -->
+      <mat-form-field
+        *ngIf="decElemTypeEntries?.length"
+        style="width: 14em"
+        appearance="fill"
+      >
+        <mat-select [formControl]="type" placeholder="type">
+          <mat-option *ngFor="let e of decElemTypeEntries" [value]="e.id">{{
+            e.value
+          }}</mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="$any(type).errors?.required && (type.dirty || type.touched)"
+          >type required</mat-error
+        >
+      </mat-form-field>
+      &nbsp;
+      <!-- instanceCount -->
+      <mat-form-field>
+        <input
+          matInput
+          [formControl]="instanceCount"
+          placeholder="count"
+          type="number"
+          min="0"
+        />
+      </mat-form-field>
+
+      <!-- ranges -->
+      <cadmus-cod-location
+        [required]="true"
+        [location]="initialRanges || null"
+        (locationChange)="onLocationChange($event)"
+      ></cadmus-cod-location>
+
+      <!-- flags -->
+      <fieldset>
+        <legend>flags</legend>
+        <cadmus-ui-flags-picker
+          [flags]="availFlags"
+          [selectedIds]="initialFlags"
+          (selectedIdsChange)="onFlagsChange($event)"
+        ></cadmus-ui-flags-picker>
+      </fieldset>
+
+      <div>
+        <!-- key -->
+        <mat-form-field>
+          <input matInput [formControl]="key" placeholder="key" />
+          <mat-error
+            *ngIf="$any(key).errors?.pattern && (key.dirty || key.touched)"
+            >invalid key</mat-error
+          >
+          <mat-error
+            *ngIf="$any(key).errors?.maxLength && (key.dirty || key.touched)"
+            >key too long</mat-error
+          >
+        </mat-form-field>
+        &nbsp;
+        <!-- parentKey -->
+        <mat-form-field *ngIf="parentKeys?.length">
+          <mat-select [formControl]="parentKey" placeholder="parent key">
+            <mat-option [value]="null">(none)</mat-option>
+            <mat-option *ngFor="let k of parentKeys" [value]="k">{{
+              k
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-tab>
+
+    <!-- TYPOLOGIES -->
+    <mat-tab label="typologies">
+      <!-- typologies -->
+      <fieldset>
+        <legend>typologies</legend>
+        <cadmus-ui-flags-picker
+          [flags]="availTypologies"
+          [selectedIds]="initialTypologies"
+          (selectedIdsChange)="onTypologiesChange($event)"
+        ></cadmus-ui-flags-picker>
+      </fieldset>
+
+      <!-- subject -->
+      <div *ngIf="!$any(hidden)?.subject">
+        <mat-form-field>
+          <input matInput [formControl]="subject" placeholder="subject" />
+          <mat-error
+            *ngIf="
+              $any(subject).errors?.maxLength &&
+              (subject.dirty || subject.touched)
+            "
+            >subject too long</mat-error
+          >
+        </mat-form-field>
+      </div>
+
+      <!-- colors -->
+      <fieldset>
+        <legend>colors</legend>
+        <cadmus-ui-flags-picker
+          [flags]="availColors"
+          [selectedIds]="initialColors"
+          (selectedIdsChange)="onColorsChange($event)"
+        ></cadmus-ui-flags-picker>
+      </fieldset>
+
+      <!-- gildings -->
+      <fieldset>
+        <legend>gildings</legend>
+        <cadmus-ui-flags-picker
+          [flags]="availGildings"
+          [selectedIds]="initialGildings"
+          (selectedIdsChange)="onGildingsChange($event)"
+        ></cadmus-ui-flags-picker>
+      </fieldset>
+
+      <!-- techniques -->
+      <fieldset>
+        <legend>techniques</legend>
+        <cadmus-ui-flags-picker
+          [flags]="availTechniques"
+          [selectedIds]="initialTechniques"
+          (selectedIdsChange)="onTechniquesChange($event)"
+        ></cadmus-ui-flags-picker>
+      </fieldset>
+    </mat-tab>
+  </mat-tab-group>
+
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      color="warn"
+      mat-icon-button
+      matTooltip="Discard changes"
+      (click)="cancel()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      color="primary"
+      mat-icon-button
+      matTooltip="Accept changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon>check_circle</mat-icon> element
+    </button>
+  </div>
+</form>

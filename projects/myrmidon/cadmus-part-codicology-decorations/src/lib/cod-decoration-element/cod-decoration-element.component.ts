@@ -17,7 +17,9 @@ import {
   CodLocationRange,
   COD_LOCATION_RANGES_PATTERN,
 } from '@myrmidon/cadmus-cod-location';
+import { CodImage } from '@myrmidon/cadmus-codicology-ui';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { Flag } from '@myrmidon/cadmus-ui-flags-picker';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { CodDecorationElement } from '../cod-decorations-part';
@@ -87,12 +89,23 @@ export class CodDecorationElementComponent implements OnInit {
   public form: FormGroup;
 
   public initialRanges: CodLocationRange[];
+  public initialImages: CodImage[];
+  // flags
+  public initialFlags: string[];
+  public initialTypologies: string[];
   public initialColors: string[];
   public initialGildings: string[];
   public initialTechniques: string[];
   public initialTools: string[];
   public initialPositions: string[];
-  public initialImages: CodImage[];
+
+  public availFlags: Flag[];
+  public availTypologies: Flag[];
+  public availColors: Flag[];
+  public availGildings: Flag[];
+  public availTechniques: Flag[];
+  public availTools: Flag[];
+  public availPositions: Flag[];
 
   // ms-decoration-elem-types (required). All the other thesauri
   // (except decTypeHiddenEntries) have their entries filtered
@@ -200,13 +213,24 @@ export class CodDecorationElementComponent implements OnInit {
   constructor(formBuilder: FormBuilder) {
     this.elementChange = new EventEmitter<CodDecorationElement>();
     this.editorClose = new EventEmitter<any>();
+
     this.initialRanges = [];
+    this.initialImages = [];
+    // flags
+    this.initialFlags = [];
+    this.initialTypologies = [];
     this.initialColors = [];
     this.initialGildings = [];
     this.initialTechniques = [];
     this.initialTools = [];
     this.initialPositions = [];
-    this.initialImages = [];
+    this.availFlags = [];
+    this.availTypologies = [];
+    this.availColors = [];
+    this.availGildings = [];
+    this.availTechniques = [];
+    this.availTools = [];
+    this.availPositions = [];
 
     // form
     this.key = formBuilder.control(null, [
@@ -222,10 +246,7 @@ export class CodDecorationElementComponent implements OnInit {
       Validators.maxLength(50),
     ]);
     this.flags = formBuilder.control([]);
-    this.ranges = formBuilder.control(null, [
-      Validators.maxLength(100),
-      Validators.pattern(COD_LOCATION_RANGES_PATTERN),
-    ]);
+    this.ranges = formBuilder.control([]);
     this.instanceCount = formBuilder.control(0);
     this.typologies = formBuilder.control([]);
     this.subject = formBuilder.control(null, Validators.maxLength(100));
@@ -388,15 +409,16 @@ export class CodDecorationElementComponent implements OnInit {
     // general
     this.type.setValue(element.type);
 
+    // let the UI adjust itself before setting type-dependent controls
     setTimeout(() => {
-      this.flags.setValue(element.flags);
-      this.initialRanges = element.ranges;
       this.key.setValue(element.key);
       this.parentKey.setValue(element.parentKey);
+      this.initialRanges = element.ranges;
+      this.initialFlags = element.flags;
       // typologies
-      this.typologies.setValue(element.typologies);
       this.subject.setValue(element.subject);
-      this.colors.setValue(element.colors);
+      this.initialColors = element.colors || [];
+      this.initialTypologies = element.typologies || [];
       this.initialGildings = element.gildings || [];
       this.initialTechniques = element.techniques || [];
       this.initialTools = element.tools || [];
@@ -410,5 +432,90 @@ export class CodDecorationElementComponent implements OnInit {
 
       this.form.markAsPristine();
     }, 800);
+  }
+
+  private getElement(): CodDecorationElement {
+    return {
+      key: this.key.value?.trim(),
+      parentKey: this.parentKey.value?.trim(),
+      type: this.type.value?.trim(),
+      flags: this.flags.value?.length ? this.flags.value : undefined,
+      ranges: this.ranges.value || [],
+      instanceCount: this.instanceCount.value || 0,
+      typologies: this.typologies.value?.length
+        ? this.typologies.value
+        : undefined,
+      subject: this.subject.value?.trim(),
+      colors: this.colors.value?.length ? this.colors.value : undefined,
+      gildings: this.gildings.value?.length ? this.gildings.value : undefined,
+      techniques: this.techniques.value?.length
+        ? this.techniques.value
+        : undefined,
+      tools: this.tools.value?.length ? this.tools.value : undefined,
+      positions: this.positions.value?.length
+        ? this.positions.value
+        : undefined,
+      lineHeight: this.lineHeight.value,
+      textRelation: this.textRelation.value?.trim(),
+      description: this.description.value?.trim(),
+      images: this.images.value?.length ? this.images.value : undefined,
+      note: this.note.value?.trim(),
+    };
+  }
+
+  public onLocationChange(ranges: CodLocationRange[] | null): void {
+    this.ranges.setValue(ranges ? ranges[0] : null);
+    this.ranges.markAsDirty();
+  }
+
+  public onImagesChange(images: CodImage[]): void {
+    this.images.setValue(images?.length ? images : null);
+    this.images.markAsDirty();
+  }
+
+  public onFlagsChange(ids: string[]): void {
+    this.flags.setValue(ids);
+  }
+
+  public onTypologiesChange(ids: string[]): void {
+    this.typologies.setValue(ids);
+  }
+
+  public onColorsChange(ids: string[]): void {
+    this.colors.setValue(ids);
+  }
+
+  public onGildingsChange(ids: string[]): void {
+    this.gildings.setValue(ids);
+  }
+
+  public onTechniquesChange(ids: string[]): void {
+    this.techniques.setValue(ids);
+  }
+
+  public onToolsChange(ids: string[]): void {
+    this.tools.setValue(ids);
+  }
+
+  public onPositionsChange(ids: string[]): void {
+    this.positions.setValue(ids);
+  }
+
+  // TODO: replace with generic pipe
+  public typeIdToString(id: string): string {
+    const entry = this.decElemTypeEntries?.find((e) => e.id === id);
+    return entry ? entry.value : id;
+  }
+
+  public cancel(): void {
+    this.editorClose.emit();
+  }
+
+  public save(): void {
+    if (this.form.invalid) {
+      return;
+    }
+    const element = this.getElement();
+    this.elementChange.emit(element);
   }
 }

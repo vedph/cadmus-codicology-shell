@@ -10,3 +10,8 @@
   background-color: #fafafa;
   text-align: center;
 }
+fieldset {
+  border: 1px solid silver;
+  border-radius: 6px;
+  padding: 6px 12px;
+}
