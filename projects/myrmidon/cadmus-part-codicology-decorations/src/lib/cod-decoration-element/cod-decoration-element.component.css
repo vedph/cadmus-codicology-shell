@@ -1,0 +1,12 @@
+.long-text {
+  width: 90%;
+  max-width: 600px;
+}
+.type-head {
+  font-size: 90%;
+  border: 1px solid silver;
+  border-radius: 6px;
+  padding: 4px;
+  background-color: #fafafa;
+  text-align: center;
+}

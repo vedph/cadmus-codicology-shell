@@ -11,6 +11,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+import { MonacoEditorModule } from 'ngx-monaco-editor';
+
 import { CadmusCodicologyUiModule } from '@myrmidon/cadmus-codicology-ui';
 import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
 import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
@@ -36,7 +38,9 @@ import { CodDecorationElementComponent } from './cod-decoration-element/cod-deco
     MatSelectModule,
     MatTabsModule,
     MatTooltipModule,
-    // Cadmus
+    // monaco
+    MonacoEditorModule,
+    // cadmus
     CadmusStateModule,
     CadmusUiModule,
     CadmusUiPgModule,
