@@ -19,8 +19,10 @@ import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
 
+import { CodDecorationElementComponent } from './cod-decoration-element/cod-decoration-element.component';
+
 @NgModule({
-  declarations: [],
+  declarations: [CodDecorationElementComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -41,8 +43,8 @@ import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
     CadmusMatPhysicalSizeModule,
     CadmusRefsAssertedChronotopeModule,
     CadmusRefsHistoricalDateModule,
-    CadmusCodicologyUiModule
+    CadmusCodicologyUiModule,
   ],
-  exports: [],
+  exports: [CodDecorationElementComponent],
 })
 export class CadmusPartCodicologyDecorationsModule {}
