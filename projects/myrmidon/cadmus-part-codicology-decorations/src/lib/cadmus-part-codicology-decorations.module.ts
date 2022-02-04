@@ -15,6 +15,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor';
 
 import { CadmusCodicologyUiModule } from '@myrmidon/cadmus-codicology-ui';
 import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
+import { CadmusRefsAssertionModule } from '@myrmidon/cadmus-refs-assertion';
 import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
 import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
@@ -25,9 +26,14 @@ import { CadmusUiFlagsPickerModule } from '@myrmidon/cadmus-ui-flags-picker';
 
 import { CodDecorationElementComponent } from './cod-decoration-element/cod-decoration-element.component';
 import { TextOrEntrySelectorComponent } from './text-or-entry-selector/text-or-entry-selector.component';
+import { CodDecorationArtistStyleComponent } from './cod-decoration-artist-style/cod-decoration-artist-style.component';
 
 @NgModule({
-  declarations: [CodDecorationElementComponent, TextOrEntrySelectorComponent],
+  declarations: [
+    CodDecorationElementComponent,
+    TextOrEntrySelectorComponent,
+    CodDecorationArtistStyleComponent,
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -49,11 +55,16 @@ import { TextOrEntrySelectorComponent } from './text-or-entry-selector/text-or-e
     CadmusUiPgModule,
     CadmusMatPhysicalSizeModule,
     CadmusRefsAssertedChronotopeModule,
+    CadmusRefsAssertionModule,
     CadmusRefsHistoricalDateModule,
     CadmusUiFlagsPickerModule,
     CadmusCodLocationModule,
     CadmusCodicologyUiModule,
   ],
-  exports: [CodDecorationElementComponent, TextOrEntrySelectorComponent],
+  exports: [
+    CodDecorationElementComponent,
+    TextOrEntrySelectorComponent,
+    CodDecorationArtistStyleComponent,
+  ],
 })
 export class CadmusPartCodicologyDecorationsModule {}

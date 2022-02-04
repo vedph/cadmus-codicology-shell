@@ -1,0 +1,65 @@
+<form [formGroup]="form" (submit)="save()">
+  <div>
+    <!-- name -->
+    <mat-form-field>
+      <input matInput [formControl]="name" placeholder="name" />
+      <mat-error
+        *ngIf="$any(name).errors?.required && (name.dirty || name.touched)"
+        >name required</mat-error
+      >
+      <mat-error
+        *ngIf="$any(name).errors?.maxLength && (name.dirty || name.touched)"
+        >name too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <!-- chronotope -->
+  <div>
+    <mat-checkbox [formControl]="hasChronotope">chronotope</mat-checkbox>
+    <cadmus-refs-asserted-chronotope
+      *ngIf="hasChronotope?.value"
+      [tagEntries]="ctTagEntries"
+      [assTagEntries]="assTagEntries"
+      [refTagEntries]="refTagEntries"
+      [refTypeEntries]="refTypeEntries"
+      [chronotope]="initialChronotope"
+      (chronotopeChange)="onChronotopeChange($event)"
+    ></cadmus-refs-asserted-chronotope>
+  </div>
+
+  <!-- assertion -->
+  <div>
+    <mat-checkbox [formControl]="hasAssertion">assertion</mat-checkbox>
+    <cadmus-refs-assertion
+      *ngIf="hasAssertion?.value"
+      [assTagEntries]="assTagEntries"
+      [refTagEntries]="refTagEntries"
+      [refTypeEntries]="refTypeEntries"
+      [assertion]="initialAssertion"
+      (assertionChange)="onAssertionChange($event)"
+    ></cadmus-refs-assertion>
+  </div>
+
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      color="warn"
+      mat-icon-button
+      matTooltip="Discard changes"
+      (click)="cancel()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      color="primary"
+      mat-icon-button
+      matTooltip="Accept changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon>check_circle</mat-icon>
+    </button>
+  </div>
+</form>
