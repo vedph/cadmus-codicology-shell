@@ -1,0 +1,119 @@
+<form [formGroup]="form" (submit)="save()">
+  <div>
+    <!-- type (bound) -->
+    <!-- type (free) -->
+    <!-- eid -->
+    <!-- name -->
+  </div>
+  <div>
+    <!-- ids -->
+  </div>
+  <div>
+    <!-- elementKeys -->
+  </div>
+  <div>
+    <!-- note -->
+  </div>
+  <!-- styles -->
+  <fieldset>
+    <legend>styles</legend>
+    <button mat-icon-button type="button" color="primary">
+      <mat-icon>add_circle</mat-icon>
+      add style
+    </button>
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="
+            let s of styles.value || [];
+            let i = index;
+            let first = first;
+            let last = last
+          "
+        >
+          <td>
+            <button
+              mat-icon-button
+              type="button"
+              matTooltip="Edit this style"
+              color="primary"
+              (click)="editStyle(i)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              type="button"
+              matTooltip="Remove this style"
+              color="warn"
+              (click)="removeStyle(i)"
+            >
+              <mat-icon>remove_circle</mat-icon>
+            </button>
+            <button
+              [disabled]="first"
+              mat-icon-button
+              type="button"
+              matTooltip="Move style up"
+              (click)="moveStyleUp(i)"
+            >
+              <mat-icon>arrow_upward</mat-icon>
+            </button>
+            <button
+              [disabled]="last"
+              mat-icon-button
+              type="button"
+              matTooltip="Move style down"
+              (click)="moveStyleDown(i)"
+            >
+              <mat-icon>arrow_downward</mat-icon>
+            </button>
+          </td>
+          <td>{{ s.name }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <mat-expansion-panel [expanded]="editedStyle">
+      <mat-expansion-panel-header
+        >style {{ editedStyle?.name }}</mat-expansion-panel-header
+      >
+      <cadmus-cod-decoration-artist-style
+        [ctTagEntries]="ctTagEntries"
+        [assTagEntries]="assTagEntries"
+        [refTagEntries]="refTagEntries"
+        [refTypeEntries]="refTypeEntries"
+        [style]="editedStyle"
+        (styleChange)="onStyleSave($event)"
+        (editorClose)="onStyleClose()"
+      ></cadmus-cod-decoration-artist-style>
+    </mat-expansion-panel>
+  </fieldset>
+
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      color="warn"
+      mat-icon-button
+      matTooltip="Discard changes"
+      (click)="cancel()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      color="primary"
+      mat-icon-button
+      matTooltip="Accept changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon>check_circle</mat-icon>
+    </button>
+  </div>
+</form>

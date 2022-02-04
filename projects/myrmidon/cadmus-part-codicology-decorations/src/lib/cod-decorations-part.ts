@@ -25,6 +25,8 @@ export interface CodDecorationArtist {
   name: string;
   ids?: ExternalId[];
   styles?: CodDecorationArtistStyle[];
+  elementKeys?: string[];
+  note?: string;
 }
 
 /**
@@ -631,6 +633,15 @@ export const COD_DECORATIONS_PART_SCHEMA = {
                             ],
                           },
                         },
+                        elementKeys: {
+                          type: 'array',
+                          items: {
+                            anyOf: [{ type: 'string' }],
+                          },
+                        },
+                        note: {
+                          type: 'string'
+                        }
                       },
                     },
                   ],
