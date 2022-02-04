@@ -189,6 +189,10 @@ export class CodDecorationElementComponent implements OnInit {
     this.elemTypolEntries = this.getFilteredEntries(value, this.type?.value);
   }
 
+  // cod-image-types
+  @Input()
+  public imgTypeEntries: ThesaurusEntry[] | undefined;
+
   // the filtered entries:
   public elemFlagEntries: ThesaurusEntry[] | undefined;
   public elemColorEntries: ThesaurusEntry[] | undefined;
@@ -198,6 +202,9 @@ export class CodDecorationElementComponent implements OnInit {
   public elemToolEntries: ThesaurusEntry[] | undefined;
   public elemTypolEntries: ThesaurusEntry[] | undefined;
 
+  // TODO: determine if these are still required; currently
+  // the free feature is not implemented because controls
+  // were changed from single to multiple value
   public elemGildingFree: boolean | undefined;
   public elemTechniqueFree: boolean | undefined;
   public elemPositionFree: boolean | undefined;
@@ -468,8 +475,8 @@ export class CodDecorationElementComponent implements OnInit {
     this.ranges.markAsDirty();
   }
 
-  public onImagesChange(images: CodImage[]): void {
-    this.images.setValue(images?.length ? images : null);
+  public onImagesChange(images: CodImage[] | undefined): void {
+    this.images.setValue(images);
     this.images.markAsDirty();
   }
 

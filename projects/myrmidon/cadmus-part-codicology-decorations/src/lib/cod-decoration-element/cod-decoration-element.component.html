@@ -76,6 +76,39 @@
 
     <!-- TYPOLOGIES -->
     <mat-tab label="typologies">
+      <div style="display: flex; gap: 8px">
+        <!-- lineHeight -->
+        <mat-form-field
+          style="flex: 0 0 auto; width: 4em"
+          *ngIf="!$any(hidden)?.lineHeight"
+        >
+          <input
+            matInput
+            type="number"
+            min="0"
+            [formControl]="lineHeight"
+            placeholder="ln.h"
+          />
+        </mat-form-field>
+        <!-- textRelation -->
+        <mat-form-field
+          *ngIf="!$any(hidden)?.textRelation"
+          style="display: 1 0 auto"
+        >
+          <input
+            matInput
+            [formControl]="textRelation"
+            placeholder="text relation"
+          />
+          <mat-error
+            *ngIf="
+              $any(textRelation).errors?.maxLength &&
+              (textRelation.dirty || textRelation.touched)
+            "
+            >textRelation too long</mat-error
+          >
+        </mat-form-field>
+      </div>
       <!-- typologies -->
       <fieldset>
         <legend>typologies</legend>
@@ -101,7 +134,7 @@
       </div>
 
       <!-- colors -->
-      <fieldset>
+      <fieldset *ngIf="!$any(hidden)?.colors">
         <legend>colors</legend>
         <cadmus-ui-flags-picker
           [flags]="availColors"
@@ -111,7 +144,7 @@
       </fieldset>
 
       <!-- gildings -->
-      <fieldset>
+      <fieldset *ngIf="!$any(hidden)?.gildings">
         <legend>gildings</legend>
         <cadmus-ui-flags-picker
           [flags]="availGildings"
@@ -121,7 +154,7 @@
       </fieldset>
 
       <!-- techniques -->
-      <fieldset>
+      <fieldset *ngIf="!$any(hidden)?.techniques">
         <legend>techniques</legend>
         <cadmus-ui-flags-picker
           [flags]="availTechniques"
@@ -129,6 +162,67 @@
           (selectedIdsChange)="onTechniquesChange($event)"
         ></cadmus-ui-flags-picker>
       </fieldset>
+
+      <!-- tools -->
+      <fieldset *ngIf="!$any(hidden)?.tools">
+        <legend>tools</legend>
+        <cadmus-ui-flags-picker
+          [flags]="availTools"
+          [selectedIds]="initialTools"
+          (selectedIdsChange)="onToolsChange($event)"
+        ></cadmus-ui-flags-picker>
+      </fieldset>
+
+      <!-- positions -->
+      <fieldset *ngIf="!$any(hidden)?.positions">
+        <legend>positions</legend>
+        <cadmus-ui-flags-picker
+          [flags]="availPositions"
+          [selectedIds]="initialPositions"
+          (selectedIdsChange)="onPositionsChange($event)"
+        ></cadmus-ui-flags-picker>
+      </fieldset>
+    </mat-tab>
+
+    <!-- DESCRIPTION -->
+    <mat-tab label="description">
+      <div>
+        <ngx-monaco-editor
+          #dsceditor
+          [options]="editorOptions"
+          [formControl]="description"
+        ></ngx-monaco-editor>
+        <mat-error
+          *ngIf="
+            $any(description).errors?.maxLength &&
+            (description.touched || description.dirty)
+          "
+          >description too long</mat-error
+        >
+      </div>
+      <div>
+        <!-- images -->
+        <cadmus-cod-images
+          [typeEntries]="imgTypeEntries"
+          [images]="initialImages"
+          (imagesChange)="onImagesChange($event)"
+        ></cadmus-cod-images>
+      </div>
+      <div>
+        <!-- note -->
+        <mat-form-field class="long-text">
+          <textarea
+            rows="2"
+            matInput
+            [formControl]="note"
+            placeholder="note"
+          ></textarea>
+          <mat-error
+            *ngIf="$any(note).errors?.maxLength && (note.dirty || note.touched)"
+            >note too long</mat-error
+          >
+        </mat-form-field>
+      </div>
     </mat-tab>
   </mat-tab-group>
 

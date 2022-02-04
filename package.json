@@ -9,6 +9,7 @@
     "test": "ng test",
     "build-bindings": "ng build @myrmidon/cadmus-part-codicology-bindings",
     "build-contents": "ng build @myrmidon/cadmus-part-codicology-contents",
+    "build-decos": "ng build @myrmidon/cadmus-part-codicology-decorations",
     "build-edits": "ng build @myrmidon/cadmus-part-codicology-edits",
     "build-layouts": "ng build @myrmidon/cadmus-part-codicology-layouts",
     "build-material": "ng build @myrmidon/cadmus-part-codicology-material-dsc",
