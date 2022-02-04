@@ -107,16 +107,16 @@ export class CodDecorationElementComponent implements OnInit {
   public availTools: Flag[];
   public availPositions: Flag[];
 
-  // ms-decoration-elem-types (required). All the other thesauri
+  // cod-decoration-element-types (required). All the other thesauri
   // (except decTypeHiddenEntries) have their entries filtered
   // by the value selected from this thesaurus.
   @Input()
   public decElemTypeEntries: ThesaurusEntry[] | undefined;
-  // ms-decoration-type-hidden
+  // cod-decoration-type-hidden
   @Input()
   public decTypeHiddenEntries: ThesaurusEntry[] | undefined;
 
-  // ms-decoration-elem-flags
+  // cod-decoration-element-flags
   @Input()
   public get decElemFlagEntries(): ThesaurusEntry[] | undefined {
     return this._elemFlagEntries;
@@ -126,7 +126,7 @@ export class CodDecorationElementComponent implements OnInit {
     this.elemFlagEntries = this.getFilteredEntries(value, this.type?.value);
   }
 
-  // ms-decoration-elem-colors
+  // cod-decoration-element-colors
   @Input()
   public get decElemColorEntries(): ThesaurusEntry[] | undefined {
     return this._elemColorEntries;
@@ -136,7 +136,7 @@ export class CodDecorationElementComponent implements OnInit {
     this.elemColorEntries = this.getFilteredEntries(value, this.type?.value);
   }
 
-  // ms-decoration-elem-gildings
+  // cod-decoration-element-gildings
   @Input()
   public get decElemGildingEntries(): ThesaurusEntry[] | undefined {
     return this._elemGildingEntries;
@@ -146,7 +146,7 @@ export class CodDecorationElementComponent implements OnInit {
     this.elemGildingEntries = this.getFilteredEntries(value, this.type?.value);
   }
 
-  // ms-decoration-elem-techniques
+  // cod-decoration-element-techniques
   @Input()
   public get decElemTechEntries(): ThesaurusEntry[] | undefined {
     return this._elemTechEntries;
@@ -159,7 +159,7 @@ export class CodDecorationElementComponent implements OnInit {
     );
   }
 
-  // ms-decoration-elem-positions
+  // cod-decoration-element-positions
   @Input()
   public get decElemPosEntries(): ThesaurusEntry[] | undefined {
     return this._elemPosEntries;
@@ -169,7 +169,7 @@ export class CodDecorationElementComponent implements OnInit {
     this.elemPositionEntries = this.getFilteredEntries(value, this.type?.value);
   }
 
-  // ms-decoration-elem-tools
+  // cod-decoration-element-tools
   @Input()
   public get decElemToolEntries(): ThesaurusEntry[] | undefined {
     return this._elemToolEntries;
@@ -179,7 +179,7 @@ export class CodDecorationElementComponent implements OnInit {
     this.elemToolEntries = this.getFilteredEntries(value, this.type?.value);
   }
 
-  // ms-decoration-elem-typologies
+  // cod-decoration-element-typologies
   @Input()
   public get decElemTypolEntries(): ThesaurusEntry[] | undefined {
     return this._elemTypolEntries;
