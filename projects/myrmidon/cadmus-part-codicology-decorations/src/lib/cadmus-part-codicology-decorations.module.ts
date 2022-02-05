@@ -34,6 +34,7 @@ import { CodDecorationArtistStyleComponent } from './cod-decoration-artist-style
 import { CodDecorationArtistComponent } from './cod-decoration-artist/cod-decoration-artist.component';
 import { CodDecorationComponent } from './cod-decoration/cod-decoration.component';
 import { CodDecorationsPartComponent } from './cod-decorations-part/cod-decorations-part.component';
+import { CodDecorationsPartFeatureComponent } from './cod-decorations-part-feature/cod-decorations-part-feature.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { CodDecorationsPartComponent } from './cod-decorations-part/cod-decorati
     CodDecorationArtistComponent,
     CodDecorationComponent,
     CodDecorationsPartComponent,
+    CodDecorationsPartFeatureComponent,
   ],
   imports: [
     CommonModule,
@@ -82,7 +84,8 @@ import { CodDecorationsPartComponent } from './cod-decorations-part/cod-decorati
     CodDecorationArtistStyleComponent,
     CodDecorationArtistComponent,
     CodDecorationComponent,
-    CodDecorationsPartComponent
+    CodDecorationsPartComponent,
+    CodDecorationsPartFeatureComponent,
   ],
 })
 export class CadmusPartCodicologyDecorationsModule {}

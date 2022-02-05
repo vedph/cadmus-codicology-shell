@@ -18,6 +18,10 @@ import {
   COD_CONTENTS_PART_TYPEID,
 } from '@myrmidon/cadmus-part-codicology-contents';
 import {
+  CodDecorationsPartFeatureComponent,
+  COD_DECORATIONS_PART_TYPEID,
+} from '@myrmidon/cadmus-part-codicology-decorations';
+import {
   CodEditsPartFeatureComponent,
   COD_EDITS_PART_TYPEID,
 } from '@myrmidon/cadmus-part-codicology-edits';
@@ -49,6 +53,12 @@ export const RouterModuleForChild = RouterModule.forChild([
     path: `${COD_CONTENTS_PART_TYPEID}/:pid`,
     pathMatch: 'full',
     component: CodContentsPartFeatureComponent,
+    canDeactivate: [PendingChangesGuard],
+  },
+  {
+    path: `${COD_DECORATIONS_PART_TYPEID}/:pid`,
+    pathMatch: 'full',
+    component: CodDecorationsPartFeatureComponent,
     canDeactivate: [PendingChangesGuard],
   },
   {
