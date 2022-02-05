@@ -22,7 +22,8 @@ import {
  * cod-decoration-element-positions, cod-decoration-element-tools,
  * cod-decoration-element-typologies, cod-image-types,
  * cod-decoration-artist-types, cod-decoration-artist-style-names,
- * chronotope-tags, assertion-tags, doc-reference-types, doc-reference-tags.
+ * chronotope-tags, assertion-tags, doc-reference-types, doc-reference-tags,
+ * external-id-tags, external-id-scopes.
  */
 @Component({
   selector: 'cadmus-cod-decorations-part',
@@ -70,6 +71,10 @@ export class CodDecorationsPartComponent
   public refTypeEntries: ThesaurusEntry[] | undefined;
   // doc-reference-tags
   public refTagEntries: ThesaurusEntry[] | undefined;
+  // external-id-tags
+  public idTagEntries: ThesaurusEntry[] | undefined;
+  // external-id-scopes
+  public idScopeEntries: ThesaurusEntry[] | undefined;
 
   public decorations: FormControl;
 
@@ -219,6 +224,20 @@ export class CodDecorationsPartComponent
       this.refTagEntries = this.thesauri[key].entries;
     } else {
       this.refTagEntries = undefined;
+    }
+
+    key = 'external-id-tags';
+    if (this.thesauri && this.thesauri[key]) {
+      this.idTagEntries = this.thesauri[key].entries;
+    } else {
+      this.idTagEntries = undefined;
+    }
+
+    key = 'external-id-scopes';
+    if (this.thesauri && this.thesauri[key]) {
+      this.idScopeEntries = this.thesauri[key].entries;
+    } else {
+      this.idScopeEntries = undefined;
     }
   }
 

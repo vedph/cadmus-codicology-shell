@@ -1,18 +1,89 @@
 <form [formGroup]="form" (submit)="save()">
-  <div>
+  <div style="display: flex; gap: 8px; align-items: center">
     <!-- type (bound) -->
+    <mat-form-field *ngIf="artTypeEntries?.length" style="flex: 0 0 auto">
+      <mat-select [formControl]="type" placeholder="type">
+        <mat-option *ngFor="let e of artTypeEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="$any(type).errors?.required && (type.dirty || type.touched)"
+        >type required</mat-error
+      >
+    </mat-form-field>
     <!-- type (free) -->
+    <mat-form-field *ngIf="!artTypeEntries?.length" style="flex: 0 0 auto">
+      <input matInput [formControl]="type" placeholder="type" />
+      <mat-error
+        *ngIf="$any(type).errors?.required && (type.dirty || type.touched)"
+        >type required</mat-error
+      >
+      <mat-error
+        *ngIf="$any(type).errors?.maxLength && (type.dirty || type.touched)"
+        >type too long</mat-error
+      >
+    </mat-form-field>
+
     <!-- eid -->
+    <mat-form-field>
+      <input matInput [formControl]="eid" placeholder="EID" />
+      <mat-error
+        *ngIf="$any(eid).errors?.maxLength && (eid.dirty || eid.touched)"
+        >EID too long</mat-error
+      >
+    </mat-form-field>
+
     <!-- name -->
+    <mat-form-field>
+      <input matInput [formControl]="name" placeholder="name" />
+      <mat-error
+        *ngIf="$any(name).errors?.required && (name.dirty || name.touched)"
+        >name required</mat-error
+      >
+      <mat-error
+        *ngIf="$any(name).errors?.maxLength && (name.dirty || name.touched)"
+        >name too long</mat-error
+      >
+    </mat-form-field>
   </div>
   <div>
     <!-- ids -->
+    <cadmus-refs-external-ids
+      [tagEntries]="idTagEntries"
+      [scopeEntries]="idScopeEntries"
+      [assTagEntries]="assTagEntries"
+      [refTagEntries]="refTagEntries"
+      [refTypeEntries]="refTypeEntries"
+      [ids]="initialIds || []"
+      (idsChange)="onIdsChange($event)"
+    ></cadmus-refs-external-ids>
   </div>
   <div>
     <!-- elementKeys -->
+    <mat-form-field>
+      <input
+        matInput
+        [formControl]="elementKeys"
+        placeholder="elementKeys"
+        maxlength="500"
+      />
+    </mat-form-field>
   </div>
   <div>
     <!-- note -->
+    <mat-form-field class="long-text">
+      <textarea
+        matInput
+        rows="2"
+        [formControl]="note"
+        placeholder="note"
+      ></textarea>
+      <mat-error
+        *ngIf="$any(note).errors?.maxLength && (note.dirty || note.touched)"
+        >note too long</mat-error
+      >
+    </mat-form-field>
   </div>
   <!-- styles -->
   <fieldset>

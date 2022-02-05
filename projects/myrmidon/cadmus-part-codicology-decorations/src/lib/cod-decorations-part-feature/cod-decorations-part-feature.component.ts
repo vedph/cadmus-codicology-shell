@@ -57,6 +57,8 @@ export class CodDecorationsPartFeatureComponent
       'chronotope-tags, assertion-tags',
       'doc-reference-types',
       'doc-reference-tags',
+      'external-id-tags',
+      'external-id-scopes'
     ]);
   }
 }

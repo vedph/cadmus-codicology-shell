@@ -7,7 +7,10 @@ import {
 } from '@angular/forms';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { ExternalId } from '@myrmidon/cadmus-refs-external-ids';
+import {
+  ExternalId,
+  RankedExternalId,
+} from '@myrmidon/cadmus-refs-external-ids';
 import { DialogService } from '@myrmidon/ng-mat-tools';
 import { take } from 'rxjs';
 
@@ -52,6 +55,12 @@ export class CodDecorationArtistComponent implements OnInit {
   // doc-reference-tags
   @Input()
   public refTagEntries: ThesaurusEntry[] | undefined;
+  // external-id-tags
+  @Input()
+  public idTagEntries: ThesaurusEntry[] | undefined;
+  // external-id-scopes
+  @Input()
+  public idScopeEntries: ThesaurusEntry[] | undefined;
 
   @Output()
   public artistChange: EventEmitter<CodDecorationArtist>;
@@ -118,9 +127,28 @@ export class CodDecorationArtistComponent implements OnInit {
     this.name.setValue(artist.name);
     this.initialIds = artist.ids || [];
     this.styles.setValue(artist.styles);
-    this.elementKeys.setValue(artist.elementKeys || []);
+    // element keys are edited as text separated by space
+    this.elementKeys.setValue(
+      artist.elementKeys ? artist.elementKeys.join(' ') : ''
+    );
     this.note.setValue(artist.note);
     this.form.markAsPristine();
+  }
+
+  private parseElementKeys(
+    text: string | undefined | null
+  ): string[] | undefined {
+    if (!text) {
+      return undefined;
+    }
+    const keys = [
+      ...new Set(
+        text.split(' ').filter((k) => {
+          return k.trim()?.length ? true : false;
+        })
+      ),
+    ];
+    return keys.length ? keys.sort() : undefined;
   }
 
   private getArtist(): CodDecorationArtist {
@@ -130,11 +158,13 @@ export class CodDecorationArtistComponent implements OnInit {
       name: this.name.value?.trim(),
       ids: this.ids.value?.length ? this.ids.value : undefined,
       styles: this.styles.value?.length ? this.styles.value : undefined,
-      elementKeys: this.elementKeys.value?.length
-        ? this.elementKeys.value
-        : undefined,
+      elementKeys: this.parseElementKeys(this.elementKeys.value),
       note: this.note.value?.trim(),
     };
+  }
+
+  public onIdsChange(ids: RankedExternalId[]): void {
+    this.ids.setValue(ids);
   }
 
   //#region styles

@@ -125,6 +125,12 @@ export class CodDecorationComponent implements OnInit {
   // doc-reference-tags
   @Input()
   public refTagEntries: ThesaurusEntry[] | undefined;
+  // external-id-tags
+  @Input()
+  public idTagEntries: ThesaurusEntry[] | undefined;
+  // external-id-scopes
+  @Input()
+  public idScopeEntries: ThesaurusEntry[] | undefined;
 
   @Output()
   public decorationChange: EventEmitter<CodDecoration>;

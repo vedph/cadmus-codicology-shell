@@ -8,7 +8,7 @@
     </mat-card-header>
     <mat-card-content>
       <mat-tab-group [(selectedIndex)]="tabIndex">
-        <mat-tab label="Decorations">
+        <mat-tab label="decorations">
           <div>
             <button
               type="button"
@@ -83,7 +83,7 @@
           </table>
         </mat-tab>
 
-        <mat-tab label="unit" *ngIf="editedDecoration">
+        <mat-tab label="decoration" *ngIf="editedDecoration">
           <cadmus-cod-decoration
             [ctTagEntries]="ctTagEntries"
             [assTagEntries]="assTagEntries"
@@ -97,6 +97,8 @@
             [decElemTechEntries]="decElemTechEntries"
             [decElemToolEntries]="decElemToolEntries"
             [decElemTypeEntries]="decElemTypeEntries"
+            [idTagEntries]="idTagEntries"
+            [idScopeEntries]="idScopeEntries"
             [decoration]="editedDecoration"
             (decorationChange)="onDecorationSave($event)"
             (editorClose)="onDecorationClose()"
