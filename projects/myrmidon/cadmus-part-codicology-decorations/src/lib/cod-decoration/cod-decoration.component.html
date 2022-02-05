@@ -300,7 +300,31 @@
         [decElemGildingEntries]="decElemGildingEntries"
         [element]="editedElement"
         (elementChange)="onElementSave($event)"
+        (editorClose)="onElementClose()"
       ></cadmus-cod-decoration-element>
     </mat-tab>
   </mat-tab-group>
+
+  <!-- buttons -->
+  <hr>
+  <div>
+    <button
+      type="button"
+      color="warn"
+      mat-icon-button
+      matTooltip="Discard decoration changes"
+      (click)="cancel()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      color="primary"
+      mat-icon-button
+      matTooltip="Accept decoration changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon>check_circle</mat-icon> decoration
+    </button>
+  </div>
 </form>

@@ -12,11 +12,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  CodLocationParser,
-  CodLocationRange,
-  COD_LOCATION_RANGES_PATTERN,
-} from '@myrmidon/cadmus-cod-location';
+import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { CodImage } from '@myrmidon/cadmus-codicology-ui';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { Flag } from '@myrmidon/cadmus-ui-flags-picker';
@@ -124,14 +120,7 @@ export class CodDecorationElementComponent implements OnInit {
   public set decElemFlagEntries(value: ThesaurusEntry[] | undefined) {
     this._elemFlagEntries = value;
     this.elemFlagEntries = this.getFilteredEntries(value, this.type?.value);
-    this.availFlags = this.elemFlagEntries?.length
-      ? this.elemFlagEntries.map((e) => {
-          return {
-            id: e.id,
-            label: e.value,
-          } as Flag;
-        })
-      : [];
+    this.availFlags = this.getAvailableFlags(this.elemFlagEntries);
   }
 
   // cod-decoration-element-colors
@@ -142,14 +131,7 @@ export class CodDecorationElementComponent implements OnInit {
   public set decElemColorEntries(value: ThesaurusEntry[] | undefined) {
     this._elemColorEntries = value;
     this.elemColorEntries = this.getFilteredEntries(value, this.type?.value);
-    this.availColors = this.elemColorEntries?.length
-      ? this.elemColorEntries.map((e) => {
-          return {
-            id: e.id,
-            label: e.value,
-          } as Flag;
-        })
-      : [];
+    this.availColors = this.getAvailableFlags(this.elemColorEntries);
   }
 
   // cod-decoration-element-gildings
@@ -160,14 +142,7 @@ export class CodDecorationElementComponent implements OnInit {
   public set decElemGildingEntries(value: ThesaurusEntry[] | undefined) {
     this._elemGildingEntries = value;
     this.elemGildingEntries = this.getFilteredEntries(value, this.type?.value);
-    this.availGildings = this.elemGildingEntries?.length
-      ? this.elemGildingEntries.map((e) => {
-          return {
-            id: e.id,
-            label: e.value,
-          } as Flag;
-        })
-      : [];
+    this.availGildings = this.getAvailableFlags(this.elemGildingEntries);
   }
 
   // cod-decoration-element-techniques
@@ -181,14 +156,7 @@ export class CodDecorationElementComponent implements OnInit {
       value,
       this.type?.value
     );
-    this.availTechniques = this.elemTechniqueEntries?.length
-      ? this.elemTechniqueEntries.map((e) => {
-          return {
-            id: e.id,
-            label: e.value,
-          } as Flag;
-        })
-      : [];
+    this.availTechniques = this.getAvailableFlags(this.elemTechniqueEntries);
   }
 
   // cod-decoration-element-positions
@@ -199,14 +167,7 @@ export class CodDecorationElementComponent implements OnInit {
   public set decElemPosEntries(value: ThesaurusEntry[] | undefined) {
     this._elemPosEntries = value;
     this.elemPositionEntries = this.getFilteredEntries(value, this.type?.value);
-    this.availPositions = value?.length
-      ? value.map((e) => {
-          return {
-            id: e.id,
-            label: e.value,
-          } as Flag;
-        })
-      : [];
+    this.availPositions = this.getAvailableFlags(this.elemPositionEntries);
   }
 
   // cod-decoration-element-tools
@@ -217,14 +178,7 @@ export class CodDecorationElementComponent implements OnInit {
   public set decElemToolEntries(value: ThesaurusEntry[] | undefined) {
     this._elemToolEntries = value;
     this.elemToolEntries = this.getFilteredEntries(value, this.type?.value);
-    this.availTools = this.elemToolEntries?.length
-      ? this.elemToolEntries.map((e) => {
-          return {
-            id: e.id,
-            label: e.value,
-          } as Flag;
-        })
-      : [];
+    this.availTools = this.getAvailableFlags(this.elemToolEntries);
   }
 
   // cod-decoration-element-typologies
@@ -235,14 +189,7 @@ export class CodDecorationElementComponent implements OnInit {
   public set decElemTypolEntries(value: ThesaurusEntry[] | undefined) {
     this._elemTypolEntries = value;
     this.elemTypolEntries = this.getFilteredEntries(value, this.type?.value);
-    this.availTypologies = this.elemTypolEntries?.length
-      ? this.elemTypolEntries.map((e) => {
-          return {
-            id: e.id,
-            label: e.value,
-          } as Flag;
-        })
-      : [];
+    this.availTypologies = this.getAvailableFlags(this.elemTypolEntries);
   }
 
   // cod-image-types
@@ -372,6 +319,17 @@ export class CodDecorationElementComponent implements OnInit {
     return entries.filter((e) => e.id.startsWith(p));
   }
 
+  private getAvailableFlags(entries: ThesaurusEntry[] | undefined): Flag[] {
+    return entries?.length
+      ? entries.map((e) => {
+          return {
+            id: e.id,
+            label: e.value,
+          } as Flag;
+        })
+      : [];
+  }
+
   private updateVisibility(): void {
     const hidden: { [key: string]: boolean } = {};
     const entry = this.decTypeHiddenEntries?.find(
@@ -396,61 +354,75 @@ export class CodDecorationElementComponent implements OnInit {
     this.type.valueChanges
       .pipe(distinctUntilChanged(), debounceTime(300))
       .subscribe(() => {
-        // reset type-dependent values
-        this.flags.reset();
-        this.typologies.reset();
-        this.subject.reset();
-        this.initialColors = [];
-        this.initialGildings = [];
-        this.initialTechniques = [];
-        this.initialTools = [];
-        this.initialPositions = [];
-        this.lineHeight.reset();
-        this.textRelation.reset();
-
-        // filter entries for multiple-selections
-        this.elemFlagEntries = this.getFilteredEntries(
-          this._elemFlagEntries,
-          this.type?.value
-        );
-        this.elemColorEntries = this.getFilteredEntries(
-          this._elemColorEntries,
-          this.type?.value
-        );
-
-        // filter entries and set free for single-selections
-        this.elemGildingEntries = this.getFilteredEntries(
-          this._elemGildingEntries,
-          this.type?.value
-        );
-        this.elemGildingFree = this.isFreeSet(this.elemGildingEntries);
-
-        this.elemTechniqueEntries = this.getFilteredEntries(
-          this._elemTechEntries,
-          this.type?.value
-        );
-        this.elemTechniqueFree = this.isFreeSet(this.elemTechniqueEntries);
-
-        this.elemPositionEntries = this.getFilteredEntries(
-          this._elemPosEntries,
-          this.type?.value
-        );
-        this.elemPositionFree = this.isFreeSet(this.elemPositionEntries);
-
-        this.elemToolEntries = this.getFilteredEntries(
-          this._elemToolEntries,
-          this.type?.value
-        );
-        this.elemToolFree = this.isFreeSet(this.elemToolEntries);
-
-        this.elemTypolEntries = this.getFilteredEntries(
-          this._elemTypolEntries,
-          this.type?.value
-        );
-
-        // visibility
-        this.updateVisibility();
+        this.adjustUI();
       });
+
+    this.adjustUI();
+  }
+
+  private adjustUI(): void {
+    // reset type-dependent values
+    this.flags.reset();
+    this.typologies.reset();
+    this.subject.reset();
+    this.initialColors = [];
+    this.initialGildings = [];
+    this.initialTechniques = [];
+    this.initialTools = [];
+    this.initialPositions = [];
+    this.lineHeight.reset();
+    this.textRelation.reset();
+
+    // filter entries for multiple-selections
+    this.elemFlagEntries = this.getFilteredEntries(
+      this._elemFlagEntries,
+      this.type?.value
+    );
+    this.availFlags = this.getAvailableFlags(this.elemFlagEntries);
+
+    this.elemColorEntries = this.getFilteredEntries(
+      this._elemColorEntries,
+      this.type?.value
+    );
+    this.availColors = this.getAvailableFlags(this.elemColorEntries);
+
+    // filter entries and set free for single-selections
+    this.elemGildingEntries = this.getFilteredEntries(
+      this._elemGildingEntries,
+      this.type?.value
+    );
+    this.availGildings = this.getAvailableFlags(this.elemGildingEntries);
+    this.elemGildingFree = this.isFreeSet(this.elemGildingEntries);
+
+    this.elemTechniqueEntries = this.getFilteredEntries(
+      this._elemTechEntries,
+      this.type?.value
+    );
+    this.availTechniques = this.getAvailableFlags(this.elemTechniqueEntries);
+    this.elemTechniqueFree = this.isFreeSet(this.elemTechniqueEntries);
+
+    this.elemPositionEntries = this.getFilteredEntries(
+      this._elemPosEntries,
+      this.type?.value
+    );
+    this.availPositions = this.getAvailableFlags(this.elemPositionEntries);
+    this.elemPositionFree = this.isFreeSet(this.elemPositionEntries);
+
+    this.elemToolEntries = this.getFilteredEntries(
+      this._elemToolEntries,
+      this.type?.value
+    );
+    this.availTools = this.getAvailableFlags(this.elemToolEntries);
+    this.elemToolFree = this.isFreeSet(this.elemToolEntries);
+
+    this.elemTypolEntries = this.getFilteredEntries(
+      this._elemTypolEntries,
+      this.type?.value
+    );
+    this.availTypologies = this.getAvailableFlags(this.elemTypolEntries);
+
+    // visibility
+    this.updateVisibility();
   }
 
   public onTabIndexChanged(index: number): void {

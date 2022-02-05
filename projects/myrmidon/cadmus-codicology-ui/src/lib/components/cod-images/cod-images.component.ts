@@ -55,7 +55,7 @@ export class CodImagesComponent implements OnInit, OnDestroy {
     // form
     this.imagesArr = _formBuilder.array([]);
     this.form = _formBuilder.group({
-      images: this.images,
+      imagesArr: this.imagesArr,
     });
   }
 
