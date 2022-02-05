@@ -205,13 +205,10 @@ export class CodDecorationElementComponent implements OnInit {
   public elemToolEntries: ThesaurusEntry[] | undefined;
   public elemTypolEntries: ThesaurusEntry[] | undefined;
 
-  // TODO: determine if these are still required; currently
-  // the free feature is not implemented because controls
-  // were changed from single to multiple value
-  public elemGildingFree: boolean | undefined;
-  public elemTechniqueFree: boolean | undefined;
-  public elemPositionFree: boolean | undefined;
-  public elemToolFree: boolean | undefined;
+  public elemGildingFree?: boolean;
+  public elemTechniqueFree?: boolean;
+  public elemPositionFree?: boolean;
+  public elemToolFree?: boolean;
 
   // this object has a property for each control
   // to be hidden, having the same name of the control

@@ -148,6 +148,7 @@
         <legend>gildings</legend>
         <cadmus-ui-flags-picker
           [flags]="availGildings"
+          [allowUserFlags]="elemGildingFree || false"
           [selectedIds]="initialGildings"
           (selectedIdsChange)="onGildingsChange($event)"
         ></cadmus-ui-flags-picker>
@@ -158,6 +159,7 @@
         <legend>techniques</legend>
         <cadmus-ui-flags-picker
           [flags]="availTechniques"
+          [allowUserFlags]="elemTechniqueFree || false"
           [selectedIds]="initialTechniques"
           (selectedIdsChange)="onTechniquesChange($event)"
         ></cadmus-ui-flags-picker>
@@ -168,6 +170,7 @@
         <legend>tools</legend>
         <cadmus-ui-flags-picker
           [flags]="availTools"
+          [allowUserFlags]="elemToolFree || false"
           [selectedIds]="initialTools"
           (selectedIdsChange)="onToolsChange($event)"
         ></cadmus-ui-flags-picker>
@@ -178,6 +181,7 @@
         <legend>positions</legend>
         <cadmus-ui-flags-picker
           [flags]="availPositions"
+          [allowUserFlags]="elemPositionFree || false"
           [selectedIds]="initialPositions"
           (selectedIdsChange)="onPositionsChange($event)"
         ></cadmus-ui-flags-picker>
