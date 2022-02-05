@@ -19,6 +19,7 @@ import { CadmusCodicologyUiModule } from '@myrmidon/cadmus-codicology-ui';
 import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
 import { CadmusRefsAssertionModule } from '@myrmidon/cadmus-refs-assertion';
 import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
+import { CadmusRefsDocReferencesModule } from '@myrmidon/cadmus-refs-doc-references';
 import { CadmusRefsExternalIdsModule } from '@myrmidon/cadmus-refs-external-ids';
 import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
@@ -66,6 +67,7 @@ import { CodDecorationComponent } from './cod-decoration/cod-decoration.componen
     CadmusMatPhysicalSizeModule,
     CadmusRefsAssertedChronotopeModule,
     CadmusRefsAssertionModule,
+    CadmusRefsDocReferencesModule,
     CadmusRefsExternalIdsModule,
     CadmusRefsHistoricalDateModule,
     CadmusUiFlagsPickerModule,

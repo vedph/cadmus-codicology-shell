@@ -124,6 +124,14 @@ export class CodDecorationElementComponent implements OnInit {
   public set decElemFlagEntries(value: ThesaurusEntry[] | undefined) {
     this._elemFlagEntries = value;
     this.elemFlagEntries = this.getFilteredEntries(value, this.type?.value);
+    this.availFlags = this.elemFlagEntries?.length
+      ? this.elemFlagEntries.map((e) => {
+          return {
+            id: e.id,
+            label: e.value,
+          } as Flag;
+        })
+      : [];
   }
 
   // cod-decoration-element-colors
@@ -134,6 +142,14 @@ export class CodDecorationElementComponent implements OnInit {
   public set decElemColorEntries(value: ThesaurusEntry[] | undefined) {
     this._elemColorEntries = value;
     this.elemColorEntries = this.getFilteredEntries(value, this.type?.value);
+    this.availColors = this.elemColorEntries?.length
+      ? this.elemColorEntries.map((e) => {
+          return {
+            id: e.id,
+            label: e.value,
+          } as Flag;
+        })
+      : [];
   }
 
   // cod-decoration-element-gildings
@@ -144,6 +160,14 @@ export class CodDecorationElementComponent implements OnInit {
   public set decElemGildingEntries(value: ThesaurusEntry[] | undefined) {
     this._elemGildingEntries = value;
     this.elemGildingEntries = this.getFilteredEntries(value, this.type?.value);
+    this.availGildings = this.elemGildingEntries?.length
+      ? this.elemGildingEntries.map((e) => {
+          return {
+            id: e.id,
+            label: e.value,
+          } as Flag;
+        })
+      : [];
   }
 
   // cod-decoration-element-techniques
@@ -157,6 +181,14 @@ export class CodDecorationElementComponent implements OnInit {
       value,
       this.type?.value
     );
+    this.availTechniques = this.elemTechniqueEntries?.length
+      ? this.elemTechniqueEntries.map((e) => {
+          return {
+            id: e.id,
+            label: e.value,
+          } as Flag;
+        })
+      : [];
   }
 
   // cod-decoration-element-positions
@@ -167,6 +199,14 @@ export class CodDecorationElementComponent implements OnInit {
   public set decElemPosEntries(value: ThesaurusEntry[] | undefined) {
     this._elemPosEntries = value;
     this.elemPositionEntries = this.getFilteredEntries(value, this.type?.value);
+    this.availPositions = value?.length
+      ? value.map((e) => {
+          return {
+            id: e.id,
+            label: e.value,
+          } as Flag;
+        })
+      : [];
   }
 
   // cod-decoration-element-tools
@@ -177,6 +217,14 @@ export class CodDecorationElementComponent implements OnInit {
   public set decElemToolEntries(value: ThesaurusEntry[] | undefined) {
     this._elemToolEntries = value;
     this.elemToolEntries = this.getFilteredEntries(value, this.type?.value);
+    this.availTools = this.elemToolEntries?.length
+      ? this.elemToolEntries.map((e) => {
+          return {
+            id: e.id,
+            label: e.value,
+          } as Flag;
+        })
+      : [];
   }
 
   // cod-decoration-element-typologies
@@ -187,6 +235,14 @@ export class CodDecorationElementComponent implements OnInit {
   public set decElemTypolEntries(value: ThesaurusEntry[] | undefined) {
     this._elemTypolEntries = value;
     this.elemTypolEntries = this.getFilteredEntries(value, this.type?.value);
+    this.availTypologies = this.elemTypolEntries?.length
+      ? this.elemTypolEntries.map((e) => {
+          return {
+            id: e.id,
+            label: e.value,
+          } as Flag;
+        })
+      : [];
   }
 
   // cod-image-types

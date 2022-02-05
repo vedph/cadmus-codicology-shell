@@ -11,6 +11,7 @@ import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
 import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
 import { Flag } from '@myrmidon/cadmus-ui-flags-picker';
 import { DialogService } from '@myrmidon/ng-mat-tools';
+import { take } from 'rxjs';
 
 import {
   CodDecoration,
@@ -51,6 +52,7 @@ import {
 })
 export class CodDecorationComponent implements OnInit {
   private _decoration: CodDecoration | undefined;
+  private _decElemFlagEntries: ThesaurusEntry[] | undefined;
 
   @Input()
   public get decoration(): CodDecoration | undefined {
@@ -61,15 +63,29 @@ export class CodDecorationComponent implements OnInit {
     this.updateForm(value);
   }
 
+  // cod-decoration-element-flags
+  @Input()
+  public get decElemFlagEntries(): ThesaurusEntry[] | undefined {
+    return this._decElemFlagEntries;
+  }
+  public set decElemFlagEntries(value: ThesaurusEntry[] | undefined) {
+    this._decElemFlagEntries = value;
+    this.availFlags = value?.length
+      ? value.map((e) => {
+          return {
+            id: e.id,
+            label: e.value,
+          } as Flag;
+        })
+      : [];
+  }
+
   // cod-decoration-element-types (required)
   @Input()
   public decElemTypeEntries: ThesaurusEntry[] | undefined;
   // cod-decoration-type-hidden
   @Input()
   public decTypeHiddenEntries: ThesaurusEntry[] | undefined;
-  // cod-decoration-element-flags
-  @Input()
-  public decElemFlagEntries: ThesaurusEntry[] | undefined;
   // cod-decoration-element-colors
   @Input()
   public decElemColorEntries: ThesaurusEntry[] | undefined;
@@ -91,6 +107,24 @@ export class CodDecorationComponent implements OnInit {
   // cod-image-types
   @Input()
   public imgTypeEntries: ThesaurusEntry[] | undefined;
+  // cod-decoration-artist-types
+  @Input()
+  public artTypeEntries: ThesaurusEntry[] | undefined;
+  // cod-decoration-artist-style-names
+  @Input()
+  public artStyleEntries: ThesaurusEntry[] | undefined;
+  // chronotope-tags
+  @Input()
+  public ctTagEntries: ThesaurusEntry[] | undefined;
+  // assertion-tags
+  @Input()
+  public assTagEntries: ThesaurusEntry[] | undefined;
+  // doc-reference-types
+  @Input()
+  public refTypeEntries: ThesaurusEntry[] | undefined;
+  // doc-reference-tags
+  @Input()
+  public refTagEntries: ThesaurusEntry[] | undefined;
 
   @Output()
   public decorationChange: EventEmitter<CodDecoration>;
@@ -114,6 +148,12 @@ export class CodDecorationComponent implements OnInit {
 
   public editedElementIndex: number;
   public editedElement: CodDecorationElement | undefined;
+
+  public editedArtistIndex: number;
+  public editedArtist?: CodDecorationArtist;
+
+  public tabIndex: number;
+
   public editorOptions = {
     theme: 'vs-light',
     language: 'markdown',
@@ -124,6 +164,8 @@ export class CodDecorationComponent implements OnInit {
 
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
     this.editedElementIndex = -1;
+    this.editedArtistIndex = -1;
+    this.tabIndex = 0;
     this.decorationChange = new EventEmitter<CodDecoration>();
     this.editorClose = new EventEmitter<any>();
     this.initialChronotopes = [];
@@ -206,6 +248,161 @@ export class CodDecorationComponent implements OnInit {
       elements: this.elements.value?.length ? this.elements.value : undefined,
     };
   }
+
+  //#region elements
+  public addElement(): void {
+    const element: CodDecorationElement = {
+      type: this.decElemTypeEntries?.length
+        ? this.decElemTypeEntries[0].id
+        : '',
+      flags: [],
+      ranges: [],
+    };
+    this.elements.setValue([...this.elements.value, element]);
+    this.elements.markAsDirty();
+    this.editElement(this.elements.value.length - 1);
+  }
+
+  public editElement(index: number): void {
+    if (index < 0) {
+      this.editedElementIndex = -1;
+      this.tabIndex = 0;
+      this.editedElement = undefined;
+    } else {
+      this.editedElementIndex = index;
+      this.editedElement = this.elements.value[index];
+      setTimeout(() => {
+        this.tabIndex = 1;
+      }, 300);
+    }
+  }
+
+  public onElementSave(item: CodDecorationElement): void {
+    this.elements.setValue(
+      this.elements.value.map((x: CodDecorationElement, i: number) =>
+        i === this.editedElementIndex ? item : x
+      )
+    );
+    this.elements.markAsDirty();
+    this.editElement(-1);
+  }
+
+  public onElementClose(): void {
+    this.editElement(-1);
+  }
+
+  public removeElement(index: number): void {
+    this._dialogService
+      .confirm('Confirmation', 'Delete element?')
+      .pipe(take(1))
+      .subscribe((yes) => {
+        if (yes) {
+          const items = [...this.elements.value];
+          items.splice(index, 1);
+          this.elements.setValue(items);
+          this.elements.markAsDirty();
+        }
+      });
+  }
+
+  public moveElementUp(index: number): void {
+    if (index < 1) {
+      return;
+    }
+    const item = this.elements.value[index];
+    const items = [...this.elements.value];
+    items.splice(index, 1);
+    items.splice(index - 1, 0, item);
+    this.elements.setValue(items);
+    this.elements.markAsDirty();
+  }
+
+  public moveElementDown(index: number): void {
+    if (index + 1 >= this.elements.value.length) {
+      return;
+    }
+    const item = this.elements.value[index];
+    const items = [...this.elements.value];
+    items.splice(index, 1);
+    items.splice(index + 1, 0, item);
+    this.elements.setValue(items);
+    this.elements.markAsDirty();
+  }
+  //#endregion
+
+  //#region artists
+  public addArtist(): void {
+    const artist: CodDecorationArtist = {
+      type: this.artTypeEntries?.length ? this.artTypeEntries[0].id : '',
+      name: '',
+    };
+    this.artists.setValue([...this.artists.value, artist]);
+    this.artists.markAsDirty();
+    this.editArtist(this.artists.value.length - 1);
+  }
+
+  public editArtist(index: number): void {
+    if (index < 0) {
+      this.editedArtistIndex = -1;
+      this.editedArtist = undefined;
+    } else {
+      this.editedArtistIndex = index;
+      this.editedArtist = this.artists.value[index];
+    }
+  }
+
+  public onArtistSave(item: CodDecorationArtist): void {
+    this.artists.setValue(
+      this.artists.value.map((x: CodDecorationArtist, i: number) =>
+        i === this.editedArtistIndex ? item : x
+      )
+    );
+    this.artists.markAsDirty();
+    this.editArtist(-1);
+  }
+
+  public onArtistClose(): void {
+    this.editArtist(-1);
+  }
+
+  public removeArtist(index: number): void {
+    this._dialogService
+      .confirm('Confirmation', 'Delete artist?')
+      .pipe(take(1))
+      .subscribe((yes) => {
+        if (yes) {
+          const items = [...this.artists.value];
+          items.splice(index, 1);
+          this.artists.setValue(items);
+          this.artists.markAsDirty();
+        }
+      });
+  }
+
+  public moveArtistUp(index: number): void {
+    if (index < 1) {
+      return;
+    }
+    const item = this.artists.value[index];
+    const items = [...this.artists.value];
+    items.splice(index, 1);
+    items.splice(index - 1, 0, item);
+    this.artists.setValue(items);
+    this.artists.markAsDirty();
+  }
+
+  public moveArtistDown(index: number): void {
+    if (index + 1 >= this.artists.value.length) {
+      return;
+    }
+    const item = this.artists.value[index];
+    const items = [...this.artists.value];
+    items.splice(index, 1);
+    items.splice(index + 1, 0, item);
+    this.artists.setValue(items);
+    this.artists.markAsDirty();
+  }
+  //#endregion
 
   public cancel(): void {
     this.editorClose.emit();
