@@ -150,7 +150,7 @@
         </tr>
       </tbody>
     </table>
-    <mat-expansion-panel [expanded]="editedStyle">
+    <mat-expansion-panel [expanded]="editedStyle" [disabled]="!editedStyle">
       <mat-expansion-panel-header
         >style {{ editedStyle?.name }}</mat-expansion-panel-header
       >

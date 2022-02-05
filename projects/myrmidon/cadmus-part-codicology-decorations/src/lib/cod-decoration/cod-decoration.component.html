@@ -31,11 +31,14 @@
       </div>
 
       <!-- flags -->
-      <cadmus-ui-flags-picker
-        [flags]="availFlags"
-        [selectedIds]="flags?.value"
-        (selectedIdsChange)="onSelectedIdsChange($event)"
-      ></cadmus-ui-flags-picker>
+      <fieldset>
+        <legend>features</legend>
+        <cadmus-ui-flags-picker
+          [flags]="availFlags"
+          [selectedIds]="flags?.value"
+          (selectedIdsChange)="onSelectedIdsChange($event)"
+        ></cadmus-ui-flags-picker>
+      </fieldset>
 
       <!-- note -->
       <mat-form-field class="long-text">
@@ -54,7 +57,12 @@
       <!-- chronotopes -->
       <mat-expansion-panel>
         <mat-expansion-panel-header>
-          <mat-panel-title>chronotopes</mat-panel-title>
+          <mat-panel-title
+            ><mat-icon style="margin-right: 8px; color: #24a524"
+              >hourglass_empty</mat-icon
+            >
+            chronotopes</mat-panel-title
+          >
           <mat-panel-description>{{
             chronotopes?.value?.length
           }}</mat-panel-description>
@@ -72,7 +80,12 @@
       <!-- references -->
       <mat-expansion-panel>
         <mat-expansion-panel-header>
-          <mat-panel-title>references</mat-panel-title>
+          <mat-panel-title
+            ><mat-icon style="margin-right: 8px; color: #bb3d6c"
+              >library_books</mat-icon
+            >
+            references</mat-panel-title
+          >
           <mat-panel-description>{{
             references?.value?.length
           }}</mat-panel-description>
@@ -88,7 +101,12 @@
       <!-- artists -->
       <mat-expansion-panel>
         <mat-expansion-panel-header>
-          <mat-panel-title>artists</mat-panel-title>
+          <mat-panel-title
+            ><mat-icon style="margin-right: 8px; color: #ddcd41"
+              >palette</mat-icon
+            >
+            artists</mat-panel-title
+          >
           <mat-panel-description>{{
             artists?.value?.length
           }}</mat-panel-description>
@@ -170,21 +188,21 @@
           [disabled]="!editedArtist"
         >
           <mat-expansion-panel-header>
-            <mat-panel-title>{{ editedArtist?.name }}</mat-panel-title>
+            <mat-panel-title>artist {{ editedArtist?.name }}</mat-panel-title>
           </mat-expansion-panel-header>
+          <cadmus-cod-decoration-artist
+            [ctTagEntries]="ctTagEntries"
+            [assTagEntries]="assTagEntries"
+            [refTagEntries]="refTagEntries"
+            [artTypeEntries]="artTypeEntries"
+            [refTypeEntries]="refTypeEntries"
+            [artStyleEntries]="artStyleEntries"
+            [idTagEntries]="idTagEntries"
+            [idScopeEntries]="idScopeEntries"
+            [artist]="editedArtist"
+            (artistChange)="onArtistSave($event)"
+          ></cadmus-cod-decoration-artist>
         </mat-expansion-panel>
-        <cadmus-cod-decoration-artist
-          [ctTagEntries]="ctTagEntries"
-          [assTagEntries]="assTagEntries"
-          [refTagEntries]="refTagEntries"
-          [artTypeEntries]="artTypeEntries"
-          [refTypeEntries]="refTypeEntries"
-          [artStyleEntries]="artStyleEntries"
-          [idTagEntries]="idTagEntries"
-          [idScopeEntries]="idScopeEntries"
-          [artist]="editedArtist"
-          (artistChange)="onArtistSave($event)"
-        ></cadmus-cod-decoration-artist>
       </mat-expansion-panel>
 
       <!-- elements -->

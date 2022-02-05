@@ -7,3 +7,15 @@ th {
   width: 90%;
   max-width: 800px;
 }
+h3 {
+  margin-top: 12px;
+  background-color: #5db2fd;
+  border-radius: 6px;
+  padding: 0 6px;
+  color: white;
+}
+fieldset {
+  border: 1px solid silver;
+  border-radius: 6px;
+  padding: 6px 12px;
+}
