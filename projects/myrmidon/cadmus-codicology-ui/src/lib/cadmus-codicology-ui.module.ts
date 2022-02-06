@@ -10,10 +10,16 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
+
+import { MarkdownModule } from 'ngx-markdown';
+
+import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
+
 import { CodImagesComponent } from './components/cod-images/cod-images.component';
+import { NoteSetComponent } from './components/note-set/note-set.component';
 
 @NgModule({
-  declarations: [CodImagesComponent],
+  declarations: [CodImagesComponent, NoteSetComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -27,7 +33,11 @@ import { CodImagesComponent } from './components/cod-images/cod-images.component
     MatSelectModule,
     MatTabsModule,
     MatTooltipModule,
+    // vendors
+    MarkdownModule,
+    // general
+    NgMatToolsModule
   ],
-  exports: [CodImagesComponent],
+  exports: [CodImagesComponent, NoteSetComponent],
 })
 export class CadmusCodicologyUiModule {}

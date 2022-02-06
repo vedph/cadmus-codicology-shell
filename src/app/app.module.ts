@@ -139,13 +139,10 @@ import { ITEM_BROWSER_KEYS } from './item-browser-keys';
     MatToolbarModule,
     MatTreeModule,
     FlexLayoutModule,
-    // akita
+    // vendors
     AkitaNgDevtools.forRoot(),
-    // monaco
     MonacoEditorModule.forRoot(),
-    // markdown
     MarkdownModule.forRoot(),
-    // moment
     MomentModule,
     // myrmidon
     NgToolsModule,
