@@ -52,7 +52,7 @@ import {
 })
 export class CodDecorationComponent implements OnInit {
   private _decoration: CodDecoration | undefined;
-  private _decElemFlagEntries: ThesaurusEntry[] | undefined;
+  private _decFlagEntries: ThesaurusEntry[] | undefined;
 
   @Input()
   public get decoration(): CodDecoration | undefined {
@@ -65,11 +65,15 @@ export class CodDecorationComponent implements OnInit {
 
   // cod-decoration-element-flags
   @Input()
-  public get decElemFlagEntries(): ThesaurusEntry[] | undefined {
-    return this._decElemFlagEntries;
+  public decElemFlagEntries: ThesaurusEntry[] | undefined;
+
+  // cod-decoration-flags
+  @Input()
+  public get decFlagEntries(): ThesaurusEntry[] | undefined {
+    return this._decFlagEntries;
   }
-  public set decElemFlagEntries(value: ThesaurusEntry[] | undefined) {
-    this._decElemFlagEntries = value;
+  public set decFlagEntries(value: ThesaurusEntry[] | undefined) {
+    this._decFlagEntries = value;
     this.availFlags = value?.length
       ? value.map((e) => {
           return {

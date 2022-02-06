@@ -42,6 +42,7 @@ export class CodDecorationsPartFeatureComponent
 
   public ngOnInit(): void {
     this.initEditor([
+      'cod-decoration-flags',
       'cod-decoration-element-flags',
       'cod-decoration-element-types',
       'cod-decoration-type-hidden',

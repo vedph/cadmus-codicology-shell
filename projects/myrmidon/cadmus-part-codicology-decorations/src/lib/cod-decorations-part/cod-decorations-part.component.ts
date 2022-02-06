@@ -16,7 +16,8 @@ import {
 
 /**
  * CodDecorationsPart editor component.
- * Thesauri: cod-decoration-element-flags, cod-decoration-element-types,
+ * Thesauri: cod-decoration-flags, cod-decoration-element-flags,
+ * cod-decoration-element-types,
  * cod-decoration-type-hidden, cod-decoration-element-colors,
  * cod-decoration-element-gildings, cod-decoration-element-techniques,
  * cod-decoration-element-positions, cod-decoration-element-tools,
@@ -39,6 +40,8 @@ export class CodDecorationsPartComponent
   public tabIndex: number;
   public editedDecoration: CodDecoration | undefined;
 
+  // cod-decoration-flags
+  public decFlagEntries: ThesaurusEntry[] | undefined;
   // cod-decoration-element-flags
   public decElemFlagEntries: ThesaurusEntry[] | undefined;
   // cod-decoration-element-types (required)
@@ -114,7 +117,14 @@ export class CodDecorationsPartComponent
   }
 
   protected override onThesauriSet(): void {
-    let key = 'cod-decoration-element-flags';
+    let key = 'cod-decoration-flags';
+    if (this.thesauri && this.thesauri[key]) {
+      this.decFlagEntries = this.thesauri[key].entries;
+    } else {
+      this.decFlagEntries = undefined;
+    }
+
+    key = 'cod-decoration-element-flags';
     if (this.thesauri && this.thesauri[key]) {
       this.decElemFlagEntries = this.thesauri[key].entries;
     } else {
