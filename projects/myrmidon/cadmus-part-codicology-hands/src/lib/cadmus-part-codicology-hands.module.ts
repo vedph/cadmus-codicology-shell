@@ -11,8 +11,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+import { CadmusCodLocationModule } from '@myrmidon/cadmus-cod-location';
 import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
 import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
+import { CadmusRefsDocReferencesModule } from '@myrmidon/cadmus-refs-doc-references';
 import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
@@ -37,8 +39,10 @@ import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
     CadmusStateModule,
     CadmusUiModule,
     CadmusUiPgModule,
+    CadmusCodLocationModule,
     CadmusMatPhysicalSizeModule,
     CadmusRefsAssertedChronotopeModule,
+    CadmusRefsDocReferencesModule,
     CadmusRefsHistoricalDateModule,
   ],
   exports: [],

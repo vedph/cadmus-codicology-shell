@@ -1,10 +1,66 @@
+import { CodLocation, CodLocationRange } from '@myrmidon/cadmus-cod-location';
+import { CodImage } from '@myrmidon/cadmus-codicology-ui';
 import { Part } from '@myrmidon/cadmus-core';
+import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
+import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
+
+/**
+ * A hand's subscription.
+ */
+export interface CodHandSubscription {
+  range: CodLocationRange;
+  language: string;
+  text?: string;
+  note?: string;
+}
+
+/**
+ * A sign in a CodHandDescription.
+ */
+export interface CodHandSign {
+  eid?: string;
+  type: string;
+  sampleLocation: CodLocation;
+  description?: string;
+}
+
+/**
+ * A description for a set of hand's features.
+ */
+export interface CodHandDescription {
+  key?: string;
+  description?: string;
+  initials?: string;
+  corrections?: string;
+  punctuation?: string;
+  abbreviations?: string;
+  signs?: CodHandSign[];
+}
+
+/**
+ * An instance of a hand.
+ */
+export interface CodHandInstance {
+  script: string;
+  typologies: string[];
+  colors?: string[];
+  ranges: CodLocationRange[];
+  rank?: number;
+  descriptionKey?: string;
+  chronotope?: AssertedChronotope;
+  images?: CodImage[];
+}
 
 /**
  * A hand in a CodHandsPart.
  */
 export interface CodHand {
-
+  eid?: string;
+  name?: string;
+  instances: CodHandInstance[];
+  descriptions: CodHandDescription[];
+  subscriptions?: CodHandSubscription[];
+  references?: DocReference[];
 }
 
 /**
@@ -37,7 +93,7 @@ export const COD_HANDS_PART_SCHEMA = {
     'creatorId',
     'timeModified',
     'userId',
-    'hands'
+    'hands',
   ],
   properties: {
     timeCreated: {
@@ -70,7 +126,466 @@ export const COD_HANDS_PART_SCHEMA = {
       type: ['string', 'null'],
       pattern: '^([a-z][-0-9a-z._]*)?$',
     },
-
-    // TODO: add properties and fill the "required" array as needed
+    hands: {
+      type: 'array',
+      items: {
+        anyOf: [
+          {
+            type: 'object',
+            required: ['instances', 'descriptions'],
+            properties: {
+              eid: {
+                type: 'string',
+              },
+              name: {
+                type: 'string',
+              },
+              instances: {
+                type: 'array',
+                items: {
+                  anyOf: [
+                    {
+                      type: 'object',
+                      required: ['script', 'typologies', 'ranges'],
+                      properties: {
+                        script: {
+                          type: 'string',
+                        },
+                        typologies: {
+                          type: 'array',
+                          items: {
+                            anyOf: [
+                              {
+                                type: 'string',
+                              },
+                            ],
+                          },
+                        },
+                        ranges: {
+                          type: 'array',
+                          items: {
+                            anyOf: [
+                              {
+                                type: 'object',
+                                required: ['start', 'end'],
+                                properties: {
+                                  start: {
+                                    type: 'object',
+                                    required: ['n'],
+                                    properties: {
+                                      endleaf: {
+                                        type: 'integer',
+                                      },
+                                      s: {
+                                        type: 'string',
+                                      },
+                                      n: {
+                                        type: 'integer',
+                                      },
+                                      rmn: {
+                                        type: 'boolean',
+                                      },
+                                      sfx: {
+                                        type: 'string',
+                                      },
+                                      v: {
+                                        type: 'boolean',
+                                      },
+                                      c: {
+                                        type: 'integer',
+                                      },
+                                      l: {
+                                        type: 'integer',
+                                      },
+                                      word: {
+                                        type: 'string',
+                                      },
+                                    },
+                                  },
+                                  end: {
+                                    type: 'object',
+                                    required: ['n'],
+                                    properties: {
+                                      endleaf: {
+                                        type: 'integer',
+                                      },
+                                      s: {
+                                        type: 'string',
+                                      },
+                                      n: {
+                                        type: 'integer',
+                                      },
+                                      rmn: {
+                                        type: 'boolean',
+                                      },
+                                      sfx: {
+                                        type: 'string',
+                                      },
+                                      v: {
+                                        type: 'boolean',
+                                      },
+                                      c: {
+                                        type: 'integer',
+                                      },
+                                      l: {
+                                        type: 'integer',
+                                      },
+                                      word: {
+                                        type: 'string',
+                                      },
+                                    },
+                                  },
+                                },
+                              },
+                            ],
+                          },
+                        },
+                        rank: {
+                          type: 'integer',
+                        },
+                        descriptionKey: {
+                          type: 'string',
+                        },
+                        chronotope: {
+                          type: 'object',
+                          required: [],
+                          properties: {
+                            place: {
+                              type: 'object',
+                              required: ['value'],
+                              properties: {
+                                tag: {
+                                  type: 'string',
+                                },
+                                value: {
+                                  type: 'string',
+                                },
+                                assertion: {
+                                  type: 'object',
+                                  required: ['rank'],
+                                  properties: {
+                                    tag: {
+                                      type: 'string',
+                                    },
+                                    rank: {
+                                      type: 'integer',
+                                    },
+                                    note: {
+                                      type: 'string',
+                                    },
+                                    references: {
+                                      type: 'array',
+                                      items: {
+                                        anyOf: [
+                                          {
+                                            type: 'object',
+                                            required: ['citation'],
+                                            properties: {
+                                              type: {
+                                                type: 'string',
+                                              },
+                                              tag: {
+                                                type: 'string',
+                                              },
+                                              citation: {
+                                                type: 'string',
+                                              },
+                                              note: {
+                                                type: 'string',
+                                              },
+                                            },
+                                          },
+                                        ],
+                                      },
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                            date: {
+                              type: 'object',
+                              required: ['a'],
+                              properties: {
+                                tag: {
+                                  type: 'string',
+                                },
+                                a: {
+                                  type: 'object',
+                                  required: ['value'],
+                                  properties: {
+                                    value: {
+                                      type: 'integer',
+                                    },
+                                    isCentury: {
+                                      type: 'boolean',
+                                    },
+                                    isSpan: {
+                                      type: 'boolean',
+                                    },
+                                    isApproximate: {
+                                      type: 'boolean',
+                                    },
+                                    isDubious: {
+                                      type: 'boolean',
+                                    },
+                                    day: {
+                                      type: 'integer',
+                                    },
+                                    month: {
+                                      type: 'integer',
+                                    },
+                                    hint: {
+                                      type: ['string', 'null'],
+                                    },
+                                  },
+                                },
+                                b: {
+                                  type: 'object',
+                                  required: ['value'],
+                                  properties: {
+                                    value: {
+                                      type: 'integer',
+                                    },
+                                    isCentury: {
+                                      type: 'boolean',
+                                    },
+                                    isSpan: {
+                                      type: 'boolean',
+                                    },
+                                    isApproximate: {
+                                      type: 'boolean',
+                                    },
+                                    isDubious: {
+                                      type: 'boolean',
+                                    },
+                                    day: {
+                                      type: 'integer',
+                                    },
+                                    month: {
+                                      type: 'integer',
+                                    },
+                                    hint: {
+                                      type: ['string', 'null'],
+                                    },
+                                  },
+                                },
+                                assertion: {
+                                  type: 'object',
+                                  required: ['rank'],
+                                  properties: {
+                                    tag: {
+                                      type: 'string',
+                                    },
+                                    rank: {
+                                      type: 'integer',
+                                    },
+                                    note: {
+                                      type: 'string',
+                                    },
+                                    references: {
+                                      type: 'array',
+                                      items: {
+                                        anyOf: [
+                                          {
+                                            type: 'object',
+                                            required: ['citation'],
+                                            properties: {
+                                              type: {
+                                                type: 'string',
+                                              },
+                                              tag: {
+                                                type: 'string',
+                                              },
+                                              citation: {
+                                                type: 'string',
+                                              },
+                                              note: {
+                                                type: 'string',
+                                              },
+                                            },
+                                          },
+                                        ],
+                                      },
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                        images: {
+                          type: 'array',
+                          items: {
+                            anyOf: [
+                              {
+                                type: 'object',
+                                required: ['id', 'type'],
+                                properties: {
+                                  id: {
+                                    type: 'string',
+                                  },
+                                  type: {
+                                    type: 'string',
+                                  },
+                                  sourceId: {
+                                    type: 'string',
+                                  },
+                                  label: {
+                                    type: 'string',
+                                  },
+                                  copyright: {
+                                    type: 'string',
+                                  },
+                                },
+                              },
+                            ],
+                          },
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              descriptions: {
+                type: 'array',
+                items: {
+                  anyOf: [
+                    {
+                      type: 'object',
+                      required: [],
+                      properties: {
+                        key: {
+                          type: 'string',
+                        },
+                        description: {
+                          type: 'string',
+                        },
+                        initials: {
+                          type: 'string',
+                        },
+                        corrections: {
+                          type: 'string',
+                        },
+                        punctuation: {
+                          type: 'string',
+                        },
+                        abbreviations: {
+                          type: 'string',
+                        },
+                        signs: {
+                          type: 'array',
+                          items: {
+                            anyOf: [
+                              {
+                                type: 'object',
+                                required: ['type', 'sampleLocation'],
+                                properties: {
+                                  eid: {
+                                    type: 'string',
+                                  },
+                                  type: {
+                                    type: 'string',
+                                  },
+                                  sampleLocation: {
+                                    type: 'object',
+                                    required: ['n'],
+                                    properties: {
+                                      endleaf: {
+                                        type: 'integer',
+                                      },
+                                      s: {
+                                        type: 'string',
+                                      },
+                                      n: {
+                                        type: 'integer',
+                                      },
+                                      rmn: {
+                                        type: 'boolean',
+                                      },
+                                      sfx: {
+                                        type: 'string',
+                                      },
+                                      v: {
+                                        type: 'boolean',
+                                      },
+                                      c: {
+                                        type: 'string',
+                                      },
+                                      l: {
+                                        type: 'integer',
+                                      },
+                                      word: {
+                                        type: 'string',
+                                      },
+                                    },
+                                  },
+                                  description: {
+                                    type: 'string',
+                                  },
+                                },
+                              },
+                            ],
+                          },
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              subscriptions: {
+                type: 'array',
+                items: {
+                  anyOf: [
+                    {
+                      type: 'object',
+                      required: ['range', 'language'],
+                      properties: {
+                        range: {
+                          type: 'object',
+                        },
+                        language: {
+                          type: 'string',
+                        },
+                        text: {
+                          type: 'string',
+                        },
+                        note: {
+                          type: 'string',
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              references: {
+                type: 'array',
+                items: {
+                  anyOf: [
+                    {
+                      type: 'object',
+                      required: ['citation'],
+                      properties: {
+                        type: {
+                          type: 'string',
+                        },
+                        tag: {
+                          type: 'string',
+                        },
+                        citation: {
+                          type: 'string',
+                        },
+                        note: {
+                          type: 'string',
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        ],
+      },
+    },
   },
 };
