@@ -1,0 +1,86 @@
+<form [formGroup]="form" (submit)="save()">
+  <div style="display: flex; align-items: center; gap: 8px">
+    <!-- range -->
+    <cadmus-cod-location
+      style="flex: 0 0 auto"
+      [location]="range?.value"
+      (locationChange)="onLocationChange($event)"
+    ></cadmus-cod-location>
+    <!-- language (bound) -->
+    <mat-form-field *ngIf="langEntries?.length" style="flex: 0 0 auto">
+      <mat-select [formControl]="language" placeholder="language">
+        <mat-option *ngFor="let e of langEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="
+          $any(language).errors?.required &&
+          (language.dirty || language.touched)
+        "
+        >language required</mat-error
+      >
+    </mat-form-field>
+
+    <!-- language (free) -->
+    <mat-form-field *ngIf="!langEntries?.length" style="flex: 0 0 auto">
+      <input matInput [formControl]="language" placeholder="language" />
+      <mat-error
+        *ngIf="
+          $any(language).errors?.required &&
+          (language.dirty || language.touched)
+        "
+        >language required</mat-error
+      >
+      <mat-error
+        *ngIf="
+          $any(language).errors?.maxLength &&
+          (language.dirty || language.touched)
+        "
+        >language too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+  <div>
+    <!-- text -->
+    <mat-form-field class="long-text">
+      <textarea matInput [formControl]="text" placeholder="text"></textarea>
+      <mat-error
+        *ngIf="$any(text).errors?.maxLength && (text.dirty || text.touched)"
+        >text too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+  <div>
+    <!-- note -->
+    <mat-form-field class="long-text">
+      <textarea matInput [formControl]="note" placeholder="note"></textarea>
+      <mat-error
+        *ngIf="$any(note).errors?.maxLength && (note.dirty || note.touched)"
+        >note too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      color="warn"
+      mat-icon-button
+      matTooltip="Discard changes"
+      (click)="cancel()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      color="primary"
+      mat-icon-button
+      matTooltip="Accept changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon>check_circle</mat-icon>
+    </button>
+  </div>
+</form>
