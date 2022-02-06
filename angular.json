@@ -421,6 +421,37 @@
           }
         }
       }
+    },
+    "@myrmidon/cadmus-part-codicology-hands": {
+      "projectType": "library",
+      "root": "projects/myrmidon/cadmus-part-codicology-hands",
+      "sourceRoot": "projects/myrmidon/cadmus-part-codicology-hands/src",
+      "prefix": "cadmus",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/myrmidon/cadmus-part-codicology-hands/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/myrmidon/cadmus-part-codicology-hands/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/myrmidon/cadmus-part-codicology-hands/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/myrmidon/cadmus-part-codicology-hands/src/test.ts",
+            "tsConfig": "projects/myrmidon/cadmus-part-codicology-hands/tsconfig.spec.json",
+            "karmaConfig": "projects/myrmidon/cadmus-part-codicology-hands/karma.conf.js"
+          }
+        }
+      }
     }
   },
   "defaultProject": "cadmus-codicology-shell"

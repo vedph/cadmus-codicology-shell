@@ -23,6 +23,10 @@
         "dist/myrmidon/cadmus-part-codicology-layouts/myrmidon-cadmus-part-codicology-layouts",
         "dist/myrmidon/cadmus-part-codicology-layouts"
       ],
+      "@myrmidon/cadmus-part-codicology-hands": [
+        "dist/myrmidon/cadmus-part-codicology-hands/myrmidon-cadmus-part-codicology-hands",
+        "dist/myrmidon/cadmus-part-codicology-hands"
+      ],
       "@myrmidon/cadmus-part-codicology-material-dsc": [
         "dist/myrmidon/cadmus-part-codicology-material-dsc/myrmidon-cadmus-part-codicology-material-dsc",
         "dist/myrmidon/cadmus-part-codicology-material-dsc"
