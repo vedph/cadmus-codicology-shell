@@ -33,7 +33,15 @@ This adaptation has different types:
   - `cod-decoration-element-tools`
   - `cod-decoration-element-typologies`
 
-- some controls get completely hidden. Which controls are to be hidden for which element type is defined in thesaurus `cod-decoration-type-hidden`, having an entry for each element type with the same ID; its value is a space-delimited list of control identifiers.
+- some controls get completely hidden. Which controls are to be hidden for which element type is defined in thesaurus `cod-decoration-type-hidden`, having an entry for each element type with the same ID; its value is a space-delimited list of control identifiers:
+  - `colors`
+  - `gildings`
+  - `lineHeight`
+  - `positions`
+  - `subject`
+  - `techniques`
+  - `textRelation`
+  - `tools`
 
 - some lists may allow for user-defined (unbound) entries. A list allowing this contains a special entry with ID equal to the element type ID + `.-` and an empty value. This may happen for:
   - gildings

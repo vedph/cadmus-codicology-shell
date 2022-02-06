@@ -318,12 +318,14 @@ export class CodDecorationElementComponent implements OnInit {
 
   private getAvailableFlags(entries: ThesaurusEntry[] | undefined): Flag[] {
     return entries?.length
-      ? entries.map((e) => {
-          return {
-            id: e.id,
-            label: e.value,
-          } as Flag;
-        })
+      ? entries
+          .filter((e) => e.value?.length)
+          .map((e) => {
+            return {
+              id: e.id,
+              label: e.value,
+            } as Flag;
+          })
       : [];
   }
 

@@ -21,7 +21,7 @@
       </mat-form-field>
       &nbsp;
       <!-- instanceCount -->
-      <mat-form-field style="width: 4em;">
+      <mat-form-field style="width: 4em">
         <input
           matInput
           [formControl]="instanceCount"
@@ -144,7 +144,11 @@
       </fieldset>
 
       <!-- gildings -->
-      <fieldset *ngIf="availGildings?.length && !$any(hidden)?.gildings">
+      <fieldset
+        *ngIf="
+          (availGildings?.length || elemGildingFree) && !$any(hidden)?.gildings
+        "
+      >
         <legend>gildings</legend>
         <cadmus-ui-flags-picker
           [flags]="availGildings"
@@ -155,7 +159,12 @@
       </fieldset>
 
       <!-- techniques -->
-      <fieldset *ngIf="availTechniques?.length && !$any(hidden)?.techniques">
+      <fieldset
+        *ngIf="
+          (availTechniques?.length || elemTechniqueFree) &&
+          !$any(hidden)?.techniques
+        "
+      >
         <legend>techniques</legend>
         <cadmus-ui-flags-picker
           [flags]="availTechniques"
@@ -166,7 +175,9 @@
       </fieldset>
 
       <!-- tools -->
-      <fieldset *ngIf="availTools?.length && !$any(hidden)?.tools">
+      <fieldset
+        *ngIf="(availTools?.length || elemToolFree) && !$any(hidden)?.tools"
+      >
         <legend>tools</legend>
         <cadmus-ui-flags-picker
           [flags]="availTools"
@@ -177,7 +188,12 @@
       </fieldset>
 
       <!-- positions -->
-      <fieldset *ngIf="availPositions?.length && !$any(hidden)?.positions">
+      <fieldset
+        *ngIf="
+          (availPositions?.length || elemPositionFree) &&
+          !$any(hidden)?.positions
+        "
+      >
         <legend>positions</legend>
         <cadmus-ui-flags-picker
           [flags]="availPositions"
