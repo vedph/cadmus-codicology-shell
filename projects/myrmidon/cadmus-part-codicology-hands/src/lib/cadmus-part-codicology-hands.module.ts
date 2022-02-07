@@ -19,12 +19,12 @@ import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
+
 import { CodHandSubscriptionComponent } from './cod-hand-subscription/cod-hand-subscription.component';
+import { CodHandSignComponent } from './cod-hand-sign/cod-hand-sign.component';
 
 @NgModule({
-  declarations: [
-    CodHandSubscriptionComponent
-  ],
+  declarations: [CodHandSubscriptionComponent, CodHandSignComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -48,6 +48,6 @@ import { CodHandSubscriptionComponent } from './cod-hand-subscription/cod-hand-s
     CadmusRefsDocReferencesModule,
     CadmusRefsHistoricalDateModule,
   ],
-  exports: [CodHandSubscriptionComponent],
+  exports: [CodHandSubscriptionComponent, CodHandSignComponent],
 })
 export class CadmusPartCodicologyHandsModule {}
