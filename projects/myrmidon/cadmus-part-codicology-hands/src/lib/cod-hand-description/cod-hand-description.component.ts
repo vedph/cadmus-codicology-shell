@@ -5,8 +5,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { NoteSetDefinition } from '@myrmidon/cadmus-codicology-ui';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { NoteSet, NoteSetDefinition } from '@myrmidon/cadmus-codicology-ui';
 
 import { CodHandDescription } from '../cod-hands-part';
 
@@ -17,7 +16,7 @@ import { CodHandDescription } from '../cod-hands-part';
 })
 export class CodHandDescriptionComponent implements OnInit {
   private _model: CodHandDescription | undefined;
-  private _noteEntries: ThesaurusEntry[] | undefined;
+  private _noteDefs: NoteSetDefinition[];
 
   @Input()
   public get model(): CodHandDescription | undefined {
@@ -28,15 +27,6 @@ export class CodHandDescriptionComponent implements OnInit {
     this.updateForm(value);
   }
 
-  @Input()
-  public get noteEntries(): ThesaurusEntry[] | undefined {
-    return this._noteEntries;
-  }
-  public set noteEntries(value: ThesaurusEntry[] | undefined) {
-    this._noteEntries = value;
-    this.updateNoteSetDefs();
-  }
-
   @Output()
   public modelChange: EventEmitter<CodHandDescription>;
   @Output()
@@ -44,64 +34,17 @@ export class CodHandDescriptionComponent implements OnInit {
 
   public key: FormControl;
   public description: FormControl;
-  // TODO
+  public initials: FormControl;
+  public corrections: FormControl;
+  public punctuation: FormControl;
+  public abbreviations: FormControl;
   public signs: FormControl;
   public form: FormGroup;
 
-  public noteSetDefs: NoteSetDefinition[];
+  public initialNoteSet?: NoteSet;
 
   constructor(formBuilder: FormBuilder) {
-    this.modelChange = new EventEmitter<CodHandDescription>();
-    this.editorClose = new EventEmitter<any>();
-    this.noteSetDefs = [];
-    // form
-    this.key = formBuilder.control(null, Validators.maxLength(100));
-    this.description = formBuilder.control(null, Validators.maxLength(1000));
-    this.signs = formBuilder.control([]);
-    // TODO: controls
-    this.form = formBuilder.group({
-      key: this.key,
-      description: this.description,
-      signs: this.signs,
-      // TODO
-    });
-  }
-
-  ngOnInit(): void {
-    if (this._model) {
-      this.updateForm(this._model);
-    }
-  }
-
-  private parseNoteDefEntry(entry: ThesaurusEntry): {
-    label: string;
-    maxLength: number;
-    markdown: boolean;
-  } {
-    // value: label|LEN*
-    let text = entry.value;
-    let md = false;
-    if (text.endsWith('*')) {
-      md = true;
-      text = text.substring(0, text.length - 1);
-    }
-
-    const i = text.lastIndexOf('|');
-    return i > -1
-      ? {
-          label: text.substring(0, i),
-          maxLength: +text.substring(i + 1),
-          markdown: md,
-        }
-      : {
-          label: text,
-          maxLength: 500,
-          markdown: md,
-        };
-  }
-
-  private updateNoteSetDefs(): void {
-    const defs: NoteSetDefinition[] = [
+    this._noteDefs = [
       {
         key: 'i',
         label: 'initials',
@@ -124,25 +67,31 @@ export class CodHandDescriptionComponent implements OnInit {
         maxLength: 1000,
       },
     ];
-    if (this._noteEntries?.length) {
-      let entry = this._noteEntries.find((e) => e.id === 'initials');
-      if (entry) {
-        Object.assign(defs[0], this.parseNoteDefEntry(entry));
-      }
-      entry = this._noteEntries.find((e) => e.id === 'corrections');
-      if (entry) {
-        Object.assign(defs[1], this.parseNoteDefEntry(entry));
-      }
-      entry = this._noteEntries.find((e) => e.id === 'punctuation');
-      if (entry) {
-        Object.assign(defs[2], this.parseNoteDefEntry(entry));
-      }
-      entry = this._noteEntries.find((e) => e.id === 'abbreviations');
-      if (entry) {
-        Object.assign(defs[3], this.parseNoteDefEntry(entry));
-      }
+    this.modelChange = new EventEmitter<CodHandDescription>();
+    this.editorClose = new EventEmitter<any>();
+    // form
+    this.key = formBuilder.control(null, Validators.maxLength(100));
+    this.description = formBuilder.control(null, Validators.maxLength(1000));
+    this.initials = formBuilder.control(null);
+    this.corrections = formBuilder.control(null);
+    this.punctuation = formBuilder.control(null);
+    this.abbreviations = formBuilder.control(null);
+    this.signs = formBuilder.control([]);
+    this.form = formBuilder.group({
+      key: this.key,
+      description: this.description,
+      initials: this.initials,
+      corrections: this.corrections,
+      punctuation: this.punctuation,
+      abbreviations: this.abbreviations,
+      signs: this.signs,
+    });
+  }
+
+  ngOnInit(): void {
+    if (this._model) {
+      this.updateForm(this._model);
     }
-    this.noteSetDefs = defs;
   }
 
   private updateForm(model: CodHandDescription | undefined): void {
@@ -151,14 +100,42 @@ export class CodHandDescriptionComponent implements OnInit {
       return;
     }
 
-    // TODO set controls values
+    this.key.setValue(model.key);
+    this.description.setValue(model.description);
+
+    const map = new Map<string, string | null>();
+    this.initials.setValue(model.initials);
+    this.corrections.setValue(model.corrections);
+    this.punctuation.setValue(model.punctuation);
+    this.abbreviations.setValue(model.abbreviations);
+    if (model.initials) {
+      map.set('initials', model.initials);
+    }
+    if (model.corrections) {
+      map.set('corrections', model.corrections);
+    }
+    if (model.punctuation) {
+      map.set('punctuation', model.punctuation);
+    }
+    if (model.abbreviations) {
+      map.set('abbreviations', model.abbreviations);
+    }
+    this.initialNoteSet = {
+      definitions: this._noteDefs,
+      notes: map,
+    };
+
+    this.signs.setValue(model.signs || []);
 
     this.form.markAsPristine();
   }
 
   private getModel(): CodHandDescription | null {
     return {
-      // TODO get values from controls
+      key: this.key.value?.trim(),
+      description: this.description.value?.trim(),
+      // TODO
+      signs: this.signs.value?.length? this.signs.value : undefined
     };
   }
 
