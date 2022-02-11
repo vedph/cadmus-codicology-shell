@@ -59,9 +59,10 @@ export class NoteSetComponent implements OnInit {
 
   /**
    * Event emitted whenever a note is changed.
+   * The argument is a key/value pair.
    */
   @Output()
-  public noteChange: EventEmitter<KeyValue<string, string>>;
+  public noteChange: EventEmitter<KeyValue<string, string | null>>;
 
   public form: FormGroup;
   public key: FormControl;
@@ -80,7 +81,7 @@ export class NoteSetComponent implements OnInit {
     this.keys = [];
     this.noteCount = 0;
     this.currentLen = 0;
-    this.noteChange = new EventEmitter<KeyValue<string, string>>();
+    this.noteChange = new EventEmitter<KeyValue<string, string | null>>();
     // form
     this.text = formBuilder.control(null);
     this.key = formBuilder.control(null);
@@ -228,7 +229,7 @@ export class NoteSetComponent implements OnInit {
 
     this.noteChange.emit({
       key: this.currentDef!.key,
-      value: this._set.notes.get(this.currentDef!.key) || '',
+      value: this._set.notes.get(this.currentDef!.key) || null,
     });
   }
 

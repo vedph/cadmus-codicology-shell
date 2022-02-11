@@ -1,1 +1,142 @@
-<p>cod-hand-description works!</p>
+<form [formGroup]="form" (submit)="save()">
+  <div>
+    <!-- key -->
+    <mat-form-field>
+      <input matInput [formControl]="key" placeholder="key" />
+      <mat-error
+        *ngIf="$any(key).errors?.maxLength && (key.dirty || key.touched)"
+        >key too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+  <div>
+    <!-- description -->
+    <mat-form-field class="long-text">
+      <textarea
+        matInput
+        rows="2"
+        [formControl]="description"
+        placeholder="description"
+      ></textarea>
+      <mat-error
+        *ngIf="
+          $any(description).errors?.maxLength &&
+          (description.dirty || description.touched)
+        "
+        >description too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+  <div>
+    <!-- notes -->
+    <cadmus-note-set
+      [set]="initialNoteSet"
+      (noteChange)="onNoteChange($event)"
+    ></cadmus-note-set>
+  </div>
+  <div>
+    <!-- signs -->
+    <div>
+      <button type="button" mat-icon-button color="primary" (click)="addSign()">
+        <mat-icon>add_circle</mat-icon> add sign
+      </button>
+    </div>
+    <table *ngIf="signs?.value?.length">
+      <thead>
+        <tr>
+          <th></th>
+          <th>EID</th>
+          <th>type</th>
+          <th>location</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="
+            let sign of signs?.value;
+            let i = index;
+            let first = first;
+            let last = last
+          "
+        >
+          <td>
+            <button
+              type="button"
+              mat-icon-button
+              color="primary"
+              matTooltip="Edit this sign"
+              (click)="editSign(i)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              matTooltip="Move this sign up"
+              [disabled]="first"
+              (click)="moveSignUp(i)"
+            >
+              <mat-icon>arrow_upward</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              matTooltip="Move this sign down"
+              [disabled]="last"
+              (click)="moveSignDown(i)"
+            >
+              <mat-icon>arrow_downward</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              color="warn"
+              matTooltip="Delete this sign"
+              (click)="deleteSign(i)"
+            >
+              <mat-icon>remove_circle</mat-icon>
+            </button>
+          </td>
+          <td>{{ sign.eid }}</td>
+          <td>{{ sign.type }}</td>
+          <td>{{ sign.sampleLocation | codLocation }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- edited sign -->
+    <mat-expansion-panel [disabled]="!editedSign" [expanded]="editedSign">
+      <mat-expansion-panel-header
+        >sign #{{ editedSignIndex + 1 }}</mat-expansion-panel-header
+      >
+      <cadmus-cod-hand-sign
+        [typeEntries]="sgnTypeEntries"
+        [sign]="editedSign"
+        (signChange)="onSignSave($event)"
+        (editorClose)="onSignClose()"
+      ></cadmus-cod-hand-sign>
+    </mat-expansion-panel>
+  </div>
+
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      color="warn"
+      mat-icon-button
+      matTooltip="Discard changes"
+      (click)="cancel()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      color="primary"
+      mat-icon-button
+      matTooltip="Accept changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon>check_circle</mat-icon>
+    </button>
+  </div>
+</form>
