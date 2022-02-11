@@ -25,12 +25,14 @@ import { CadmusCodicologyUiModule } from '@myrmidon/cadmus-codicology-ui';
 import { CodHandSubscriptionComponent } from './cod-hand-subscription/cod-hand-subscription.component';
 import { CodHandSignComponent } from './cod-hand-sign/cod-hand-sign.component';
 import { CodHandDescriptionComponent } from './cod-hand-description/cod-hand-description.component';
+import { CodHandInstanceComponent } from './cod-hand-instance/cod-hand-instance.component';
 
 @NgModule({
   declarations: [
     CodHandSubscriptionComponent,
     CodHandSignComponent,
     CodHandDescriptionComponent,
+    CodHandInstanceComponent,
   ],
   imports: [
     CommonModule,
@@ -61,6 +63,7 @@ import { CodHandDescriptionComponent } from './cod-hand-description/cod-hand-des
     CodHandSubscriptionComponent,
     CodHandSignComponent,
     CodHandDescriptionComponent,
+    CodHandInstanceComponent,
   ],
 })
 export class CadmusPartCodicologyHandsModule {}
