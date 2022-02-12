@@ -20,14 +20,14 @@ import { CodHandInstance } from '../cod-hands-part';
   styleUrls: ['./cod-hand-instance.component.css'],
 })
 export class CodHandInstanceComponent implements OnInit {
-  private _model: CodHandInstance | undefined;
+  private _instance: CodHandInstance | undefined;
 
   @Input()
-  public get model(): CodHandInstance | undefined {
-    return this._model;
+  public get instance(): CodHandInstance | undefined {
+    return this._instance;
   }
-  public set model(value: CodHandInstance | undefined) {
-    this._model = value;
+  public set instance(value: CodHandInstance | undefined) {
+    this._instance = value;
     this.updateForm(value);
   }
 
@@ -64,7 +64,7 @@ export class CodHandInstanceComponent implements OnInit {
   public imgTypeEntries: ThesaurusEntry[] | undefined;
 
   @Output()
-  public modelChange: EventEmitter<CodHandInstance>;
+  public instanceChange: EventEmitter<CodHandInstance>;
   @Output()
   public editorClose: EventEmitter<any>;
 
@@ -91,7 +91,7 @@ export class CodHandInstanceComponent implements OnInit {
   public initialImages: CodImage[];
 
   constructor(formBuilder: FormBuilder) {
-    this.modelChange = new EventEmitter<CodHandInstance>();
+    this.instanceChange = new EventEmitter<CodHandInstance>();
     this.editorClose = new EventEmitter<any>();
     this.typFlags = [];
     this.initialTypologies = [];
@@ -130,8 +130,8 @@ export class CodHandInstanceComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this._model) {
-      this.updateForm(this._model);
+    if (this._instance) {
+      this.updateForm(this._instance);
     }
   }
 
@@ -198,6 +198,6 @@ export class CodHandInstanceComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this.modelChange.emit(this.getModel());
+    this.instanceChange.emit(this.getModel());
   }
 }

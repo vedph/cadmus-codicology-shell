@@ -15,14 +15,11 @@
       <textarea
         matInput
         rows="2"
-        [formControl]="description"
+        [formControl]="dsc"
         placeholder="description"
       ></textarea>
       <mat-error
-        *ngIf="
-          $any(description).errors?.maxLength &&
-          (description.dirty || description.touched)
-        "
+        *ngIf="$any(dsc).errors?.maxLength && (dsc.dirty || dsc.touched)"
         >description too long</mat-error
       >
     </mat-form-field>

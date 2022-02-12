@@ -19,15 +19,15 @@ import { CodHandDescription, CodHandSign } from '../cod-hands-part';
   styleUrls: ['./cod-hand-description.component.css'],
 })
 export class CodHandDescriptionComponent implements OnInit {
-  private _model: CodHandDescription | undefined;
+  private _description: CodHandDescription | undefined;
   private _noteDefs: NoteSetDefinition[];
 
   @Input()
-  public get model(): CodHandDescription | undefined {
-    return this._model;
+  public get description(): CodHandDescription | undefined {
+    return this._description;
   }
-  public set model(value: CodHandDescription | undefined) {
-    this._model = value;
+  public set description(value: CodHandDescription | undefined) {
+    this._description = value;
     this.updateForm(value);
   }
 
@@ -36,12 +36,12 @@ export class CodHandDescriptionComponent implements OnInit {
   public sgnTypeEntries: ThesaurusEntry[] | undefined;
 
   @Output()
-  public modelChange: EventEmitter<CodHandDescription>;
+  public descriptionChange: EventEmitter<CodHandDescription>;
   @Output()
   public editorClose: EventEmitter<any>;
 
   public key: FormControl;
-  public description: FormControl;
+  public dsc: FormControl;
   public initials: FormControl;
   public corrections: FormControl;
   public punctuation: FormControl;
@@ -78,11 +78,11 @@ export class CodHandDescriptionComponent implements OnInit {
         maxLength: 1000,
       },
     ];
-    this.modelChange = new EventEmitter<CodHandDescription>();
+    this.descriptionChange = new EventEmitter<CodHandDescription>();
     this.editorClose = new EventEmitter<any>();
     // form
     this.key = formBuilder.control(null, Validators.maxLength(100));
-    this.description = formBuilder.control(null, Validators.maxLength(1000));
+    this.dsc = formBuilder.control(null, Validators.maxLength(1000));
     this.initials = formBuilder.control(null);
     this.corrections = formBuilder.control(null);
     this.punctuation = formBuilder.control(null);
@@ -90,7 +90,7 @@ export class CodHandDescriptionComponent implements OnInit {
     this.signs = formBuilder.control([]);
     this.form = formBuilder.group({
       key: this.key,
-      description: this.description,
+      description: this.dsc,
       initials: this.initials,
       corrections: this.corrections,
       punctuation: this.punctuation,
@@ -100,8 +100,8 @@ export class CodHandDescriptionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this._model) {
-      this.updateForm(this._model);
+    if (this._description) {
+      this.updateForm(this._description);
     }
   }
 
@@ -112,7 +112,7 @@ export class CodHandDescriptionComponent implements OnInit {
     }
 
     this.key.setValue(model.key);
-    this.description.setValue(model.description);
+    this.dsc.setValue(model.description);
 
     const map = new Map<string, string | null>();
     this.initials.setValue(model.initials);
@@ -143,7 +143,7 @@ export class CodHandDescriptionComponent implements OnInit {
   private getModel(): CodHandDescription | null {
     return {
       key: this.key.value?.trim(),
-      description: this.description.value?.trim(),
+      description: this.dsc.value?.trim(),
       initials: this.initials.value?.trim(),
       corrections: this.corrections.value?.trim(),
       punctuation: this.punctuation.value?.trim(),
@@ -259,6 +259,6 @@ export class CodHandDescriptionComponent implements OnInit {
     if (!model) {
       return;
     }
-    this.modelChange.emit(model);
+    this.descriptionChange.emit(model);
   }
 }

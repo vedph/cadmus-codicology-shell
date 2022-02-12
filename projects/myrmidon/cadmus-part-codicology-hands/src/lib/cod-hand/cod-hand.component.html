@@ -1,1 +1,320 @@
-<p>cod-hand works!</p>
+<form [formGroup]="form" (submit)="save()">
+  <div style="display: flex; gap: 8px; align-items: center">
+    <!-- eid -->
+    <mat-form-field style="flex: 0 0 auto">
+      <input matInput [formControl]="eid" placeholder="EID" />
+      <mat-error
+        *ngIf="$any(eid).errors?.maxLength && (eid.dirty || eid.touched)"
+        >EID too long</mat-error
+      >
+    </mat-form-field>
+
+    <!-- name -->
+    <mat-form-field style="flex: 0 0 auto">
+      <mat-error
+        *ngIf="$any(name).errors?.maxLength && (name.dirty || name.touched)"
+        >name too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <!-- descriptions -->
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>descriptions</mat-expansion-panel-header>
+    <div>
+      <button
+        type="button"
+        mat-icon-button
+        color="primary"
+        (click)="addDescription()"
+      >
+        <mat-icon>add_circle</mat-icon> add description
+      </button>
+    </div>
+    <table *ngIf="descriptions?.value?.length">
+      <thead>
+        <tr>
+          <th></th>
+          <th>key</th>
+          <th>signs</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="
+            let description of descriptions?.value;
+            let i = index;
+            let first = first;
+            let last = last
+          "
+        >
+          <td>
+            <button
+              type="button"
+              mat-icon-button
+              color="primary"
+              matTooltip="Edit this description"
+              (click)="editDescription(i)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              matTooltip="Move this description up"
+              [disabled]="first"
+              (click)="moveDescriptionUp(i)"
+            >
+              <mat-icon>arrow_upward</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              matTooltip="Move this description down"
+              [disabled]="last"
+              (click)="moveDescriptionDown(i)"
+            >
+              <mat-icon>arrow_downward</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              color="warn"
+              matTooltip="Delete this description"
+              (click)="deleteDescription(i)"
+            >
+              <mat-icon>remove_circle</mat-icon>
+            </button>
+          </td>
+          <td>{{ description.key }}</td>
+          <td>{{ description.signs?.length }}</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <mat-expansion-panel [expanded]="editedDsc" [disabled]="!editedDsc">
+      <mat-expansion-panel-header
+        >description #{{ editedDscIndex + 1 }}</mat-expansion-panel-header
+      >
+    </mat-expansion-panel>
+    <cadmus-cod-hand-description
+      [sgnTypeEntries]="sgnTypeEntries"
+      [description]="editedDsc"
+      (descriptionChange)="onDescriptionSave($event)"
+      (editorClose)="onDescriptionClose()"
+    ></cadmus-cod-hand-description>
+  </mat-expansion-panel>
+
+  <!-- instances -->
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>instances</mat-expansion-panel-header>
+    <div>
+      <button
+        type="button"
+        mat-icon-button
+        color="primary"
+        (click)="addInstance()"
+      >
+        <mat-icon>add_circle</mat-icon> add instance
+      </button>
+    </div>
+    <table *ngIf="instances?.value?.length">
+      <thead>
+        <tr>
+          <th></th>
+          <th>script</th>
+          <th>extent</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="
+            let instance of instances?.value;
+            let i = index;
+            let first = first;
+            let last = last
+          "
+        >
+          <td>
+            <button
+              type="button"
+              mat-icon-button
+              color="primary"
+              matTooltip="Edit this instance"
+              (click)="editInstance(i)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              matTooltip="Move this instance up"
+              [disabled]="first"
+              (click)="moveInstanceUp(i)"
+            >
+              <mat-icon>arrow_upward</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              matTooltip="Move this instance down"
+              [disabled]="last"
+              (click)="moveInstanceDown(i)"
+            >
+              <mat-icon>arrow_downward</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              color="warn"
+              matTooltip="Delete this instance"
+              (click)="deleteInstance(i)"
+            >
+              <mat-icon>remove_circle</mat-icon>
+            </button>
+          </td>
+          <td>{{ instance.script }}</td>
+          <td>{{ instance.ranges | codLocationRange }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <mat-expansion-panel [expanded]="editedIst" [disabled]="!editedIst">
+      <mat-expansion-panel-header
+        >instance #{{ editedIstIndex + 1 }}</mat-expansion-panel-header
+      >
+      <cadmus-cod-hand-instance
+        [typeEntries]="typeEntries"
+        [colorEntries]="colorEntries"
+        [ctTagEntries]="ctTagEntries"
+        [assTagEntries]="assTagEntries"
+        [refTagEntries]="refTagEntries"
+        [scriptEntries]="scriptEntries"
+        [imgTypeEntries]="imgTypeEntries"
+        [refTypeEntries]="refTypeEntries"
+        [instance]="editedIst"
+        (instanceChange)="onInstanceSave($event)"
+        (editorClose)="onInstanceClose()"
+      >
+      </cadmus-cod-hand-instance>
+    </mat-expansion-panel>
+  </mat-expansion-panel>
+
+  <!-- subscriptions -->
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>subscriptions</mat-expansion-panel-header>
+    <div>
+      <button
+        type="button"
+        mat-icon-button
+        color="primary"
+        (click)="addSubscription()"
+      >
+        <mat-icon>add_circle</mat-icon> add subscription
+      </button>
+    </div>
+    <table *ngIf="subscriptions?.value?.length">
+      <thead>
+        <tr>
+          <th></th>
+          <th>extent</th>
+          <th>language</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="
+            let subscription of subscriptions?.value;
+            let i = index;
+            let first = first;
+            let last = last
+          "
+        >
+          <td>
+            <button
+              type="button"
+              mat-icon-button
+              color="primary"
+              matTooltip="Edit this subscription"
+              (click)="editSubscription(i)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              matTooltip="Move this subscription up"
+              [disabled]="first"
+              (click)="moveSubscriptionUp(i)"
+            >
+              <mat-icon>arrow_upward</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              matTooltip="Move this subscription down"
+              [disabled]="last"
+              (click)="moveSubscriptionDown(i)"
+            >
+              <mat-icon>arrow_downward</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              color="warn"
+              matTooltip="Delete this subscription"
+              (click)="deleteSubscription(i)"
+            >
+              <mat-icon>remove_circle</mat-icon>
+            </button>
+          </td>
+          <td>{{ subscription.range | codLocationRange }}</td>
+          <td>{{ subscription.language }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <mat-expansion-panel [expanded]="editedSub" [disabled]="!editedSub">
+      <mat-expansion-panel-header
+        >subscription #{{ editedSubIndex + 1 }}</mat-expansion-panel-header
+      >
+      <cadmus-cod-hand-subscription
+        [langEntries]="subLangEntries"
+        [subscription]="editedSub"
+        (subscriptionChange)="onSubscriptionSave($event)"
+        (editorClose)="onSubscriptionClose()"
+      ></cadmus-cod-hand-subscription>
+    </mat-expansion-panel>
+  </mat-expansion-panel>
+
+  <!-- references -->
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>references</mat-expansion-panel-header>
+    <cadmus-refs-doc-references
+      [tagEntries]="refTagEntries"
+      [typeEntries]="refTypeEntries"
+      [references]="initialReferences"
+      (referencesChange)="onReferencesChange($event)"
+    ></cadmus-refs-doc-references>
+  </mat-expansion-panel>
+
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      color="warn"
+      mat-icon-button
+      matTooltip="Discard changes"
+      (click)="cancel()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      color="primary"
+      mat-icon-button
+      matTooltip="Accept changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon>check_circle</mat-icon>
+    </button>
+  </div>
+</form>
