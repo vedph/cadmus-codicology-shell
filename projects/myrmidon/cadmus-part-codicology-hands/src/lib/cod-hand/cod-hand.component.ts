@@ -12,8 +12,8 @@ import { NgToolsValidators } from '@myrmidon/ng-tools';
 
 import { take } from 'rxjs';
 
-import { CodHand } from '../../public-api';
 import {
+  CodHand,
   CodHandDescription,
   CodHandInstance,
   CodHandSubscription,
