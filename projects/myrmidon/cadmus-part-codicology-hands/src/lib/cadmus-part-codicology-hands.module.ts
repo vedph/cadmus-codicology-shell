@@ -28,6 +28,7 @@ import { CodHandSignComponent } from './cod-hand-sign/cod-hand-sign.component';
 import { CodHandDescriptionComponent } from './cod-hand-description/cod-hand-description.component';
 import { CodHandInstanceComponent } from './cod-hand-instance/cod-hand-instance.component';
 import { CodHandComponent } from './cod-hand/cod-hand.component';
+import { CodHandsPartComponent } from './cod-hands-part/cod-hands-part.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { CodHandComponent } from './cod-hand/cod-hand.component';
     CodHandDescriptionComponent,
     CodHandInstanceComponent,
     CodHandComponent,
+    CodHandsPartComponent,
   ],
   imports: [
     CommonModule,
@@ -68,7 +70,8 @@ import { CodHandComponent } from './cod-hand/cod-hand.component';
     CodHandSignComponent,
     CodHandDescriptionComponent,
     CodHandInstanceComponent,
-    CodHandComponent
+    CodHandComponent,
+    CodHandsPartComponent
   ],
 })
 export class CadmusPartCodicologyHandsModule {}

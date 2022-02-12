@@ -1,0 +1,117 @@
+<form [formGroup]="form!" (submit)="save()">
+  <mat-card>
+    <mat-card-header>
+      <div mat-card-avatar>
+        <mat-icon>picture_in_picture</mat-icon>
+      </div>
+      <mat-card-title>Hands Part</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-tab-group [(selectedIndex)]="tabIndex">
+        <mat-tab label="hands">
+          <div>
+            <button
+              type="button"
+              mat-icon-button
+              color="primary"
+              (click)="addHand()"
+            >
+              <mat-icon>add_circle</mat-icon> add hand
+            </button>
+          </div>
+          <table *ngIf="hands?.value?.length">
+            <thead>
+              <tr>
+                <th></th>
+                <th>EID</th>
+                <th>name</th>
+                <th>dsc.n.</th>
+                <th>inst.n.</th>
+                <th>sub.n.</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let hand of hands?.value;
+                  let i = index;
+                  let first = first;
+                  let last = last
+                "
+              >
+                <td>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    color="primary"
+                    matTooltip="Edit this hand"
+                    (click)="editHand(i)"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Move this hand up"
+                    [disabled]="first"
+                    (click)="moveHandUp(i)"
+                  >
+                    <mat-icon>arrow_upward</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Move this hand down"
+                    [disabled]="last"
+                    (click)="moveHandDown(i)"
+                  >
+                    <mat-icon>arrow_downward</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    color="warn"
+                    matTooltip="Delete this hand"
+                    (click)="deleteHand(i)"
+                  >
+                    <mat-icon>remove_circle</mat-icon>
+                  </button>
+                </td>
+                <td>{{ hand.eid }}</td>
+                <td>{{ hand.name }}</td>
+                <td>{{ hand.descriptions?.length || 0 }}</td>
+                <td>{{ hand.instances?.length || 0 }}</td>
+                <td>{{ hand.subscriptions?.length || 0 }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </mat-tab>
+
+        <mat-tab label="hand" *ngIf="editedHand">
+          <cadmus-cod-hand
+            [typeEntries]="typeEntries"
+            [colorEntries]="colorEntries"
+            [ctTagEntries]="ctTagEntries"
+            [assTagEntries]="assTagEntries"
+            [refTagEntries]="refTagEntries"
+            [scriptEntries]="scriptEntries"
+            [imgTypeEntries]="imgTypeEntries"
+            [refTypeEntries]="refTypeEntries"
+            [sgnTypeEntries]="sgnTypeEntries"
+            [subLangEntries]="subLangEntries"
+            [hand]="editedHand"
+            (handChange)="onHandSave($event)"
+            (editorClose)="onHandClose()"
+          ></cadmus-cod-hand>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+    <mat-card-actions>
+      <cadmus-close-save-buttons
+        [form]="form"
+        [noSave]="userLevel < 2"
+        (closeRequest)="close()"
+      ></cadmus-close-save-buttons>
+    </mat-card-actions>
+  </mat-card>
+</form>

@@ -9,6 +9,7 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
 import { DialogService } from '@myrmidon/ng-mat-tools';
 import { NgToolsValidators } from '@myrmidon/ng-tools';
+
 import { take } from 'rxjs';
 
 import { CodHand } from '../../public-api';
