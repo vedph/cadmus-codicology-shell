@@ -26,6 +26,10 @@ import {
   COD_EDITS_PART_TYPEID,
 } from '@myrmidon/cadmus-part-codicology-edits';
 import {
+  CodHandsPartFeatureComponent,
+  COD_HANDS_PART_TYPEID,
+} from '@myrmidon/cadmus-part-codicology-hands';
+import {
   CodLayoutsPartFeatureComponent,
   COD_LAYOUTS_PART_TYPEID,
 } from '@myrmidon/cadmus-part-codicology-layouts';
@@ -65,6 +69,12 @@ export const RouterModuleForChild = RouterModule.forChild([
     path: `${COD_EDITS_PART_TYPEID}/:pid`,
     pathMatch: 'full',
     component: CodEditsPartFeatureComponent,
+    canDeactivate: [PendingChangesGuard],
+  },
+  {
+    path: `${COD_HANDS_PART_TYPEID}/:pid`,
+    pathMatch: 'full',
+    component: CodHandsPartFeatureComponent,
     canDeactivate: [PendingChangesGuard],
   },
   {

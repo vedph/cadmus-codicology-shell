@@ -9,5 +9,5 @@ export * from './lib/cod-hand-description/cod-hand-description.component';
 export * from './lib/cod-hand-instance/cod-hand-instance.component';
 export * from './lib/cod-hand/cod-hand.component';
 export * from './lib/cod-hands-part/cod-hands-part.component';
-
+export * from './lib/cod-hands-part-feature/cod-hands-part-feature.component';
 export * from './lib/cadmus-part-codicology-hands.module';
