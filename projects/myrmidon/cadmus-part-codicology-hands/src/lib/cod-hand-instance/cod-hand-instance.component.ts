@@ -47,6 +47,9 @@ export class CodHandInstanceComponent implements OnInit {
   // cod-hand-colors
   @Input()
   public colorEntries: ThesaurusEntry[] | undefined;
+  // chronotope-tags
+  @Input()
+  public ctTagEntries: ThesaurusEntry[] | undefined;
   // assertion-tags
   @Input()
   public assTagEntries: ThesaurusEntry[] | undefined;
@@ -149,7 +152,7 @@ export class CodHandInstanceComponent implements OnInit {
     this.form.markAsPristine();
   }
 
-  private getModel(): CodHandInstance | null {
+  private getModel(): CodHandInstance {
     return {
       script: this.script.value?.trim(),
       rank: this.rank.value ? +this.rank.value : 0,
@@ -172,7 +175,7 @@ export class CodHandInstanceComponent implements OnInit {
     this.typologies.markAsDirty();
   }
 
-  public onLocationChange(ranges: CodLocationRange[]): void {
+  public onLocationChange(ranges: CodLocationRange[] | null): void {
     this.ranges.setValue(ranges);
     this.ranges.markAsDirty();
   }
@@ -182,7 +185,7 @@ export class CodHandInstanceComponent implements OnInit {
     this.chronotope.markAsDirty();
   }
 
-  public onImagesChange(images: CodImage[]): void {
+  public onImagesChange(images: CodImage[] | undefined): void {
     this.images.setValue(images);
     this.images.markAsDirty();
   }
@@ -195,10 +198,6 @@ export class CodHandInstanceComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const model = this.getModel();
-    if (!model) {
-      return;
-    }
-    this.modelChange.emit(model);
+    this.modelChange.emit(this.getModel());
   }
 }

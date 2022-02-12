@@ -1,1 +1,124 @@
-<p>cod-hand-instance works!</p>
+<form [formGroup]="form" (submit)="save()">
+  <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap">
+    <!-- script (bound) -->
+    <mat-form-field *ngIf="scriptEntries?.length" style="flex: 0 0 auto">
+      <mat-select [formControl]="script" placeholder="script">
+        <mat-option *ngFor="let e of scriptEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="
+          $any(script).errors?.required && (script.dirty || script.touched)
+        "
+        >script required</mat-error
+      >
+    </mat-form-field>
+    <!-- script (free) -->
+    <mat-form-field *ngIf="scriptEntries?.length" style="flex: 0 0 auto">
+      <input matInput [formControl]="script" placeholder="script" />
+      <mat-error
+        *ngIf="
+          $any(script).errors?.required && (script.dirty || script.touched)
+        "
+        >script required</mat-error
+      >
+      <mat-error
+        *ngIf="
+          $any(script).errors?.maxLength && (script.dirty || script.touched)
+        "
+        >script too long</mat-error
+      >
+    </mat-form-field>
+
+    <!-- rank -->
+    <mat-form-field style="flex: 0 0 auto; width: 4em">
+      <input
+        matInput
+        [formControl]="rank"
+        placeholder="rank"
+        type="number"
+        min="0"
+      />
+    </mat-form-field>
+
+    <!-- dscKey -->
+    <mat-form-field *ngIf="dscKeys?.length" style="flex: 0 0 auto">
+      <mat-select [formControl]="dscKey" placeholder="key">
+        <mat-option [value]="null">--</mat-option>
+        <mat-option *ngFor="let k of dscKeys" [value]="k">{{ k }}</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="
+          $any(dscKey).errors?.required && (dscKey.dirty || dscKey.touched)
+        "
+        >key required</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <!-- typologies -->
+  <fieldset>
+    <legend>typologies</legend>
+    <cadmus-ui-flags-picker
+      [flags]="typFlags"
+      [selectedIds]="initialTypologies"
+      (selectedIdsChange)="onTypologiesChange($event)"
+    ></cadmus-ui-flags-picker>
+  </fieldset>
+
+  <!-- ranges -->
+  <cadmus-cod-location
+    [location]="initialRanges"
+    (locationChange)="onLocationChange($event)"
+  ></cadmus-cod-location>
+
+  <!-- colors -->
+  <fieldset>
+    <legend>colors</legend>
+    <cadmus-ui-flags-picker
+      [flags]="clrFlags"
+      [selectedIds]="initialColors"
+      (selectedIdsChange)="onColorsChange($event)"
+    ></cadmus-ui-flags-picker>
+  </fieldset>
+
+  <!-- chronotope -->
+  <cadmus-refs-asserted-chronotope
+    [tagEntries]="ctTagEntries"
+    [assTagEntries]="assTagEntries"
+    [refTagEntries]="refTagEntries"
+    [refTypeEntries]="refTypeEntries"
+    [chronotope]="initialChronotope"
+    (chronotopeChange)="onChronotopeChange($event)"
+  ></cadmus-refs-asserted-chronotope>
+
+  <!-- images -->
+  <cadmus-cod-images
+    [typeEntries]="imgTypeEntries"
+    [images]="initialImages"
+    (imagesChange)="onImagesChange($event)"
+  ></cadmus-cod-images>
+
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      color="warn"
+      mat-icon-button
+      matTooltip="Discard changes"
+      (click)="cancel()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      color="primary"
+      mat-icon-button
+      matTooltip="Accept changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon>check_circle</mat-icon>
+    </button>
+  </div>
+</form>
