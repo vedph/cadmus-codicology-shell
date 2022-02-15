@@ -24,13 +24,14 @@
       >
     </mat-form-field>
   </div>
-  <div>
+  <fieldset>
+    <legend>notes</legend>
     <!-- notes -->
     <cadmus-note-set
       [set]="initialNoteSet"
       (noteChange)="onNoteChange($event)"
     ></cadmus-note-set>
-  </div>
+  </fieldset>
   <div>
     <!-- signs -->
     <div>

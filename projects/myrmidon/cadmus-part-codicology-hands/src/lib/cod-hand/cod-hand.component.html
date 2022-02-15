@@ -11,6 +11,7 @@
 
     <!-- name -->
     <mat-form-field style="flex: 0 0 auto">
+      <input matInput [formControl]="name" placeholder="name" />
       <mat-error
         *ngIf="$any(name).errors?.maxLength && (name.dirty || name.touched)"
         >name too long</mat-error

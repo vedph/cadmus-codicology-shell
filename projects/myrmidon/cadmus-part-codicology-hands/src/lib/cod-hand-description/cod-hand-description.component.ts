@@ -108,6 +108,9 @@ export class CodHandDescriptionComponent implements OnInit {
   private updateForm(model: CodHandDescription | undefined): void {
     if (!model) {
       this.form.reset();
+      this.initialNoteSet = {
+        definitions: this._noteDefs,
+      };
       return;
     }
 

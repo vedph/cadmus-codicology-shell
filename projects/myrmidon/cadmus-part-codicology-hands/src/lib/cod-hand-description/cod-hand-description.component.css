@@ -6,3 +6,8 @@ th {
   width: 100%;
   max-width: 800px;
 }
+fieldset {
+  border: 1px solid silver;
+  border-radius: 6px;
+  padding: 6px 12px;
+}
