@@ -159,7 +159,7 @@ export class NoteSetComponent implements OnInit {
    */
   private editNote(key: string): void {
     if (!this._set.notes) {
-      return;
+      this._set.notes = new Map<string, string | null>();
     }
     this.text.clearValidators();
     this.text.setValue(this._set.notes.get(key));

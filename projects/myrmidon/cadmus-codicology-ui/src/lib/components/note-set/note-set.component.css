@@ -26,3 +26,8 @@
 .err {
   color: red;
 }
+.preview {
+  background-color: #f0f0f0;
+  padding: 8px;
+  border-radius: 6px;
+}

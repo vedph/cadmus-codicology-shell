@@ -1,6 +1,7 @@
 <form [formGroup]="form" (submit)="save()">
   <!-- bar -->
   <div>
+    <!-- keys -->
     <mat-form-field *ngIf="keys?.length" style="width: 12em">
       <mat-select [formControl]="key" placeholder="note">
         <mat-option *ngFor="let k of keys" [value]="k.key">{{
@@ -8,9 +9,11 @@
         }}</mat-option>
       </mat-select>
     </mat-form-field>
+    <!-- count -->
     <span class="bar count">
       {{ noteCount }}
     </span>
+    <!-- revert -->
     <button
       type="button"
       mat-icon-button
@@ -21,6 +24,7 @@
     >
       <mat-icon>refresh</mat-icon>
     </button>
+    <!-- flags -->
     <span *ngIf="currentDef?.required" class="bar" matTooltip="Required">
       <mat-icon>done</mat-icon>
       &nbsp;
@@ -90,8 +94,7 @@
     </div>
 
     <!-- preview -->
-    <div *ngIf="currentDef?.markdown">
-      <hr />
+    <div *ngIf="currentDef?.markdown" class="preview">
       <markdown [data]="text?.value"></markdown>
     </div>
   </div>
