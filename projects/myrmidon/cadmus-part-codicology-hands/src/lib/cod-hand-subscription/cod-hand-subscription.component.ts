@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { NgToolsValidators } from '@myrmidon/ng-tools';
 
 import { CodHandSubscription } from '../cod-hands-part';
 
@@ -36,19 +37,22 @@ export class CodHandSubscriptionComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public range: FormControl;
+  public ranges: FormControl;
   public language: FormControl;
   public text: FormControl;
   public note: FormControl;
   public form: FormGroup;
 
-  public initialRange?: CodLocationRange;
+  public initialRanges?: CodLocationRange[];
 
   constructor(formBuilder: FormBuilder) {
     this.subscriptionChange = new EventEmitter<CodHandSubscription>();
     this.editorClose = new EventEmitter<any>();
     // form
-    this.range = formBuilder.control(null, Validators.required);
+    this.ranges = formBuilder.control(
+      [],
+      NgToolsValidators.strictMinLengthValidator(1)
+    );
     this.language = formBuilder.control(null, [
       Validators.required,
       Validators.maxLength(50),
@@ -56,7 +60,7 @@ export class CodHandSubscriptionComponent implements OnInit {
     this.text = formBuilder.control(null, Validators.maxLength(1000));
     this.note = formBuilder.control(null, Validators.maxLength(1000));
     this.form = formBuilder.group({
-      range: this.range,
+      ranges: this.ranges,
       language: this.language,
       text: this.text,
       note: this.note,
@@ -75,7 +79,7 @@ export class CodHandSubscriptionComponent implements OnInit {
       return;
     }
 
-    this.initialRange = subscription.range;
+    this.initialRanges = subscription.range ? [subscription.range] : [];
     this.language.setValue(subscription.language);
     this.text.setValue(subscription.text);
     this.note.setValue(subscription.note);
@@ -84,12 +88,12 @@ export class CodHandSubscriptionComponent implements OnInit {
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
-    this.range.setValue(ranges ? ranges[0] : undefined);
+    this.ranges.setValue(ranges || []);
   }
 
   private getSubscription(): CodHandSubscription {
     return {
-      range: this.range.value,
+      range: this.ranges.value?.length ? this.ranges.value[0] : undefined,
       language: this.language.value?.trim(),
       text: this.text.value?.trim(),
       note: this.note.value?.trim(),

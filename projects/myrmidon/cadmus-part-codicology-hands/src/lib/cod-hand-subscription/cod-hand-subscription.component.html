@@ -3,7 +3,7 @@
     <!-- range -->
     <cadmus-cod-location
       style="flex: 0 0 auto"
-      [location]="range?.value"
+      [location]="initialRanges || []"
       (locationChange)="onLocationChange($event)"
     ></cadmus-cod-location>
     <!-- language (bound) -->
