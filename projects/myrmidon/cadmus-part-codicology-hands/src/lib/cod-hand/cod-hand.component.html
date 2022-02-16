@@ -97,13 +97,13 @@
       <mat-expansion-panel-header
         >description #{{ editedDscIndex + 1 }}</mat-expansion-panel-header
       >
+      <cadmus-cod-hand-description
+        [sgnTypeEntries]="sgnTypeEntries"
+        [description]="editedDsc"
+        (descriptionChange)="onDescriptionSave($event)"
+        (editorClose)="onDescriptionClose()"
+      ></cadmus-cod-hand-description>
     </mat-expansion-panel>
-    <cadmus-cod-hand-description
-      [sgnTypeEntries]="sgnTypeEntries"
-      [description]="editedDsc"
-      (descriptionChange)="onDescriptionSave($event)"
-      (editorClose)="onDescriptionClose()"
-    ></cadmus-cod-hand-description>
   </mat-expansion-panel>
 
   <!-- instances -->
