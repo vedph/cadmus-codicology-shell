@@ -1,0 +1,84 @@
+<form [formGroup]="form" (submit)="save()">
+  <div class="form-row">
+    <!-- location -->
+    <mat-form-field>
+      <mat-select [formControl]="location" placeholder="location">
+        <mat-option *ngFor="let l of locations" [value]="l">{{ l }}</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="
+          $any(location).errors?.required &&
+          (location.dirty || location.touched)
+        "
+        >location required</mat-error
+      >
+    </mat-form-field>
+
+    <!-- material (bound) -->
+    <mat-form-field *ngIf="matEntries?.length" class="form-col">
+      <mat-select [formControl]="material" placeholder="material">
+        <mat-option *ngFor="let e of matEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="
+          $any(material).errors?.required &&
+          (material.dirty || material.touched)
+        "
+        >material required</mat-error
+      >
+    </mat-form-field>
+    <!-- material (free) -->
+    <mat-form-field *!ngIf="matEntries?.length" class="form-col">
+      <input matInput [formControl]="material" placeholder="material" />
+      <mat-error
+        *ngIf="
+          $any(material).errors?.required &&
+          (material.dirty || material.touched)
+        "
+        >material required</mat-error
+      >
+      <mat-error
+        *ngIf="
+          $any(material).errors?.maxLength &&
+          (material.dirty || material.touched)
+        "
+        >material too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <!-- chronotope -->
+  <cadmus-refs-asserted-chronotope
+    [tagEntries]="ctTagEntries"
+    [assTagEntries]="assTagEntries"
+    [refTagEntries]="refTagEntries"
+    [refTypeEntries]="refTypeEntries"
+    [chronotope]="initialChronotope"
+    (chronotopeChange)="onChronotopeChange($event)"
+  >
+  </cadmus-refs-asserted-chronotope>
+
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      color="warn"
+      mat-icon-button
+      matTooltip="Discard changes"
+      (click)="cancel()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      color="primary"
+      mat-icon-button
+      matTooltip="Accept changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon>check_circle</mat-icon>
+    </button>
+  </div>
+</form>

@@ -162,10 +162,12 @@ export class CodNColDefinitionComponent implements OnInit {
 
   public onSelectedIdsChange(ids: string[]): void {
     this.colors.setValue(ids);
+    this.colors.markAsDirty();
   }
 
   public onDateChange(date: HistoricalDateModel): void {
     this.date.setValue(date);
+    this.date.markAsDirty();
   }
 
   public cancel(): void {
