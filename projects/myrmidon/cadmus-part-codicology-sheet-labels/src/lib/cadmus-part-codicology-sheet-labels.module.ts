@@ -14,12 +14,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
 import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
 import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
+import { CadmusUiFlagsPickerModule } from '@myrmidon/cadmus-ui-flags-picker';
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
+import { CodNColDefinitionComponent } from './cod-n-col-definition/cod-n-col-definition.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [CodNColDefinitionComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -40,7 +42,8 @@ import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
     CadmusMatPhysicalSizeModule,
     CadmusRefsAssertedChronotopeModule,
     CadmusRefsHistoricalDateModule,
+    CadmusUiFlagsPickerModule,
   ],
-  exports: [],
+  exports: [CodNColDefinitionComponent],
 })
 export class CadmusPartCodicologySheetLabelsModule {}
