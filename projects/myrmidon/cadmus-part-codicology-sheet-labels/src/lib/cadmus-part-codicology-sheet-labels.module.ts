@@ -22,12 +22,14 @@ import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
 import { CodNColDefinitionComponent } from './cod-n-col-definition/cod-n-col-definition.component';
 import { CodCColDefinitionComponent } from './cod-c-col-definition/cod-c-col-definition.component';
 import { CodSColDefinitionComponent } from './cod-s-col-definition/cod-s-col-definition.component';
+import { CodRColDefinitionComponent } from './cod-r-col-definition/cod-r-col-definition.component';
 
 @NgModule({
   declarations: [
     CodNColDefinitionComponent,
     CodCColDefinitionComponent,
     CodSColDefinitionComponent,
+    CodRColDefinitionComponent,
   ],
   imports: [
     CommonModule,
@@ -55,6 +57,7 @@ import { CodSColDefinitionComponent } from './cod-s-col-definition/cod-s-col-def
     CodNColDefinitionComponent,
     CodCColDefinitionComponent,
     CodSColDefinitionComponent,
+    CodRColDefinitionComponent
   ],
 })
 export class CadmusPartCodicologySheetLabelsModule {}
