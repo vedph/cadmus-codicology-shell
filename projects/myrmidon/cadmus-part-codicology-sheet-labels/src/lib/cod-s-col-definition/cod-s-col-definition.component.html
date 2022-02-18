@@ -1,0 +1,125 @@
+<form [formGroup]="form" (submit)="save()">
+  <div class="form-row">
+    <!-- id -->
+    <mat-form-field>
+      <input matInput [formControl]="id" placeholder="ID" />
+      <mat-error *ngIf="$any(id).errors?.required && (id.dirty || id.touched)"
+        >ID required</mat-error
+      >
+      <mat-error *ngIf="$any(id).errors?.maxLength && (id.dirty || id.touched)"
+        >ID too long</mat-error
+      >
+    </mat-form-field>
+
+    <!-- rank -->
+    <mat-form-field style="width: 4em">
+      <input
+        matInput
+        [formControl]="rank"
+        placeholder="rank"
+        type="number"
+        min="0"
+      />
+    </mat-form-field>
+  </div>
+
+  <div class="form-row">
+    <!-- system (bound) -->
+    <mat-form-field *ngIf="sysEntries?.length" class="form-col">
+      <mat-select [formControl]="system" placeholder="system">
+        <mat-option *ngFor="let e of sysEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="
+          $any(system).errors?.required && (system.dirty || system.touched)
+        "
+        >system required</mat-error
+      >
+    </mat-form-field>
+    <!-- system (free) -->
+    <mat-form-field *!ngIf="sysEntries?.length" class="form-col">
+      <input matInput [formControl]="system" placeholder="system" />
+      <mat-error
+        *ngIf="
+          $any(system).errors?.required && (system.dirty || system.touched)
+        "
+        >system required</mat-error
+      >
+      <mat-error
+        *ngIf="
+          $any(system).errors?.maxLength && (system.dirty || system.touched)
+        "
+        >system too long</mat-error
+      >
+    </mat-form-field>
+
+    <!-- position (bound) -->
+    <mat-form-field *ngIf="posEntries?.length" class="form-col">
+      <mat-select [formControl]="position" placeholder="position">
+        <mat-option *ngFor="let e of posEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="
+          $any(position).errors?.required &&
+          (position.dirty || position.touched)
+        "
+        >position required</mat-error
+      >
+    </mat-form-field>
+    <!-- position (free) -->
+    <mat-form-field *!ngIf="posEntries?.length" class="form-col">
+      <input matInput [formControl]="position" placeholder="position" />
+      <mat-error
+        *ngIf="
+          $any(position).errors?.required &&
+          (position.dirty || position.touched)
+        "
+        >position required</mat-error
+      >
+      <mat-error
+        *ngIf="
+          $any(position).errors?.maxLength &&
+          (position.dirty || position.touched)
+        "
+        >position too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <div>
+    <!-- note -->
+    <mat-form-field class="long-text">
+      <input matInput [formControl]="note" placeholder="note" />
+      <mat-error
+        *ngIf="$any(note).errors?.maxLength && (note.dirty || note.touched)"
+        >note too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      color="warn"
+      mat-icon-button
+      matTooltip="Discard changes"
+      (click)="cancel()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      color="primary"
+      mat-icon-button
+      matTooltip="Accept changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon>check_circle</mat-icon>
+    </button>
+  </div>
+</form>

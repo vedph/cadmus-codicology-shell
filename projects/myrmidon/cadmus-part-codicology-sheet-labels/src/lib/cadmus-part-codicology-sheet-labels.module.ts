@@ -21,9 +21,14 @@ import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
 
 import { CodNColDefinitionComponent } from './cod-n-col-definition/cod-n-col-definition.component';
 import { CodCColDefinitionComponent } from './cod-c-col-definition/cod-c-col-definition.component';
+import { CodSColDefinitionComponent } from './cod-s-col-definition/cod-s-col-definition.component';
 
 @NgModule({
-  declarations: [CodNColDefinitionComponent, CodCColDefinitionComponent],
+  declarations: [
+    CodNColDefinitionComponent,
+    CodCColDefinitionComponent,
+    CodSColDefinitionComponent,
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -46,6 +51,10 @@ import { CodCColDefinitionComponent } from './cod-c-col-definition/cod-c-col-def
     CadmusRefsHistoricalDateModule,
     CadmusUiFlagsPickerModule,
   ],
-  exports: [CodNColDefinitionComponent, CodCColDefinitionComponent],
+  exports: [
+    CodNColDefinitionComponent,
+    CodCColDefinitionComponent,
+    CodSColDefinitionComponent,
+  ],
 })
 export class CadmusPartCodicologySheetLabelsModule {}
