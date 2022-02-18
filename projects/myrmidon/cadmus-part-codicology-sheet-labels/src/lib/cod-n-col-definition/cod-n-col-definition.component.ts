@@ -149,7 +149,7 @@ export class CodNColDefinitionComponent implements OnInit {
   private getModel(): CodNColDefinition {
     return {
       id: this.id.value?.trim(),
-      rank: this.rank.value || 0,
+      rank: +this.rank.value || 0,
       isPagination: this.isPagination.value ? true : false,
       system: this.system.value?.trim(),
       technique: this.technique.value?.trim(),

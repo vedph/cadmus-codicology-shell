@@ -18,10 +18,12 @@ import { CadmusUiFlagsPickerModule } from '@myrmidon/cadmus-ui-flags-picker';
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
+
 import { CodNColDefinitionComponent } from './cod-n-col-definition/cod-n-col-definition.component';
+import { CodCColDefinitionComponent } from './cod-c-col-definition/cod-c-col-definition.component';
 
 @NgModule({
-  declarations: [CodNColDefinitionComponent],
+  declarations: [CodNColDefinitionComponent, CodCColDefinitionComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -44,6 +46,6 @@ import { CodNColDefinitionComponent } from './cod-n-col-definition/cod-n-col-def
     CadmusRefsHistoricalDateModule,
     CadmusUiFlagsPickerModule,
   ],
-  exports: [CodNColDefinitionComponent],
+  exports: [CodNColDefinitionComponent, CodCColDefinitionComponent],
 })
 export class CadmusPartCodicologySheetLabelsModule {}
