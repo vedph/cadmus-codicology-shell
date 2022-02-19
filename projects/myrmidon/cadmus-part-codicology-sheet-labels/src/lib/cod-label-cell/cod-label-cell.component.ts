@@ -68,7 +68,7 @@ export class CodLabelCellComponent implements OnInit {
   }
 
   public editValue(): void {
-    if (this.editMode === 'value' || this.editMode === 'note') {
+    if (this.editMode !== 'none') {
       return;
     }
     this.editMode = 'value';
@@ -79,7 +79,7 @@ export class CodLabelCellComponent implements OnInit {
   }
 
   public editNote(): void {
-    if (this.editMode === 'value' || this.editMode === 'note') {
+    if (this.editMode !== 'none') {
       return;
     }
     this.editMode = 'note';

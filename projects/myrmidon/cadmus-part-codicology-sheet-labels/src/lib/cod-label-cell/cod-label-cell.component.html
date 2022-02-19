@@ -5,7 +5,12 @@
   (keydown.F2)="editValue()"
   (keydown.F3)="editNote()"
 >
-  <div *ngIf="editMode === 'none'" matTooltip="cell.note" class="form-row">
+  <!-- display -->
+  <div
+    *ngIf="editMode === 'none'"
+    matTooltip="{{ cell?.note }}"
+    class="form-row"
+  >
     <span>{{ cell.value }}</span>
     <button
       class="muted"
@@ -22,16 +27,19 @@
       type="button"
       mat-icon-button
       matTooltip="Edit note (F3)"
+      (click)="editNote"
     >
       <mat-icon>edit_note</mat-icon>
     </button>
   </div>
+  <!-- edit -->
   <form
     [formGroup]="form"
     (submit)="saveEdit()"
     *ngIf="editMode !== 'none'"
     class="form-row"
   >
+    <!-- value -->
     <mat-form-field *ngIf="editMode === 'value'">
       <input
         #valueInput
@@ -39,7 +47,7 @@
         type="text"
         placeholder="value"
         spellcheck="false"
-        formControlName="value"
+        [formControl]="value"
         (keydown.esc)="cancelEdit()"
       />
       <mat-error
@@ -47,14 +55,14 @@
         >value too long</mat-error
       >
     </mat-form-field>
-
+    <!-- note -->
     <mat-form-field *ngIf="editMode === 'note'">
       <input
         #noteInput
         matInput
         type="text"
         placeholder="note"
-        formControlName="note"
+        [formControl]="note"
         (keydown.esc)="cancelEdit()"
       />
       <mat-error

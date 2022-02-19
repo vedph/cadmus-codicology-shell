@@ -10,6 +10,7 @@ import {
   CodSheetLabelsPart,
   COD_SHEET_LABELS_PART_TYPEID,
 } from '../cod-sheet-labels-part';
+import { CodLabelCell } from '../label-generator';
 
 /**
  * CodSheetLabels part editor component.
@@ -59,8 +60,15 @@ export class CodSheetLabelsPartComponent
   // doc-reference-tags
   public refTagEntries: ThesaurusEntry[] | undefined;
 
+  public pippo: CodLabelCell;
+
   constructor(authService: AuthJwtService, formBuilder: FormBuilder) {
     super(authService);
+    this.pippo = {
+      rowId: '1r',
+      value: 'hello',
+      note: 'A note about this'
+    };
     // form
     // TODO
     this.form = formBuilder.group({});
