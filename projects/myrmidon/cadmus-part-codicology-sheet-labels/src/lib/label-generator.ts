@@ -84,7 +84,7 @@ export class LabelGenerator {
       action.valueType = LabelActionValueType.GrcLowerLetter;
     }
     else if (/^[Α-Ω]$/.test(action.value!)) {
-      action.valueType = LabelActionValueType.GrcLowerLetter;
+      action.valueType = LabelActionValueType.GrcUpperLetter;
     }
     return action;
   }
