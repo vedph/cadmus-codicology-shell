@@ -1,13 +1,13 @@
 import { RomanNumber } from '@myrmidon/ng-tools';
 
-export interface LabelCell {
+export interface CodLabelCell {
   rowId: string;
   value?: string;
   note?: string;
 }
 
-export interface LabelAction {
-  type: LabelActionType;
+export interface CodLabelAction {
+  type: CodLabelActionType;
   n: number;
   v: boolean;
   qn?: number;
@@ -17,7 +17,7 @@ export interface LabelAction {
   value?: string;
 }
 
-export enum LabelActionType {
+export enum CodLabelActionType {
   Custom = 0,
   Arabic,
   UpperRoman,
@@ -49,7 +49,7 @@ export class LabelGenerator {
    */
   public static parseAction(
     text: string | null | undefined
-  ): LabelAction | null {
+  ): CodLabelAction | null {
     if (!text) {
       return null;
     }
@@ -58,13 +58,13 @@ export class LabelGenerator {
       return null;
     }
 
-    const action: LabelAction = {
+    const action: CodLabelAction = {
       n: +m[1],
       v: m[2] === 'v',
       page: m[3] === '%',
       count: +m[4],
       value: m[5] || '',
-      type: LabelActionType.Custom,
+      type: CodLabelActionType.Custom,
     };
 
     // handle corner cases for value first
@@ -82,7 +82,7 @@ export class LabelGenerator {
       // corner case: value like qN/N (quire)
       const qm = /^q([0-9]+)\/([0-9]+)$/.exec(action.value);
       if (qm) {
-        action.type = LabelActionType.Quire;
+        action.type = CodLabelActionType.Quire;
         action.v = false;
         action.page = false;
         action.qn = +qm[1];
@@ -94,30 +94,30 @@ export class LabelGenerator {
     // determine value type:
     // - Arabic number
     if (/^[0-9]+$/.test(action.value!)) {
-      action.type = LabelActionType.Arabic;
+      action.type = CodLabelActionType.Arabic;
       return action;
     }
     // - Roman number
     if (/^[IVXLCM]+$/.test(action.value!)) {
-      action.type = LabelActionType.UpperRoman;
+      action.type = CodLabelActionType.UpperRoman;
     } else if (/^[ivxlcm]+$/.test(action.value!)) {
-      action.type = LabelActionType.LowerRoman;
+      action.type = CodLabelActionType.LowerRoman;
     }
     // if mixed case, assume uppercase
     else if (/^[ivxlcmIVXLCM]+$/.test(action.value!)) {
-      action.type = LabelActionType.UpperRoman;
+      action.type = CodLabelActionType.UpperRoman;
     }
     // - single Latin letter
     else if (/^[a-z]$/.test(action.value!)) {
-      action.type = LabelActionType.LatLowerLetter;
+      action.type = CodLabelActionType.LatLowerLetter;
     } else if (/^[A-Z]$/.test(action.value!)) {
-      action.type = LabelActionType.LatUpperLetter;
+      action.type = CodLabelActionType.LatUpperLetter;
     }
     // - single Greek letter (Unicode alphabet, excluding waw koppa sampi)
     else if (/^[α-ω]$/.test(action.value!)) {
-      action.type = LabelActionType.GrcLowerLetter;
+      action.type = CodLabelActionType.GrcLowerLetter;
     } else if (/^[Α-Ω]$/.test(action.value!)) {
-      action.type = LabelActionType.GrcUpperLetter;
+      action.type = CodLabelActionType.GrcUpperLetter;
     }
     return action;
   }
@@ -145,8 +145,8 @@ export class LabelGenerator {
     }
   }
 
-  private static generateQuireRows(action: LabelAction): LabelCell[] {
-    const cells: LabelCell[] = [];
+  private static generateQuireRows(action: CodLabelAction): CodLabelCell[] {
+    const cells: CodLabelCell[] = [];
     if (!action.qs || !action.qn) {
       return cells;
     }
@@ -178,16 +178,16 @@ export class LabelGenerator {
    * @param action The action.
    * @returns Generated cells.
    */
-  public static generate(action: LabelAction): LabelCell[] {
+  public static generate(action: CodLabelAction): CodLabelCell[] {
     if (!action) {
       return [];
     }
     // quire is a corner case
-    if (action.type === LabelActionType.Quire) {
+    if (action.type === CodLabelActionType.Quire) {
       return this.generateQuireRows(action);
     }
 
-    const cells: LabelCell[] = [];
+    const cells: CodLabelCell[] = [];
     let n = action.n;
     let v = action.v;
     let value = action.value;
@@ -209,25 +209,25 @@ export class LabelGenerator {
       }
       // calculate new value
       switch (action.type) {
-        case LabelActionType.Arabic:
+        case CodLabelActionType.Arabic:
           value = (+value! + 1).toString();
           break;
-        case LabelActionType.UpperRoman:
+        case CodLabelActionType.UpperRoman:
           value = this.getNextRoman(value!, false);
           break;
-        case LabelActionType.LowerRoman:
+        case CodLabelActionType.LowerRoman:
           value = this.getNextRoman(value!, true);
           break;
-        case LabelActionType.LatLowerLetter:
+        case CodLabelActionType.LatLowerLetter:
           value = this.getNextLatLetter(value!, true);
           break;
-        case LabelActionType.LatUpperLetter:
+        case CodLabelActionType.LatUpperLetter:
           value = this.getNextLatLetter(value!, false);
           break;
-        case LabelActionType.GrcLowerLetter:
+        case CodLabelActionType.GrcLowerLetter:
           value = this.getNextGrcLetter(value!, true);
           break;
-        case LabelActionType.GrcUpperLetter:
+        case CodLabelActionType.GrcUpperLetter:
           value = this.getNextGrcLetter(value!, false);
           break;
         default:
@@ -243,7 +243,7 @@ export class LabelGenerator {
    * @param text The text to parse for the action.
    * @returns Generated cells.
    */
-  public static generateFrom(text: string): LabelCell[] {
+  public static generateFrom(text: string): CodLabelCell[] {
     const action = this.parseAction(text);
     return action ? this.generate(action) : [];
   }

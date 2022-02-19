@@ -25,6 +25,8 @@ import { CodCColDefinitionComponent } from './cod-c-col-definition/cod-c-col-def
 import { CodSColDefinitionComponent } from './cod-s-col-definition/cod-s-col-definition.component';
 import { CodRColDefinitionComponent } from './cod-r-col-definition/cod-r-col-definition.component';
 import { CodEndleafComponent } from './cod-endleaf/cod-endleaf.component';
+import { CodSheetLabelsPartComponent } from './cod-sheet-labels-part/cod-sheet-labels-part.component';
+import { CodLabelCellComponent } from './cod-label-cell/cod-label-cell.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +35,8 @@ import { CodEndleafComponent } from './cod-endleaf/cod-endleaf.component';
     CodSColDefinitionComponent,
     CodRColDefinitionComponent,
     CodEndleafComponent,
+    CodSheetLabelsPartComponent,
+    CodLabelCellComponent,
   ],
   imports: [
     CommonModule,
@@ -62,7 +66,9 @@ import { CodEndleafComponent } from './cod-endleaf/cod-endleaf.component';
     CodCColDefinitionComponent,
     CodSColDefinitionComponent,
     CodRColDefinitionComponent,
-    CodEndleafComponent
+    CodEndleafComponent,
+    CodSheetLabelsPartComponent,
+    CodLabelCellComponent
   ],
 })
 export class CadmusPartCodicologySheetLabelsModule {}

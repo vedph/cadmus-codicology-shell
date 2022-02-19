@@ -1,0 +1,14 @@
+div.cell {
+  margin: 2px;
+  padding-left: 4px;
+  padding-right: 4px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+div.cell:hover {
+  margin: 2px;
+  padding-left: 4px;
+  padding-right: 4px;
+  border: 1px solid gray;
+  border-radius: 4px;
+}
