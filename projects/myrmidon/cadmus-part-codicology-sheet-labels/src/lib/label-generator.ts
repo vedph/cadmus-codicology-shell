@@ -65,25 +65,25 @@ export class LabelGenerator {
     if (/^[IVXLCM]+$/.test(action.value!)) {
       action.valueType = LabelActionValueType.UpperRoman;
     }
-    if (/^[ivxlcm]+$/.test(action.value!)) {
+    else if (/^[ivxlcm]+$/.test(action.value!)) {
       action.valueType = LabelActionValueType.LowerRoman;
     }
     // if mixed case, assume uppercase
-    if (/^[ivxlcmIVXLCM]+$/.test(action.value!)) {
+    else if (/^[ivxlcmIVXLCM]+$/.test(action.value!)) {
       action.valueType = LabelActionValueType.UpperRoman;
     }
     // - single Latin letter
-    if (/^[a-z]$/.test(action.value!)) {
+    else if (/^[a-z]$/.test(action.value!)) {
       action.valueType = LabelActionValueType.LatLowerLetter;
     }
-    if (/^[A-Z]$/.test(action.value!)) {
+    else if (/^[A-Z]$/.test(action.value!)) {
       action.valueType = LabelActionValueType.LatUpperLetter;
     }
     // - single Greek letter (Unicode alphabet, excluding waw koppa sampi)
-    if (/^[α-ω]$/.test(action.value!)) {
+    else if (/^[α-ω]$/.test(action.value!)) {
       action.valueType = LabelActionValueType.GrcLowerLetter;
     }
-    if (/^[Α-Ω]$/.test(action.value!)) {
+    else if (/^[Α-Ω]$/.test(action.value!)) {
       action.valueType = LabelActionValueType.GrcLowerLetter;
     }
     return action;
