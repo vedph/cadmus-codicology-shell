@@ -38,6 +38,10 @@ import {
   COD_MATERIAL_DSC_PART_TYPEID,
 } from '@myrmidon/cadmus-part-codicology-material-dsc';
 import {
+  CodSheetLabelsPartFeatureComponent,
+  COD_SHEET_LABELS_PART_TYPEID,
+} from '@myrmidon/cadmus-part-codicology-sheet-labels';
+import {
   CodShelfmarksPartFeatureComponent,
   COD_SHELFMARKS_PART_TYPEID,
 } from '@myrmidon/cadmus-part-codicology-shelfmarks';
@@ -87,6 +91,12 @@ export const RouterModuleForChild = RouterModule.forChild([
     path: `${COD_MATERIAL_DSC_PART_TYPEID}/:pid`,
     pathMatch: 'full',
     component: CodMaterialDscPartFeatureComponent,
+    canDeactivate: [PendingChangesGuard],
+  },
+  {
+    path: `${COD_SHEET_LABELS_PART_TYPEID}/:pid`,
+    pathMatch: 'full',
+    component: CodSheetLabelsPartFeatureComponent,
     canDeactivate: [PendingChangesGuard],
   },
   {
