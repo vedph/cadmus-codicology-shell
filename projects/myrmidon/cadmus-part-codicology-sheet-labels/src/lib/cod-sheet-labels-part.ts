@@ -65,7 +65,7 @@ export interface CodSheetLabelsPart extends Part {
  * The type ID used to identify the CodSheetLabelsPart type.
  */
 export const COD_SHEET_LABELS_PART_TYPEID =
-  'it.vedph.codicology.cod-sheet-labels';
+  'it.vedph.codicology.sheet-labels';
 
 /**
  * JSON schema for the CodSheetLabels part.
