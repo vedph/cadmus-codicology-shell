@@ -5,60 +5,81 @@
   (keydown.F2)="editValue()"
   (keydown.F3)="editNote()"
 >
-  <ng-container *ngIf="editMode === 'none'" matTooltip="cell.note">
-    {{ cell.value }}
-  </ng-container>
-  <ng-container *ngIf="editMode !== 'none'">
-    <form [formGroup]="form" (submit)="saveEdit()">
-      <mat-form-field *ngIf="editMode === 'value'">
-        <input
-          #textInput
-          matInput
-          type="text"
-          placeholder="value"
-          spellcheck="false"
-          formControlName="value"
-          (keydown.esc)="cancelEdit()"
-        />
-        <mat-error
-          *ngIf="value.hasError('maxLength') && (value.dirty || value.touched)"
-          >value too long</mat-error
-        >
-      </mat-form-field>
-
-      <mat-form-field *ngIf="editMode === 'note'">
-        <input
-          #textInput
-          matInput
-          type="text"
-          placeholder="note"
-          formControlName="note"
-          (keydown.esc)="cancelEdit()"
-        />
-        <mat-error
-          *ngIf="note.hasError('maxLength') && (note.dirty || note.touched)"
-          >note too long</mat-error
-        >
-      </mat-form-field>
-
-      <button
-        type="button"
-        mat-icon-button
-        matTooltip="Discard edit"
-        color="warn"
-        (click)="cancelEdit()"
+  <div *ngIf="editMode === 'none'" matTooltip="cell.note" class="form-row">
+    <span>{{ cell.value }}</span>
+    <button
+      class="muted"
+      type="button"
+      mat-icon-button
+      matTooltip="Edit value (F2)"
+      color="primary"
+      (click)="editValue()"
+    >
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button
+      class="muted"
+      type="button"
+      mat-icon-button
+      matTooltip="Edit note (F3)"
+    >
+      <mat-icon>edit_note</mat-icon>
+    </button>
+  </div>
+  <form
+    [formGroup]="form"
+    (submit)="saveEdit()"
+    *ngIf="editMode !== 'none'"
+    class="form-row"
+  >
+    <mat-form-field *ngIf="editMode === 'value'">
+      <input
+        #valueInput
+        matInput
+        type="text"
+        placeholder="value"
+        spellcheck="false"
+        formControlName="value"
+        (keydown.esc)="cancelEdit()"
+      />
+      <mat-error
+        *ngIf="value.hasError('maxLength') && (value.dirty || value.touched)"
+        >value too long</mat-error
       >
-        <mat-icon>clear</mat-icon>
-      </button>
-      <button
-        type="submit"
-        [disabled]="form.invalid"
-        mat-icon-button
-        matTooltip="Save edit"
-        color="primary"
+    </mat-form-field>
+
+    <mat-form-field *ngIf="editMode === 'note'">
+      <input
+        #noteInput
+        matInput
+        type="text"
+        placeholder="note"
+        formControlName="note"
+        (keydown.esc)="cancelEdit()"
+      />
+      <mat-error
+        *ngIf="note.hasError('maxLength') && (note.dirty || note.touched)"
+        >note too long</mat-error
       >
-        <mat-icon>check_circle</mat-icon>
-      </button>
-    </form>
-  </ng-container>
+    </mat-form-field>
+
+    <button
+      type="button"
+      mat-icon-button
+      matTooltip="Discard edit"
+      color="warn"
+      (click)="cancelEdit()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      [disabled]="form.invalid"
+      mat-icon-button
+      matTooltip="Save edit"
+      color="primary"
+    >
+      <mat-icon>check_circle</mat-icon>
+    </button>
+  </form>
 </div>
