@@ -26,15 +26,23 @@ export enum LabelActionValueType {
   GrcLowerLetter,
 }
 
+/**
+ * Labels generator.
+ */
 export class LabelGenerator {
   // 1=start nr
   // 2=r/v/nothing
   // 3=* (sheet) or % (page)
   // 4=count
-  // 5=value
+  // 5=value (if in "" this forces custom type)
   public static PATTERN: RegExp =
     /([0-9]+)([rv])?\s*([x*%])\s*([0-9]+)\s*=\s*([^\s]*)/;
 
+  /**
+   * Parse the specified text representing a labels insert action.
+   * @param text The text.
+   * @returns The action or null if invalid.
+   */
   public static parseAction(
     text: string | null | undefined
   ): LabelAction | null {
@@ -55,6 +63,16 @@ export class LabelGenerator {
       valueType: LabelActionValueType.Custom,
     };
 
+    // corner case: value in ""
+    if (
+      action.value!.length > 2 &&
+      action.value!.charAt(0) === '"' &&
+      action.value!.charAt(action.value!.length - 1) === '"'
+    ) {
+      action.value = action.value!.substring(1, action.value!.length - 1);
+      return action;
+    }
+
     // determine value type:
     // - Arabic number
     if (/^[0-9]+$/.test(action.value!)) {
@@ -64,8 +82,7 @@ export class LabelGenerator {
     // - Roman number
     if (/^[IVXLCM]+$/.test(action.value!)) {
       action.valueType = LabelActionValueType.UpperRoman;
-    }
-    else if (/^[ivxlcm]+$/.test(action.value!)) {
+    } else if (/^[ivxlcm]+$/.test(action.value!)) {
       action.valueType = LabelActionValueType.LowerRoman;
     }
     // if mixed case, assume uppercase
@@ -75,15 +92,13 @@ export class LabelGenerator {
     // - single Latin letter
     else if (/^[a-z]$/.test(action.value!)) {
       action.valueType = LabelActionValueType.LatLowerLetter;
-    }
-    else if (/^[A-Z]$/.test(action.value!)) {
+    } else if (/^[A-Z]$/.test(action.value!)) {
       action.valueType = LabelActionValueType.LatUpperLetter;
     }
     // - single Greek letter (Unicode alphabet, excluding waw koppa sampi)
     else if (/^[α-ω]$/.test(action.value!)) {
       action.valueType = LabelActionValueType.GrcLowerLetter;
-    }
-    else if (/^[Α-Ω]$/.test(action.value!)) {
+    } else if (/^[Α-Ω]$/.test(action.value!)) {
       action.valueType = LabelActionValueType.GrcUpperLetter;
     }
     return action;
@@ -112,8 +127,12 @@ export class LabelGenerator {
     }
   }
 
-  public static generate(text: string): LabelCell[] {
-    const action = this.parseAction(text);
+  /**
+   * Generate a set of label cells from the specified action.
+   * @param action The action.
+   * @returns Generated cells.
+   */
+  public static generate(action: LabelAction): LabelCell[] {
     if (!action) {
       return [];
     }
@@ -166,5 +185,15 @@ export class LabelGenerator {
       }
     }
     return cells;
+  }
+
+  /**
+   * Generate a set of label cells from a text representing an action.
+   * @param text The text to parse for the action.
+   * @returns Generated cells.
+   */
+  public static generateFrom(text: string): LabelCell[] {
+    const action = this.parseAction(text);
+    return action ? this.generate(action) : [];
   }
 }

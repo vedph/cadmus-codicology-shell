@@ -1,6 +1,7 @@
 import { LabelActionValueType, LabelGenerator } from './label-generator';
 
 describe('LabelGenerator', () => {
+  // parser
   it('should parse null as null', () => {
     const action = LabelGenerator.parseAction(null);
     expect(action).toBeNull();
@@ -107,6 +108,26 @@ describe('LabelGenerator', () => {
     expect(action!.value).toBe('II');
     expect(action!.valueType).toBe(LabelActionValueType.UpperRoman);
   });
+  it('should parse "1x2=X"', () => {
+    const action = LabelGenerator.parseAction('1x2=X');
+    expect(action).toBeTruthy();
+    expect(action!.start).toBe(1);
+    expect(action!.v).toBeFalse();
+    expect(action!.page).toBeFalsy();
+    expect(action!.count).toBe(2);
+    expect(action!.value).toBe('X');
+    expect(action!.valueType).toBe(LabelActionValueType.UpperRoman);
+  });
+  it('should parse "1x2="X" as custom"', () => {
+    const action = LabelGenerator.parseAction('1x2="X"');
+    expect(action).toBeTruthy();
+    expect(action!.start).toBe(1);
+    expect(action!.v).toBeFalse();
+    expect(action!.page).toBeFalsy();
+    expect(action!.count).toBe(2);
+    expect(action!.value).toBe('X');
+    expect(action!.valueType).toBe(LabelActionValueType.Custom);
+  });
   it('should parse "1x2=ii"', () => {
     const action = LabelGenerator.parseAction('1x2=ii');
     expect(action).toBeTruthy();
@@ -156,5 +177,32 @@ describe('LabelGenerator', () => {
     expect(action!.count).toBe(2);
     expect(action!.value).toBe('β');
     expect(action!.valueType).toBe(LabelActionValueType.GrcLowerLetter);
+  });
+  // generator
+  it('should generate 3 from 1rx3=1', () => {
+    const cells = LabelGenerator.generateFrom('1x3=1');
+    expect(cells).toBeTruthy();
+    expect(cells.length).toBe(3);
+    for (let i = 0; i < 3; i++) {
+      expect(cells[i].rowId).toBe(`${i + 1}r`);
+      expect(cells[i].value).toBe(`${i + 1}`);
+    }
+  });
+  it('should generate 3 from 1vx3=X', () => {
+    const cells = LabelGenerator.generateFrom('1vx3=X');
+    expect(cells).toBeTruthy();
+    expect(cells.length).toBe(3);
+
+    let cell = cells[0];
+    expect(cell.rowId).toBe('1v');
+    expect(cell.value).toBe('X');
+
+    cell = cells[1];
+    expect(cell.rowId).toBe('2v');
+    expect(cell.value).toBe('XI');
+
+    cell = cells[2];
+    expect(cell.rowId).toBe('3v');
+    expect(cell.value).toBe('XII');
   });
 });
