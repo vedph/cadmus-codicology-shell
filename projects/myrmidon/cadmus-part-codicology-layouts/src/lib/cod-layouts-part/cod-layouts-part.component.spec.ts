@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { CodLayoutsPartComponent } from './cod-layouts-part.component';
 
@@ -8,7 +9,10 @@ describe('CodLayoutsPartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CodLayoutsPartComponent ]
+      declarations: [ CodLayoutsPartComponent ],
+      imports: [
+        ReactiveFormsModule
+      ]
     })
     .compileComponents();
   });

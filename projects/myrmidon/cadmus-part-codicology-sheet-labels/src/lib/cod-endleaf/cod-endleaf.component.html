@@ -30,7 +30,7 @@
       >
     </mat-form-field>
     <!-- material (free) -->
-    <mat-form-field *!ngIf="matEntries?.length" class="form-col">
+    <mat-form-field *ngIf="!matEntries?.length" class="form-col">
       <input matInput [formControl]="material" placeholder="material" />
       <mat-error
         *ngIf="

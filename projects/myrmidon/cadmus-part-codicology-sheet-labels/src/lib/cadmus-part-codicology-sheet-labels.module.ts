@@ -11,6 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+import { NgToolsModule } from '@myrmidon/ng-tools';
 import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
 import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
 import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
@@ -47,6 +48,7 @@ import { CodEndleafComponent } from './cod-endleaf/cod-endleaf.component';
     MatTabsModule,
     MatTooltipModule,
     // Cadmus
+    NgToolsModule,
     CadmusStateModule,
     CadmusUiModule,
     CadmusUiPgModule,

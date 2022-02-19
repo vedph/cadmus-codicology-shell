@@ -38,7 +38,7 @@
       >
     </mat-form-field>
     <!-- position (free) -->
-    <mat-form-field *!ngIf="posEntries?.length" class="form-col">
+    <mat-form-field *ngIf="!posEntries?.length" class="form-col">
       <input matInput [formControl]="position" placeholder="position" />
       <mat-error
         *ngIf="
