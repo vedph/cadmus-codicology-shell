@@ -233,7 +233,7 @@ describe('LabelGenerator', () => {
     expect(cell.rowId).toBe('3v');
     expect(cell.value).toBe('XII');
   });
-  it('should generate 16 from 1x2=q1/4', () => {
+  fit('should generate 16 from 1x2=q1/4', () => {
     const cells = LabelGenerator.generateFrom('1x2=q1/4');
     expect(cells).toBeTruthy();
     expect(cells.length).toBe(16);

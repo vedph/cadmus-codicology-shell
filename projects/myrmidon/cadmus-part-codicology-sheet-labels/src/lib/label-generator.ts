@@ -85,8 +85,8 @@ export class LabelGenerator {
         action.type = LabelActionType.Quire;
         action.v = false;
         action.page = false;
-        action.qn = +m[1];
-        action.qs = +m[2];
+        action.qn = +qm[1];
+        action.qs = +qm[2];
         return action;
       }
     }
@@ -147,7 +147,7 @@ export class LabelGenerator {
 
   private static generateQuireRows(action: LabelAction): LabelCell[] {
     const cells: LabelCell[] = [];
-    if (!action.qn) {
+    if (!action.qs || !action.qn) {
       return cells;
     }
     let n = action.n; // row number
@@ -155,8 +155,8 @@ export class LabelGenerator {
     let sn = 1; // sheet number
 
     // generate qn.sn/qs for each pair of r/v rows
-    for (let i = 0; i < action.count * action.qn; i++) {
-      const value = `${qn + i}.${sn}/${action.qs}`;
+    for (let i = 0; i < action.count * action.qs; i++) {
+      const value = `${qn + Math.trunc(i / action.qs)}.${sn}/${action.qs}`;
       cells.push({
         rowId: n.toString() + 'r',
         value: value,
@@ -165,7 +165,8 @@ export class LabelGenerator {
         rowId: n.toString() + 'v',
         value: value,
       });
-      if (++sn > action.qs!) {
+      n++;
+      if (++sn > action.qs) {
         sn = 1;
       }
     }
