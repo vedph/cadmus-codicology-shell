@@ -124,6 +124,7 @@ export class CodSheetTable {
       if (cols[colIndex].charAt(0) === id.charAt(0)) {
         break;
       }
+      colIndex--;
     }
     cols.splice(colIndex + 1, 0, id);
 
