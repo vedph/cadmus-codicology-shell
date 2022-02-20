@@ -80,6 +80,22 @@ export class CodSheetTable {
   }
 
   /**
+   * Gets the current list of column IDs.
+   * @returns The list of column IDs.
+   */
+  public getColumnIds(): string[] {
+    return [...this._cols$.value];
+  }
+
+  /**
+   * Gets the current list of rows.
+   * @returns The list of rows.
+   */
+  public getRows(): CodRowViewModel[] {
+    return [...this._rows$.value];
+  }
+
+  /**
    * Build the column ID from its type and optional suffix.
    *
    * @param type The column type.
