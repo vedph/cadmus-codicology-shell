@@ -191,109 +191,135 @@ describe('LabelGenerator', () => {
 
   // generator
   it('should generate 3 from 1rx3=1', () => {
-    const cells = LabelGenerator.generateFrom('1x3=1');
+    const cells = LabelGenerator.generateFrom('n', '1x3=1');
     expect(cells).toBeTruthy();
     expect(cells.length).toBe(3);
     for (let i = 0; i < 3; i++) {
       expect(cells[i].rowId).toBe(`${i + 1}r`);
+      expect(cells[i].id).toBe('n');
       expect(cells[i].value).toBe(`${i + 1}`);
     }
   });
+
   it('should generate 3 from 1r%3=1', () => {
-    const cells = LabelGenerator.generateFrom('1%3=1');
+    const cells = LabelGenerator.generateFrom('n', '1%3=1');
     expect(cells).toBeTruthy();
     expect(cells.length).toBe(3);
 
     let cell = cells[0];
     expect(cell.rowId).toBe('1r');
+    expect(cell.id).toBe('n');
     expect(cell.value).toBe('1');
 
     cell = cells[1];
     expect(cell.rowId).toBe('1v');
+    expect(cell.id).toBe('n');
     expect(cell.value).toBe('2');
 
     cell = cells[2];
     expect(cell.rowId).toBe('2r');
+    expect(cell.id).toBe('n');
     expect(cell.value).toBe('3');
   });
+
   it('should generate 3 from 1vx3=X', () => {
-    const cells = LabelGenerator.generateFrom('1vx3=X');
+    const cells = LabelGenerator.generateFrom('n', '1vx3=X');
     expect(cells).toBeTruthy();
     expect(cells.length).toBe(3);
 
     let cell = cells[0];
     expect(cell.rowId).toBe('1v');
+    expect(cell.id).toBe('n');
     expect(cell.value).toBe('X');
 
     cell = cells[1];
     expect(cell.rowId).toBe('2v');
+    expect(cell.id).toBe('n');
     expect(cell.value).toBe('XI');
 
     cell = cells[2];
     expect(cell.rowId).toBe('3v');
+    expect(cell.id).toBe('n');
     expect(cell.value).toBe('XII');
   });
+
   it('should generate 16 from 1x2=q1/4', () => {
-    const cells = LabelGenerator.generateFrom('1x2=q1/4');
+    const cells = LabelGenerator.generateFrom('q', '1x2=q1/4');
     expect(cells).toBeTruthy();
     expect(cells.length).toBe(16);
 
     // 1st quire
     let cell = cells[0];
     expect(cell.rowId).toBe('1r');
+    expect(cell.id).toBe('q');
     expect(cell.value).toBe('1.1/4');
     cell = cells[1];
     expect(cell.rowId).toBe('1v');
+    expect(cell.id).toBe('q');
     expect(cell.value).toBe('1.1/4');
 
     cell = cells[2];
     expect(cell.rowId).toBe('2r');
+    expect(cell.id).toBe('q');
     expect(cell.value).toBe('1.2/4');
     cell = cells[3];
     expect(cell.rowId).toBe('2v');
+    expect(cell.id).toBe('q');
     expect(cell.value).toBe('1.2/4');
 
     cell = cells[4];
     expect(cell.rowId).toBe('3r');
+    expect(cell.id).toBe('q');
     expect(cell.value).toBe('1.3/4');
     cell = cells[5];
     expect(cell.rowId).toBe('3v');
+    expect(cell.id).toBe('q');
     expect(cell.value).toBe('1.3/4');
 
     cell = cells[6];
     expect(cell.rowId).toBe('4r');
+    expect(cell.id).toBe('q');
     expect(cell.value).toBe('1.4/4');
     cell = cells[7];
     expect(cell.rowId).toBe('4v');
+    expect(cell.id).toBe('q');
     expect(cell.value).toBe('1.4/4');
 
     // 2nd quire
     cell = cells[8];
     expect(cell.rowId).toBe('5r');
+    expect(cell.id).toBe('q');
     expect(cell.value).toBe('2.1/4');
     cell = cells[9];
     expect(cell.rowId).toBe('5v');
+    expect(cell.id).toBe('q');
     expect(cell.value).toBe('2.1/4');
 
     cell = cells[10];
     expect(cell.rowId).toBe('6r');
+    expect(cell.id).toBe('q');
     expect(cell.value).toBe('2.2/4');
     cell = cells[11];
     expect(cell.rowId).toBe('6v');
+    expect(cell.id).toBe('q');
     expect(cell.value).toBe('2.2/4');
 
     cell = cells[12];
     expect(cell.rowId).toBe('7r');
+    expect(cell.id).toBe('q');
     expect(cell.value).toBe('2.3/4');
     cell = cells[13];
     expect(cell.rowId).toBe('7v');
+    expect(cell.id).toBe('q');
     expect(cell.value).toBe('2.3/4');
 
     cell = cells[14];
     expect(cell.rowId).toBe('8r');
+    expect(cell.id).toBe('q');
     expect(cell.value).toBe('2.4/4');
     cell = cells[15];
     expect(cell.rowId).toBe('8v');
+    expect(cell.id).toBe('q');
     expect(cell.value).toBe('2.4/4');
   });
 });

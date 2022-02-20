@@ -101,6 +101,7 @@ export class CodLabelCellComponent implements OnInit {
   private getCell(): CodLabelCell {
     return {
       rowId: this._cell!.rowId,
+      id: this._cell!.id,
       value: this.value.value?.trim(),
       note: this.note.value?.trim(),
     };

@@ -1,9 +1,8 @@
 import { RomanNumber } from '@myrmidon/ng-tools';
+import { CodColumn } from './cod-sheet-labels-part';
 
-export interface CodLabelCell {
+export interface CodLabelCell extends CodColumn {
   rowId: string;
-  value?: string;
-  note?: string;
 }
 
 export interface CodLabelAction {
@@ -159,10 +158,12 @@ export class LabelGenerator {
       const value = `${qn + Math.trunc(i / action.qs)}.${sn}/${action.qs}`;
       cells.push({
         rowId: n.toString() + 'r',
+        id: 'q',
         value: value,
       });
       cells.push({
         rowId: n.toString() + 'v',
+        id: 'q',
         value: value,
       });
       n++;
@@ -175,10 +176,14 @@ export class LabelGenerator {
 
   /**
    * Generate a set of label cells from the specified action.
+   * @param columnId The column ID.
    * @param action The action.
    * @returns Generated cells.
    */
-  public static generate(action: CodLabelAction): CodLabelCell[] {
+  public static generate(
+    columnId: string,
+    action: CodLabelAction
+  ): CodLabelCell[] {
     if (!action) {
       return [];
     }
@@ -194,6 +199,7 @@ export class LabelGenerator {
     for (let i = 0; i < action.count; i++) {
       cells.push({
         rowId: n.toString() + (v ? 'v' : 'r'),
+        id: columnId,
         value: value,
       });
       // calculate next row ID
@@ -240,11 +246,12 @@ export class LabelGenerator {
 
   /**
    * Generate a set of label cells from a text representing an action.
+   * @param columnId The column ID.
    * @param text The text to parse for the action.
    * @returns Generated cells.
    */
-  public static generateFrom(text: string): CodLabelCell[] {
+  public static generateFrom(columnId: string, text: string): CodLabelCell[] {
     const action = this.parseAction(text);
-    return action ? this.generate(action) : [];
+    return action ? this.generate(columnId, action) : [];
   }
 }

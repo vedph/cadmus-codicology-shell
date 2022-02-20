@@ -1,23 +1,35 @@
 import { BehaviorSubject, Observable } from 'rxjs';
-import { CodRow } from './cod-sheet-labels-part';
-import {
-  CodLabelActionType,
-  CodLabelCell,
-  LabelGenerator,
-} from './label-generator';
+import { CodColumn, CodRow } from './cod-sheet-labels-part';
+import { CodLabelCell } from './label-generator';
 
+/**
+ * Type of table row.
+ */
 export enum CodRowType {
   EndleafFront = 0,
   Body,
   EndleafBack,
 }
 
-export interface CodRowViewModel extends CodRow {
+/**
+ * Data about a page (=row) in a table. A page has a type
+ * (endleaf/body), a sheet number, and a recto/verso flag.
+ */
+export interface CodRowPage {
   type: CodRowType;
-  sheet: number;
+  n: number;
   v: boolean;
 }
 
+/**
+ * The viewmodel of a table's row.
+ */
+export interface CodRowViewModel extends CodRow, CodRowPage {}
+
+/**
+ * The types of table columns: quires, numberings, catchwords,
+ * signatures, register signatures.
+ */
 export type CodColumnType = 'q' | 'n' | 'c' | 's' | 'r';
 
 /**
@@ -32,7 +44,8 @@ export type CodColumnType = 'q' | 'n' | 'c' | 's' | 'r';
  * Rows are sorted first by type: front endleaf, body, back endleaf; and
  * then by their sheet number and recto/verso flag (1r, 1v, 2r, 2v...).
  * Endleaves IDs follow the same pattern, but are wrapped in "()" (front)
- * or "(/)" (back).
+ * or "(/)" (back). Each row has an array of columns, which is kept
+ * in synch across all the rows.
  * Columns are sorted first by type: qncsr; and then by their suffix,
  * which optionally follows the type letter plus a dot. So, "q" is the
  * default (and unique) quire column; "n" is the default numbering;
@@ -66,7 +79,14 @@ export class CodSheetTable {
     this._rows$ = new BehaviorSubject<CodRowViewModel[]>([]);
   }
 
-  private buildColumnId(type: CodColumnType, suffix?: string): string {
+  /**
+   * Build the column ID from its type and optional suffix.
+   *
+   * @param type The column type.
+   * @param suffix The optional suffix.
+   * @returns The column ID.
+   */
+  public buildColumnId(type: CodColumnType, suffix?: string): string {
     return suffix ? `${type}.${suffix}` : type;
   }
 
@@ -75,12 +95,9 @@ export class CodSheetTable {
    * from its type and suffix, and its position is determined by that ID.
    * If a column with the same ID already exists, nothing is done.
    *
-   * @param type The type of the column to add.
-   * @param suffix The optional column's ID suffix.
+   * @param id The ID of the column to add.
    */
-  public addColumn(type: CodColumnType, suffix?: string): void {
-    // build col ID and do nothing if already present
-    const id = this.buildColumnId(type, suffix);
+  public addColumn(id: string): void {
     if (this._cols$.value.includes(id)) {
       return;
     }
@@ -88,7 +105,7 @@ export class CodSheetTable {
     const cols = [...this._cols$.value];
     let colIndex = cols.length - 1;
     while (colIndex > -1) {
-      if (cols[colIndex].charAt(0) === type.charAt(0)) {
+      if (cols[colIndex].charAt(0) === id.charAt(0)) {
         break;
       }
     }
@@ -139,6 +156,14 @@ export class CodSheetTable {
     }
   }
 
+  private getNewColumns(): CodColumn[] {
+    const cols: CodColumn[] = new Array(this._cols$.value.length);
+    for (let i = 0; i < cols.length; i++) {
+      cols[i].id = this._cols$.value[i];
+    }
+    return cols;
+  }
+
   /**
    * Append the specified number of rows.
    *
@@ -156,7 +181,7 @@ export class CodSheetTable {
       lastRowIndex--;
     }
     if (lastRowIndex > -1) {
-      n = rows[lastRowIndex].sheet;
+      n = rows[lastRowIndex].n;
       v = rows[lastRowIndex].v;
     }
     for (let i = 0; i < count; i++) {
@@ -169,9 +194,9 @@ export class CodSheetTable {
       }
       rows.push({
         id: this.buildRowId(type, n, v),
-        columns: new Array(this._cols$.value.length),
+        columns: this.getNewColumns(),
         type: type,
-        sheet: n,
+        n: n,
         v: v,
       });
     }
@@ -203,6 +228,113 @@ export class CodSheetTable {
       note: cell.note,
     });
     rows[colIndex].columns = cols;
+    this._rows$.next(rows);
+  }
+
+  private parseRowId(rowId: string): CodRowPage | null {
+    const m = /(\()?(\/)?([0-9]+)([rv])/.exec(rowId);
+    if (!m) {
+      return null;
+    }
+    return {
+      type: m[2]
+        ? CodRowType.EndleafBack
+        : m[1]
+        ? CodRowType.EndleafFront
+        : CodRowType.Body,
+      n: +m[3],
+      v: m[4] === 'v',
+    };
+  }
+
+  private countRowsBetween(a: CodRowPage, b: CodRowPage): number {
+    const n = b.n - a.n;
+    return n <= 0 ? 0 : n - 1 + (b.v ? 1 : 0);
+  }
+
+  /**
+   * Add the specified cells to the table. All the cells belong to the same
+   * column, specified by columnId. If this is not found, it will be added.
+   * Also, cells are a range of consecutive sheets, e.g. 3r-5v. All the rows
+   * preceding the first row of the range being added are inserted if they
+   * are missing.
+   *
+   * @param columnId The column ID.
+   * @param cells The cells to add.
+   */
+  public addCells(columnId: string, cells: CodLabelCell[]): void {
+    if (!cells.length) {
+      return;
+    }
+    // extract N and V from 1st cell's row ID
+    const firstSheet = this.parseRowId(cells[0].rowId);
+    if (!firstSheet) {
+      return;
+    }
+
+    // add the target column if it's missing
+    if (!this._cols$.value.includes(columnId)) {
+      this.addColumn(columnId);
+    }
+
+    // locate last row of same type (if any) and extract its N and V
+    const rows = [...this._rows$.value];
+    const type: CodRowType = columnId.substring(0, 1) as unknown as CodRowType;
+    let lastRowIndex = rows.length - 1;
+    while (lastRowIndex > -1 && rows[lastRowIndex].type !== type) {
+      lastRowIndex--;
+    }
+    let lastSheet: CodRowPage;
+    if (lastRowIndex > -1) {
+      lastSheet = rows[lastRowIndex];
+    } else {
+      lastSheet = {
+        type: firstSheet.type,
+        n: 0,
+        v: true,
+      };
+    }
+
+    // interpolate rows between last existing sheet and first sheet to add
+    const delta = this.countRowsBetween(lastSheet, firstSheet);
+    const interpRows: CodRowViewModel[] = [];
+    let n = lastSheet.n + 1;
+    let v = !lastSheet.v;
+    for (let i = 0; i < delta; i++) {
+      interpRows.push({
+        id: this.buildRowId(firstSheet.type, n, v),
+        columns: this.getNewColumns(),
+        type: firstSheet.type,
+        n: n,
+        v: v,
+      });
+      n++;
+      v = !v;
+    }
+
+    // append new rows
+    for (let i = 0; i < cells.length; i++) {
+      // next page (each row is a page)
+      if (v) {
+        n++;
+        v = false;
+      } else {
+        v = true;
+      }
+      const row = {
+        id: this.buildRowId(type, n, v),
+        columns: this.getNewColumns(),
+        type: type,
+        n: n,
+        v: v,
+      };
+      const col = row.columns.find((c) => c.id === columnId);
+      col!.value = cells[i].value;
+      col!.note = cells[i].note;
+      rows.push();
+    }
+
+    // save
     this._rows$.next(rows);
   }
 }
