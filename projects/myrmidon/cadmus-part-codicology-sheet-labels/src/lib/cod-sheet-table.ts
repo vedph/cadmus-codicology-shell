@@ -179,7 +179,9 @@ export class CodSheetTable {
   private getNewColumns(): CodColumn[] {
     const cols: CodColumn[] = new Array(this._cols$.value.length);
     for (let i = 0; i < cols.length; i++) {
-      cols[i].id = this._cols$.value[i];
+      cols[i] = {
+        id: this._cols$.value[i],
+      };
     }
     return cols;
   }
@@ -192,8 +194,7 @@ export class CodSheetTable {
    */
   public appendRows(type: CodRowType, count: number): void {
     const rows = [...this._rows$.value];
-    let n = 1,
-      v = false;
+    let n: number, v: boolean;
 
     // locate last row of same type
     let lastRowIndex = rows.length - 1;
@@ -203,6 +204,9 @@ export class CodSheetTable {
     if (lastRowIndex > -1) {
       n = rows[lastRowIndex].n;
       v = rows[lastRowIndex].v;
+    } else {
+      n = 0;
+      v = true;
     }
     for (let i = 0; i < count; i++) {
       // next page (each row is a page)
