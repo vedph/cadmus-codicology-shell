@@ -54,6 +54,7 @@ export type CodColumnType = 'q' | 'n' | 'c' | 's' | 'r';
 export class CodSheetTable {
   private _cols$: BehaviorSubject<string[]>;
   private _rows$: BehaviorSubject<CodRowViewModel[]>;
+  private _colPrefixes: string[];
 
   /**
    * The list of all the column IDs in the table, in their order.
@@ -77,6 +78,7 @@ export class CodSheetTable {
   constructor() {
     this._cols$ = new BehaviorSubject<string[]>([]);
     this._rows$ = new BehaviorSubject<CodRowViewModel[]>([]);
+    this._colPrefixes = ['q', 'n', 'c', 's', 'r'];
   }
 
   /**
@@ -119,9 +121,10 @@ export class CodSheetTable {
     }
     // insert the new col at the right place
     const cols = [...this._cols$.value];
+    const prefix = this._colPrefixes.indexOf(id.charAt(0));
     let colIndex = cols.length - 1;
     while (colIndex > -1) {
-      if (cols[colIndex].charAt(0) === id.charAt(0)) {
+      if (prefix >= this._colPrefixes.indexOf(cols[colIndex].charAt(0))) {
         break;
       }
       colIndex--;
@@ -131,7 +134,7 @@ export class CodSheetTable {
     // insert the new col in each row
     const rows = [...this._rows$.value];
     for (let i = 0; i < rows.length; i++) {
-      rows[i].columns.splice(colIndex, 0, {
+      rows[i].columns.splice(colIndex + 1, 0, {
         id: id,
       });
     }

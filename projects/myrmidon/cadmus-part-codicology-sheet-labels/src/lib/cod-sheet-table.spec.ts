@@ -28,7 +28,7 @@ fdescribe('CodSheetTable', () => {
     const ids = table.getColumnIds();
     expect(ids.length).toBe(2);
     expect(ids[0]).toBe('q');
-    expect(ids[0]).toBe('n');
+    expect(ids[1]).toBe('n');
   });
 
   it('appendRows should append body rows (empty)', () => {
