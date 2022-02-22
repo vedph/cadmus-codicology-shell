@@ -282,10 +282,9 @@ export class CodSheetTable {
    * preceding the first row of the range being added are inserted if they
    * are missing.
    *
-   * @param columnId The column ID.
    * @param cells The cells to add.
    */
-  public addCells(columnId: string, cells: CodLabelCell[]): void {
+  public addCells(cells: CodLabelCell[]): void {
     if (!cells.length) {
       return;
     }
@@ -296,15 +295,18 @@ export class CodSheetTable {
     }
 
     // add the target column if it's missing
-    if (!this._cols$.value.includes(columnId)) {
-      this.addColumn(columnId);
+    if (!this._cols$.value.includes(cells[0].id)) {
+      this.addColumn(cells[0].id);
     }
 
     // locate last row of same type (if any) and extract its N and V
     const rows = [...this._rows$.value];
-    const type: CodRowType = columnId.substring(0, 1) as unknown as CodRowType;
+    const firstPage = this.parseRowId(cells[0].rowId);
+    if (!firstPage) {
+      return;
+    }
     let lastRowIndex = rows.length - 1;
-    while (lastRowIndex > -1 && rows[lastRowIndex].type !== type) {
+    while (lastRowIndex > -1 && rows[lastRowIndex].type !== firstPage.type) {
       lastRowIndex--;
     }
     let lastSheet: CodRowPage;
@@ -345,13 +347,13 @@ export class CodSheetTable {
         v = true;
       }
       const row = {
-        id: this.buildRowId(type, n, v),
+        id: this.buildRowId(firstPage.type, n, v),
         columns: this.getNewColumns(),
-        type: type,
+        type: firstPage.type,
         n: n,
         v: v,
       };
-      const col = row.columns.find((c) => c.id === columnId);
+      const col = row.columns.find((c) => c.id === cells[0].id);
       col!.value = cells[i].value;
       col!.note = cells[i].note;
       rows.push();
