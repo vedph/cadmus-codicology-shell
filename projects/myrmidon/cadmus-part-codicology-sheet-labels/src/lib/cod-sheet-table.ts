@@ -169,7 +169,7 @@ export class CodSheetTable {
     switch (type) {
       case CodRowType.EndleafFront:
         return `(${n}${rv})`;
-      case CodRowType.EndleafFront:
+      case CodRowType.EndleafBack:
         return `(/${n}${rv})`;
       default:
         return `${n}${rv}`;

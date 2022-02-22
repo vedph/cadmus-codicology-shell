@@ -42,7 +42,7 @@ fdescribe('CodSheetTable', () => {
 
     for (let i = 0; i < 2; i++) {
       const row = rows[i];
-      expect(row.id).toBe(i === 0 ? '1r' : '2v');
+      expect(row.id).toBe(i === 0 ? '1r' : '1v');
       expect(row.columns.length).toBe(2);
       expect(row.columns[0].id).toBe('q');
       expect(row.columns[1].id).toBe('n');
@@ -82,7 +82,7 @@ fdescribe('CodSheetTable', () => {
 
     for (let i = 0; i < 2; i++) {
       const row = rows[i];
-      expect(row.id).toBe(i === 0 ? '(1r)' : '(2v)');
+      expect(row.id).toBe(i === 0 ? '(1r)' : '(1v)');
       expect(row.columns.length).toBe(2);
       expect(row.columns[0].id).toBe('q');
       expect(row.columns[1].id).toBe('n');
@@ -100,7 +100,7 @@ fdescribe('CodSheetTable', () => {
 
     for (let i = 0; i < 2; i++) {
       const row = rows[i];
-      expect(row.id).toBe(i === 0 ? '(/1r)' : '(/2v)');
+      expect(row.id).toBe(i === 0 ? '(/1r)' : '(/1v)');
       expect(row.columns.length).toBe(2);
       expect(row.columns[0].id).toBe('q');
       expect(row.columns[1].id).toBe('n');
