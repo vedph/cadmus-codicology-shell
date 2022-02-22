@@ -232,22 +232,21 @@ export class CodSheetTable {
    * Update the specified cell in the table. If the cell is not found,
    * nothing is done.
    *
-   * @param columnId The cell's column ID.
-   * @param cell The cell value.
+   * @param cell The cell to update.
    */
-  public updateCell(columnId: string, cell: CodLabelCell): void {
+  public updateCell(cell: CodLabelCell): void {
     const rows = [...this._rows$.value];
     const rowIndex = rows.findIndex((r) => r.id === cell.rowId);
     if (rowIndex === -1) {
       return;
     }
     const cols = [...this._rows$.value[rowIndex].columns];
-    const colIndex = cols.findIndex((c) => c.id === columnId);
+    const colIndex = cols.findIndex((c) => c.id === cell.id);
     if (colIndex === -1) {
       return;
     }
     cols.splice(colIndex, 1, {
-      id: columnId,
+      id: cell.id,
       value: cell.value,
       note: cell.note,
     });

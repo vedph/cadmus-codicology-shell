@@ -106,4 +106,71 @@ fdescribe('CodSheetTable', () => {
       expect(row.columns[1].id).toBe('n');
     }
   });
+
+  it('updateCell should do nothing when not found', () => {
+    const table = new CodSheetTable();
+    table.addColumn('q');
+    table.addColumn('n');
+    // 1r 1v
+    table.appendRows(CodRowType.Body, 2);
+
+    table.updateCell({
+      rowId: '10v',
+      id: 'n',
+      value: 'III',
+      note: 'a note'
+    });
+
+    const rows = table.getRows();
+    expect(rows.length).toBe(2);
+
+    const expIds = ['1r', '1v'];
+    for (let i = 0; i < 2; i++) {
+      const row = rows[i];
+      expect(row.id).toBe(expIds[i]);
+      expect(row.columns.length).toBe(2);
+      expect(row.columns[0].id).toBe('q');
+      expect(row.columns[0].value).toBeFalsy();
+      expect(row.columns[0].note).toBeFalsy();
+      expect(row.columns[1].id).toBe('n');
+      expect(row.columns[1].value).toBeFalsy();
+      expect(row.columns[1].note).toBeFalsy();
+    }
+  });
+
+  it('updateCell should update when found', () => {
+    const table = new CodSheetTable();
+    table.addColumn('q');
+    table.addColumn('n');
+    // 1r 1v
+    table.appendRows(CodRowType.Body, 2);
+
+    table.updateCell({
+      rowId: '1v',
+      id: 'n',
+      value: 'III',
+      note: 'a note'
+    });
+
+    const rows = table.getRows();
+    expect(rows.length).toBe(2);
+
+    const expIds = ['1r', '1v'];
+    for (let i = 0; i < 2; i++) {
+      const row = rows[i];
+      expect(row.id).toBe(expIds[i]);
+      expect(row.columns.length).toBe(2);
+      expect(row.columns[0].id).toBe('q');
+      expect(row.columns[0].value).toBeFalsy();
+      expect(row.columns[0].note).toBeFalsy();
+      expect(row.columns[1].id).toBe('n');
+      if (i === 1) {
+        expect(row.columns[1].value).toBe('III');
+        expect(row.columns[1].note).toBe('a note');
+      } else {
+        expect(row.columns[1].value).toBeFalsy();
+        expect(row.columns[1].note).toBeFalsy();
+      }
+    }
+  });
 });
