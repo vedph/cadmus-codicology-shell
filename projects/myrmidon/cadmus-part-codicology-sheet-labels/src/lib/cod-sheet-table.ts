@@ -294,9 +294,12 @@ export class CodSheetTable {
       return;
     }
 
+    const columnId = cells[0].id;
+    const columnIndex = this._colPrefixes.indexOf(cells[0].id);
+
     // add the target column if it's missing
-    if (!this._cols$.value.includes(cells[0].id)) {
-      this.addColumn(cells[0].id);
+    if (!this._cols$.value.includes(columnId)) {
+      this.addColumn(columnId);
     }
 
     // locate last row of same type (if any) and extract its N and V
@@ -319,26 +322,13 @@ export class CodSheetTable {
         v: true,
       };
     }
+    let n = lastSheet.n;
+    let v = lastSheet.v;
+    let rowIndex = lastRowIndex;
 
     // interpolate rows between last existing sheet and first sheet to add
     const delta = this.countRowsBetween(lastSheet, firstSheet);
-    const interpRows: CodRowViewModel[] = [];
-    let n = lastSheet.n + 1;
-    let v = !lastSheet.v;
     for (let i = 0; i < delta; i++) {
-      interpRows.push({
-        id: this.buildRowId(firstSheet.type, n, v),
-        columns: this.getNewColumns(),
-        type: firstSheet.type,
-        n: n,
-        v: v,
-      });
-      n++;
-      v = !v;
-    }
-
-    // append new rows
-    for (let i = 0; i < cells.length; i++) {
       // next page (each row is a page)
       if (v) {
         n++;
@@ -346,17 +336,43 @@ export class CodSheetTable {
       } else {
         v = true;
       }
-      const row = {
-        id: this.buildRowId(firstPage.type, n, v),
+      rows.push({
+        id: this.buildRowId(firstSheet.type, n, v),
         columns: this.getNewColumns(),
-        type: firstPage.type,
+        type: firstSheet.type,
         n: n,
         v: v,
-      };
-      const col = row.columns.find((c) => c.id === cells[0].id);
-      col!.value = cells[i].value;
-      col!.note = cells[i].note;
-      rows.push();
+      });
+      rowIndex++;
+    }
+
+    // set cells
+    for (let i = 0; i < cells.length; i++) {
+      // if the row does not exist, append it
+      if (rowIndex >= rows.length) {
+        const row = {
+          id: this.buildRowId(firstPage.type, n, v),
+          columns: this.getNewColumns(),
+          type: firstPage.type,
+          n: n,
+          v: v,
+        };
+        const col = row.columns.find((c) => c.id === columnId);
+        col!.value = cells[i].value;
+        col!.note = cells[i].note;
+        rows.push();
+      }
+      // set cell
+      rows[rowIndex].columns[columnIndex].value = cells[i].value;
+      rows[rowIndex].columns[columnIndex].note = cells[i].note;
+
+      // next page (each row is a page)
+      if (v) {
+        n++;
+        v = false;
+      } else {
+        v = true;
+      }
     }
 
     // save
