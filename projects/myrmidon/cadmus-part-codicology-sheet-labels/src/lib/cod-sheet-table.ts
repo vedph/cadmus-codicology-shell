@@ -360,7 +360,7 @@ export class CodSheetTable {
         const col = row.columns.find((c) => c.id === columnId);
         col!.value = cells[i].value;
         col!.note = cells[i].note;
-        rows.push();
+        rows.push(row);
       }
       // set cell
       rows[rowIndex].columns[columnIndex].value = cells[i].value;
@@ -373,6 +373,7 @@ export class CodSheetTable {
       } else {
         v = true;
       }
+      rowIndex++;
     }
 
     // save
