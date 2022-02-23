@@ -264,7 +264,7 @@ fdescribe('CodSheetTable', () => {
     }
   });
 
-  it('addCells should interpolate and append not existing rows', () => {
+  fit('addCells should interpolate and append not existing rows', () => {
     const table = new CodSheetTable();
     // 1r 1v X q n
     table.addColumn('q');
@@ -281,7 +281,7 @@ fdescribe('CodSheetTable', () => {
     ]);
 
     const rows = table.getRows();
-    expect(rows.length).toBe(3);
+    expect(rows.length).toBe(4);
 
     const expIds = ['1r', '1v', '2r', '2v'];
     for (let i = 0; i < 4; i++) {

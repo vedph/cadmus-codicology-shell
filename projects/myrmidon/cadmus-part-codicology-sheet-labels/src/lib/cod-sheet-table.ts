@@ -328,22 +328,32 @@ export class CodSheetTable {
 
     // interpolate rows between last existing sheet and first sheet to add
     const delta = this.countRowsBetween(lastSheet, firstSheet);
-    for (let i = 0; i < delta; i++) {
-      // next page (each row is a page)
+    if (delta) {
+      for (let i = 0; i < delta; i++) {
+        // next page (each row is a page)
+        rowIndex++;
+        if (v) {
+          n++;
+          v = false;
+        } else {
+          v = true;
+        }
+        rows.push({
+          id: this.buildRowId(firstSheet.type, n, v),
+          columns: this.getNewColumns(),
+          type: firstSheet.type,
+          n: n,
+          v: v,
+        });
+      }
+      // move past last interpolated row
+      rowIndex++;
       if (v) {
         n++;
         v = false;
       } else {
         v = true;
       }
-      rows.push({
-        id: this.buildRowId(firstSheet.type, n, v),
-        columns: this.getNewColumns(),
-        type: firstSheet.type,
-        n: n,
-        v: v,
-      });
-      rowIndex++;
     }
 
     // set cells
