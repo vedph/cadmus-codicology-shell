@@ -264,7 +264,7 @@ fdescribe('CodSheetTable', () => {
     }
   });
 
-  fit('addCells should interpolate and append not existing rows', () => {
+  it('addCells should interpolate and append not existing rows', () => {
     const table = new CodSheetTable();
     // 1r 1v X q n
     table.addColumn('q');
