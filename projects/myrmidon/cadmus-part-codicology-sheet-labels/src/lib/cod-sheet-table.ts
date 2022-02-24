@@ -98,6 +98,34 @@ export class CodSheetTable {
   }
 
   /**
+   * Set the rows and their columns in this table.
+   *
+   * @param rows The rows.
+   */
+  public setRows(rows: CodRow[]): void {
+    // set cols
+    this._cols$.next(rows.length ? rows[0].columns.map((c) => c.id) : []);
+
+    // set rows
+    this._rows$.next(
+      rows.map((r) => {
+        const page = this.parseRowId(r.id);
+        const cols = this.getNewColumns();
+        for (let i = 0; i < r.columns?.length || 0; i++) {
+          const ci = cols.findIndex((c) => c.id === r.columns[i].id);
+          cols[ci].value = r.columns[i].value;
+          cols[ci].note = r.columns[i].note;
+        }
+        return {
+          ...page,
+          id: r.id,
+          columns: cols,
+        } as CodRowViewModel;
+      })
+    );
+  }
+
+  /**
    * Build the column ID from its type and optional suffix.
    *
    * @param type The column type.

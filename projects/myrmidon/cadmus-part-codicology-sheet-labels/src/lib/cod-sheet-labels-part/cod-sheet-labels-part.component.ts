@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormBuilder, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormBuilder,
+  Validators,
+  FormGroup,
+} from '@angular/forms';
 
 import { deepCopy } from '@myrmidon/ng-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
@@ -10,7 +15,9 @@ import {
   CodSheetLabelsPart,
   COD_SHEET_LABELS_PART_TYPEID,
 } from '../cod-sheet-labels-part';
-import { CodLabelCell } from '../label-generator';
+import { CodLabelCell, LabelGenerator } from '../label-generator';
+import { Observable } from 'rxjs';
+import { CodRowViewModel, CodSheetTable } from '../cod-sheet-table';
 
 /**
  * CodSheetLabels part editor component.
@@ -29,7 +36,20 @@ export class CodSheetLabelsPartComponent
   extends ModelEditorComponentBase<CodSheetLabelsPart>
   implements OnInit
 {
-  // TODO form controls (form: FormGroup is inherited)
+  private _table: CodSheetTable;
+
+  public columns$: Observable<string[]>;
+  public rows$: Observable<CodRowViewModel[]>;
+
+  public opColumn: FormControl;
+  public opAction: FormControl;
+  public opForm: FormGroup;
+
+  public types: ThesaurusEntry[];
+  public addType: FormControl;
+  public addName: FormControl;
+  public addCount: FormControl;
+  public addForm: FormGroup;
 
   // C-COL
   // cod-catchwords-positions
@@ -62,9 +82,43 @@ export class CodSheetLabelsPartComponent
 
   constructor(authService: AuthJwtService, formBuilder: FormBuilder) {
     super(authService);
-    // form
-    // TODO
-    this.form = formBuilder.group({});
+    this._table = new CodSheetTable();
+    this.columns$ = this._table.columnIds$;
+    this.rows$ = this._table.rows$;
+    this.types = [
+      { id: 'row-1', value: 'front endleaf page' },
+      { id: 'row-2', value: 'body page' },
+      { id: 'row-3', value: 'back endleaf page' },
+      { id: 'col-q', value: 'quire column' },
+      { id: 'col-n', value: 'numbering column' },
+      { id: 'col-c', value: 'catchword column' },
+      { id: 'col-s', value: 'signature column' },
+      { id: 'col-r', value: 'register column' },
+    ];
+    // forms
+    this.opColumn = formBuilder.control(null, Validators.required);
+    this.opAction = formBuilder.control(null, [
+      Validators.required,
+      Validators.pattern(LabelGenerator.PATTERN),
+    ]);
+    this.opForm = formBuilder.group({
+      opColumn: this.opColumn,
+      opAction: this.opAction,
+    });
+
+    this.addType = formBuilder.control(this.types[1].id, Validators.required);
+    this.addName = formBuilder.control(null, Validators.maxLength(50));
+    this.addCount = formBuilder.control(1);
+    this.addForm = formBuilder.group({
+      addType: this.addType,
+      addName: this.addName,
+      addCount: this.addCount,
+    });
+
+    this.form = formBuilder.group({
+      op: this.opForm,
+      add: this.addForm,
+    });
   }
 
   public ngOnInit(): void {
@@ -77,6 +131,7 @@ export class CodSheetLabelsPartComponent
       return;
     }
     // TODO set controls values from model
+    this._table.setRows(model.rows || []);
     this.form!.markAsPristine();
   }
 
@@ -174,7 +229,8 @@ export class CodSheetLabelsPartComponent
         rows: [],
       };
     }
-    // TODO set part.properties from form controls
+    // TODO definitions
+    part.rows = this._table.getRows();
     return part;
   }
 }
