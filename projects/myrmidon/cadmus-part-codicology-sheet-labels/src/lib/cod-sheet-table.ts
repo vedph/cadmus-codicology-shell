@@ -103,8 +103,17 @@ export class CodSheetTable {
    * @param rows The rows.
    */
   public setRows(rows: CodRow[]): void {
-    // set cols
-    this._cols$.next(rows.length ? rows[0].columns.map((c) => c.id) : []);
+    // set cols collecting them from all the rows
+    const cols: string[] = [];
+    for (let i = 0; i < rows.length; i++) {
+      for (let j = 0; j < rows[i].columns.length; j++) {
+        const id = rows[i].columns[j].id;
+        if (!cols.includes(id)) {
+          this.addColumnId(id, cols);
+        }
+      }
+    }
+    this._cols$.next(cols);
 
     // set rows
     this._rows$.next(
@@ -136,6 +145,20 @@ export class CodSheetTable {
     return suffix ? `${type}.${suffix}` : type;
   }
 
+  private addColumnId(id: string, cols: string[]): number {
+    // insert the new col at the right place
+    const prefix = this._colPrefixes.indexOf(id.charAt(0));
+    let colIndex = cols.length - 1;
+    while (colIndex > -1) {
+      if (prefix >= this._colPrefixes.indexOf(cols[colIndex].charAt(0))) {
+        break;
+      }
+      colIndex--;
+    }
+    cols.splice(colIndex + 1, 0, id);
+    return colIndex;
+  }
+
   /**
    * Add the specified column to the table. The column ID is calculated
    * from its type and suffix, and its position is determined by that ID.
@@ -149,14 +172,7 @@ export class CodSheetTable {
     }
     // insert the new col at the right place
     const cols = [...this._cols$.value];
-    const prefix = this._colPrefixes.indexOf(id.charAt(0));
-    let colIndex = cols.length - 1;
-    while (colIndex > -1) {
-      if (prefix >= this._colPrefixes.indexOf(cols[colIndex].charAt(0))) {
-        break;
-      }
-      colIndex--;
-    }
+    const colIndex = this.addColumnId(id, cols);
     cols.splice(colIndex + 1, 0, id);
 
     // insert the new col in each row

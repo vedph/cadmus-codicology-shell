@@ -233,4 +233,8 @@ export class CodSheetLabelsPartComponent
     part.rows = this._table.getRows();
     return part;
   }
+
+  public onCellChange(cell: CodLabelCell): void {
+    this._table.updateCell(cell);
+  }
 }

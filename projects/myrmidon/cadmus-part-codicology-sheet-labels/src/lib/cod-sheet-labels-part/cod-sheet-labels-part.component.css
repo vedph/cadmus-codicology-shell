@@ -12,3 +12,22 @@ fieldset {
 .form-row * {
   flex: 0 0 auto;
 }
+
+/* https://stackoverflow.com/questions/47723996/table-with-fixed-thead-and-scrollable-tbody */
+table {
+  width: 100%;
+}
+table,
+td {
+  border-collapse: collapse;
+  border: 1px solid #000;
+}
+thead {
+  display: table; /* to take the same width as tr */
+  width: calc(100% - 17px); /* - 17px because of the scrollbar width */
+}
+tbody {
+  display: block; /* to enable vertical scrolling */
+  max-height: 200px; /* e.g. */
+  overflow-y: scroll; /* keeps the scrollbar even if it doesn't need it; display purpose */
+}

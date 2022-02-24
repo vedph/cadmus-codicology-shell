@@ -28,6 +28,7 @@ import { CodEndleafComponent } from './cod-endleaf/cod-endleaf.component';
 import { CodSheetLabelsPartComponent } from './cod-sheet-labels-part/cod-sheet-labels-part.component';
 import { CodLabelCellComponent } from './cod-label-cell/cod-label-cell.component';
 import { CodSheetLabelsPartFeatureComponent } from './cod-sheet-labels-part-feature/cod-sheet-labels-part-feature.component';
+import { CellAdapterPipe } from './cod-sheet-labels-part/cell-adapter.pipe';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { CodSheetLabelsPartFeatureComponent } from './cod-sheet-labels-part-feat
     CodSheetLabelsPartComponent,
     CodLabelCellComponent,
     CodSheetLabelsPartFeatureComponent,
+    CellAdapterPipe,
   ],
   imports: [
     CommonModule,

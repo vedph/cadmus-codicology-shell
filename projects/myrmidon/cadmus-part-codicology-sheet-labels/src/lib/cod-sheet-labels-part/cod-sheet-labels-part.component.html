@@ -106,7 +106,7 @@
           </mat-form-field>
 
           <!-- addCount -->
-          <mat-form-field style="width: 4em;">
+          <mat-form-field style="width: 4em">
             <input
               matInput
               [formControl]="addCount"
@@ -128,6 +128,24 @@
         </form>
       </fieldset>
 
+      <!-- table -->
+      <table *ngIf="columns$ | async as columns">
+        <thead>
+          <tr *ngFor="let c of columns">
+            <th>{{ c }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of rows$ | async">
+            <td *ngFor="let rc of r.columns">
+              <cadmus-cod-label-cell
+                [cell]="$any(rc | cellAdapter: rc.id)"
+                (cellChange)="onCellChange($event)"
+              ></cadmus-cod-label-cell>
+            </td>
+          </tr>
+        </tbody>
+      </table>
       TODO
     </mat-card-content>
     <mat-card-actions>
