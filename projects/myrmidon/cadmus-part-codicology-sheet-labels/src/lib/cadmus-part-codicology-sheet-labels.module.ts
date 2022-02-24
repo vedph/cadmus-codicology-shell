@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { NgToolsModule } from '@myrmidon/ng-tools';
 import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
@@ -29,6 +30,7 @@ import { CodSheetLabelsPartComponent } from './cod-sheet-labels-part/cod-sheet-l
 import { CodLabelCellComponent } from './cod-label-cell/cod-label-cell.component';
 import { CodSheetLabelsPartFeatureComponent } from './cod-sheet-labels-part-feature/cod-sheet-labels-part-feature.component';
 import { CellAdapterPipe } from './cod-sheet-labels-part/cell-adapter.pipe';
+import { CellTypeColorPipe } from './cod-sheet-labels-part/cell-type-color.pipe';
 
 @NgModule({
   declarations: [
@@ -41,12 +43,14 @@ import { CellAdapterPipe } from './cod-sheet-labels-part/cell-adapter.pipe';
     CodLabelCellComponent,
     CodSheetLabelsPartFeatureComponent,
     CellAdapterPipe,
+    CellTypeColorPipe,
   ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     // material
+    FlexLayoutModule,
     MatButtonModule,
     MatCardModule,
     MatCheckboxModule,

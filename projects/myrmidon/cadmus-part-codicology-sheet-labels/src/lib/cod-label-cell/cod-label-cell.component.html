@@ -2,21 +2,19 @@
   *ngIf="cell"
   class="cell"
   [style.background-color]="color || 'transparent'"
-  (keydown.F2)="editValue()"
-  (keydown.F3)="editNote()"
 >
   <!-- display -->
   <div
     *ngIf="editMode === 'none'"
     matTooltip="{{ cell?.note }}"
-    class="form-row"
+    class="form-row-center"
   >
     <span>{{ cell.value }}</span>
     <button
       class="muted"
       type="button"
       mat-icon-button
-      matTooltip="Edit value (F2)"
+      matTooltip="Edit value"
       color="primary"
       (click)="editValue()"
     >
@@ -26,8 +24,8 @@
       class="muted"
       type="button"
       mat-icon-button
-      matTooltip="Edit note (F3)"
-      (click)="editNote"
+      matTooltip="Edit note"
+      (click)="editNote()"
     >
       <mat-icon>edit_note</mat-icon>
     </button>

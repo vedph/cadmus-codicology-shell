@@ -21,6 +21,16 @@ div.cell:hover {
 .form-row * {
   flex: 0 0 auto;
 }
+.form-row-center {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.form-row-center * {
+  flex: 0 0 auto;
+}
 .muted {
   opacity: 20%;
 }

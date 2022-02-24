@@ -7,138 +7,146 @@
       <mat-card-title>Sheet Labels Part</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <!-- opForm -->
-      <fieldset>
-        <legend>action</legend>
-        <form [formGroup]="opForm" class="form-row">
-          <!-- opColumn -->
-          <mat-form-field>
-            <mat-select [formControl]="opColumn" placeholder="column">
-              <mat-option *ngFor="let c of columns$ | async" [value]="c">{{
-                c
-              }}</mat-option>
-            </mat-select>
-            <mat-error
-              *ngIf="
-                $any(opColumn).errors?.required &&
-                (opColumn.dirty || opColumn.touched)
-              "
-              >column required</mat-error
+      <div fxLayout="row" fxLayout.lt-md="column">
+        <!-- opForm -->
+        <fieldset fxFlex="50%" fxFlex.lt-md="100%">
+          <legend>action</legend>
+          <form [formGroup]="opForm" class="form-row">
+            <!-- opColumn -->
+            <mat-form-field>
+              <mat-select [formControl]="opColumn" placeholder="column">
+                <mat-option *ngFor="let c of columns$ | async" [value]="c">{{
+                  c
+                }}</mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="
+                  $any(opColumn).errors?.required &&
+                  (opColumn.dirty || opColumn.touched)
+                "
+                >column required</mat-error
+              >
+            </mat-form-field>
+
+            <button
+              type="button"
+              mat-icon-button
+              color="warn"
+              matTooltip="Delete the selected column"
             >
-          </mat-form-field>
+              <mat-icon>delete</mat-icon>
+            </button>
 
-          <button
-            type="button"
-            mat-icon-button
-            color="warn"
-            matTooltip="Delete the selected column"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
+            <!-- opAction -->
+            <mat-form-field>
+              <input matInput [formControl]="opAction" placeholder="action" />
+              <mat-error
+                *ngIf="
+                  $any(opAction).errors?.required &&
+                  (opAction.dirty || opAction.touched)
+                "
+                >action required</mat-error
+              >
+              <mat-error
+                *ngIf="
+                  $any(opAction).errors?.pattern &&
+                  (opAction.dirty || opAction.touched)
+                "
+                >invalid action</mat-error
+              >
+            </mat-form-field>
 
-          <!-- opAction -->
-          <mat-form-field>
-            <input matInput [formControl]="opAction" placeholder="action" />
-            <mat-error
-              *ngIf="
-                $any(opAction).errors?.required &&
-                (opAction.dirty || opAction.touched)
-              "
-              >action required</mat-error
+            <button
+              mat-icon-button
+              color="primary"
+              type="submit"
+              [disabled]="opForm.invalid"
+              matTooltip="Execute this action"
             >
-            <mat-error
-              *ngIf="
-                $any(opAction).errors?.pattern &&
-                (opAction.dirty || opAction.touched)
-              "
-              >invalid action</mat-error
+              <mat-icon>play_circle</mat-icon>
+            </button>
+          </form>
+        </fieldset>
+
+        <fieldset fxFlex="50%" fxFlex.lt-md="100%">
+          <legend>adder</legend>
+          <form [formGroup]="addForm" class="form-row">
+            <!-- addType -->
+            <mat-form-field>
+              <mat-select [formControl]="addType" placeholder="type">
+                <mat-option *ngFor="let e of types" [value]="e.id">{{
+                  e.value
+                }}</mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="
+                  $any(addType).errors?.required &&
+                  (addType.dirty || addType.touched)
+                "
+                >type required</mat-error
+              >
+            </mat-form-field>
+
+            <!-- addName -->
+            <mat-form-field>
+              <input matInput [formControl]="addName" placeholder="name" />
+              <mat-error
+                *ngIf="
+                  $any(addName).errors?.required &&
+                  (addName.dirty || addName.touched)
+                "
+                >name required</mat-error
+              >
+              <mat-error
+                *ngIf="
+                  $any(addName).errors?.maxLength &&
+                  (addName.dirty || addName.touched)
+                "
+                >name too long</mat-error
+              >
+            </mat-form-field>
+
+            <!-- addCount -->
+            <mat-form-field style="width: 4em">
+              <input
+                matInput
+                [formControl]="addCount"
+                type="number"
+                min="1"
+                placeholder="count"
+              />
+            </mat-form-field>
+
+            <button
+              mat-icon-button
+              color="primary"
+              type="submit"
+              [disabled]="addForm.invalid"
+              matTooltip="Add the selected table element"
             >
-          </mat-form-field>
-
-          <button
-            mat-icon-button
-            color="primary"
-            type="submit"
-            [disabled]="opForm.invalid"
-            matTooltip="Execute this action"
-          >
-            <mat-icon>play_circle</mat-icon>
-          </button>
-        </form>
-      </fieldset>
-
-      <fieldset>
-        <legend>adder</legend>
-        <form [formGroup]="addForm" class="form-row">
-          <!-- addType -->
-          <mat-form-field>
-            <mat-select [formControl]="addType" placeholder="type">
-              <mat-option *ngFor="let e of types" [value]="e.id">{{
-                e.value
-              }}</mat-option>
-            </mat-select>
-            <mat-error
-              *ngIf="
-                $any(addType).errors?.required &&
-                (addType.dirty || addType.touched)
-              "
-              >type required</mat-error
-            >
-          </mat-form-field>
-
-          <!-- addName -->
-          <mat-form-field>
-            <input matInput [formControl]="addName" placeholder="name" />
-            <mat-error
-              *ngIf="
-                $any(addName).errors?.required &&
-                (addName.dirty || addName.touched)
-              "
-              >name required</mat-error
-            >
-            <mat-error
-              *ngIf="
-                $any(addName).errors?.maxLength &&
-                (addName.dirty || addName.touched)
-              "
-              >name too long</mat-error
-            >
-          </mat-form-field>
-
-          <!-- addCount -->
-          <mat-form-field style="width: 4em">
-            <input
-              matInput
-              [formControl]="addCount"
-              type="number"
-              min="1"
-              placeholder="count"
-            />
-          </mat-form-field>
-
-          <button
-            mat-icon-button
-            color="primary"
-            type="submit"
-            [disabled]="addForm.invalid"
-            matTooltip="Add the selected table element"
-          >
-            <mat-icon>add_circle</mat-icon>
-          </button>
-        </form>
-      </fieldset>
+              <mat-icon>add_circle</mat-icon>
+            </button>
+          </form>
+        </fieldset>
+      </div>
 
       <!-- table -->
       <table *ngIf="columns$ | async as columns">
         <thead>
-          <tr *ngFor="let c of columns">
-            <th>{{ c }}</th>
+          <tr>
+            <th
+              *ngFor="let c of columns"
+              [class.selected]="c === opColumn?.value"
+            >
+              {{ c }}
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let r of rows$ | async">
             <td *ngFor="let rc of r.columns">
               <cadmus-cod-label-cell
+                [color]="$any(rc.id | cellTypeColor)"
                 [cell]="$any(rc | cellAdapter: rc.id)"
                 (cellChange)="onCellChange($event)"
               ></cadmus-cod-label-cell>
