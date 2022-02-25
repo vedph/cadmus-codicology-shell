@@ -11,7 +11,7 @@
         <!-- opForm -->
         <fieldset fxFlex="50%" fxFlex.lt-md="100%">
           <legend>action</legend>
-          <form [formGroup]="opForm" class="form-row">
+          <form [formGroup]="opForm" class="form-row" (submit)="onAction()">
             <!-- opColumn -->
             <mat-form-field>
               <mat-select [formControl]="opColumn" placeholder="column">

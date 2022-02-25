@@ -245,6 +245,17 @@ export class CodSheetLabelsPartComponent
     return part;
   }
 
+  public onAction(): void {
+    if (this.opForm.invalid) {
+      return;
+    }
+    const cells = LabelGenerator.generateFrom(
+      this.opColumn.value,
+      this.opAction.value
+    );
+    this._table.addCells(cells);
+  }
+
   public onTypeAdd(): void {
     if (this.addForm.invalid) {
       return;
