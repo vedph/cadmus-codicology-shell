@@ -13,6 +13,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { NgToolsModule } from '@myrmidon/ng-tools';
+import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
 import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
 import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
 import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
@@ -61,6 +62,7 @@ import { CellTypeColorPipe } from './cod-sheet-labels-part/cell-type-color.pipe'
     MatTooltipModule,
     // Cadmus
     NgToolsModule,
+    NgMatToolsModule,
     CadmusStateModule,
     CadmusUiModule,
     CadmusUiPgModule,

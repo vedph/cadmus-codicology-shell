@@ -16,8 +16,9 @@ import {
   COD_SHEET_LABELS_PART_TYPEID,
 } from '../cod-sheet-labels-part';
 import { CodLabelCell, LabelGenerator } from '../label-generator';
-import { Observable } from 'rxjs';
+import { Observable, take } from 'rxjs';
 import { CodRowType, CodRowViewModel, CodSheetTable } from '../cod-sheet-table';
+import { DialogService } from '@myrmidon/ng-mat-tools';
 
 /**
  * CodSheetLabels part editor component.
@@ -40,12 +41,12 @@ export class CodSheetLabelsPartComponent
 
   public columns$: Observable<string[]>;
   public rows$: Observable<CodRowViewModel[]>;
+  public qPresent: boolean;
 
   public opColumn: FormControl;
   public opAction: FormControl;
   public opForm: FormGroup;
 
-  public types: ThesaurusEntry[];
   public addType: FormControl;
   public addName: FormControl;
   public addCount: FormControl;
@@ -81,22 +82,17 @@ export class CodSheetLabelsPartComponent
   // doc-reference-tags
   public refTagEntries: ThesaurusEntry[] | undefined;
 
-  constructor(authService: AuthJwtService, formBuilder: FormBuilder) {
+  constructor(
+    authService: AuthJwtService,
+    formBuilder: FormBuilder,
+    private _dialogService: DialogService
+  ) {
     super(authService);
     this._table = new CodSheetTable();
     this.columns$ = this._table.columnIds$;
     this.rows$ = this._table.rows$;
-    this.types = [
-      { id: 'row-1', value: 'front endleaf page' },
-      { id: 'row-2', value: 'body page' },
-      { id: 'row-3', value: 'back endleaf page' },
-      { id: 'col-q', value: 'quire column' },
-      { id: 'col-n', value: 'numbering column' },
-      { id: 'col-c', value: 'catchword column' },
-      { id: 'col-s', value: 'signature column' },
-      { id: 'col-r', value: 'register column' },
-    ];
     this.adderColumn = false;
+    this.qPresent = false;
     // forms
     this.opColumn = formBuilder.control(null, Validators.required);
     this.opAction = formBuilder.control(null, [
@@ -108,7 +104,7 @@ export class CodSheetLabelsPartComponent
       opAction: this.opAction,
     });
 
-    this.addType = formBuilder.control(this.types[1].id, Validators.required);
+    this.addType = formBuilder.control('row-2', Validators.required);
     this.addName = formBuilder.control(null, Validators.maxLength(50));
     this.addCount = formBuilder.control(1);
     this.addForm = formBuilder.group({
@@ -138,9 +134,10 @@ export class CodSheetLabelsPartComponent
     // TODO set controls values from model
     this._table.setRows(model.rows || []);
 
-    // default values in UI
+    // other values in UI
+    this.qPresent = this._table.hasColumn('q');
     if (!this.addType.value) {
-      this.addType.setValue(this.types[1].id);
+      this.addType.setValue('row-2');
     }
 
     this.form!.markAsPristine();
@@ -279,8 +276,25 @@ export class CodSheetLabelsPartComponent
         this.addType.value.charAt(4) +
         (this.addName.value ? '.' + this.addName.value : '');
       this._table.addColumn(id);
+      if (id.charAt(0) === 'q') {
+        this.qPresent = true;
+      }
       setTimeout(() => this.opColumn.setValue(id), 200);
     }
+  }
+
+  public onDeleteColumn(): void {
+    if (!this.opColumn.value) {
+      return;
+    }
+    this._dialogService
+      .confirm('Confirmation', `Delete column ${this.opColumn.value}?`)
+      .pipe(take(1))
+      .subscribe((yes) => {
+        if (yes) {
+          this._table.deleteColumn(this.opColumn.value);
+        }
+      });
   }
 
   public onCellChange(cell: CodLabelCell): void {

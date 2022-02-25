@@ -145,6 +145,22 @@ export class CodSheetTable {
     return suffix ? `${type}.${suffix}` : type;
   }
 
+  /**
+   * Check whether the table has the specified column.
+   *
+   * @param id The column ID.
+   * @param typeOnly True to check for type only.
+   * @returns True if found, otherwise false.
+   */
+  public hasColumn(id: string, typeOnly = false): boolean {
+    const type = id.charAt(0);
+    return this._cols$.value.find((c) =>
+      typeOnly ? c.charAt(0) === type : c === id
+    )
+      ? true
+      : false;
+  }
+
   private addColumnId(id: string, cols: string[]): number {
     // insert the new col at the right place
     const prefix = this._colPrefixes.indexOf(id.charAt(0));
