@@ -1,3 +1,4 @@
+import { deepCopy } from '@myrmidon/ng-tools';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CodColumn, CodRow } from './cod-sheet-labels-part';
 import { CodLabelCell } from './label-generator';
@@ -199,7 +200,7 @@ export class CodSheetTable {
     }
 
     this._cols$.next(cols);
-    this._rows$.next(rows);
+    this._rows$.next(deepCopy(rows));
   }
 
   /**
@@ -220,7 +221,7 @@ export class CodSheetTable {
     }
 
     this._cols$.next(cols);
-    this._rows$.next(rows);
+    this._rows$.next(deepCopy(rows));
   }
 
   private buildRowId(type: CodRowType, n: number, v: boolean) {
@@ -284,7 +285,7 @@ export class CodSheetTable {
       });
     }
 
-    this._rows$.next(rows);
+    this._rows$.next(deepCopy(rows));
   }
 
   /**
@@ -310,7 +311,7 @@ export class CodSheetTable {
       note: cell.note,
     });
     rows[colIndex].columns = cols;
-    this._rows$.next(rows);
+    this._rows$.next(deepCopy(rows));
   }
 
   private parseRowId(rowId: string): CodRowPage | null {
@@ -475,6 +476,6 @@ export class CodSheetTable {
     }
 
     // save
-    this._rows$.next(rows);
+    this._rows$.next(deepCopy(rows));
   }
 }
