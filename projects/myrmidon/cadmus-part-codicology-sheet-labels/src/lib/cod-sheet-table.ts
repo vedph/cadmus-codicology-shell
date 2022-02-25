@@ -357,26 +357,36 @@ export class CodSheetTable {
       return null;
     }
     rowIndex = rows.length - 1;
-    while (rowIndex > -1 && rows[rowIndex].type >= b.type) {
+    while (rowIndex > -1 && rows[rowIndex].type > b.type) {
       rowIndex--;
     }
 
     // if we reached the last row of the same type, this is the A-term
     // for calculating interpolation delta
-    let a: CodRowPage | null;
+    let a: CodRowPage | null = null;
     if (rowIndex > -1 && rows[rowIndex].type !== b.type) {
       a = this.parseRowId(rows[rowIndex].id);
       if (!a) {
         return null;
       }
     } else {
-      // else (we reached the last row of the preceding type, or the top)
-      // the A-term is 0
-      a = {
-        n: 0,
-        v: true,
-        type: b.type,
-      };
+      if (rows[rowIndex].type === b.type) {
+        // we reached the last row of the same type
+        if (!a) {
+          a = this.parseRowId(rows[rowIndex].id);
+          if (!a) {
+            return null;
+          }
+        }
+      } else {
+        // we reached the last row of the preceding type, or the top
+        // the A-term is 0
+        a = {
+          n: 0,
+          v: true,
+          type: b.type,
+        };
+      }
     }
 
     // interpolate rows between a and b if any
@@ -438,10 +448,10 @@ export class CodSheetTable {
         col!.value = cells[i].value;
         col!.note = cells[i].note;
         rows.push(row);
+      } else {
+        rows[rowIndex].columns[columnIndex].value = cells[i].value;
+        rows[rowIndex].columns[columnIndex].note = cells[i].note;
       }
-      // set cell
-      rows[rowIndex].columns[columnIndex].value = cells[i].value;
-      rows[rowIndex].columns[columnIndex].note = cells[i].note;
 
       // next page (each row is a page)
       this.incRowPage(p);
