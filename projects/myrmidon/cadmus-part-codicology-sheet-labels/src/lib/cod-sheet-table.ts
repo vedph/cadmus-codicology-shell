@@ -314,8 +314,90 @@ export class CodSheetTable {
   }
 
   private countRowsBetween(a: CodRowPage, b: CodRowPage): number {
+    // we assume that a/b belong to the same type
     const n = b.n - a.n;
     return n <= 0 ? 0 : n - 1 + (b.v ? 1 : 0);
+  }
+
+  private adjustForTargetColumn(cell: CodLabelCell): number {
+    // add the target column if it's missing
+    if (!this._cols$.value.includes(cell.id)) {
+      this.addColumn(cell.id);
+    }
+    return this._cols$.value.findIndex((id) => id === cell.id);
+  }
+
+  private incRowPage(page: CodRowPage): void {
+    if (page.v) {
+      page.n++;
+      page.v = false;
+    } else {
+      page.v = true;
+    }
+  }
+
+  private adjustForTargetRow(cell: CodLabelCell): {
+    rowIndex: number;
+    rows: CodRowViewModel[];
+  } | null {
+    // if the target row is already present, just ret its index
+    const rows = [...this._rows$.value];
+    let rowIndex = rows.findIndex((r) => r.id === cell.rowId);
+    if (rowIndex > -1) {
+      return {
+        rowIndex,
+        rows,
+      };
+    }
+
+    // else, first locate the last row having the same type,
+    // or the last having the type coming before the target type
+    const b = this.parseRowId(cell.rowId);
+    if (!b) {
+      return null;
+    }
+    rowIndex = rows.length - 1;
+    while (rowIndex > -1 && rows[rowIndex].type >= b.type) {
+      rowIndex--;
+    }
+
+    // if we reached the last row of the same type, this is the A-term
+    // for calculating interpolation delta
+    let a: CodRowPage | null;
+    if (rowIndex > -1 && rows[rowIndex].type !== b.type) {
+      a = this.parseRowId(rows[rowIndex].id);
+      if (!a) {
+        return null;
+      }
+    } else {
+      // else (we reached the last row of the preceding type, or the top)
+      // the A-term is 0
+      a = {
+        n: 0,
+        v: true,
+        type: b.type,
+      };
+    }
+
+    // interpolate rows between a and b if any
+    const delta = this.countRowsBetween(a, b);
+    let interp: CodRowPage = { ...a };
+    for (let i = 0; i < delta; i++) {
+      // next page (each row is a page)
+      rowIndex++;
+      this.incRowPage(interp);
+      rows.push({
+        id: this.buildRowId(interp.type, interp.n, interp.v),
+        columns: this.getNewColumns(),
+        ...interp,
+      });
+    }
+
+    // point to the target row
+    return {
+      rowIndex: rowIndex + 1,
+      rows,
+    };
   }
 
   /**
@@ -331,86 +413,28 @@ export class CodSheetTable {
     if (!cells.length) {
       return;
     }
-    // extract N and V from 1st cell's row ID
-    const firstSheet = this.parseRowId(cells[0].rowId);
-    if (!firstSheet) {
+    // adjust and locate target column
+    const columnIndex = this.adjustForTargetColumn(cells[0]);
+
+    // adjust and locate target row
+    const ir = this.adjustForTargetRow(cells[0]);
+    if (!ir) {
       return;
     }
+    let { rowIndex, rows } = ir;
 
-    const columnId = cells[0].id;
-    const columnIndex = this._colPrefixes.indexOf(cells[0].id);
+    // set cells starting from 1st
+    const p = this.parseRowId(cells[0].rowId)!;
 
-    // add the target column if it's missing
-    if (!this._cols$.value.includes(columnId)) {
-      this.addColumn(columnId);
-    }
-
-    // locate last row of same type (if any) and extract its N and V
-    const rows = [...this._rows$.value];
-    const firstPage = this.parseRowId(cells[0].rowId);
-    if (!firstPage) {
-      return;
-    }
-    let lastRowIndex = rows.length - 1;
-    while (lastRowIndex > -1 && rows[lastRowIndex].type !== firstPage.type) {
-      lastRowIndex--;
-    }
-    let lastSheet: CodRowPage;
-    if (lastRowIndex > -1) {
-      lastSheet = rows[lastRowIndex];
-    } else {
-      lastSheet = {
-        type: firstSheet.type,
-        n: 0,
-        v: true,
-      };
-    }
-    let n = lastSheet.n;
-    let v = lastSheet.v;
-    let rowIndex = lastRowIndex;
-
-    // interpolate rows between last existing sheet and first sheet to add
-    const delta = this.countRowsBetween(lastSheet, firstSheet);
-    if (delta) {
-      for (let i = 0; i < delta; i++) {
-        // next page (each row is a page)
-        rowIndex++;
-        if (v) {
-          n++;
-          v = false;
-        } else {
-          v = true;
-        }
-        rows.push({
-          id: this.buildRowId(firstSheet.type, n, v),
-          columns: this.getNewColumns(),
-          type: firstSheet.type,
-          n: n,
-          v: v,
-        });
-      }
-      // move past last interpolated row
-      rowIndex++;
-      if (v) {
-        n++;
-        v = false;
-      } else {
-        v = true;
-      }
-    }
-
-    // set cells
     for (let i = 0; i < cells.length; i++) {
       // if the row does not exist, append it
       if (rowIndex >= rows.length) {
         const row = {
-          id: this.buildRowId(firstPage.type, n, v),
+          id: cells[i].rowId,
           columns: this.getNewColumns(),
-          type: firstPage.type,
-          n: n,
-          v: v,
+          ...p,
         };
-        const col = row.columns.find((c) => c.id === columnId);
+        const col = row.columns.find((c) => c.id === cells[0].id);
         col!.value = cells[i].value;
         col!.note = cells[i].note;
         rows.push(row);
@@ -420,12 +444,7 @@ export class CodSheetTable {
       rows[rowIndex].columns[columnIndex].note = cells[i].note;
 
       // next page (each row is a page)
-      if (v) {
-        n++;
-        v = false;
-      } else {
-        v = true;
-      }
+      this.incRowPage(p);
       rowIndex++;
     }
 
