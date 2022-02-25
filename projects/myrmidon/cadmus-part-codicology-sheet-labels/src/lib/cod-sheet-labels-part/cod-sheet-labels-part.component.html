@@ -70,7 +70,7 @@
 
         <fieldset fxFlex="50%" fxFlex.lt-md="100%">
           <legend>adder</legend>
-          <form [formGroup]="addForm" class="form-row">
+          <form [formGroup]="addForm" class="form-row" (submit)="onTypeAdd()">
             <!-- addType -->
             <mat-form-field>
               <mat-select [formControl]="addType" placeholder="type">
@@ -88,7 +88,7 @@
             </mat-form-field>
 
             <!-- addName -->
-            <mat-form-field>
+            <mat-form-field *ngIf="adderColumn">
               <input matInput [formControl]="addName" placeholder="name" />
               <mat-error
                 *ngIf="
@@ -107,7 +107,7 @@
             </mat-form-field>
 
             <!-- addCount -->
-            <mat-form-field style="width: 4em">
+            <mat-form-field *ngIf="!adderColumn" style="width: 4em">
               <input
                 matInput
                 [formControl]="addCount"
@@ -134,6 +134,7 @@
       <table *ngIf="columns$ | async as columns">
         <thead>
           <tr>
+            <th></th>
             <th
               *ngFor="let c of columns"
               [class.selected]="c === opColumn?.value"
@@ -144,6 +145,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let r of rows$ | async">
+            <th>{{ r.id }}</th>
             <td *ngFor="let rc of r.columns">
               <cadmus-cod-label-cell
                 [color]="$any(rc.id | cellTypeColor)"

@@ -173,7 +173,6 @@ export class CodSheetTable {
     // insert the new col at the right place
     const cols = [...this._cols$.value];
     const colIndex = this.addColumnId(id, cols);
-    cols.splice(colIndex + 1, 0, id);
 
     // insert the new col in each row
     const rows = [...this._rows$.value];

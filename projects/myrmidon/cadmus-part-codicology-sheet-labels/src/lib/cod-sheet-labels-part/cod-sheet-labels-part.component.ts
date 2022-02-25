@@ -17,7 +17,7 @@ import {
 } from '../cod-sheet-labels-part';
 import { CodLabelCell, LabelGenerator } from '../label-generator';
 import { Observable } from 'rxjs';
-import { CodRowViewModel, CodSheetTable } from '../cod-sheet-table';
+import { CodRowType, CodRowViewModel, CodSheetTable } from '../cod-sheet-table';
 
 /**
  * CodSheetLabels part editor component.
@@ -50,6 +50,7 @@ export class CodSheetLabelsPartComponent
   public addName: FormControl;
   public addCount: FormControl;
   public addForm: FormGroup;
+  public adderColumn: boolean;
 
   // C-COL
   // cod-catchwords-positions
@@ -95,6 +96,7 @@ export class CodSheetLabelsPartComponent
       { id: 'col-s', value: 'signature column' },
       { id: 'col-r', value: 'register column' },
     ];
+    this.adderColumn = false;
     // forms
     this.opColumn = formBuilder.control(null, Validators.required);
     this.opAction = formBuilder.control(null, [
@@ -122,6 +124,9 @@ export class CodSheetLabelsPartComponent
   }
 
   public ngOnInit(): void {
+    this.addType.valueChanges.subscribe((v) => {
+      this.adderColumn = v && (v as string).startsWith('col');
+    });
     this.initEditor();
   }
 
@@ -132,6 +137,12 @@ export class CodSheetLabelsPartComponent
     }
     // TODO set controls values from model
     this._table.setRows(model.rows || []);
+
+    // default values in UI
+    if (!this.addType.value) {
+      this.addType.setValue(this.types[1].id);
+    }
+
     this.form!.markAsPristine();
   }
 
@@ -234,7 +245,35 @@ export class CodSheetLabelsPartComponent
     return part;
   }
 
+  public onTypeAdd(): void {
+    if (this.addForm.invalid) {
+      return;
+    }
+    if (this.addType.value.startsWith('row-')) {
+      let type: CodRowType;
+      switch (this.addType.value) {
+        case 'row-1':
+          type = CodRowType.EndleafFront;
+          break;
+        case 'row-3':
+          type = CodRowType.EndleafBack;
+          break;
+        default:
+          type = CodRowType.Body;
+          break;
+      }
+      this._table.appendRows(type, this.addCount.value || 1);
+    } else {
+      const id =
+        this.addType.value.charAt(4) +
+        (this.addName.value ? '.' + this.addName.value : '');
+      this._table.addColumn(id);
+      setTimeout(() => this.opColumn.setValue(id), 200);
+    }
+  }
+
   public onCellChange(cell: CodLabelCell): void {
+    // cell was edited, update it
     this._table.updateCell(cell);
   }
 }
