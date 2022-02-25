@@ -478,4 +478,73 @@ export class CodSheetTable {
     // save
     this._rows$.next(deepCopy(rows));
   }
+
+  private isRowEmpty(row: CodRowViewModel): boolean {
+    return row.columns.length
+      ? row.columns.every((c) => !c.value && !c.note)
+      : false;
+  }
+
+  private isColumnEmpty(index: number): boolean {
+    const rows = this._rows$.value;
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i].columns[index].value || rows[i].columns[index].note) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Trim the table by removing all the empty rows at its start/end,
+   * and optionally all the empty columns.
+   */
+  public trim(columns = false): void {
+    // trim rows
+    const rows = [...this._rows$.value];
+    // tail
+    let i = rows.length - 1;
+    while (i > -1 && this.isRowEmpty(rows[i])) {
+      i--;
+    }
+    if (i === -1) {
+      rows.length = 0;
+    } else {
+      // head
+      const bottom = i;
+      i = 0;
+      while (i < bottom && this.isRowEmpty(rows[i])) {
+        i++;
+      }
+      rows.splice(bottom + 1, rows.length - (bottom + 1));
+      rows.splice(0, i);
+    }
+
+    // clear if no more rows
+    if (!rows.length) {
+      this._rows$.next([]);
+      if (columns) {
+        this._cols$.next([]);
+      }
+      return;
+    }
+
+    // trim columns if requested
+    if (columns) {
+      const cols = [...this._cols$.value];
+      while (i > -1) {
+        i = rows[0].columns.length - 1;
+        if (this.isColumnEmpty(i)) {
+          cols.splice(i, 1);
+          for (let j = 0; j < rows.length; j++) {
+            rows[j].columns.splice(i, 1);
+          }
+        }
+      }
+      this._cols$.next(cols);
+    }
+
+    // update rows
+    this._rows$.next(deepCopy(rows));
+  }
 }

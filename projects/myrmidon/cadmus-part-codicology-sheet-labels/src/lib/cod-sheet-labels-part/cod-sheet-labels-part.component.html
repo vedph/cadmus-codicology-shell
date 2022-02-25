@@ -139,6 +139,26 @@
             >
               <mat-icon>add_circle</mat-icon>
             </button>
+
+            <!-- trimming -->
+            <button
+              type="button"
+              mat-icon-button
+              color="warn"
+              matTooltip="Trim table rows"
+              (click)="onTrimRows()"
+            >
+              <mat-icon>delete_sweep</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              color="warn"
+              matTooltip="Trim table rows and columns"
+              (click)="onTrimRowCols()"
+            >
+              <mat-icon>delete_forever</mat-icon>
+            </button>
           </form>
         </fieldset>
       </div>

@@ -297,6 +297,28 @@ export class CodSheetLabelsPartComponent
       });
   }
 
+  public onTrimRows(): void {
+    this._dialogService
+      .confirm('Confirmation', `Trim rows?`)
+      .pipe(take(1))
+      .subscribe((yes) => {
+        if (yes) {
+          this._table.trim();
+        }
+      });
+  }
+
+  public onTrimRowCols(): void {
+    this._dialogService
+      .confirm('Confirmation', `Trim rows and columns?`)
+      .pipe(take(1))
+      .subscribe((yes) => {
+        if (yes) {
+          this._table.trim(true);
+        }
+      });
+  }
+
   public onCellChange(cell: CodLabelCell): void {
     // cell was edited, update it
     this._table.updateCell(cell);
