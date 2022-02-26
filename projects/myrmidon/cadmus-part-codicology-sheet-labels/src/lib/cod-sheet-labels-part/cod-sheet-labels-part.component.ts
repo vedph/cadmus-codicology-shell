@@ -12,6 +12,7 @@ import { ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import {
+  CodEndleaf,
   CodSheetLabelsPart,
   COD_SHEET_LABELS_PART_TYPEID,
 } from '../cod-sheet-labels-part';
@@ -38,6 +39,9 @@ export class CodSheetLabelsPartComponent
   implements OnInit
 {
   private _table: CodSheetTable;
+  private _editedEndleafIndex;
+
+  public editedEndleaf: CodEndleaf | undefined;
 
   public columns$: Observable<string[]>;
   public rows$: Observable<CodRowViewModel[]>;
@@ -52,6 +56,8 @@ export class CodSheetLabelsPartComponent
   public addCount: FormControl;
   public addForm: FormGroup;
   public adderColumn: boolean;
+
+  public endleaves: FormControl;
 
   // C-COL
   // cod-catchwords-positions
@@ -93,6 +99,8 @@ export class CodSheetLabelsPartComponent
     this.rows$ = this._table.rows$;
     this.adderColumn = false;
     this.qPresent = false;
+
+    this._editedEndleafIndex = -1;
     // forms
     this.opColumn = formBuilder.control(null, Validators.required);
     this.opAction = formBuilder.control(null, [
@@ -113,9 +121,12 @@ export class CodSheetLabelsPartComponent
       addCount: this.addCount,
     });
 
+    this.endleaves = formBuilder.control([]);
+
     this.form = formBuilder.group({
       op: this.opForm,
       add: this.addForm,
+      endleaves: this.endleaves,
     });
   }
 
@@ -131,8 +142,9 @@ export class CodSheetLabelsPartComponent
       this.form!.reset();
       return;
     }
-    // TODO set controls values from model
     this._table.setRows(model.rows || []);
+    this.endleaves.setValue(model.endleaves || []);
+    // TODO set controls values from model
 
     // other values in UI
     this.qPresent = this._table.hasColumn('q');
@@ -239,6 +251,9 @@ export class CodSheetLabelsPartComponent
     }
     // TODO definitions
     part.rows = this._table.getRows();
+    part.endleaves = this.endleaves.value?.length
+      ? this.endleaves.value
+      : undefined;
     return part;
   }
 
@@ -323,4 +338,78 @@ export class CodSheetLabelsPartComponent
     // cell was edited, update it
     this._table.updateCell(cell);
   }
+
+  //#region endleaves
+  public addEndleaf(): void {
+    const item: CodEndleaf = {
+      location: '',
+      material: this.matEntries?.length ? this.matEntries[0].id : '',
+    };
+    this.endleaves.setValue([...this.endleaves.value, item]);
+    this.endleaves.markAsDirty();
+    this.editEndleaf(this.endleaves.value.length - 1);
+  }
+
+  public editEndleaf(index: number): void {
+    if (index < 0) {
+      this._editedEndleafIndex = -1;
+      this.editedEndleaf = undefined;
+    } else {
+      this._editedEndleafIndex = index;
+      this.editedEndleaf = this.endleaves.value[index];
+    }
+  }
+
+  public onEndleafSave(item: CodEndleaf): void {
+    this.endleaves.setValue(
+      this.endleaves.value.map((x: CodEndleaf, i: number) =>
+        i === this._editedEndleafIndex ? item : x
+      )
+    );
+    this.endleaves.markAsDirty();
+    this.editEndleaf(-1);
+  }
+
+  public onEndleafClose(): void {
+    this.editEndleaf(-1);
+  }
+
+  public deleteEndleaf(index: number): void {
+    this._dialogService
+      .confirm('Confirmation', 'Delete endleaf?')
+      .pipe(take(1))
+      .subscribe((yes) => {
+        if (yes) {
+          const items = [...this.endleaves.value];
+          items.splice(index, 1);
+          this.endleaves.setValue(items);
+          this.endleaves.markAsDirty();
+        }
+      });
+  }
+
+  public moveEndleafUp(index: number): void {
+    if (index < 1) {
+      return;
+    }
+    const item = this.endleaves.value[index];
+    const items = [...this.endleaves.value];
+    items.splice(index, 1);
+    items.splice(index - 1, 0, item);
+    this.endleaves.setValue(items);
+    this.endleaves.markAsDirty();
+  }
+
+  public moveEndleafDown(index: number): void {
+    if (index + 1 >= this.endleaves.value.length) {
+      return;
+    }
+    const item = this.endleaves.value[index];
+    const items = [...this.endleaves.value];
+    items.splice(index, 1);
+    items.splice(index + 1, 0, item);
+    this.endleaves.setValue(items);
+    this.endleaves.markAsDirty();
+  }
+  //#endregion
 }

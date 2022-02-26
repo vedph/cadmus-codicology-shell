@@ -7,189 +7,290 @@
       <mat-card-title>Sheet Labels Part</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <div fxLayout="row" fxLayout.lt-md="column">
-        <!-- opForm -->
-        <fieldset fxFlex="50%" fxFlex.lt-md="100%">
-          <legend>action</legend>
-          <form [formGroup]="opForm" class="form-row" (submit)="onAction()">
-            <!-- opColumn -->
-            <mat-form-field>
-              <mat-select [formControl]="opColumn" placeholder="column">
-                <mat-option *ngFor="let c of columns$ | async" [value]="c">{{
-                  c
-                }}</mat-option>
-              </mat-select>
-              <mat-error
-                *ngIf="
-                  $any(opColumn).errors?.required &&
-                  (opColumn.dirty || opColumn.touched)
-                "
-                >column required</mat-error
-              >
-            </mat-form-field>
-
-            <button
-              type="button"
-              mat-icon-button
-              color="warn"
-              matTooltip="Delete the selected column"
-              [disabled]="!opColumn?.value"
-              (click)="onDeleteColumn()"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
-
-            <!-- opAction -->
-            <mat-form-field>
-              <input matInput [formControl]="opAction" placeholder="action" />
-              <mat-error
-                *ngIf="
-                  $any(opAction).errors?.required &&
-                  (opAction.dirty || opAction.touched)
-                "
-                >action required</mat-error
-              >
-              <mat-error
-                *ngIf="
-                  $any(opAction).errors?.pattern &&
-                  (opAction.dirty || opAction.touched)
-                "
-                >invalid action</mat-error
-              >
-            </mat-form-field>
-
-            <button
-              mat-icon-button
-              color="primary"
-              type="submit"
-              [disabled]="opForm.invalid"
-              matTooltip="Execute this action"
-            >
-              <mat-icon>play_circle</mat-icon>
-            </button>
-          </form>
-        </fieldset>
-
-        <fieldset fxFlex="50%" fxFlex.lt-md="100%">
-          <legend>adder</legend>
-          <form [formGroup]="addForm" class="form-row" (submit)="onTypeAdd()">
-            <!-- addType -->
-            <mat-form-field>
-              <mat-select [formControl]="addType" placeholder="type">
-                <mat-optgroup label="rows">
-                  <mat-option value="row-1">front endleaf</mat-option>
-                  <mat-option value="row-2">body</mat-option>
-                  <mat-option value="row-3">back endleaf</mat-option>
-                </mat-optgroup>
-                <mat-optgroup label="columns">
-                  <mat-option value="col-q" [disabled]="qPresent"
-                    >quire</mat-option
+      <mat-tab-group>
+        <!-- LABELS -->
+        <mat-tab label="labels">
+          <div fxLayout="row" fxLayout.lt-md="column">
+            <!-- opForm -->
+            <fieldset fxFlex="50%" fxFlex.lt-md="100%">
+              <legend>action</legend>
+              <form [formGroup]="opForm" class="form-row" (submit)="onAction()">
+                <!-- opColumn -->
+                <mat-form-field>
+                  <mat-select [formControl]="opColumn" placeholder="column">
+                    <mat-option
+                      *ngFor="let c of columns$ | async"
+                      [value]="c"
+                      >{{ c }}</mat-option
+                    >
+                  </mat-select>
+                  <mat-error
+                    *ngIf="
+                      $any(opColumn).errors?.required &&
+                      (opColumn.dirty || opColumn.touched)
+                    "
+                    >column required</mat-error
                   >
-                  <mat-option value="col-n">numbering</mat-option>
-                  <mat-option value="col-c">catchword</mat-option>
-                  <mat-option value="col-s">signature</mat-option>
-                  <mat-option value="col-r">register</mat-option>
-                </mat-optgroup>
-              </mat-select>
-              <mat-error
-                *ngIf="
-                  $any(addType).errors?.required &&
-                  (addType.dirty || addType.touched)
-                "
-                >type required</mat-error
-              >
-            </mat-form-field>
+                </mat-form-field>
 
-            <!-- addName -->
-            <mat-form-field *ngIf="adderColumn">
-              <input matInput [formControl]="addName" placeholder="name" />
-              <mat-error
-                *ngIf="
-                  $any(addName).errors?.required &&
-                  (addName.dirty || addName.touched)
-                "
-                >name required</mat-error
-              >
-              <mat-error
-                *ngIf="
-                  $any(addName).errors?.maxLength &&
-                  (addName.dirty || addName.touched)
-                "
-                >name too long</mat-error
-              >
-            </mat-form-field>
+                <button
+                  type="button"
+                  mat-icon-button
+                  color="warn"
+                  matTooltip="Delete the selected column"
+                  [disabled]="!opColumn?.value"
+                  (click)="onDeleteColumn()"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
 
-            <!-- addCount -->
-            <mat-form-field *ngIf="!adderColumn" style="width: 4em">
-              <input
-                matInput
-                [formControl]="addCount"
-                type="number"
-                min="1"
-                placeholder="count"
-              />
-            </mat-form-field>
+                <!-- opAction -->
+                <mat-form-field>
+                  <input
+                    matInput
+                    [formControl]="opAction"
+                    placeholder="action"
+                  />
+                  <mat-error
+                    *ngIf="
+                      $any(opAction).errors?.required &&
+                      (opAction.dirty || opAction.touched)
+                    "
+                    >action required</mat-error
+                  >
+                  <mat-error
+                    *ngIf="
+                      $any(opAction).errors?.pattern &&
+                      (opAction.dirty || opAction.touched)
+                    "
+                    >invalid action</mat-error
+                  >
+                </mat-form-field>
 
+                <button
+                  mat-icon-button
+                  color="primary"
+                  type="submit"
+                  [disabled]="opForm.invalid"
+                  matTooltip="Execute this action"
+                >
+                  <mat-icon>play_circle</mat-icon>
+                </button>
+              </form>
+            </fieldset>
+
+            <fieldset fxFlex="50%" fxFlex.lt-md="100%">
+              <legend>adder</legend>
+              <form
+                [formGroup]="addForm"
+                class="form-row"
+                (submit)="onTypeAdd()"
+              >
+                <!-- addType -->
+                <mat-form-field>
+                  <mat-select [formControl]="addType" placeholder="type">
+                    <mat-optgroup label="rows">
+                      <mat-option value="row-1">front endleaf</mat-option>
+                      <mat-option value="row-2">body</mat-option>
+                      <mat-option value="row-3">back endleaf</mat-option>
+                    </mat-optgroup>
+                    <mat-optgroup label="columns">
+                      <mat-option value="col-q" [disabled]="qPresent"
+                        >quire</mat-option
+                      >
+                      <mat-option value="col-n">numbering</mat-option>
+                      <mat-option value="col-c">catchword</mat-option>
+                      <mat-option value="col-s">signature</mat-option>
+                      <mat-option value="col-r">register</mat-option>
+                    </mat-optgroup>
+                  </mat-select>
+                  <mat-error
+                    *ngIf="
+                      $any(addType).errors?.required &&
+                      (addType.dirty || addType.touched)
+                    "
+                    >type required</mat-error
+                  >
+                </mat-form-field>
+
+                <!-- addName -->
+                <mat-form-field *ngIf="adderColumn">
+                  <input matInput [formControl]="addName" placeholder="name" />
+                  <mat-error
+                    *ngIf="
+                      $any(addName).errors?.required &&
+                      (addName.dirty || addName.touched)
+                    "
+                    >name required</mat-error
+                  >
+                  <mat-error
+                    *ngIf="
+                      $any(addName).errors?.maxLength &&
+                      (addName.dirty || addName.touched)
+                    "
+                    >name too long</mat-error
+                  >
+                </mat-form-field>
+
+                <!-- addCount -->
+                <mat-form-field *ngIf="!adderColumn" style="width: 4em">
+                  <input
+                    matInput
+                    [formControl]="addCount"
+                    type="number"
+                    min="1"
+                    placeholder="count"
+                  />
+                </mat-form-field>
+
+                <button
+                  mat-icon-button
+                  color="primary"
+                  type="submit"
+                  [disabled]="addForm.invalid"
+                  matTooltip="Add the selected table element"
+                >
+                  <mat-icon>add_circle</mat-icon>
+                </button>
+
+                <!-- trimming -->
+                <button
+                  type="button"
+                  mat-icon-button
+                  color="warn"
+                  matTooltip="Trim table rows"
+                  (click)="onTrimRows()"
+                >
+                  <mat-icon>delete_sweep</mat-icon>
+                </button>
+                <button
+                  type="button"
+                  mat-icon-button
+                  color="warn"
+                  matTooltip="Trim table rows and columns"
+                  (click)="onTrimRowCols()"
+                >
+                  <mat-icon>delete_forever</mat-icon>
+                </button>
+              </form>
+            </fieldset>
+          </div>
+
+          <!-- table -->
+          <table *ngIf="columns$ | async as columns">
+            <thead>
+              <tr>
+                <th></th>
+                <th
+                  *ngFor="let c of columns"
+                  [class.selected]="c === opColumn?.value"
+                >
+                  {{ c }}
+                </th>
+              </tr>
+            </thead>
+            <tbody *ngIf="rows$ | async as rows">
+              <tr *ngFor="let r of rows">
+                <th>{{ r.id }}</th>
+                <td *ngFor="let rc of r.columns">
+                  <cadmus-cod-label-cell
+                    [color]="$any(rc.id | cellTypeColor)"
+                    [cell]="$any(rc | cellAdapter: rc.id)"
+                    (cellChange)="onCellChange($event)"
+                  ></cadmus-cod-label-cell>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          TODO editors
+        </mat-tab>
+
+        <!-- ENDLEAVES -->
+        <mat-tab label="endleaves">
+          <div>
             <button
+              type="button"
               mat-icon-button
               color="primary"
-              type="submit"
-              [disabled]="addForm.invalid"
-              matTooltip="Add the selected table element"
+              (click)="addEndleaf()"
             >
-              <mat-icon>add_circle</mat-icon>
+              <mat-icon>add_circle</mat-icon> add endleaf
             </button>
+          </div>
+          <table *ngIf="endleaves?.value?.length">
+            <thead>
+              <tr>
+                <th></th>
+                <th>location</th>
+                <th>material</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let endleaf of endleaves?.value;
+                  let i = index;
+                  let first = first;
+                  let last = last
+                "
+              >
+                <td>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    color="primary"
+                    matTooltip="Edit this endleaf"
+                    (click)="editEndleaf(i)"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Move this endleaf up"
+                    [disabled]="first"
+                    (click)="moveEndleafUp(i)"
+                  >
+                    <mat-icon>arrow_upward</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Move this endleaf down"
+                    [disabled]="last"
+                    (click)="moveEndleafDown(i)"
+                  >
+                    <mat-icon>arrow_downward</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    color="warn"
+                    matTooltip="Delete this endleaf"
+                    (click)="deleteEndleaf(i)"
+                  >
+                    <mat-icon>remove_circle</mat-icon>
+                  </button>
+                </td>
+                <td>{{ endleaf.location }}</td>
+                <td>{{ endleaf.material }}</td>
+              </tr>
+            </tbody>
+          </table>
 
-            <!-- trimming -->
-            <button
-              type="button"
-              mat-icon-button
-              color="warn"
-              matTooltip="Trim table rows"
-              (click)="onTrimRows()"
-            >
-              <mat-icon>delete_sweep</mat-icon>
-            </button>
-            <button
-              type="button"
-              mat-icon-button
-              color="warn"
-              matTooltip="Trim table rows and columns"
-              (click)="onTrimRowCols()"
-            >
-              <mat-icon>delete_forever</mat-icon>
-            </button>
-          </form>
-        </fieldset>
-      </div>
-
-      <!-- table -->
-      <table *ngIf="columns$ | async as columns">
-        <thead>
-          <tr>
-            <th></th>
-            <th
-              *ngFor="let c of columns"
-              [class.selected]="c === opColumn?.value"
-            >
-              {{ c }}
-            </th>
-          </tr>
-        </thead>
-        <tbody *ngIf="rows$ | async as rows">
-          <tr *ngFor="let r of rows">
-            <th>{{ r.id }}</th>
-            <td *ngFor="let rc of r.columns">
-              <cadmus-cod-label-cell
-                [color]="$any(rc.id | cellTypeColor)"
-                [cell]="$any(rc | cellAdapter: rc.id)"
-                (cellChange)="onCellChange($event)"
-              ></cadmus-cod-label-cell>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      TODO
+          <mat-expansion-panel
+            [expanded]="editedEndleaf"
+            [disabled]="!editedEndleaf"
+          >
+            <mat-expansion-panel-header>endleaf</mat-expansion-panel-header>
+            <cadmus-cod-endleaf
+              [endleaf]="editedEndleaf"
+              (endleafChange)="onEndleafSave($event)"
+              (editorClose)="onEndleafClose()"
+            ></cadmus-cod-endleaf>
+          </mat-expansion-panel>
+        </mat-tab>
+      </mat-tab-group>
     </mat-card-content>
     <mat-card-actions>
       <cadmus-close-save-buttons
