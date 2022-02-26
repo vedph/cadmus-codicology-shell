@@ -5,21 +5,25 @@ import {
   Validators,
   FormGroup,
 } from '@angular/forms';
+import { Observable, take } from 'rxjs';
 
 import { deepCopy } from '@myrmidon/ng-tools';
+import { DialogService } from '@myrmidon/ng-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 import { ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import {
+  CodCColDefinition,
   CodEndleaf,
+  CodNColDefinition,
+  CodRColDefinition,
+  CodSColDefinition,
   CodSheetLabelsPart,
   COD_SHEET_LABELS_PART_TYPEID,
 } from '../cod-sheet-labels-part';
 import { CodLabelCell, LabelGenerator } from '../label-generator';
-import { Observable, take } from 'rxjs';
 import { CodRowType, CodRowViewModel, CodSheetTable } from '../cod-sheet-table';
-import { DialogService } from '@myrmidon/ng-mat-tools';
 
 /**
  * CodSheetLabels part editor component.
@@ -41,6 +45,10 @@ export class CodSheetLabelsPartComponent
   private _table: CodSheetTable;
   private _editedEndleafIndex;
 
+  public editedNDef?: CodNColDefinition;
+  public editedCDef?: CodCColDefinition;
+  public editedSDef?: CodSColDefinition;
+  public editedRDef?: CodRColDefinition;
   public editedEndleaf: CodEndleaf | undefined;
 
   public columns$: Observable<string[]>;
@@ -56,6 +64,11 @@ export class CodSheetLabelsPartComponent
   public addCount: FormControl;
   public addForm: FormGroup;
   public adderColumn: boolean;
+
+  public nDefs: FormControl;
+  public cDefs: FormControl;
+  public sDefs: FormControl;
+  public rDefs: FormControl;
 
   public endleaves: FormControl;
 
@@ -121,11 +134,20 @@ export class CodSheetLabelsPartComponent
       addCount: this.addCount,
     });
 
+    this.nDefs = formBuilder.control([]);
+    this.cDefs = formBuilder.control([]);
+    this.sDefs = formBuilder.control([]);
+    this.rDefs = formBuilder.control([]);
+
     this.endleaves = formBuilder.control([]);
 
     this.form = formBuilder.group({
       op: this.opForm,
       add: this.addForm,
+      nDefs: this.nDefs,
+      cDefs: this.cDefs,
+      sDefs: this.sDefs,
+      rDefs: this.rDefs,
       endleaves: this.endleaves,
     });
   }
@@ -143,8 +165,11 @@ export class CodSheetLabelsPartComponent
       return;
     }
     this._table.setRows(model.rows || []);
+    this.nDefs.setValue(model.nDefinitions || []);
+    this.cDefs.setValue(model.cDefinitions || []);
+    this.sDefs.setValue(model.sDefinitions || []);
+    this.rDefs.setValue(model.rDefinitions || []);
     this.endleaves.setValue(model.endleaves || []);
-    // TODO set controls values from model
 
     // other values in UI
     this.qPresent = this._table.hasColumn('q');
@@ -249,8 +274,11 @@ export class CodSheetLabelsPartComponent
         rows: [],
       };
     }
-    // TODO definitions
     part.rows = this._table.getRows();
+    part.nDefinitions = this.nDefs.value?.length ? this.nDefs.value : undefined;
+    part.cDefinitions = this.cDefs.value?.length ? this.cDefs.value : undefined;
+    part.sDefinitions = this.sDefs.value?.length ? this.sDefs.value : undefined;
+    part.rDefinitions = this.rDefs.value?.length ? this.rDefs.value : undefined;
     part.endleaves = this.endleaves.value?.length
       ? this.endleaves.value
       : undefined;
@@ -310,6 +338,79 @@ export class CodSheetLabelsPartComponent
           this._table.deleteColumn(this.opColumn.value);
         }
       });
+  }
+
+  private getDefaultEntryId(entries: ThesaurusEntry[] | undefined): string {
+    return entries?.length ? entries[0].id : '';
+  }
+
+  private closeAllDefEditors(): void {
+    this.editedNDef = undefined;
+    this.editedCDef = undefined;
+    this.editedSDef = undefined;
+    this.editedRDef = undefined;
+  }
+
+  public onEditColumnDefinition(): void {
+    if (!this.opColumn.value) {
+      return;
+    }
+
+    this.closeAllDefEditors();
+
+    switch (this.opColumn.value.charAt(0)) {
+      case 'n':
+        const nDefs = this.nDefs.value as CodNColDefinition[];
+        let nDef = nDefs.find((d) => d.id === this.opColumn.value);
+        if (!nDef) {
+          nDef = {
+            id: this.opColumn.value,
+            rank: 0,
+            system: this.getDefaultEntryId(this.sysnEntries),
+            technique: this.getDefaultEntryId(this.techEntries),
+            position: this.getDefaultEntryId(this.posnEntries),
+          };
+        }
+        this.editedNDef = nDef;
+        break;
+      case 'c':
+        const cDefs = this.cDefs.value as CodCColDefinition[];
+        let cDef = cDefs.find((d) => d.id === this.opColumn.value);
+        if (!cDef) {
+          cDef = {
+            id: this.opColumn.value,
+            rank: 0,
+            position: this.getDefaultEntryId(this.poscEntries),
+          };
+        }
+        this.editedCDef = cDef;
+        break;
+      case 's':
+        const sDefs = this.sDefs.value as CodSColDefinition[];
+        let sDef = sDefs.find((d) => d.id === this.opColumn.value);
+        if (!sDef) {
+          sDef = {
+            id: this.opColumn.value,
+            rank: 0,
+            system: this.getDefaultEntryId(this.syssEntries),
+            position: this.getDefaultEntryId(this.possEntries),
+          };
+        }
+        this.editedSDef = sDef;
+        break;
+      case 'r':
+        const rDefs = this.rDefs.value as CodRColDefinition[];
+        let rDef = rDefs.find((d) => d.id === this.opColumn.value);
+        if (!rDef) {
+          rDef = {
+            id: this.opColumn.value,
+            rank: 0,
+            position: this.getDefaultEntryId(this.possEntries),
+          };
+        }
+        this.editedRDef = rDef;
+        break;
+    }
   }
 
   public onTrimRows(): void {

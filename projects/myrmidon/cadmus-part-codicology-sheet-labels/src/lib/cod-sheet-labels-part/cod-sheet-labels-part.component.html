@@ -33,6 +33,17 @@
                   >
                 </mat-form-field>
 
+                <!-- column actions -->
+                <button
+                  type="button"
+                  mat-icon-button
+                  color="primary"
+                  matTooltip="Edit the selected column definition"
+                  [disabled]="!opColumn?.value"
+                  (click)="onEditColumnDefinition()"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
                 <button
                   type="button"
                   mat-icon-button
