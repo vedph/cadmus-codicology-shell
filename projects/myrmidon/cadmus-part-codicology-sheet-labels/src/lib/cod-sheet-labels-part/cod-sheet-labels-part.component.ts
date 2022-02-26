@@ -44,11 +44,16 @@ export class CodSheetLabelsPartComponent
 {
   private _table: CodSheetTable;
   private _editedEndleafIndex;
+  private _editedNDefIndex;
+  private _editedCDefIndex;
+  private _editedSDefIndex;
+  private _editedRDefIndex;
 
   public editedNDef?: CodNColDefinition;
   public editedCDef?: CodCColDefinition;
   public editedSDef?: CodSColDefinition;
   public editedRDef?: CodRColDefinition;
+  public editedDefId?: string;
   public editedEndleaf: CodEndleaf | undefined;
 
   public columns$: Observable<string[]>;
@@ -113,6 +118,10 @@ export class CodSheetLabelsPartComponent
     this.adderColumn = false;
     this.qPresent = false;
 
+    this._editedNDefIndex = -1;
+    this._editedCDefIndex = -1;
+    this._editedSDefIndex = -1;
+    this._editedRDefIndex = -1;
     this._editedEndleafIndex = -1;
     // forms
     this.opColumn = formBuilder.control(null, Validators.required);
@@ -340,79 +349,6 @@ export class CodSheetLabelsPartComponent
       });
   }
 
-  private getDefaultEntryId(entries: ThesaurusEntry[] | undefined): string {
-    return entries?.length ? entries[0].id : '';
-  }
-
-  private closeAllDefEditors(): void {
-    this.editedNDef = undefined;
-    this.editedCDef = undefined;
-    this.editedSDef = undefined;
-    this.editedRDef = undefined;
-  }
-
-  public onEditColumnDefinition(): void {
-    if (!this.opColumn.value) {
-      return;
-    }
-
-    this.closeAllDefEditors();
-
-    switch (this.opColumn.value.charAt(0)) {
-      case 'n':
-        const nDefs = this.nDefs.value as CodNColDefinition[];
-        let nDef = nDefs.find((d) => d.id === this.opColumn.value);
-        if (!nDef) {
-          nDef = {
-            id: this.opColumn.value,
-            rank: 0,
-            system: this.getDefaultEntryId(this.sysnEntries),
-            technique: this.getDefaultEntryId(this.techEntries),
-            position: this.getDefaultEntryId(this.posnEntries),
-          };
-        }
-        this.editedNDef = nDef;
-        break;
-      case 'c':
-        const cDefs = this.cDefs.value as CodCColDefinition[];
-        let cDef = cDefs.find((d) => d.id === this.opColumn.value);
-        if (!cDef) {
-          cDef = {
-            id: this.opColumn.value,
-            rank: 0,
-            position: this.getDefaultEntryId(this.poscEntries),
-          };
-        }
-        this.editedCDef = cDef;
-        break;
-      case 's':
-        const sDefs = this.sDefs.value as CodSColDefinition[];
-        let sDef = sDefs.find((d) => d.id === this.opColumn.value);
-        if (!sDef) {
-          sDef = {
-            id: this.opColumn.value,
-            rank: 0,
-            system: this.getDefaultEntryId(this.syssEntries),
-            position: this.getDefaultEntryId(this.possEntries),
-          };
-        }
-        this.editedSDef = sDef;
-        break;
-      case 'r':
-        const rDefs = this.rDefs.value as CodRColDefinition[];
-        let rDef = rDefs.find((d) => d.id === this.opColumn.value);
-        if (!rDef) {
-          rDef = {
-            id: this.opColumn.value,
-            rank: 0,
-            position: this.getDefaultEntryId(this.possEntries),
-          };
-        }
-        this.editedRDef = rDef;
-        break;
-    }
-  }
-
   public onTrimRows(): void {
     this._dialogService
       .confirm('Confirmation', `Trim rows?`)
@@ -439,6 +375,150 @@ export class CodSheetLabelsPartComponent
     // cell was edited, update it
     this._table.updateCell(cell);
   }
+
+  //#region definitions
+  private getDefaultEntryId(entries: ThesaurusEntry[] | undefined): string {
+    return entries?.length ? entries[0].id : '';
+  }
+
+  private closeAllDefEditors(): void {
+    this.editedDefId = undefined;
+
+    this.editedNDef = undefined;
+    this._editedNDefIndex = -1;
+
+    this.editedCDef = undefined;
+    this._editedCDefIndex = -1;
+
+    this.editedSDef = undefined;
+    this._editedSDefIndex = -1;
+
+    this.editedRDef = undefined;
+    this._editedRDefIndex = -1;
+  }
+
+  public onEditColumnDefinition(): void {
+    if (!this.opColumn.value) {
+      return;
+    }
+
+    this.closeAllDefEditors();
+
+    switch (this.opColumn.value.charAt(0)) {
+      case 'n':
+        const nDefs = this.nDefs.value as CodNColDefinition[];
+        let nDef = nDefs.find((d) => d.id === this.opColumn.value);
+        if (!nDef) {
+          nDef = {
+            id: this.opColumn.value,
+            rank: 0,
+            system: this.getDefaultEntryId(this.sysnEntries),
+            technique: this.getDefaultEntryId(this.techEntries),
+            position: this.getDefaultEntryId(this.posnEntries),
+          };
+        } else {
+          this._editedNDefIndex = nDefs.indexOf(nDef);
+        }
+        this.editedNDef = nDef;
+        this.editedDefId = nDef.id;
+        break;
+      case 'c':
+        const cDefs = this.cDefs.value as CodCColDefinition[];
+        let cDef = cDefs.find((d) => d.id === this.opColumn.value);
+        if (!cDef) {
+          cDef = {
+            id: this.opColumn.value,
+            rank: 0,
+            position: this.getDefaultEntryId(this.poscEntries),
+          };
+        } else {
+          this._editedCDefIndex = cDefs.indexOf(cDef);
+        }
+        this.editedCDef = cDef;
+        this.editedDefId = cDef.id;
+        break;
+      case 's':
+        const sDefs = this.sDefs.value as CodSColDefinition[];
+        let sDef = sDefs.find((d) => d.id === this.opColumn.value);
+        if (!sDef) {
+          sDef = {
+            id: this.opColumn.value,
+            rank: 0,
+            system: this.getDefaultEntryId(this.syssEntries),
+            position: this.getDefaultEntryId(this.possEntries),
+          };
+        } else {
+          this._editedNDefIndex = sDefs.indexOf(sDef);
+        }
+        this.editedSDef = sDef;
+        this.editedDefId = sDef.id;
+        break;
+      case 'r':
+        const rDefs = this.rDefs.value as CodRColDefinition[];
+        let rDef = rDefs.find((d) => d.id === this.opColumn.value);
+        if (!rDef) {
+          rDef = {
+            id: this.opColumn.value,
+            rank: 0,
+            position: this.getDefaultEntryId(this.possEntries),
+          };
+        } else {
+          this._editedNDefIndex = rDefs.indexOf(rDef);
+        }
+        this.editedRDef = rDef;
+        this.editedDefId = rDef.id;
+        break;
+    }
+  }
+
+  public onEditedNDefChange(def: CodNColDefinition): void {
+    const defs = [...this.nDefs.value];
+    if (this._editedNDefIndex === -1) {
+      defs.push(def);
+    } else {
+      defs.splice(this._editedNDefIndex, 1, def);
+    }
+    this.nDefs.setValue(defs);
+    this.nDefs.markAsDirty();
+    this.closeAllDefEditors();
+  }
+
+  public onEditedCDefChange(def: CodCColDefinition): void {
+    const defs = [...this.cDefs.value];
+    if (this._editedCDefIndex === -1) {
+      defs.push(def);
+    } else {
+      defs.splice(this._editedCDefIndex, 1, def);
+    }
+    this.cDefs.setValue(defs);
+    this.cDefs.markAsDirty();
+    this.closeAllDefEditors();
+  }
+
+  public onEditedSDefChange(def: CodSColDefinition): void {
+    const defs = [...this.sDefs.value];
+    if (this._editedSDefIndex === -1) {
+      defs.push(def);
+    } else {
+      defs.splice(this._editedSDefIndex, 1, def);
+    }
+    this.sDefs.setValue(defs);
+    this.sDefs.markAsDirty();
+    this.closeAllDefEditors();
+  }
+
+  public onEditedRDefChange(def: CodRColDefinition): void {
+    const defs = [...this.rDefs.value];
+    if (this._editedRDefIndex === -1) {
+      defs.push(def);
+    } else {
+      defs.splice(this._editedRDefIndex, 1, def);
+    }
+    this.rDefs.setValue(defs);
+    this.rDefs.markAsDirty();
+    this.closeAllDefEditors();
+  }
+  //#endregion
 
   //#region endleaves
   public addEndleaf(): void {

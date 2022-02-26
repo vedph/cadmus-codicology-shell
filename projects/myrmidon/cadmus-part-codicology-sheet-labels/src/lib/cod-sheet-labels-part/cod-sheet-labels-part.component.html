@@ -11,7 +11,7 @@
         <!-- LABELS -->
         <mat-tab label="labels">
           <div fxLayout="row" fxLayout.lt-md="column">
-            <!-- opForm -->
+            <!-- operation -->
             <fieldset fxFlex="50%" fxFlex.lt-md="100%">
               <legend>action</legend>
               <form [formGroup]="opForm" class="form-row" (submit)="onAction()">
@@ -42,7 +42,7 @@
                   [disabled]="!opColumn?.value"
                   (click)="onEditColumnDefinition()"
                 >
-                  <mat-icon>delete</mat-icon>
+                  <mat-icon>fact_check</mat-icon>
                 </button>
                 <button
                   type="button"
@@ -61,6 +61,7 @@
                     matInput
                     [formControl]="opAction"
                     placeholder="action"
+                    (keyup.enter)="$any($event.target).select()"
                   />
                   <mat-error
                     *ngIf="
@@ -90,6 +91,7 @@
               </form>
             </fieldset>
 
+            <!-- adder -->
             <fieldset fxFlex="50%" fxFlex.lt-md="100%">
               <legend>adder</legend>
               <form
@@ -187,6 +189,29 @@
             </fieldset>
           </div>
 
+          <mat-expansion-panel
+            [expanded]="editedDefId"
+            [disabled]="!editedDefId"
+          >
+            <mat-expansion-panel-header
+              >column: {{ editedDefId }}</mat-expansion-panel-header
+            >
+            <!-- N -->
+            <cadmus-cod-n-col-definition
+              *ngIf="editedNDef"
+              [clrEntries]="clrEntries"
+              [posEntries]="posnEntries"
+              [sysEntries]="syssEntries"
+              [techEntries]="techEntries"
+              [definition]="editedNDef"
+              (definitionChange)="onEditedNDefChange($event)"
+            ></cadmus-cod-n-col-definition>
+
+            <!-- C -->
+            <!-- S -->
+            <!-- R -->
+          </mat-expansion-panel>
+
           <!-- table -->
           <table *ngIf="columns$ | async as columns" class="labels">
             <thead>
@@ -213,7 +238,6 @@
               </tr>
             </tbody>
           </table>
-          TODO editors
         </mat-tab>
 
         <!-- ENDLEAVES -->
