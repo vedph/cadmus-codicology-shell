@@ -89,6 +89,26 @@ fdescribe('CodSheetTable', () => {
     }
   });
 
+  it('appendRows should append front endleaf rows', () => {
+    const table = new CodSheetTable();
+    table.addColumn('q');
+    table.addColumn('n');
+    table.appendRows(CodRowType.Body, 1);
+    table.appendRows(CodRowType.EndleafFront, 2);
+
+    const rows = table.getRows();
+    expect(rows.length).toBe(3);
+
+    const colIds = ['(1r)', '(1v)', '1r'];
+    for (let i = 0; i < 3; i++) {
+      const row = rows[i];
+      expect(row.id).toBe(colIds[i]);
+      expect(row.columns.length).toBe(2);
+      expect(row.columns[0].id).toBe('q');
+      expect(row.columns[1].id).toBe('n');
+    }
+  });
+
   it('appendRows should append back endleaf rows (empty)', () => {
     const table = new CodSheetTable();
     table.addColumn('q');
@@ -101,6 +121,26 @@ fdescribe('CodSheetTable', () => {
     for (let i = 0; i < 2; i++) {
       const row = rows[i];
       expect(row.id).toBe(i === 0 ? '(/1r)' : '(/1v)');
+      expect(row.columns.length).toBe(2);
+      expect(row.columns[0].id).toBe('q');
+      expect(row.columns[1].id).toBe('n');
+    }
+  });
+
+  it('appendRows should append back endleaf rows', () => {
+    const table = new CodSheetTable();
+    table.addColumn('q');
+    table.addColumn('n');
+    table.appendRows(CodRowType.Body, 1);
+    table.appendRows(CodRowType.EndleafBack, 2);
+
+    const rows = table.getRows();
+    expect(rows.length).toBe(3);
+
+    const colIds = ['1r', '(/1r)', '(/1v)'];
+    for (let i = 0; i < 3; i++) {
+      const row = rows[i];
+      expect(row.id).toBe(colIds[i]);
       expect(row.columns.length).toBe(2);
       expect(row.columns[0].id).toBe('q');
       expect(row.columns[1].id).toBe('n');

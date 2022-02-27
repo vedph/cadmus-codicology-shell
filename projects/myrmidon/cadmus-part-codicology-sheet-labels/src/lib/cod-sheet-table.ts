@@ -254,34 +254,42 @@ export class CodSheetTable {
    */
   public appendRows(type: CodRowType, count: number): void {
     const rows = [...this._rows$.value];
-    let n: number, v: boolean;
 
     // locate last row of same type
     let lastRowIndex = rows.length - 1;
     while (lastRowIndex > -1 && rows[lastRowIndex].type !== type) {
       lastRowIndex--;
     }
+    let page: CodRowPage;
     if (lastRowIndex > -1) {
-      n = rows[lastRowIndex].n;
-      v = rows[lastRowIndex].v;
+      page = {
+        type: type,
+        n: rows[lastRowIndex].n,
+        v: rows[lastRowIndex].v,
+      };
     } else {
-      n = 0;
-      v = true;
+      page = {
+        type: type,
+        n: 0,
+        v: true,
+      };
+      if (rows.length) {
+        while (
+          lastRowIndex < rows.length - 1 &&
+          type > rows[lastRowIndex + 1].type
+        ) {
+          lastRowIndex++;
+        }
+      }
     }
+
     for (let i = 0; i < count; i++) {
       // next page (each row is a page)
-      if (v) {
-        n++;
-        v = false;
-      } else {
-        v = true;
-      }
-      rows.push({
-        id: this.buildRowId(type, n, v),
+      this.incRowPage(page);
+      rows.splice(++lastRowIndex, 0, {
+        id: this.buildRowId(type, page.n, page.v),
         columns: this.getNewColumns(),
-        type: type,
-        n: n,
-        v: v,
+        ...page,
       });
     }
 
