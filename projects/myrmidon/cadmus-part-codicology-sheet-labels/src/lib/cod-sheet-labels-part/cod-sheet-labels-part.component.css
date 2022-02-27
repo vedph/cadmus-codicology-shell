@@ -12,15 +12,26 @@ fieldset {
 .form-row * {
   flex: 0 0 auto;
 }
+.def-pane {
+  border: 1px solid silver;
+  border-radius: 6px;
+  margin: 8px 0;
+}
+
+table {
+  margin: 8px 0;
+  border-collapse: collapse;
+}
+th {
+  font-weight: normal;
+  color: silver;
+}
 
 /* https://stackoverflow.com/questions/47723996/table-with-fixed-thead-and-scrollable-tbody */
 table.labels {
   width: 100%;
-  margin: 8px 0;
-  border-collapse: collapse;
 }
 table.labels th {
-  font-weight: normal;
   background-color: #c0c0c0;
   color: white;
 }
@@ -29,7 +40,7 @@ table.labels th.selected {
   color: black;
 }
 table.labels table,
-th,
-td {
+table.labels th,
+table.labels td {
   border: 1px solid silver;
 }

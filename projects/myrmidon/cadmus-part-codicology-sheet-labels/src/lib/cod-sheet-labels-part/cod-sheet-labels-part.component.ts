@@ -471,6 +471,10 @@ export class CodSheetLabelsPartComponent
     }
   }
 
+  public onColumnDefClose(): void {
+    this.closeAllDefEditors();
+  }
+
   public onEditedNDefChange(def: CodNColDefinition): void {
     const defs = [...this.nDefs.value];
     if (this._editedNDefIndex === -1) {
