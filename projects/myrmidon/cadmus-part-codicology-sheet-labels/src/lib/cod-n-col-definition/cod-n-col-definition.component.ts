@@ -62,7 +62,7 @@ export class CodNColDefinitionComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public id: FormControl;
+  public id: string;
   public rank: FormControl;
   public isPagination: FormControl;
   public system: FormControl;
@@ -84,10 +84,7 @@ export class CodNColDefinitionComponent implements OnInit {
     this.initialColors = [];
     this.clrFlags = [];
     // form
-    this.id = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
+    this.id = '';
     this.rank = formBuilder.control(0);
     this.isPagination = formBuilder.control(false);
     this.system = formBuilder.control(null, [
@@ -107,7 +104,6 @@ export class CodNColDefinitionComponent implements OnInit {
     this.date = formBuilder.control(null);
     this.note = formBuilder.control(null, Validators.maxLength(1000));
     this.form = formBuilder.group({
-      id: this.id,
       rank: this.rank,
       isPagination: this.isPagination,
       system: this.system,
@@ -132,7 +128,7 @@ export class CodNColDefinitionComponent implements OnInit {
       return;
     }
 
-    this.id.setValue(model.id);
+    this.id = model.id;
     this.rank.setValue(model.rank);
     this.isPagination.setValue(model.isPagination);
     this.system.setValue(model.system);
@@ -148,7 +144,7 @@ export class CodNColDefinitionComponent implements OnInit {
 
   private getModel(): CodNColDefinition {
     return {
-      id: this.id.value?.trim(),
+      id: this.id,
       rank: +this.rank.value || 0,
       isPagination: this.isPagination.value ? true : false,
       system: this.system.value?.trim(),

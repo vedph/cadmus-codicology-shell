@@ -189,6 +189,7 @@
             </fieldset>
           </div>
 
+          <!-- definition -->
           <mat-expansion-panel
             [expanded]="editedDefId"
             [disabled]="!editedDefId"
@@ -197,19 +198,52 @@
               >column: {{ editedDefId }}</mat-expansion-panel-header
             >
             <!-- N -->
-            <cadmus-cod-n-col-definition
-              *ngIf="editedNDef"
-              [clrEntries]="clrEntries"
-              [posEntries]="posnEntries"
-              [sysEntries]="syssEntries"
-              [techEntries]="techEntries"
-              [definition]="editedNDef"
-              (definitionChange)="onEditedNDefChange($event)"
-            ></cadmus-cod-n-col-definition>
+            <fieldset>
+              <legend>numbering</legend>
+              <cadmus-cod-n-col-definition
+                *ngIf="editedNDef"
+                [clrEntries]="clrEntries"
+                [posEntries]="posnEntries"
+                [sysEntries]="syssEntries"
+                [techEntries]="techEntries"
+                [definition]="editedNDef"
+                (definitionChange)="onEditedNDefChange($event)"
+              ></cadmus-cod-n-col-definition>
+            </fieldset>
 
             <!-- C -->
+            <fieldset>
+              <legend>catchword</legend>
+              <cadmus-cod-c-col-definition
+                *ngIf="editedNDef"
+                [posEntries]="poscEntries"
+                [definition]="editedCDef"
+                (definitionChange)="onEditedCDefChange($event)"
+              ></cadmus-cod-c-col-definition>
+            </fieldset>
+
             <!-- S -->
+            <fieldset>
+              <legend>signature</legend>
+              <cadmus-cod-s-col-definition
+                *ngIf="editedSDef"
+                [posEntries]="possEntries"
+                [sysEntries]="syssEntries"
+                [definition]="editedSDef"
+                (definitionChange)="onEditedSDefChange($event)"
+              ></cadmus-cod-s-col-definition>
+            </fieldset>
+
             <!-- R -->
+            <fieldset>
+              <legend>register signature</legend>
+              <cadmus-cod-r-col-definition
+                *ngIf="editedRDef"
+                [posEntries]="possEntries"
+                [definition]="editedRDef"
+                (definitionChange)="onEditedRDefChange($event)"
+              ></cadmus-cod-r-col-definition>
+            </fieldset>
           </mat-expansion-panel>
 
           <!-- table -->

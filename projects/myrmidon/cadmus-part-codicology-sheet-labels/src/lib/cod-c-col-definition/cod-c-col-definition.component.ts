@@ -36,7 +36,7 @@ export class CodCColDefinitionComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public id: FormControl;
+  public id: string;
   public rank: FormControl;
   public position: FormControl;
   public isVertical: FormControl;
@@ -48,10 +48,7 @@ export class CodCColDefinitionComponent implements OnInit {
     this.definitionChange = new EventEmitter<CodCColDefinition>();
     this.editorClose = new EventEmitter<any>();
     // form
-    this.id = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
+    this.id = '';
     this.rank = formBuilder.control(0);
     this.position = formBuilder.control(null, [
       Validators.required,
@@ -61,7 +58,6 @@ export class CodCColDefinitionComponent implements OnInit {
     this.decoration = formBuilder.control(null, Validators.maxLength(1000));
     this.note = formBuilder.control(null, Validators.maxLength(1000));
     this.form = formBuilder.group({
-      id: this.id,
       rank: this.rank,
       position: this.position,
       isVertical: this.isVertical,
@@ -82,7 +78,7 @@ export class CodCColDefinitionComponent implements OnInit {
       return;
     }
 
-    this.id.setValue(model.id);
+    this.id = model.id;
     this.rank.setValue(model.rank || 0);
     this.position.setValue(model.position);
     this.isVertical.setValue(model.isVertical ? true : false);
@@ -93,7 +89,7 @@ export class CodCColDefinitionComponent implements OnInit {
 
   private getModel(): CodCColDefinition | null {
     return {
-      id: this.id.value?.trim(),
+      id: this.id,
       rank: +this.rank.value || 0,
       position: this.position.value?.trim(),
       isVertical: this.isVertical.value ? true : false,

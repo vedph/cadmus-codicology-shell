@@ -36,7 +36,7 @@ export class CodRColDefinitionComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public id: FormControl;
+  public id: string;
   public rank: FormControl;
   public position: FormControl;
   public note: FormControl;
@@ -46,10 +46,7 @@ export class CodRColDefinitionComponent implements OnInit {
     this.definitionChange = new EventEmitter<CodRColDefinition>();
     this.editorClose = new EventEmitter<any>();
     // form
-    this.id = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
+    this.id = '';
     this.rank = formBuilder.control(0);
     this.position = formBuilder.control(null, [
       Validators.required,
@@ -76,7 +73,7 @@ export class CodRColDefinitionComponent implements OnInit {
       return;
     }
 
-    this.id.setValue(model.id);
+    this.id = model.id;
     this.rank.setValue(model.rank || 0);
     this.position.setValue(model.position);
     this.note.setValue(model.note);
@@ -85,7 +82,7 @@ export class CodRColDefinitionComponent implements OnInit {
 
   private getModel(): CodRColDefinition | null {
     return {
-      id: this.id.value?.trim(),
+      id: this.id,
       rank: +this.rank.value || 0,
       position: this.position.value?.trim(),
       note: this.note.value?.trim(),

@@ -1,16 +1,5 @@
 <form [formGroup]="form" (submit)="save()">
   <div class="form-row">
-    <!-- id -->
-    <mat-form-field>
-      <input matInput [formControl]="id" placeholder="ID" />
-      <mat-error *ngIf="$any(id).errors?.required && (id.dirty || id.touched)"
-        >ID required</mat-error
-      >
-      <mat-error *ngIf="$any(id).errors?.maxLength && (id.dirty || id.touched)"
-        >ID too long</mat-error
-      >
-    </mat-form-field>
-
     <!-- rank -->
     <mat-form-field style="width: 4em">
       <input
