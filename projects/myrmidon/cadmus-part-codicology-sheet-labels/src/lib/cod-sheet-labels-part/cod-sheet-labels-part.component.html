@@ -190,7 +190,8 @@
           </div>
 
           <!-- definition -->
-          <mat-expansion-panel class="def-pane"
+          <mat-expansion-panel
+            class="def-pane"
             [expanded]="editedDefId"
             [disabled]="!editedDefId"
           >
@@ -354,6 +355,7 @@
           >
             <mat-expansion-panel-header>endleaf</mat-expansion-panel-header>
             <cadmus-cod-endleaf
+              [locations]="endleafRowIds"
               [endleaf]="editedEndleaf"
               (endleafChange)="onEndleafSave($event)"
               (editorClose)="onEndleafClose()"

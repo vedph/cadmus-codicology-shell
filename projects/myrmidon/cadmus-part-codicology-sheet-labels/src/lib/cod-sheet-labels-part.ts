@@ -87,7 +87,7 @@ export const COD_SHEET_LABELS_PART_SCHEMA = {
     'creatorId',
     'timeModified',
     'userId',
-    // TODO: add other required properties here...
+    'rows'
   ],
   properties: {
     timeCreated: {

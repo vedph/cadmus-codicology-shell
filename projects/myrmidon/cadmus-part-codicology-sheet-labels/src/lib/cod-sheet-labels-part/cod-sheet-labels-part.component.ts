@@ -5,7 +5,7 @@ import {
   Validators,
   FormGroup,
 } from '@angular/forms';
-import { Observable, take } from 'rxjs';
+import { filter, Observable, take } from 'rxjs';
 
 import { deepCopy } from '@myrmidon/ng-tools';
 import { DialogService } from '@myrmidon/ng-mat-tools';
@@ -58,6 +58,7 @@ export class CodSheetLabelsPartComponent
 
   public columns$: Observable<string[]>;
   public rows$: Observable<CodRowViewModel[]>;
+  public endleafRowIds: string[];
   public qPresent: boolean;
 
   public opColumn: FormControl;
@@ -115,6 +116,7 @@ export class CodSheetLabelsPartComponent
     this._table = new CodSheetTable();
     this.columns$ = this._table.columnIds$;
     this.rows$ = this._table.rows$;
+    this.endleafRowIds = [];
     this.adderColumn = false;
     this.qPresent = false;
 
@@ -162,6 +164,11 @@ export class CodSheetLabelsPartComponent
   }
 
   public ngOnInit(): void {
+    this.rows$.subscribe((rows) => {
+      this.endleafRowIds = rows
+        .filter((r) => r.id.startsWith('('))
+        .map((r) => r.id);
+    });
     this.addType.valueChanges.subscribe((v) => {
       this.adderColumn = v && (v as string).startsWith('col');
     });
