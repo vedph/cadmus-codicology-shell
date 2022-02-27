@@ -16,7 +16,7 @@
               <legend>action</legend>
               <form [formGroup]="opForm" class="form-row" (submit)="onAction()">
                 <!-- opColumn -->
-                <mat-form-field>
+                <mat-form-field style="width: 7em">
                   <mat-select [formControl]="opColumn" placeholder="column">
                     <mat-option
                       *ngFor="let c of columns$ | async"
@@ -56,7 +56,7 @@
                 </button>
 
                 <!-- opAction -->
-                <mat-form-field>
+                <mat-form-field style="width: 6em;">
                   <input
                     matInput
                     [formControl]="opAction"
