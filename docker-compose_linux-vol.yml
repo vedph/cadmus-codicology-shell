@@ -4,8 +4,6 @@
 # API: localhost:60380
 # web: localhost:4200
 
-version: '3.7'
-
 services:
   # MongoDB
   cadmus-mongo:
