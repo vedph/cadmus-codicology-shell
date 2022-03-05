@@ -20,6 +20,8 @@ Quick Docker image build:
 
 ## History
 
+- 2022-03-05: fixes to images editor in UI library; upgraded Angular.
+
 ### 1.0.0
 
 - updated Docker scripts.
