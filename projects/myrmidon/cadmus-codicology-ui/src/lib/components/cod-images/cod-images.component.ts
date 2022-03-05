@@ -30,6 +30,9 @@ export class CodImagesComponent implements OnInit, OnDestroy {
   private _subs: Subscription[];
   private _images: CodImage[] | undefined | null;
 
+  /**
+   * The images edited.
+   */
   @Input()
   public get images(): CodImage[] | undefined | null {
     return this._images;
@@ -43,6 +46,9 @@ export class CodImagesComponent implements OnInit, OnDestroy {
   @Input()
   public typeEntries: ThesaurusEntry[] | undefined;
 
+  /**
+   * Emitted when images change.
+   */
   @Output()
   public imagesChange: EventEmitter<CodImage[] | undefined>;
 
@@ -75,7 +81,13 @@ export class CodImagesComponent implements OnInit, OnDestroy {
     this.imagesArr.clear();
     if (images?.length) {
       for (let image of images) {
-        this.imagesArr.controls.push(this.getImageGroup(image));
+        const g = this.getImageGroup(image);
+        this.imagesArr.controls.push(g);
+        this._subs.push(
+          g.valueChanges.pipe(debounceTime(300)).subscribe((_) => {
+            this.emitImagesChange();
+          })
+        );
       }
     }
   }
@@ -122,7 +134,6 @@ export class CodImagesComponent implements OnInit, OnDestroy {
 
     this.emitImagesChange();
   }
-
 
   private swapArrElems(a: any[], i: number, j: number): void {
     if (i === j) {

@@ -52,9 +52,9 @@
         </button>
 
         <!-- child controls -->
-        <div class="flex-wrap">
+        <div class="form-row">
           <!-- type (bound) -->
-          <mat-form-field *ngIf="typeEntries?.length" style="flex: 1 0 auto">
+          <mat-form-field *ngIf="typeEntries?.length">
             <mat-select formControlName="type" placeholder="type">
               <mat-option *ngFor="let e of typeEntries" [value]="e.id">{{
                 e.value
@@ -70,7 +70,7 @@
             >
           </mat-form-field>
           <!-- type (free) -->
-          <mat-form-field *ngIf="!typeEntries?.length" style="flex: 1 0 auto">
+          <mat-form-field *ngIf="!typeEntries?.length">
             <input matInput formControlName="type" placeholder="type" />
             <mat-error
               *ngIf="
@@ -91,7 +91,7 @@
           </mat-form-field>
 
           <!-- id -->
-          <mat-form-field style="flex: 1 0 auto">
+          <mat-form-field>
             <input matInput formControlName="id" placeholder="ID" />
             <mat-error
               *ngIf="
@@ -132,7 +132,7 @@
             >
           </mat-form-field>
         </div>
-        <div class="flex-wrap">
+        <div class="form-row">
           <!-- label -->
           <mat-form-field style="flex: 1 0 auto">
             <input matInput formControlName="label" placeholder="label" />
