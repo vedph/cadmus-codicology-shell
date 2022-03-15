@@ -126,7 +126,7 @@ export class CodDecorationArtistComponent implements OnInit {
     this.type.setValue(artist.type);
     this.name.setValue(artist.name);
     this.initialIds = artist.ids || [];
-    this.styles.setValue(artist.styles);
+    this.styles.setValue(artist.styles || []);
     // element keys are edited as text separated by space
     this.elementKeys.setValue(
       artist.elementKeys ? artist.elementKeys.join(' ') : ''
