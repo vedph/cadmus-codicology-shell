@@ -1,7 +1,7 @@
 <form [formGroup]="form" (submit)="save()">
-  <div style="display: flex; gap: 8px">
+  <div class="form-row">
     <!-- eid -->
-    <mat-form-field style="flex: 0 0 auto">
+    <mat-form-field>
       <input matInput [formControl]="eid" placeholder="EID" />
       <mat-error
         *ngIf="$any(eid).errors?.maxLength && (eid.dirty || eid.touched)"
@@ -10,9 +10,7 @@
     </mat-form-field>
     <!-- range -->
     <cadmus-cod-location
-      style="flex: 0 0 auto"
       label="range"
-      [single]="true"
       [required]="true"
       [location]="initialRange ? [initialRange] : []"
       (locationChange)="onLocationChange($event)"
@@ -20,7 +18,7 @@
     <!-- tag (bound) -->
     <mat-form-field
       *ngIf="tagEntries?.length"
-      style="width: 8em; flex: 0 0 auto"
+      style="width: 8em"
     >
       <mat-select [formControl]="tag" placeholder="tag">
         <mat-option *ngFor="let e of tagEntries" [value]="e.id">{{
@@ -29,7 +27,7 @@
       </mat-select>
     </mat-form-field>
     <!-- tag (free) -->
-    <mat-form-field *ngIf="!tagEntries?.length" style="flex: 0 0 auto">
+    <mat-form-field *ngIf="!tagEntries?.length">
       <input matInput [formControl]="tag" placeholder="tag" />
       <mat-error
         *ngIf="$any(tag).errors?.maxLength && (tag.dirty || tag.touched)"

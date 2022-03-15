@@ -166,6 +166,7 @@ export class CodContentEditorComponent implements OnInit {
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
+    console.log('locationChange');
     this.range.setValue(ranges ? ranges[0] : null);
     this.range.updateValueAndValidity();
     this.range.markAsDirty();
@@ -173,8 +174,8 @@ export class CodContentEditorComponent implements OnInit {
 
   public onStateIdsChange(ids: string[]): void {
     this.states.setValue(ids);
-    this.states.updateValueAndValidity();
     this.states.markAsDirty();
+    this.states.updateValueAndValidity();
   }
 
   //#region Annotations
