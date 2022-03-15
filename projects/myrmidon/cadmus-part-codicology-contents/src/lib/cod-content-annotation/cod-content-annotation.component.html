@@ -1,0 +1,120 @@
+<form [formGroup]="form" (submit)="save()">
+  <div class="form-row">
+    <!-- type (bound) -->
+    <mat-form-field *ngIf="typeEntries?.length">
+      <mat-select [formControl]="type" placeholder="type">
+        <mat-option *ngFor="let e of typeEntries" [value]="e.id">{{
+          e.value
+        }}</mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="$any(type).errors?.required && (type.dirty || type.touched)"
+        >type required</mat-error
+      >
+    </mat-form-field>
+    <!-- type (free) -->
+    <mat-form-field *ngIf="!typeEntries?.length">
+      <input matInput [formControl]="type" placeholder="type" />
+      <mat-error
+        *ngIf="$any(type).errors?.required && (type.dirty || type.touched)"
+        >type required</mat-error
+      >
+      <mat-error
+        *ngIf="$any(type).errors?.maxLength && (type.dirty || type.touched)"
+        >type too long</mat-error
+      >
+    </mat-form-field>
+
+    <!-- range -->
+    <cadmus-cod-location
+      style="flex: 0 0 auto"
+      label="range"
+      [single]="true"
+      [required]="true"
+      [location]="initialRange ? [initialRange] : []"
+      (locationChange)="onLocationChange($event)"
+    ></cadmus-cod-location>
+  </div>
+
+  <!-- incipit -->
+  <div>
+    <mat-form-field class="long-text">
+      <input matInput [formControl]="incipit" placeholder="incipit" />
+      <mat-error
+        *ngIf="
+          $any(incipit).errors?.required && (incipit.dirty || incipit.touched)
+        "
+        >incipit required</mat-error
+      >
+      <mat-error
+        *ngIf="
+          $any(incipit).errors?.maxLength && (incipit.dirty || incipit.touched)
+        "
+        >incipit too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <!-- explicit -->
+  <div>
+    <mat-form-field class="long-text">
+      <input matInput [formControl]="explicit" placeholder="explicit" />
+      <mat-error
+        *ngIf="
+          $any(explicit).errors?.required &&
+          (explicit.dirty || explicit.touched)
+        "
+        >explicit required</mat-error
+      >
+      <mat-error
+        *ngIf="
+          $any(explicit).errors?.maxLength &&
+          (explicit.dirty || explicit.touched)
+        "
+        >explicit too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <!-- text -->
+  <div>
+    <mat-form-field class="long-text">
+      <textarea
+        matInput
+        rows="3"
+        [formControl]="text"
+        placeholder="text"
+      ></textarea>
+      <mat-error
+        *ngIf="$any(text).errors?.required && (text.dirty || text.touched)"
+        >text required</mat-error
+      >
+      <mat-error
+        *ngIf="$any(text).errors?.maxLength && (text.dirty || text.touched)"
+        >text too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      color="warn"
+      mat-icon-button
+      matTooltip="Discard changes"
+      (click)="cancel()"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      color="primary"
+      mat-icon-button
+      matTooltip="Accept changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon>check_circle</mat-icon>
+    </button>
+  </div>
+</form>

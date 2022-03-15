@@ -11,7 +11,7 @@
     <!-- range -->
     <cadmus-cod-location
       style="flex: 0 0 auto"
-      label="sample"
+      label="range"
       [single]="true"
       [required]="true"
       [location]="initialRange ? [initialRange] : []"
@@ -231,6 +231,19 @@
         </tr>
       </tbody>
     </table>
+
+    <mat-expansion-panel
+      [expanded]="editedAnnotation"
+      [disabled]="!editedAnnotation"
+    >
+      <mat-expansion-panel-header>annotation</mat-expansion-panel-header>
+      <cadmus-cod-content-annotation
+        [typeEntries]="annTypeEntries"
+        [annotation]="editedAnnotation"
+        (annotationChange)="onAnnotationSave($event)"
+        (editorClose)="onAnnotationClose()"
+      ></cadmus-cod-content-annotation>
+    </mat-expansion-panel>
   </mat-expansion-panel>
 
   <!-- buttons -->

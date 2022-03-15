@@ -22,12 +22,14 @@ import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
 import { CodContentEditorComponent } from './cod-content-editor/cod-content-editor.component';
 import { CodContentsPartComponent } from './cod-contents-part/cod-contents-part.component';
 import { CodContentsPartFeatureComponent } from './cod-contents-part-feature/cod-contents-part-feature.component';
+import { CodContentAnnotationComponent } from './cod-content-annotation/cod-content-annotation.component';
 
 @NgModule({
   declarations: [
     CodContentEditorComponent,
     CodContentsPartComponent,
     CodContentsPartFeatureComponent,
+    CodContentAnnotationComponent,
   ],
   imports: [
     CommonModule,
@@ -55,6 +57,7 @@ import { CodContentsPartFeatureComponent } from './cod-contents-part-feature/cod
     CodContentEditorComponent,
     CodContentsPartComponent,
     CodContentsPartFeatureComponent,
+    CodContentAnnotationComponent
   ],
 })
 export class CadmusPartCodicologyContentsModule {}

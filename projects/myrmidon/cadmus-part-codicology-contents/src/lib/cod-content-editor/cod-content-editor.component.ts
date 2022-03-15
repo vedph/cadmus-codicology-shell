@@ -5,7 +5,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { last, take } from 'rxjs';
+import { take } from 'rxjs';
 
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
@@ -99,7 +99,7 @@ export class CodContentEditorComponent implements OnInit {
     this.explicit = formBuilder.control(null, Validators.maxLength(1000));
     this.states = formBuilder.control(
       [],
-      NgToolsValidators.strictMinLengthValidator(1)
+      // NgToolsValidators.strictMinLengthValidator(1)
     );
     this.annotations = formBuilder.control([]);
     this.form = formBuilder.group({
@@ -122,20 +122,6 @@ export class CodContentEditorComponent implements OnInit {
     if (this._content) {
       this.updateForm(this._content);
     }
-  }
-
-  private getFlagLabel(id: string): Flag | null {
-    if (!this.stateEntries?.length) {
-      return null;
-    }
-    const entry = this.stateEntries.find((e) => e.id === id);
-    if (!entry) {
-      return null;
-    }
-    return {
-      id: id,
-      label: entry.value,
-    };
   }
 
   private updateForm(content: CodContent | undefined): void {
@@ -181,11 +167,14 @@ export class CodContentEditorComponent implements OnInit {
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
     this.range.setValue(ranges ? ranges[0] : null);
+    this.range.updateValueAndValidity();
     this.range.markAsDirty();
   }
 
   public onStateIdsChange(ids: string[]): void {
     this.states.setValue(ids);
+    this.states.updateValueAndValidity();
+    this.states.markAsDirty();
   }
 
   //#region Annotations
