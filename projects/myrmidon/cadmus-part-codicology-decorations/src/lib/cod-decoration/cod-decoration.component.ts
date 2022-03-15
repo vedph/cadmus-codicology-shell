@@ -158,6 +158,7 @@ export class CodDecorationComponent implements OnInit {
 
   public editedElementIndex: number;
   public editedElement: CodDecorationElement | undefined;
+  public parentKeys: string[];
 
   public editedArtistIndex: number;
   public editedArtist?: CodDecorationArtist;
@@ -174,6 +175,7 @@ export class CodDecorationComponent implements OnInit {
 
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
     this.editedElementIndex = -1;
+    this.parentKeys = [];
     this.editedArtistIndex = -1;
     this.tabIndex = 0;
     this.decorationChange = new EventEmitter<CodDecoration>();
@@ -287,6 +289,17 @@ export class CodDecorationComponent implements OnInit {
     }
   }
 
+  private updateParentKeys(): void {
+    if (!this.elements.value?.length) {
+      this.parentKeys = [];
+      return;
+    }
+    let keys: string[] = this.elements.value.map(
+      (e: CodDecorationElement) => e.key
+    );
+    this.parentKeys = [...new Set(keys)].sort();
+  }
+
   public onElementSave(item: CodDecorationElement): void {
     this.elements.setValue(
       this.elements.value.map((x: CodDecorationElement, i: number) =>
@@ -295,6 +308,7 @@ export class CodDecorationComponent implements OnInit {
     );
     this.elements.markAsDirty();
     this.editElement(-1);
+    this.updateParentKeys();
   }
 
   public onElementClose(): void {
