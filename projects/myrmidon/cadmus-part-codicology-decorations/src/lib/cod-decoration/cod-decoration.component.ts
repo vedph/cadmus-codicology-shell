@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -230,6 +237,7 @@ export class CodDecorationComponent implements OnInit {
     this.eid.setValue(decoration.eid);
     this.name.setValue(decoration.name);
     this.note.setValue(decoration.note);
+    this.artists.setValue(decoration.artists || []);
     this.elements.setValue(decoration.elements || []);
 
     this.form.markAsPristine();
@@ -237,14 +245,20 @@ export class CodDecorationComponent implements OnInit {
 
   public onChronotopesChange(chronotopes: AssertedChronotope[]): void {
     this.chronotopes.setValue(chronotopes);
+    this.chronotopes.updateValueAndValidity();
+    this.chronotopes.markAsDirty();
   }
 
   public onReferencesChange(references: DocReference[]): void {
     this.references.setValue(references);
+    this.references.updateValueAndValidity();
+    this.references.markAsDirty();
   }
 
   public onSelectedIdsChange(ids: string[]): void {
     this.flags.setValue(ids);
+    this.flags.updateValueAndValidity();
+    this.flags.markAsDirty();
   }
 
   private getDecoration(): CodDecoration {
@@ -254,6 +268,9 @@ export class CodDecorationComponent implements OnInit {
       flags: this.flags.value?.length ? this.flags.value : undefined,
       chronotopes: this.chronotopes.value?.length
         ? this.chronotopes.value
+        : undefined,
+      references: this.references.value?.length
+        ? this.references.value
         : undefined,
       artists: this.artists.value?.length ? this.artists.value : undefined,
       note: this.note.value?.trim(),
@@ -271,6 +288,7 @@ export class CodDecorationComponent implements OnInit {
       ranges: [],
     };
     this.elements.setValue([...this.elements.value, element]);
+    this.elements.updateValueAndValidity();
     this.elements.markAsDirty();
     this.editElement(this.elements.value.length - 1);
   }
@@ -306,6 +324,7 @@ export class CodDecorationComponent implements OnInit {
         i === this.editedElementIndex ? item : x
       )
     );
+    this.elements.updateValueAndValidity();
     this.elements.markAsDirty();
     this.editElement(-1);
     this.updateParentKeys();
@@ -324,6 +343,7 @@ export class CodDecorationComponent implements OnInit {
           const items = [...this.elements.value];
           items.splice(index, 1);
           this.elements.setValue(items);
+          this.elements.updateValueAndValidity();
           this.elements.markAsDirty();
         }
       });
@@ -338,6 +358,7 @@ export class CodDecorationComponent implements OnInit {
     items.splice(index, 1);
     items.splice(index - 1, 0, item);
     this.elements.setValue(items);
+    this.elements.updateValueAndValidity();
     this.elements.markAsDirty();
   }
 
@@ -350,6 +371,7 @@ export class CodDecorationComponent implements OnInit {
     items.splice(index, 1);
     items.splice(index + 1, 0, item);
     this.elements.setValue(items);
+    this.elements.updateValueAndValidity();
     this.elements.markAsDirty();
   }
   //#endregion
@@ -361,6 +383,7 @@ export class CodDecorationComponent implements OnInit {
       name: '',
     };
     this.artists.setValue([...this.artists.value, artist]);
+    this.artists.updateValueAndValidity();
     this.artists.markAsDirty();
     this.editArtist(this.artists.value.length - 1);
   }
@@ -376,11 +399,12 @@ export class CodDecorationComponent implements OnInit {
   }
 
   public onArtistSave(item: CodDecorationArtist): void {
-    this.artists.setValue(
-      this.artists.value.map((x: CodDecorationArtist, i: number) =>
+    this.artists.setValue([
+      ...this.artists.value.map((x: CodDecorationArtist, i: number) =>
         i === this.editedArtistIndex ? item : x
-      )
-    );
+      ),
+    ]);
+    this.artists.updateValueAndValidity();
     this.artists.markAsDirty();
     this.editArtist(-1);
   }
@@ -398,6 +422,7 @@ export class CodDecorationComponent implements OnInit {
           const items = [...this.artists.value];
           items.splice(index, 1);
           this.artists.setValue(items);
+          this.artists.updateValueAndValidity();
           this.artists.markAsDirty();
         }
       });
@@ -412,6 +437,7 @@ export class CodDecorationComponent implements OnInit {
     items.splice(index, 1);
     items.splice(index - 1, 0, item);
     this.artists.setValue(items);
+    this.artists.updateValueAndValidity();
     this.artists.markAsDirty();
   }
 
@@ -424,6 +450,7 @@ export class CodDecorationComponent implements OnInit {
     items.splice(index, 1);
     items.splice(index + 1, 0, item);
     this.artists.setValue(items);
+    this.artists.updateValueAndValidity();
     this.artists.markAsDirty();
   }
   //#endregion

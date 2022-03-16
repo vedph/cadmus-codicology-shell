@@ -275,6 +275,7 @@ export class CodDecorationsPartComponent
       name: '',
     };
     this.decorations.setValue([...this.decorations.value, decoration]);
+    this.decorations.updateValueAndValidity();
     this.decorations.markAsDirty();
     this.editDecoration(this.decorations.value.length - 1);
   }
@@ -299,6 +300,7 @@ export class CodDecorationsPartComponent
         i === this._editedIndex ? entry : e
       )
     );
+    this.decorations.updateValueAndValidity();
     this.editDecoration(-1);
     this.decorations.markAsDirty();
   }
@@ -316,6 +318,7 @@ export class CodDecorationsPartComponent
           const entries = [...this.decorations.value];
           entries.splice(index, 1);
           this.decorations.setValue(entries);
+          this.decorations.updateValueAndValidity();
           this.decorations.markAsDirty();
         }
       });
@@ -330,6 +333,7 @@ export class CodDecorationsPartComponent
     entries.splice(index, 1);
     entries.splice(index - 1, 0, entry);
     this.decorations.setValue(entries);
+    this.decorations.updateValueAndValidity();
     this.decorations.markAsDirty();
   }
 
@@ -342,6 +346,7 @@ export class CodDecorationsPartComponent
     entries.splice(index, 1);
     entries.splice(index + 1, 0, entry);
     this.decorations.setValue(entries);
+    this.decorations.updateValueAndValidity();
     this.decorations.markAsDirty();
   }
 }

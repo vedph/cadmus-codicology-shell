@@ -35,7 +35,7 @@
         <legend>features</legend>
         <cadmus-ui-flags-picker
           [flags]="availFlags"
-          [selectedIds]="flags?.value"
+          [selectedIds]="initialFlags"
           (selectedIdsChange)="onSelectedIdsChange($event)"
         ></cadmus-ui-flags-picker>
       </fieldset>
@@ -63,9 +63,6 @@
             >
             chronotopes</mat-panel-title
           >
-          <mat-panel-description>{{
-            chronotopes?.value?.length
-          }}</mat-panel-description>
         </mat-expansion-panel-header>
         <cadmus-asserted-chronotope-set
           [tagEntries]="ctTagEntries"
@@ -86,9 +83,6 @@
             >
             references</mat-panel-title
           >
-          <mat-panel-description>{{
-            references?.value?.length
-          }}</mat-panel-description>
         </mat-expansion-panel-header>
         <cadmus-refs-doc-references
           [tagEntries]="refTagEntries"
@@ -107,9 +101,6 @@
             >
             artists</mat-panel-title
           >
-          <mat-panel-description>{{
-            artists?.value?.length
-          }}</mat-panel-description>
         </mat-expansion-panel-header>
         <div>
           <button
@@ -201,6 +192,7 @@
             [idScopeEntries]="idScopeEntries"
             [artist]="editedArtist"
             (artistChange)="onArtistSave($event)"
+            (editorClose)="onArtistClose()"
           ></cadmus-cod-decoration-artist>
         </mat-expansion-panel>
       </mat-expansion-panel>
