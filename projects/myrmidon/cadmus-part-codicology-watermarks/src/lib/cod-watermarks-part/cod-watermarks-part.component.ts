@@ -187,6 +187,8 @@ export class CodWatermarksPartComponent
         i === this._editedIndex ? entry : e
       )
     );
+    this.watermarks.updateValueAndValidity();
+    this.watermarks.markAsDirty();
     this.editWatermark(-1);
   }
 
@@ -203,6 +205,8 @@ export class CodWatermarksPartComponent
           const entries = [...this.watermarks.value];
           entries.splice(index, 1);
           this.watermarks.setValue(entries);
+          this.watermarks.updateValueAndValidity();
+          this.watermarks.markAsDirty();
         }
       });
   }
@@ -216,6 +220,8 @@ export class CodWatermarksPartComponent
     entries.splice(index, 1);
     entries.splice(index - 1, 0, entry);
     this.watermarks.setValue(entries);
+    this.watermarks.updateValueAndValidity();
+    this.watermarks.markAsDirty();
   }
 
   public moveWatermarkDown(index: number): void {
@@ -227,5 +233,7 @@ export class CodWatermarksPartComponent
     entries.splice(index, 1);
     entries.splice(index + 1, 0, entry);
     this.watermarks.setValue(entries);
+    this.watermarks.updateValueAndValidity();
+    this.watermarks.markAsDirty();
   }
 }

@@ -1,5 +1,5 @@
 <form [formGroup]="form" (submit)="save()">
-  <div>
+  <div class="form-row">
     <!-- name -->
     <mat-form-field>
       <input matInput [formControl]="name" placeholder="name" />
@@ -12,7 +12,7 @@
         >name too long</mat-error
       >
     </mat-form-field>
-    &nbsp;
+
     <!-- sampleRange -->
     <cadmus-cod-location
       label="sample"
@@ -21,8 +21,7 @@
       [location]="initialSampleRange ? [initialSampleRange] : []"
       (locationChange)="onSampleRangesChange($event)"
     ></cadmus-cod-location>
-  </div>
-  <div>
+
     <!-- ranges -->
     <cadmus-cod-location
       label="ranges"

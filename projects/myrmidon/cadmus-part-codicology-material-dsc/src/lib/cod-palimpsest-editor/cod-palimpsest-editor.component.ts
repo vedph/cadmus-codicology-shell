@@ -89,11 +89,13 @@ export class CodPalimpsestEditorComponent implements OnInit {
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
     this.range.setValue(ranges?.length ? ranges[0] : undefined);
+    this.range.updateValueAndValidity();
     this.range.markAsDirty();
   }
 
   public onChronotopeChange(chronotope: AssertedChronotope | null): void {
     this.chronotope.setValue(chronotope);
+    this.chronotope.updateValueAndValidity();
     this.chronotope.markAsDirty();
   }
 

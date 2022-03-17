@@ -125,6 +125,7 @@ export class CodUnitEditorComponent implements OnInit {
 
     this.eid.setValue(unit.eid);
     this.tag.setValue(unit.tag);
+    this.noGregory.setValue(unit.noGregory? true : false);
     this.material.setValue(unit.material);
     this.format.setValue(unit.format);
     this.state.setValue(unit.state);
@@ -145,7 +146,7 @@ export class CodUnitEditorComponent implements OnInit {
     this.chronotopes.markAsDirty();
   }
 
-  private getModel(): CodUnit | null {
+  private getModel(): CodUnit {
     return {
       eid: this.eid.value?.trim(),
       tag: this.tag.value?.trim(),
@@ -169,10 +170,6 @@ export class CodUnitEditorComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const model = this.getModel();
-    if (!model) {
-      return;
-    }
-    this.unitChange.emit(model);
+    this.unitChange.emit(this.getModel());
   }
 }

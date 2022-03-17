@@ -177,6 +177,8 @@ export class CodMaterialDscPartComponent
       range: { start: { n: 0 }, end: { n: 0 } },
     };
     this.units.setValue([...this.units.value, unit]);
+    this.units.updateValueAndValidity();
+    this.units.markAsDirty();
     this.editUnit(this.units.value.length - 1);
   }
 
@@ -203,6 +205,8 @@ export class CodMaterialDscPartComponent
         i === this._editedUtIndex ? entry : e
       )
     );
+    this.units.updateValueAndValidity();
+    this.units.markAsDirty();
     this.editUnit(-1);
   }
 
@@ -219,6 +223,8 @@ export class CodMaterialDscPartComponent
           const units = [...this.units.value];
           units.splice(index, 1);
           this.units.setValue(units);
+          this.units.updateValueAndValidity();
+          this.units.markAsDirty();
         }
       });
   }
@@ -232,6 +238,8 @@ export class CodMaterialDscPartComponent
     units.splice(index, 1);
     units.splice(index - 1, 0, unit);
     this.units.setValue(units);
+    this.units.updateValueAndValidity();
+    this.units.markAsDirty();
   }
 
   public moveUnitDown(index: number): void {
@@ -243,6 +251,8 @@ export class CodMaterialDscPartComponent
     units.splice(index, 1);
     units.splice(index + 1, 0, unit);
     this.units.setValue(units);
+    this.units.updateValueAndValidity();
+    this.units.markAsDirty();
   }
   //#endregion
 
@@ -252,6 +262,8 @@ export class CodMaterialDscPartComponent
       range: { start: { n: 0 }, end: { n: 0 } },
     };
     this.palimpsests.setValue([...this.palimpsests.value, palimpsest]);
+    this.palimpsests.updateValueAndValidity();
+    this.palimpsests.markAsDirty();
     this.editPalimpsest(this.palimpsests.value.length - 1);
   }
 
@@ -278,6 +290,8 @@ export class CodMaterialDscPartComponent
         i === this._editedPsIndex ? entry : e
       )
     );
+    this.palimpsests.updateValueAndValidity();
+    this.palimpsests.markAsDirty();
     this.editPalimpsest(-1);
   }
 
@@ -294,6 +308,8 @@ export class CodMaterialDscPartComponent
           const palimpsests = [...this.palimpsests.value];
           palimpsests.splice(index, 1);
           this.palimpsests.setValue(palimpsests);
+          this.palimpsests.updateValueAndValidity();
+          this.palimpsests.markAsDirty();
         }
       });
   }
@@ -307,6 +323,8 @@ export class CodMaterialDscPartComponent
     palimpsests.splice(index, 1);
     palimpsests.splice(index - 1, 0, palimpsest);
     this.palimpsests.setValue(palimpsests);
+    this.palimpsests.updateValueAndValidity();
+    this.palimpsests.markAsDirty();
   }
 
   public movePalimpsestDown(index: number): void {
@@ -318,6 +336,8 @@ export class CodMaterialDscPartComponent
     palimpsests.splice(index, 1);
     palimpsests.splice(index + 1, 0, palimpsest);
     this.palimpsests.setValue(palimpsests);
+    this.palimpsests.updateValueAndValidity();
+    this.palimpsests.markAsDirty();
   }
   //#endregion
 }
