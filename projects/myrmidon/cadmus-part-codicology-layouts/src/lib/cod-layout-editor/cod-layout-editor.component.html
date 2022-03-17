@@ -116,17 +116,20 @@
       >
     </mat-form-field>
   </div>
-  <div>
-    <!-- counts -->
+
+  <!-- counts -->
+  <fieldset>
+    <legend>counts</legend>
     <cadmus-refs-decorated-counts
       [tagEntries]="cntTagEntries"
       [counts]="initialCounts"
       (countsChange)="onCountsChange($event)"
     ></cadmus-refs-decorated-counts>
-  </div>
-  <hr />
-  <div>
-    <!-- dimensions -->
+  </fieldset>
+
+  <!-- dimensions -->
+  <fieldset>
+    <legend>dimensions</legend>
     <div formArrayName="dimensions">
       <div>
         <button
@@ -267,8 +270,7 @@
         </div>
       </div>
     </div>
-  </div>
-  <hr />
+  </fieldset>
   <div>
     <!-- note -->
     <mat-form-field class="long-text">
