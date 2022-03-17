@@ -144,7 +144,7 @@ export class CodLayoutEditorComponent implements OnInit {
     this.form.markAsPristine();
   }
 
-  private getModel(): CodLayout | null {
+  private getModel(): CodLayout {
     return {
       sample: this.sample.value,
       ranges: this.ranges.value || [],
@@ -244,10 +244,6 @@ export class CodLayoutEditorComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const model = this.getModel();
-    if (!model) {
-      return;
-    }
-    this.layoutChange.emit(model);
+    this.layoutChange.emit(this.getModel());
   }
 }

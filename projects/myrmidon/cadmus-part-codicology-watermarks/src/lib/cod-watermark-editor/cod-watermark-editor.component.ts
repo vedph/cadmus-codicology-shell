@@ -137,30 +137,35 @@ export class CodWatermarkEditorComponent implements OnInit {
 
   public onSampleRangesChange(ranges: CodLocationRange[] | null) {
     this.sampleRange.setValue(ranges ? ranges[0] : null);
+    this.sampleRange.updateValueAndValidity();
     this.sampleRange.markAsDirty();
   }
 
   public onRangesChange(ranges: CodLocationRange[] | null) {
     this.ranges.setValue(ranges || []);
+    this.ranges.updateValueAndValidity();
     this.ranges.markAsDirty();
   }
 
   public onIdsChange(ids: RankedExternalId[] | null) {
     this.ids.setValue(ids || []);
+    this.ids.updateValueAndValidity();
     this.ids.markAsDirty();
   }
 
   public onSizeChange(size: PhysicalSize | null) {
     this.size.setValue(size);
+    this.size.updateValueAndValidity();
     this.size.markAsDirty();
   }
 
   public onChronotopeChange(chronotope: AssertedChronotope | null): void {
     this.chronotope.setValue(chronotope);
+    this.chronotope.updateValueAndValidity();
     this.chronotope.markAsDirty();
   }
 
-  private getModel(): CodWatermark | null {
+  private getModel(): CodWatermark {
     return {
       name: this.name.value?.trim(),
       sampleRange: this.sampleRange.value,
@@ -168,6 +173,7 @@ export class CodWatermarkEditorComponent implements OnInit {
       ids: this.ids.value?.length ? this.ids.value : undefined,
       size: this.hasSize.value ? this.size.value : undefined,
       chronotope: this.hasChronotope.value ? this.chronotope.value : undefined,
+      description: this.description.value?.trim()
     };
   }
 
@@ -179,10 +185,6 @@ export class CodWatermarkEditorComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const model = this.getModel();
-    if (!model) {
-      return;
-    }
-    this.watermarkChange.emit(model);
+    this.watermarkChange.emit(this.getModel());
   }
 }
