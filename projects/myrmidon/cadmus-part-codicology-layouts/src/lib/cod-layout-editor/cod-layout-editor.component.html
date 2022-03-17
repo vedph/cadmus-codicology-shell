@@ -39,21 +39,20 @@
     ></cadmus-cod-location>
   </div>
   <div class="form-row">
-    <!-- rulingTechnique (bound) -->
+    <!-- ruling (bound) -->
     <mat-form-field *ngIf="rulTechEntries?.length" style="width: 8em">
-      <mat-select [formControl]="rulingTechnique" placeholder="ruling">
+      <mat-select [formControl]="ruling" placeholder="ruling">
         <mat-option *ngFor="let e of rulTechEntries" [value]="e.id">{{
           e.value
         }}</mat-option>
       </mat-select>
     </mat-form-field>
-    <!-- rulingTechnique (free) -->
+    <!-- ruling (free) -->
     <mat-form-field *ngIf="!rulTechEntries?.length">
-      <input matInput [formControl]="rulingTechnique" placeholder="ruling" />
+      <input matInput [formControl]="ruling" placeholder="ruling" />
       <mat-error
         *ngIf="
-          $any(rulingTechnique).errors?.maxLength &&
-          (rulingTechnique.dirty || rulingTechnique.touched)
+          $any(ruling).errors?.maxLength && (ruling.dirty || ruling.touched)
         "
         >ruling too long</mat-error
       >
@@ -97,10 +96,9 @@
         >pricking too long</mat-error
       >
     </mat-form-field>
-  </div>
-  <div>
+
     <!-- columnCount -->
-    <mat-form-field style="width: 3em;">
+    <mat-form-field style="width: 3em">
       <input
         matInput
         type="number"
@@ -126,7 +124,7 @@
       (countsChange)="onCountsChange($event)"
     ></cadmus-refs-decorated-counts>
   </div>
-  <hr>
+  <hr />
   <div>
     <!-- dimensions -->
     <div formArrayName="dimensions">
@@ -204,7 +202,7 @@
           </mat-form-field>
           &nbsp;
           <!-- value -->
-          <mat-form-field>
+          <mat-form-field style="width: 4em">
             <input
               type="number"
               min="0"
@@ -270,7 +268,7 @@
       </div>
     </div>
   </div>
-  <hr>
+  <hr />
   <div>
     <!-- note -->
     <mat-form-field class="long-text">

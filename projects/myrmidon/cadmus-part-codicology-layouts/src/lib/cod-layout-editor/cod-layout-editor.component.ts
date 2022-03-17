@@ -61,7 +61,7 @@ export class CodLayoutEditorComponent implements OnInit {
   public sample: FormControl;
   public ranges: FormControl;
   public dimensions: FormArray;
-  public rulingTechnique: FormControl;
+  public ruling: FormControl;
   public derolez: FormControl;
   public pricking: FormControl;
   public columnCount: FormControl;
@@ -86,7 +86,7 @@ export class CodLayoutEditorComponent implements OnInit {
       NgToolsValidators.strictMinLengthValidator(1)
     );
     this.dimensions = _formBuilder.array([]);
-    this.rulingTechnique = _formBuilder.control(null, Validators.maxLength(50));
+    this.ruling = _formBuilder.control(null, Validators.maxLength(50));
     this.derolez = _formBuilder.control(null, Validators.maxLength(50));
     this.pricking = _formBuilder.control(null, Validators.maxLength(50));
     this.columnCount = _formBuilder.control(0);
@@ -97,7 +97,7 @@ export class CodLayoutEditorComponent implements OnInit {
       sample: this.sample,
       ranges: this.ranges,
       dimensions: this.dimensions,
-      rulingTechnique: this.rulingTechnique,
+      ruling: this.ruling,
       derolez: this.derolez,
       pricking: this.pricking,
       columnCount: this.columnCount,
@@ -126,18 +126,9 @@ export class CodLayoutEditorComponent implements OnInit {
         }
       : undefined;
     this.initialRanges = layout.ranges;
-    this.rulingTechnique.setValue(
-      layout.rulingTechnique?.length ??
-        (this.rulTechEntries ? this.rulTechEntries[0].id : undefined)
-    );
-    this.derolez.setValue(
-      layout.derolez ??
-        (this.drzEntries?.length ? this.drzEntries[0].id : undefined)
-    );
-    this.pricking.setValue(
-      layout.pricking ??
-        (this.prkEntries?.length ? this.prkEntries[0].id : undefined)
-    );
+    this.ruling.setValue(layout.rulingTechnique);
+    this.derolez.setValue(layout.derolez);
+    this.pricking.setValue(layout.pricking);
     this.columnCount.setValue(layout.columnCount);
     this.initialCounts = layout.counts || [];
     this.tag.setValue(layout.tag);
@@ -158,7 +149,7 @@ export class CodLayoutEditorComponent implements OnInit {
       sample: this.sample.value,
       ranges: this.ranges.value || [],
       dimensions: this.getDimensions(),
-      rulingTechnique: this.rulingTechnique.value?.trim(),
+      rulingTechnique: this.ruling.value?.trim(),
       derolez: this.derolez.value?.trim(),
       pricking: this.pricking.value?.trim(),
       columnCount: this.columnCount.value || 0,
