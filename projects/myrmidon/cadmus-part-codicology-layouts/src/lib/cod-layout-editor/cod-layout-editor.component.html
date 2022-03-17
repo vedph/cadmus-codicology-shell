@@ -1,5 +1,5 @@
 <form [formGroup]="form" (submit)="save()">
-  <div>
+  <div class="form-row">
     <!-- tag (bound) -->
     <mat-form-field *ngIf="tagEntries?.length" style="width: 8em">
       <mat-select [formControl]="tag" placeholder="tag">
@@ -20,25 +20,25 @@
         >tag too long</mat-error
       >
     </mat-form-field>
-    &nbsp;
+
     <!-- sample -->
     <cadmus-cod-location
       label="sample"
       [single]="true"
       [required]="true"
       [location]="initialSample ? [initialSample] : []"
-      (locationChange)="onLocationChange($event)"
+      (locationChange)="onSampleLocationChange($event)"
     ></cadmus-cod-location>
-    &nbsp;
+
     <!-- ranges -->
     <cadmus-cod-location
       label="range(s)"
       [required]="true"
-      [location]="initialRanges || null"
-      (locationChange)="onLocationChange($event)"
+      [location]="initialRanges"
+      (locationChange)="onRangeLocationChange($event)"
     ></cadmus-cod-location>
   </div>
-  <div>
+  <div class="form-row">
     <!-- rulingTechnique (bound) -->
     <mat-form-field *ngIf="rulTechEntries?.length" style="width: 8em">
       <mat-select [formControl]="rulingTechnique" placeholder="ruling">
@@ -58,7 +58,7 @@
         >ruling too long</mat-error
       >
     </mat-form-field>
-    &nbsp;
+
     <!-- derolez (bound) -->
     <mat-form-field *ngIf="drzEntries?.length" style="width: 8em">
       <mat-select [formControl]="derolez" placeholder="derolez">
@@ -78,7 +78,6 @@
       >
     </mat-form-field>
 
-    &nbsp;
     <!-- pricking (bound) -->
     <mat-form-field *ngIf="prkEntries?.length" style="width: 8em">
       <mat-select [formControl]="pricking" placeholder="pricking">
@@ -127,6 +126,7 @@
       (countsChange)="onCountsChange($event)"
     ></cadmus-refs-decorated-counts>
   </div>
+  <hr>
   <div>
     <!-- dimensions -->
     <div formArrayName="dimensions">
@@ -270,6 +270,7 @@
       </div>
     </div>
   </div>
+  <hr>
   <div>
     <!-- note -->
     <mat-form-field class="long-text">

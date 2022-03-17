@@ -71,12 +71,14 @@ export class CodLayoutEditorComponent implements OnInit {
   public form: FormGroup;
 
   public initialSample?: CodLocationRange;
-  public initialRanges?: CodLocationRange[];
-  public initialCounts?: DecoratedCount[];
+  public initialRanges: CodLocationRange[];
+  public initialCounts: DecoratedCount[];
 
   constructor(private _formBuilder: FormBuilder) {
     this.layoutChange = new EventEmitter<CodLayout>();
     this.editorClose = new EventEmitter<any>();
+    this.initialRanges = [];
+    this.initialCounts = [];
     // form
     this.sample = _formBuilder.control(null, Validators.required);
     this.ranges = _formBuilder.control(
@@ -137,7 +139,7 @@ export class CodLayoutEditorComponent implements OnInit {
         (this.prkEntries?.length ? this.prkEntries[0].id : undefined)
     );
     this.columnCount.setValue(layout.columnCount);
-    this.initialCounts = layout.counts;
+    this.initialCounts = layout.counts || [];
     this.tag.setValue(layout.tag);
     this.note.setValue(layout.note);
 
@@ -166,9 +168,16 @@ export class CodLayoutEditorComponent implements OnInit {
     };
   }
 
-  public onLocationChange(ranges: CodLocationRange[] | null): void {
-    this.sample.setValue(ranges ? ranges[0] : null);
+  public onSampleLocationChange(ranges: CodLocationRange[] | null): void {
+    this.sample.setValue(ranges?.length ? ranges[0].start : undefined);
+    this.sample.updateValueAndValidity();
     this.sample.markAsDirty();
+  }
+
+  public onRangeLocationChange(ranges: CodLocationRange[] | null): void {
+    this.ranges.setValue(ranges);
+    this.ranges.updateValueAndValidity();
+    this.ranges.markAsDirty();
   }
 
   private getDimensionGroup(item?: PhysicalDimension): FormGroup {
@@ -185,11 +194,13 @@ export class CodLayoutEditorComponent implements OnInit {
 
   public addDimension(item?: PhysicalDimension): void {
     this.dimensions.push(this.getDimensionGroup(item));
+    this.dimensions.updateValueAndValidity();
     this.dimensions.markAsDirty();
   }
 
   public removeDimension(index: number): void {
     this.dimensions.removeAt(index);
+    this.dimensions.updateValueAndValidity();
     this.dimensions.markAsDirty();
   }
 
@@ -200,6 +211,7 @@ export class CodLayoutEditorComponent implements OnInit {
     const item = this.dimensions.controls[index];
     this.dimensions.removeAt(index);
     this.dimensions.insert(index - 1, item);
+    this.dimensions.updateValueAndValidity();
     this.dimensions.markAsDirty();
   }
 
@@ -210,6 +222,7 @@ export class CodLayoutEditorComponent implements OnInit {
     const item = this.dimensions.controls[index];
     this.dimensions.removeAt(index);
     this.dimensions.insert(index + 1, item);
+    this.dimensions.updateValueAndValidity();
     this.dimensions.markAsDirty();
   }
 
@@ -228,6 +241,8 @@ export class CodLayoutEditorComponent implements OnInit {
 
   public onCountsChange(counts: DecoratedCount[]): void {
     this.counts.setValue(counts);
+    this.counts.updateValueAndValidity();
+    this.counts.markAsDirty();
   }
 
   public cancel(): void {
