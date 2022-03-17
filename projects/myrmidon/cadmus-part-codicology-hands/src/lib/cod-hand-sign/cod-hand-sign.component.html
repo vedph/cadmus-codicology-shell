@@ -1,5 +1,5 @@
 <form [formGroup]="form" (submit)="save()">
-  <div>
+  <div class="form-row">
     <!-- type (bound) -->
     <mat-form-field *ngIf="typeEntries?.length">
       <mat-select [formControl]="type" placeholder="type">
@@ -34,8 +34,7 @@
         >EID too long</mat-error
       >
     </mat-form-field>
-  </div>
-  <div>
+
     <!-- sampleLocation -->
     <cadmus-cod-location
       [location]="initialRange ? [initialRange] : []"

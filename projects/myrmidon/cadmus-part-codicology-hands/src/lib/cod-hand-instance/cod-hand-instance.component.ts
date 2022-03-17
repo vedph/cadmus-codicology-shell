@@ -21,6 +21,8 @@ import { CodHandInstance } from '../cod-hands-part';
 })
 export class CodHandInstanceComponent implements OnInit {
   private _instance: CodHandInstance | undefined;
+  private _typeEntries: ThesaurusEntry[] | undefined;
+  private _colorEntries: ThesaurusEntry[] | undefined;
 
   @Input()
   public get instance(): CodHandInstance | undefined {
@@ -43,10 +45,23 @@ export class CodHandInstanceComponent implements OnInit {
   public scriptEntries: ThesaurusEntry[] | undefined;
   // cod-hand-typologies
   @Input()
-  public typeEntries: ThesaurusEntry[] | undefined;
+  public get typeEntries(): ThesaurusEntry[] | undefined {
+    return this._typeEntries;
+  }
+  public set typeEntries(value: ThesaurusEntry[] | undefined) {
+    this._typeEntries = value;
+    this.typeFlags = this.getAvailableFlags(this.typeEntries);
+  }
   // cod-hand-colors
   @Input()
-  public colorEntries: ThesaurusEntry[] | undefined;
+  public get colorEntries(): ThesaurusEntry[] | undefined {
+    return this._colorEntries;
+  }
+  public set colorEntries(value: ThesaurusEntry[] | undefined) {
+    this._colorEntries = value;
+    this.colorFlags = this.getAvailableFlags(this.colorEntries);
+  }
+
   // chronotope-tags
   @Input()
   public ctTagEntries: ThesaurusEntry[] | undefined;
@@ -78,10 +93,10 @@ export class CodHandInstanceComponent implements OnInit {
   public images: FormControl;
   public form: FormGroup;
 
-  public typFlags: Flag[];
+  public typeFlags: Flag[];
   public initialTypologies: string[];
 
-  public clrFlags: Flag[];
+  public colorFlags: Flag[];
   public initialColors: string[];
 
   public initialRanges: CodLocationRange[];
@@ -93,9 +108,9 @@ export class CodHandInstanceComponent implements OnInit {
   constructor(formBuilder: FormBuilder) {
     this.instanceChange = new EventEmitter<CodHandInstance>();
     this.editorClose = new EventEmitter<any>();
-    this.typFlags = [];
+    this.typeFlags = [];
     this.initialTypologies = [];
-    this.clrFlags = [];
+    this.colorFlags = [];
     this.initialColors = [];
     this.initialRanges = [];
     this.initialImages = [];
@@ -152,6 +167,19 @@ export class CodHandInstanceComponent implements OnInit {
     this.form.markAsPristine();
   }
 
+  private getAvailableFlags(entries: ThesaurusEntry[] | undefined): Flag[] {
+    return entries?.length
+      ? entries
+          .filter((e) => e.value?.length)
+          .map((e) => {
+            return {
+              id: e.id,
+              label: e.value,
+            } as Flag;
+          })
+      : [];
+  }
+
   private getModel(): CodHandInstance {
     return {
       script: this.script.value?.trim(),
@@ -167,26 +195,31 @@ export class CodHandInstanceComponent implements OnInit {
 
   public onTypologiesChange(ids: string[]): void {
     this.typologies.setValue(ids);
+    this.typologies.updateValueAndValidity();
     this.typologies.markAsDirty();
   }
 
   public onColorsChange(ids: string[]): void {
     this.colors.setValue(ids);
-    this.typologies.markAsDirty();
+    this.colors.updateValueAndValidity();
+    this.colors.markAsDirty();
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
     this.ranges.setValue(ranges);
+    this.ranges.updateValueAndValidity();
     this.ranges.markAsDirty();
   }
 
   public onChronotopeChange(chronotope: AssertedChronotope) {
     this.chronotope.setValue(chronotope);
+    this.chronotope.updateValueAndValidity();
     this.chronotope.markAsDirty();
   }
 
   public onImagesChange(images: CodImage[] | undefined): void {
     this.images.setValue(images);
+    this.images.updateValueAndValidity();
     this.images.markAsDirty();
   }
 

@@ -143,7 +143,7 @@ export class CodHandDescriptionComponent implements OnInit {
     this.form.markAsPristine();
   }
 
-  private getModel(): CodHandDescription | null {
+  private getModel(): CodHandDescription {
     return {
       key: this.key.value?.trim(),
       description: this.dsc.value?.trim(),
@@ -159,18 +159,22 @@ export class CodHandDescriptionComponent implements OnInit {
     switch (pair.key) {
       case 'i':
         this.initials.setValue(pair.value);
+        this.initials.updateValueAndValidity();
         this.initials.markAsDirty();
         break;
       case 'c':
         this.corrections.setValue(pair.value);
+        this.corrections.updateValueAndValidity();
         this.corrections.markAsDirty();
         break;
       case 'p':
         this.punctuation.setValue(pair.value);
+        this.punctuation.updateValueAndValidity();
         this.punctuation.markAsDirty();
         break;
       case 'a':
         this.abbreviations.setValue(pair.value);
+        this.abbreviations.updateValueAndValidity();
         this.abbreviations.markAsDirty();
         break;
     }
@@ -183,6 +187,7 @@ export class CodHandDescriptionComponent implements OnInit {
       sampleLocation: { n: 0 },
     };
     this.signs.setValue([...this.signs.value, sign]);
+    this.signs.updateValueAndValidity();
     this.signs.markAsDirty();
     this.editSign(this.signs.value.length - 1);
   }
@@ -203,6 +208,7 @@ export class CodHandDescriptionComponent implements OnInit {
         i === this.editedSignIndex ? sign : x
       )
     );
+    this.signs.updateValueAndValidity();
     this.signs.markAsDirty();
     this.editSign(-1);
   }
@@ -220,6 +226,7 @@ export class CodHandDescriptionComponent implements OnInit {
           const signs = [...this.signs.value];
           signs.splice(index, 1);
           this.signs.setValue(signs);
+          this.signs.updateValueAndValidity();
           this.signs.markAsDirty();
         }
       });
@@ -234,6 +241,7 @@ export class CodHandDescriptionComponent implements OnInit {
     signs.splice(index, 1);
     signs.splice(index - 1, 0, sign);
     this.signs.setValue(signs);
+    this.signs.updateValueAndValidity();
     this.signs.markAsDirty();
   }
 
@@ -246,6 +254,7 @@ export class CodHandDescriptionComponent implements OnInit {
     signs.splice(index, 1);
     signs.splice(index + 1, 0, sign);
     this.signs.setValue(signs);
+    this.signs.updateValueAndValidity();
     this.signs.markAsDirty();
   }
   //#endregion
@@ -258,10 +267,6 @@ export class CodHandDescriptionComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const model = this.getModel();
-    if (!model) {
-      return;
-    }
-    this.descriptionChange.emit(model);
+    this.descriptionChange.emit(this.getModel());
   }
 }

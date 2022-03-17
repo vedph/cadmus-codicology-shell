@@ -5,7 +5,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { CodLocation, CodLocationRange } from '@myrmidon/cadmus-cod-location';
+import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import { CodHandSign } from '../cod-hands-part';
@@ -96,6 +96,7 @@ export class CodHandSignComponent implements OnInit {
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
     this.sampleLocation.setValue(ranges ? ranges[0].start : null);
+    this.sampleLocation.updateValueAndValidity();
     this.sampleLocation.markAsDirty();
   }
 

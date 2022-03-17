@@ -10,7 +10,7 @@ import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
 import { DialogService } from '@myrmidon/ng-mat-tools';
 import { NgToolsValidators } from '@myrmidon/ng-tools';
 
-import { take } from 'rxjs';
+import { debounceTime, take } from 'rxjs';
 
 import {
   CodHand,
@@ -95,6 +95,7 @@ export class CodHandComponent implements OnInit {
   public editedSub?: CodHandSubscription;
 
   public initialReferences: DocReference[];
+  public dscKeys: string[];
 
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
     this.editedDscIndex = -1;
@@ -103,6 +104,7 @@ export class CodHandComponent implements OnInit {
     this.handChange = new EventEmitter<CodHand>();
     this.editorClose = new EventEmitter<any>();
     this.initialReferences = [];
+    this.dscKeys = [];
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.name = formBuilder.control(null, Validators.maxLength(50));
@@ -123,15 +125,31 @@ export class CodHandComponent implements OnInit {
     });
   }
 
+  private updateDscKeys(descriptions: CodHandDescription[]): void {
+    const keys: string[] = descriptions.length
+      ? descriptions.filter((d) => d.key).map((d) => d.key!)
+      : [];
+    keys.sort();
+    this.dscKeys = keys;
+  }
+
   ngOnInit(): void {
     if (this._hand) {
       this.updateForm(this._hand);
     }
+
+    // whenever descriptions change, update their keys list
+    this.descriptions.valueChanges
+      .pipe(debounceTime(200))
+      .subscribe((value) => {
+        this.updateDscKeys(value);
+      });
   }
 
   private updateForm(hand: CodHand | undefined): void {
     if (!hand) {
       this.form.reset();
+      this.dscKeys = [];
       return;
     }
 
@@ -141,6 +159,7 @@ export class CodHandComponent implements OnInit {
     this.instances.setValue(hand.instances || []);
     this.subscriptions.setValue(hand.subscriptions || []);
     this.initialReferences = hand.references || [];
+    this.updateDscKeys(this.descriptions.value);
     this.form.markAsPristine();
   }
 
@@ -165,6 +184,7 @@ export class CodHandComponent implements OnInit {
   public addDescription(): void {
     const dsc: CodHandDescription = {};
     this.descriptions.setValue([...this.descriptions.value, dsc]);
+    this.descriptions.updateValueAndValidity();
     this.descriptions.markAsDirty();
     this.editDescription(this.descriptions.value.length - 1);
   }
@@ -185,6 +205,7 @@ export class CodHandComponent implements OnInit {
         i === this.editedDscIndex ? item : x
       )
     );
+    this.descriptions.updateValueAndValidity();
     this.descriptions.markAsDirty();
     this.editDescription(-1);
   }
@@ -201,7 +222,7 @@ export class CodHandComponent implements OnInit {
         if (yes) {
           const items = [...this.descriptions.value];
           items.splice(index, 1);
-          this.descriptions.setValue(items);
+          this.descriptions.updateValueAndValidity();
           this.descriptions.markAsDirty();
         }
       });
@@ -216,6 +237,7 @@ export class CodHandComponent implements OnInit {
     items.splice(index, 1);
     items.splice(index - 1, 0, item);
     this.descriptions.setValue(items);
+    this.descriptions.updateValueAndValidity();
     this.descriptions.markAsDirty();
   }
 
@@ -228,6 +250,7 @@ export class CodHandComponent implements OnInit {
     items.splice(index, 1);
     items.splice(index + 1, 0, item);
     this.descriptions.setValue(items);
+    this.descriptions.updateValueAndValidity();
     this.descriptions.markAsDirty();
   }
   //#endregion
@@ -240,6 +263,7 @@ export class CodHandComponent implements OnInit {
       ranges: [],
     };
     this.instances.setValue([...this.instances.value, item]);
+    this.instances.updateValueAndValidity();
     this.instances.markAsDirty();
     this.editInstance(this.instances.value.length - 1);
   }
@@ -260,6 +284,7 @@ export class CodHandComponent implements OnInit {
         i === this.editedIstIndex ? item : x
       )
     );
+    this.instances.updateValueAndValidity();
     this.instances.markAsDirty();
     this.editInstance(-1);
   }
@@ -277,6 +302,7 @@ export class CodHandComponent implements OnInit {
           const items = [...this.instances.value];
           items.splice(index, 1);
           this.instances.setValue(items);
+          this.instances.updateValueAndValidity();
           this.instances.markAsDirty();
         }
       });
@@ -291,6 +317,7 @@ export class CodHandComponent implements OnInit {
     items.splice(index, 1);
     items.splice(index - 1, 0, item);
     this.instances.setValue(items);
+    this.instances.updateValueAndValidity();
     this.instances.markAsDirty();
   }
 
@@ -303,6 +330,7 @@ export class CodHandComponent implements OnInit {
     items.splice(index, 1);
     items.splice(index + 1, 0, item);
     this.instances.setValue(items);
+    this.instances.updateValueAndValidity();
     this.instances.markAsDirty();
   }
   //#endregion
@@ -314,6 +342,7 @@ export class CodHandComponent implements OnInit {
       language: this.subLangEntries?.length ? this.subLangEntries[0].id : '',
     };
     this.subscriptions.setValue([...this.subscriptions.value, sub]);
+    this.subscriptions.updateValueAndValidity();
     this.subscriptions.markAsDirty();
     this.editSubscription(this.subscriptions.value.length - 1);
   }
@@ -334,6 +363,7 @@ export class CodHandComponent implements OnInit {
         i === this.editedSubIndex ? item : x
       )
     );
+    this.subscriptions.updateValueAndValidity();
     this.subscriptions.markAsDirty();
     this.editSubscription(-1);
   }
@@ -351,6 +381,7 @@ export class CodHandComponent implements OnInit {
           const items = [...this.subscriptions.value];
           items.splice(index, 1);
           this.subscriptions.setValue(items);
+          this.subscriptions.updateValueAndValidity();
           this.subscriptions.markAsDirty();
         }
       });
@@ -365,6 +396,7 @@ export class CodHandComponent implements OnInit {
     items.splice(index, 1);
     items.splice(index - 1, 0, item);
     this.subscriptions.setValue(items);
+    this.subscriptions.updateValueAndValidity();
     this.subscriptions.markAsDirty();
   }
 
@@ -377,12 +409,14 @@ export class CodHandComponent implements OnInit {
     items.splice(index, 1);
     items.splice(index + 1, 0, item);
     this.subscriptions.setValue(items);
+    this.subscriptions.updateValueAndValidity();
     this.subscriptions.markAsDirty();
   }
   //#endregion
 
   public onReferencesChange(references: DocReference[]): void {
     this.references.setValue(references);
+    this.references.updateValueAndValidity();
     this.references.markAsDirty();
   }
 

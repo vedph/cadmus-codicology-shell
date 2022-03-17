@@ -183,6 +183,8 @@ export class CodHandsPartComponent
       instances: [],
     };
     this.hands.setValue([...this.hands.value, hand]);
+    this.hands.updateValueAndValidity();
+    this.hands.markAsDirty();
     this.editHand(this.hands.value.length - 1);
   }
 
@@ -206,6 +208,8 @@ export class CodHandsPartComponent
         i === this._editedIndex ? entry : e
       )
     );
+    this.hands.updateValueAndValidity();
+    this.hands.markAsDirty();
     this.editHand(-1);
   }
 
@@ -222,6 +226,8 @@ export class CodHandsPartComponent
           const entries = [...this.hands.value];
           entries.splice(index, 1);
           this.hands.setValue(entries);
+          this.hands.updateValueAndValidity();
+          this.hands.markAsDirty();
         }
       });
   }
@@ -235,6 +241,8 @@ export class CodHandsPartComponent
     entries.splice(index, 1);
     entries.splice(index - 1, 0, entry);
     this.hands.setValue(entries);
+    this.hands.updateValueAndValidity();
+    this.hands.markAsDirty();
   }
 
   public moveHandDown(index: number): void {
@@ -246,5 +254,7 @@ export class CodHandsPartComponent
     entries.splice(index, 1);
     entries.splice(index + 1, 0, entry);
     this.hands.setValue(entries);
+    this.hands.updateValueAndValidity();
+    this.hands.markAsDirty();
   }
 }

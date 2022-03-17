@@ -21,7 +21,12 @@
 
   <!-- descriptions -->
   <mat-expansion-panel>
-    <mat-expansion-panel-header>descriptions</mat-expansion-panel-header>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon class="hdr-icon" style="color: #afd8ff">description</mat-icon>
+        descriptions
+      </mat-panel-title>
+    </mat-expansion-panel-header>
     <div>
       <button
         type="button"
@@ -108,7 +113,12 @@
 
   <!-- instances -->
   <mat-expansion-panel>
-    <mat-expansion-panel-header>instances</mat-expansion-panel-header>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon class="hdr-icon" style="color: #fbc4ff">back_hand</mat-icon>
+        instances
+      </mat-panel-title>
+    </mat-expansion-panel-header>
     <div>
       <button
         type="button"
@@ -193,6 +203,7 @@
         [imgTypeEntries]="imgTypeEntries"
         [refTypeEntries]="refTypeEntries"
         [instance]="editedIst"
+        [dscKeys]="dscKeys"
         (instanceChange)="onInstanceSave($event)"
         (editorClose)="onInstanceClose()"
       >
@@ -202,7 +213,12 @@
 
   <!-- subscriptions -->
   <mat-expansion-panel>
-    <mat-expansion-panel-header>subscriptions</mat-expansion-panel-header>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon class="hdr-icon" style="color: #ffaa7f">bookmark</mat-icon>
+        subscriptions
+      </mat-panel-title>
+    </mat-expansion-panel-header>
     <div>
       <button
         type="button"
@@ -288,7 +304,12 @@
 
   <!-- references -->
   <mat-expansion-panel>
-    <mat-expansion-panel-header>references</mat-expansion-panel-header>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon class="hdr-icon" style="color: #a7f9b5">receipt_long</mat-icon>
+        references
+      </mat-panel-title>
+    </mat-expansion-panel-header>
     <cadmus-refs-doc-references
       [tagEntries]="refTagEntries"
       [typeEntries]="refTypeEntries"

@@ -1,13 +1,13 @@
 <form [formGroup]="form" (submit)="save()">
-  <div style="display: flex; align-items: center; gap: 8px">
+  <div class="form-row">
     <!-- range -->
     <cadmus-cod-location
-      style="flex: 0 0 auto"
       [location]="initialRanges || []"
       (locationChange)="onLocationChange($event)"
     ></cadmus-cod-location>
+
     <!-- language (bound) -->
-    <mat-form-field *ngIf="langEntries?.length" style="flex: 0 0 auto">
+    <mat-form-field *ngIf="langEntries?.length">
       <mat-select [formControl]="language" placeholder="language">
         <mat-option *ngFor="let e of langEntries" [value]="e.id">{{
           e.value
@@ -23,7 +23,7 @@
     </mat-form-field>
 
     <!-- language (free) -->
-    <mat-form-field *ngIf="!langEntries?.length" style="flex: 0 0 auto">
+    <mat-form-field *ngIf="!langEntries?.length">
       <input matInput [formControl]="language" placeholder="language" />
       <mat-error
         *ngIf="

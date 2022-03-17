@@ -89,6 +89,8 @@ export class CodHandSubscriptionComponent implements OnInit {
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
     this.ranges.setValue(ranges || []);
+    this.ranges.updateValueAndValidity();
+    this.ranges.markAsDirty();
   }
 
   private getSubscription(): CodHandSubscription {

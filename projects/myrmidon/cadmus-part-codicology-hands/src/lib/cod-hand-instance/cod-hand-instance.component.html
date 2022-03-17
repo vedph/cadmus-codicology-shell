@@ -1,7 +1,7 @@
 <form [formGroup]="form" (submit)="save()">
-  <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap">
+  <div class="form-row">
     <!-- script (bound) -->
-    <mat-form-field *ngIf="scriptEntries?.length" style="flex: 0 0 auto">
+    <mat-form-field *ngIf="scriptEntries?.length">
       <mat-select [formControl]="script" placeholder="script">
         <mat-option *ngFor="let e of scriptEntries" [value]="e.id">{{
           e.value
@@ -15,7 +15,7 @@
       >
     </mat-form-field>
     <!-- script (free) -->
-    <mat-form-field *ngIf="scriptEntries?.length" style="flex: 0 0 auto">
+    <mat-form-field *ngIf="!scriptEntries?.length">
       <input matInput [formControl]="script" placeholder="script" />
       <mat-error
         *ngIf="
@@ -32,7 +32,7 @@
     </mat-form-field>
 
     <!-- rank -->
-    <mat-form-field style="flex: 0 0 auto; width: 4em">
+    <mat-form-field style="width: 4em">
       <input
         matInput
         [formControl]="rank"
@@ -43,7 +43,7 @@
     </mat-form-field>
 
     <!-- dscKey -->
-    <mat-form-field *ngIf="dscKeys?.length" style="flex: 0 0 auto">
+    <mat-form-field *ngIf="dscKeys?.length">
       <mat-select [formControl]="dscKey" placeholder="key">
         <mat-option [value]="null">--</mat-option>
         <mat-option *ngFor="let k of dscKeys" [value]="k">{{ k }}</mat-option>
@@ -55,50 +55,56 @@
         >key required</mat-error
       >
     </mat-form-field>
+
+    <!-- ranges -->
+    <cadmus-cod-location
+      [location]="initialRanges"
+      (locationChange)="onLocationChange($event)"
+    ></cadmus-cod-location>
   </div>
 
   <!-- typologies -->
   <fieldset>
     <legend>typologies</legend>
     <cadmus-ui-flags-picker
-      [flags]="typFlags"
+      [flags]="typeFlags"
       [selectedIds]="initialTypologies"
       (selectedIdsChange)="onTypologiesChange($event)"
     ></cadmus-ui-flags-picker>
   </fieldset>
 
-  <!-- ranges -->
-  <cadmus-cod-location
-    [location]="initialRanges"
-    (locationChange)="onLocationChange($event)"
-  ></cadmus-cod-location>
-
   <!-- colors -->
   <fieldset>
     <legend>colors</legend>
     <cadmus-ui-flags-picker
-      [flags]="clrFlags"
+      [flags]="colorFlags"
       [selectedIds]="initialColors"
       (selectedIdsChange)="onColorsChange($event)"
     ></cadmus-ui-flags-picker>
   </fieldset>
 
   <!-- chronotope -->
-  <cadmus-refs-asserted-chronotope
-    [tagEntries]="ctTagEntries"
-    [assTagEntries]="assTagEntries"
-    [refTagEntries]="refTagEntries"
-    [refTypeEntries]="refTypeEntries"
-    [chronotope]="initialChronotope"
-    (chronotopeChange)="onChronotopeChange($event)"
-  ></cadmus-refs-asserted-chronotope>
+  <fieldset>
+    <legend>chronotope</legend>
+    <cadmus-refs-asserted-chronotope
+      [tagEntries]="ctTagEntries"
+      [assTagEntries]="assTagEntries"
+      [refTagEntries]="refTagEntries"
+      [refTypeEntries]="refTypeEntries"
+      [chronotope]="initialChronotope"
+      (chronotopeChange)="onChronotopeChange($event)"
+    ></cadmus-refs-asserted-chronotope>
+  </fieldset>
 
   <!-- images -->
-  <cadmus-cod-images
-    [typeEntries]="imgTypeEntries"
-    [images]="initialImages"
-    (imagesChange)="onImagesChange($event)"
-  ></cadmus-cod-images>
+  <fieldset>
+    <legend>images</legend>
+    <cadmus-cod-images
+      [typeEntries]="imgTypeEntries"
+      [images]="initialImages"
+      (imagesChange)="onImagesChange($event)"
+    ></cadmus-cod-images>
+  </fieldset>
 
   <!-- buttons -->
   <div>
@@ -118,7 +124,7 @@
       matTooltip="Accept changes"
       [disabled]="form.invalid || form.pristine"
     >
-      <mat-icon>check_circle</mat-icon>
+      <mat-icon>check_circle</mat-icon> instance
     </button>
   </div>
 </form>
