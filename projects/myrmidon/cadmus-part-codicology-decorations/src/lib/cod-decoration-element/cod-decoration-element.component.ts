@@ -498,41 +498,57 @@ export class CodDecorationElementComponent implements OnInit {
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
-    this.ranges.setValue(ranges ? ranges[0] : null);
+    this.ranges.setValue(ranges);
+    this.ranges.updateValueAndValidity();
     this.ranges.markAsDirty();
   }
 
   public onImagesChange(images: CodImage[] | undefined): void {
     this.images.setValue(images);
+    this.images.updateValueAndValidity();
     this.images.markAsDirty();
   }
 
   public onFlagsChange(ids: string[]): void {
     this.flags.setValue(ids);
+    this.flags.updateValueAndValidity();
+    this.flags.markAsDirty();
   }
 
   public onTypologiesChange(ids: string[]): void {
     this.typologies.setValue(ids);
+    this.typologies.updateValueAndValidity();
+    this.typologies.markAsDirty();
   }
 
   public onColorsChange(ids: string[]): void {
     this.colors.setValue(ids);
+    this.colors.updateValueAndValidity();
+    this.colors.markAsDirty();
   }
 
   public onGildingsChange(ids: string[]): void {
     this.gildings.setValue(ids);
+    this.gildings.updateValueAndValidity();
+    this.gildings.markAsDirty();
   }
 
   public onTechniquesChange(ids: string[]): void {
     this.techniques.setValue(ids);
+    this.techniques.updateValueAndValidity();
+    this.techniques.markAsDirty();
   }
 
   public onToolsChange(ids: string[]): void {
     this.tools.setValue(ids);
+    this.tools.updateValueAndValidity();
+    this.tools.markAsDirty();
   }
 
   public onPositionsChange(ids: string[]): void {
     this.positions.setValue(ids);
+    this.positions.updateValueAndValidity();
+    this.positions.markAsDirty();
   }
 
   // TODO: replace with generic pipe
