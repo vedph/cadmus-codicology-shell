@@ -80,7 +80,7 @@ export class CodRColDefinitionComponent implements OnInit {
     this.form.markAsPristine();
   }
 
-  private getModel(): CodRColDefinition | null {
+  private getModel(): CodRColDefinition {
     return {
       id: this.id,
       rank: +this.rank.value || 0,
@@ -97,10 +97,6 @@ export class CodRColDefinitionComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const model = this.getModel();
-    if (!model) {
-      return;
-    }
-    this.definitionChange.emit(model);
+    this.definitionChange.emit(this.getModel());
   }
 }

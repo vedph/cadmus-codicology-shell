@@ -11,7 +11,9 @@ Quick Docker image build:
 
 1. `npm run build-lib`
 2. `ng build`
-3. `docker build . -t vedph2020/cadmus-codicology-shell:1.0.0 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
+3. `docker build . -t vedph2020/cadmus-codicology-shell:1.0.1 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
+
+Remember to update version in `env.js`.
 
 ## Shell Architecture
 
@@ -20,6 +22,9 @@ Quick Docker image build:
 
 ## History
 
+### 1.0.1
+
+- 2022-03-18: fixes to part editors; upgraded Angular.
 - 2022-03-05: fixes to images editor in UI library; upgraded Angular.
 
 ### 1.0.0

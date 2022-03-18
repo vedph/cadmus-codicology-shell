@@ -6,10 +6,12 @@
   <!-- display -->
   <div
     *ngIf="editMode === 'none'"
-    matTooltip="{{ cell?.note }}"
     class="form-row-center"
   >
     <span>{{ cell.value }}</span>
+    <span *ngIf="cell.note" [matTooltip]="cell.note">
+      <mat-icon>description</mat-icon>
+    </span>
     <button
       class="muted"
       type="button"

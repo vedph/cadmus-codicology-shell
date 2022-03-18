@@ -56,7 +56,7 @@
                 </button>
 
                 <!-- opAction -->
-                <mat-form-field style="width: 6em;">
+                <mat-form-field style="width: 6em">
                   <input
                     matInput
                     [formControl]="opAction"
@@ -354,13 +354,110 @@
             [disabled]="!editedEndleaf"
           >
             <mat-expansion-panel-header>endleaf</mat-expansion-panel-header>
-            <cadmus-cod-endleaf
-              [locations]="endleafRowIds"
-              [endleaf]="editedEndleaf"
-              (endleafChange)="onEndleafSave($event)"
-              (editorClose)="onEndleafClose()"
-            ></cadmus-cod-endleaf>
+            <fieldset>
+              <cadmus-cod-endleaf
+                [matEntries]="matEntries"
+                [ctTagEntries]="ctTagEntries"
+                [assTagEntries]="assTagEntries"
+                [refTagEntries]="refTagEntries"
+                [refTypeEntries]="refTypeEntries"
+                [locations]="endleafRowIds"
+                [endleaf]="editedEndleaf"
+                (endleafChange)="onEndleafSave($event)"
+                (editorClose)="onEndleafClose()"
+              ></cadmus-cod-endleaf>
+            </fieldset>
           </mat-expansion-panel>
+        </mat-tab>
+
+        <!-- HELP ng serve
+        -->
+        <mat-tab label="help">
+          <div id="help">
+            <h2>Overview</h2>
+            <p>
+              This part allows you to edit data about labels (numbering,
+              catchwords and signatures) attached to manuscript sheets and their
+              relationship with quires.
+            </p>
+            <p>
+              The main view shows a grid having a row for each physical sheet,
+              and a column for each label. The <code>q</code> column is the
+              quires column, which is unique. All the other columns are added at
+              will, each with its own type and ID. To add a column, use the
+              <i>adder</i> tool by picking a type and entering the ID when
+              required. You can edit data about each column using the edit
+              button next to the action's tool column picker.
+            </p>
+            <h2>Columns</h2>
+            <p>
+              The quires column is unique, and always has the ID <code>q</code>.
+              All the other columns have an ID starting with their type prefix
+              plus dot plus an arbitrary suffix (e.g. <code>n.roman</code>).
+              Type prefixes are:
+            </p>
+            <ul>
+              <li><code>q</code> = quire</li>
+              <li><code>n</code> = numbering</li>
+              <li><code>c</code> = catchword</li>
+              <li><code>s</code> = signature</li>
+              <li><code>r</code> = register signature</li>
+            </ul>
+            <p>
+              The action tool allows you to pick a target column and then either
+              edit it, or add new sheets (=rows) with the specified labels on
+              it. To this end, it uses a simple formula allowing you to quickly
+              enter rows and their labels in batches. Alternatively, you can
+              always edit each cell's value by clicking on it. This is the only
+              way to edit additional notes about any of the cell values.
+            </p>
+
+            <h2>Rows</h2>
+            <p>
+              Rows (=physical sheets) are numbered according to these
+              conventions:
+            </p>
+            <ul>
+              <li>
+                front endleaf: <code>(Nr)</code> or <code>(Nv)</code>: e.g.
+                <code>(1r)</code>=1 recto.
+              </li>
+              <li>
+                body sheet: <code>Nr</code> or <code>Nv</code>: e.g.
+                <code>1v</code>=1 verso.
+              </li>
+              <li>
+                back endleaf: <code>(/Nr)</code> or <code>(/Nv)</code>: e.g.
+                <code>(/1r)</code>=1 recto.
+              </li>
+            </ul>
+            <h2>Formula</h2>
+            <p>A formula consists of these parts:</p>
+            <ol>
+              <li><code>N</code>=sheet number;</li>
+              <li>
+                <code>r/v</code>=recto/verso (always <code>r</code> for quires);
+              </li>
+              <li><code>*</code>=sheet or <code>%</code>=page;</li>
+              <li><code>N</code>=count of sheet/page labels to add;</li>
+              <li>
+                <code>value</code>=value of the label(s) to add. Include in
+                double quotes when it's a literal constant. Else, it can be an
+                Arabic number, a Roman number, or a Latin/Greek letter, either
+                uppercase or lowercase. In all these cases, the labels will be
+                generated automatically: e.g. <code>1r*3=xi</code> = assign
+                labels <code>xi</code>, <code>xii</code>, and
+                <code>xiii</code> to sheets 1r, 2r, and 3r. Quires have a
+                special numbering, with form
+                <code>qN/M</code>
+                where N=sheet number and M=count of sheets in that quire. For
+                instance, <code>1x2=q1/4</code> generates 16 labels like
+                <code>1.1/4</code> for 1r and 1v, <code>1.2/4</code> for 2r and
+                2v, etc. where the initial number followed by dot is the quire
+                ordinal number, while others correspond to N and M.
+              </li>
+            </ol>
+          </div>
         </mat-tab>
       </mat-tab-group>
     </mat-card-content>

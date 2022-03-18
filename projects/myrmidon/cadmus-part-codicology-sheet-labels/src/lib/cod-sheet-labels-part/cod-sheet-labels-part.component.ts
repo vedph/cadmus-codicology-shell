@@ -490,6 +490,7 @@ export class CodSheetLabelsPartComponent
       defs.splice(this._editedNDefIndex, 1, def);
     }
     this.nDefs.setValue(defs);
+    this.nDefs.updateValueAndValidity();
     this.nDefs.markAsDirty();
     this.closeAllDefEditors();
   }
@@ -502,6 +503,7 @@ export class CodSheetLabelsPartComponent
       defs.splice(this._editedCDefIndex, 1, def);
     }
     this.cDefs.setValue(defs);
+    this.cDefs.updateValueAndValidity();
     this.cDefs.markAsDirty();
     this.closeAllDefEditors();
   }
@@ -514,6 +516,7 @@ export class CodSheetLabelsPartComponent
       defs.splice(this._editedSDefIndex, 1, def);
     }
     this.sDefs.setValue(defs);
+    this.sDefs.updateValueAndValidity();
     this.sDefs.markAsDirty();
     this.closeAllDefEditors();
   }
@@ -526,6 +529,7 @@ export class CodSheetLabelsPartComponent
       defs.splice(this._editedRDefIndex, 1, def);
     }
     this.rDefs.setValue(defs);
+    this.rDefs.updateValueAndValidity();
     this.rDefs.markAsDirty();
     this.closeAllDefEditors();
   }
@@ -538,6 +542,7 @@ export class CodSheetLabelsPartComponent
       material: this.matEntries?.length ? this.matEntries[0].id : '',
     };
     this.endleaves.setValue([...this.endleaves.value, item]);
+    this.endleaves.updateValueAndValidity();
     this.endleaves.markAsDirty();
     this.editEndleaf(this.endleaves.value.length - 1);
   }
@@ -558,6 +563,7 @@ export class CodSheetLabelsPartComponent
         i === this._editedEndleafIndex ? item : x
       )
     );
+    this.endleaves.updateValueAndValidity();
     this.endleaves.markAsDirty();
     this.editEndleaf(-1);
   }
@@ -575,6 +581,7 @@ export class CodSheetLabelsPartComponent
           const items = [...this.endleaves.value];
           items.splice(index, 1);
           this.endleaves.setValue(items);
+          this.endleaves.updateValueAndValidity();
           this.endleaves.markAsDirty();
         }
       });
@@ -589,6 +596,7 @@ export class CodSheetLabelsPartComponent
     items.splice(index, 1);
     items.splice(index - 1, 0, item);
     this.endleaves.setValue(items);
+    this.endleaves.updateValueAndValidity();
     this.endleaves.markAsDirty();
   }
 
@@ -601,6 +609,7 @@ export class CodSheetLabelsPartComponent
     items.splice(index, 1);
     items.splice(index + 1, 0, item);
     this.endleaves.setValue(items);
+    this.endleaves.updateValueAndValidity();
     this.endleaves.markAsDirty();
   }
   //#endregion

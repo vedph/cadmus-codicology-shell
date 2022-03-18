@@ -103,7 +103,7 @@ export class CodEndleafComponent implements OnInit {
     this.chronotope.markAsDirty();
   }
 
-  private getModel(): CodEndleaf | null {
+  private getModel(): CodEndleaf {
     return {
       location: this.location.value?.trim(),
       material: this.material.value?.trim(),
@@ -119,10 +119,6 @@ export class CodEndleafComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const model = this.getModel();
-    if (!model) {
-      return;
-    }
-    this.endleafChange.emit(model);
+    this.endleafChange.emit(this.getModel());
   }
 }

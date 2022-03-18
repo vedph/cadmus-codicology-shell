@@ -44,3 +44,12 @@ table.labels th,
 table.labels td {
   border: 1px solid silver;
 }
+#help {
+  margin-top: 8px;
+  column-width: 400px;
+  column-count: 6;
+}
+#help code {
+  font-family: "Courier New", Courier, monospace;
+  color: coral;
+}

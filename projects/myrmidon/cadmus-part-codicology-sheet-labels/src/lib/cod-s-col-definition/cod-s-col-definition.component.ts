@@ -90,7 +90,7 @@ export class CodSColDefinitionComponent implements OnInit {
     this.form.markAsPristine();
   }
 
-  private getModel(): CodSColDefinition | null {
+  private getModel(): CodSColDefinition {
     return {
       id: this.id,
       rank: +this.rank.value || 0,
@@ -108,10 +108,6 @@ export class CodSColDefinitionComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const model = this.getModel();
-    if (!model) {
-      return;
-    }
-    this.definitionChange.emit(model);
+    this.definitionChange.emit(this.getModel());
   }
 }
