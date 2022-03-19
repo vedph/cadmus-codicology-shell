@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
@@ -44,8 +44,6 @@ import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 // ngx-markdown
 import { MarkdownModule } from 'ngx-markdown';
-// moment
-import { MomentModule } from 'ngx-moment';
 
 // myrmidon
 import { EnvServiceProvider, NgToolsModule } from '@myrmidon/ng-tools';
@@ -88,6 +86,8 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { PART_EDITOR_KEYS } from './part-editor-keys';
 import { INDEX_LOOKUP_DEFINITIONS } from './index-lookup-definitions';
 import { ITEM_BROWSER_KEYS } from './item-browser-keys';
+import { WindowRefService } from '@myrmidon/ng-tools';
+import { languageFactory } from '@myrmidon/ng-tools';
 
 @NgModule({
   declarations: [
@@ -143,7 +143,6 @@ import { ITEM_BROWSER_KEYS } from './item-browser-keys';
     AkitaNgDevtools.forRoot(),
     MonacoEditorModule.forRoot(),
     MarkdownModule.forRoot(),
-    MomentModule,
     // myrmidon
     NgToolsModule,
     NgMatToolsModule,
@@ -196,6 +195,12 @@ import { ITEM_BROWSER_KEYS } from './item-browser-keys';
       provide: HTTP_INTERCEPTORS,
       useClass: AuthJwtInterceptor,
       multi: true,
+    },
+    // LCID
+    {
+      provide: LOCALE_ID,
+      deps: [WindowRefService],
+      useFactory: languageFactory,
     },
   ],
   bootstrap: [AppComponent],
