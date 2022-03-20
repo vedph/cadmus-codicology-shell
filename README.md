@@ -22,6 +22,8 @@ Remember to update version in `env.js`.
 
 ## History
 
+- 2022-03-20: upgraded Cadmus shell packages.
+
 ### 1.0.1
 
 - 2022-03-18: fixes to part editors; upgraded Angular.
