@@ -26,14 +26,13 @@
                 <th></th>
                 <th>extent</th>
                 <th>material</th>
-                <th>place</th>
-                <th>date</th>
+                <th>place/date</th>
               </tr>
             </thead>
             <tbody>
               <tr
                 *ngFor="
-                  let entry of units?.value;
+                  let unit of units?.value;
                   let i = index;
                   let first = first;
                   let last = last
@@ -77,10 +76,9 @@
                     <mat-icon>remove_circle</mat-icon>
                   </button>
                 </td>
-                <td>{{ entry.range | codLocationRange }}</td>
-                <td>{{ entry.material }}</td>
-                <td>{{ entry.chronotope?.place }}</td>
-                <td>{{ entry.chronotope?.date | historicalDate }}</td>
+                <td>{{ unit.range | codLocationRange }}</td>
+                <td>{{ unit.material }}</td>
+                <td>{{ unit.chronotopes?.length || 0 }}</td>
               </tr>
             </tbody>
           </table>

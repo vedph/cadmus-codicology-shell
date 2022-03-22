@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
-  FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
@@ -100,7 +99,6 @@ export class CodEditEditorComponent implements OnInit {
   public references: FormControl;
   public form: FormGroup;
 
-  public initialTechniques?: string[];
   public initialRanges?: CodLocationRange[];
   public initialDate?: HistoricalDateModel;
   public availColors?: Flag[];
@@ -160,7 +158,7 @@ export class CodEditEditorComponent implements OnInit {
     this.eid.setValue(model.eid);
     this.type.setValue(model.type);
     this.tag.setValue(model.tag);
-    this.initialTechniques = model.techniques || [];
+    this.initialTechIds = model.techniques || [];
     this.initialRanges = model.ranges || [];
     this.language.setValue(model.language);
     this.initialDate = model.date;
@@ -194,26 +192,31 @@ export class CodEditEditorComponent implements OnInit {
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
     this.ranges.setValue(ranges || []);
+    this.ranges.updateValueAndValidity();
     this.ranges.markAsDirty();
   }
 
   public onColorIdsChange(ids: string[]): void {
     this.colors.setValue(ids);
+    this.colors.updateValueAndValidity();
     this.colors.markAsDirty();
   }
 
   public onTechIdsChange(ids: string[]): void {
     this.techniques.setValue(ids);
+    this.techniques.updateValueAndValidity();
     this.techniques.markAsDirty();
   }
 
   public onReferencesChange(references: DocReference[]): void {
     this.references.setValue(references);
+    this.references.updateValueAndValidity();
     this.references.markAsDirty();
   }
 
   public onDateChange(date: HistoricalDateModel): void {
     this.date.setValue(date);
+    this.date.updateValueAndValidity();
     this.date.markAsDirty();
   }
 

@@ -165,6 +165,8 @@ export class CodDecorationArtistComponent implements OnInit {
 
   public onIdsChange(ids: RankedExternalId[]): void {
     this.ids.setValue(ids);
+    this.ids.updateValueAndValidity();
+    this.ids.markAsDirty();
   }
 
   //#region styles
@@ -173,6 +175,7 @@ export class CodDecorationArtistComponent implements OnInit {
       name: this.artStyleEntries?.length ? this.artStyleEntries[0].id : '',
     };
     this.styles.setValue([...this.styles.value, style]);
+    this.styles.updateValueAndValidity();
     this.styles.markAsDirty();
     this.editStyle(this.styles.value.length - 1);
   }
@@ -193,6 +196,7 @@ export class CodDecorationArtistComponent implements OnInit {
         i === this._editedStyleIndex ? item : x
       )
     );
+    this.styles.updateValueAndValidity();
     this.styles.markAsDirty();
     this.editStyle(-1);
   }
@@ -210,6 +214,7 @@ export class CodDecorationArtistComponent implements OnInit {
           const items = [...this.styles.value];
           items.splice(index, 1);
           this.styles.setValue(items);
+          this.styles.updateValueAndValidity();
           this.styles.markAsDirty();
         }
       });
@@ -224,6 +229,7 @@ export class CodDecorationArtistComponent implements OnInit {
     items.splice(index, 1);
     items.splice(index - 1, 0, item);
     this.styles.setValue(items);
+    this.styles.updateValueAndValidity();
     this.styles.markAsDirty();
   }
 
@@ -236,6 +242,7 @@ export class CodDecorationArtistComponent implements OnInit {
     items.splice(index, 1);
     items.splice(index + 1, 0, item);
     this.styles.setValue(items);
+    this.styles.updateValueAndValidity();
     this.styles.markAsDirty();
   }
   //#endregion
