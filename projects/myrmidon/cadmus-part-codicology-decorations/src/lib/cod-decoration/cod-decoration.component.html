@@ -168,7 +168,9 @@
                   <mat-icon>remove_circle</mat-icon>
                 </button>
               </td>
-              <td>{{ artist.type }}</td>
+              <td>
+                {{ artist.type | flatLookup: artTypeEntries:"id":"value" }}
+              </td>
               <td>{{ artist.name }}</td>
               <td>{{ artist.eid }}</td>
             </tr>
@@ -269,7 +271,7 @@
             </td>
             <td>{{ element.key }}</td>
             <td>{{ element.parentKey }}</td>
-            <td>{{ element.type }}</td>
+            <td>{{ element.type | flatLookup: decElemTypeEntries:"id":"value" }}</td>
             <td>{{ element.subject }}</td>
             <td>{{ element.ranges | codLocationRange }}</td>
           </tr>
@@ -299,7 +301,7 @@
   </mat-tab-group>
 
   <!-- buttons -->
-  <hr>
+  <hr />
   <div>
     <button
       type="button"

@@ -12,12 +12,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
+import { NgToolsModule } from '@myrmidon/ng-tools';
 import { CadmusCodLocationModule } from '@myrmidon/cadmus-cod-location';
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { CadmusUiFlagsPickerModule } from '@myrmidon/cadmus-ui-flags-picker';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
-import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
 
 import { CodContentEditorComponent } from './cod-content-editor/cod-content-editor.component';
 import { CodContentsPartComponent } from './cod-contents-part/cod-contents-part.component';
@@ -46,6 +47,7 @@ import { CodContentAnnotationComponent } from './cod-content-annotation/cod-cont
     MatTabsModule,
     MatTooltipModule,
     // Cadmus
+    NgToolsModule,
     NgMatToolsModule,
     CadmusStateModule,
     CadmusUiModule,

@@ -11,6 +11,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+// myrmidon
+import { NgToolsModule } from '@myrmidon/ng-tools';
 // cadmus
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
@@ -43,7 +45,9 @@ import { CodBindingsPartFeatureComponent } from './cod-bindings-part-feature/cod
     MatSelectModule,
     MatTabsModule,
     MatTooltipModule,
-    // Cadmus
+    // myrmidon
+    NgToolsModule,
+    // cadmus
     CadmusStateModule,
     CadmusUiModule,
     CadmusUiPgModule,

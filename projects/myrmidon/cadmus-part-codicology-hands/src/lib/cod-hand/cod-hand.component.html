@@ -184,7 +184,9 @@
               <mat-icon>remove_circle</mat-icon>
             </button>
           </td>
-          <td>{{ instance.script }}</td>
+          <td>
+            {{ instance.script | flatLookup: scriptEntries:"id":"value" }}
+          </td>
           <td>{{ instance.ranges | codLocationRange }}</td>
         </tr>
       </tbody>
@@ -285,7 +287,11 @@
             </button>
           </td>
           <td>{{ subscription.range | codLocationRange }}</td>
-          <td>{{ subscription.language }}</td>
+          <td>
+            {{
+              subscription.language | flatLookup: subLangEntries:"id":"value"
+            }}
+          </td>
         </tr>
       </tbody>
     </table>
@@ -306,7 +312,9 @@
   <mat-expansion-panel>
     <mat-expansion-panel-header>
       <mat-panel-title>
-        <mat-icon class="hdr-icon" style="color: #a7f9b5">receipt_long</mat-icon>
+        <mat-icon class="hdr-icon" style="color: #a7f9b5"
+          >receipt_long</mat-icon
+        >
         references
       </mat-panel-title>
     </mat-expansion-panel-header>

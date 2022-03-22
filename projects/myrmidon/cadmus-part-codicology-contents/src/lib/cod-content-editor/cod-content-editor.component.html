@@ -16,10 +16,7 @@
       (locationChange)="onLocationChange($event)"
     ></cadmus-cod-location>
     <!-- tag (bound) -->
-    <mat-form-field
-      *ngIf="tagEntries?.length"
-      style="width: 8em"
-    >
+    <mat-form-field *ngIf="tagEntries?.length" style="width: 8em">
       <mat-select [formControl]="tag" placeholder="tag">
         <mat-option *ngFor="let e of tagEntries" [value]="e.id">{{
           e.value
@@ -217,7 +214,7 @@
               <mat-icon>remove_circle</mat-icon>
             </button>
           </td>
-          <td>{{ entry.type }}</td>
+          <td>{{ entry.type | flatLookup: annTypeEntries:"id":"value" }}</td>
           <td>{{ entry.range | codLocationRange }}</td>
           <td>
             {{

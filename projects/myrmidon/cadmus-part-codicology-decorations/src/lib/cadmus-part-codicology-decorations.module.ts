@@ -14,6 +14,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 
+import { NgToolsModule } from '@myrmidon/ng-tools';
 import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
 import { CadmusCodicologyUiModule } from '@myrmidon/cadmus-codicology-ui';
 import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
@@ -63,6 +64,7 @@ import { CodDecorationsPartFeatureComponent } from './cod-decorations-part-featu
     // monaco
     MonacoEditorModule,
     // general
+    NgToolsModule,
     NgMatToolsModule,
     // cadmus
     CadmusStateModule,

@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+import { NgToolsModule } from '@myrmidon/ng-tools';
 import { CadmusCodLocationModule } from '@myrmidon/cadmus-cod-location';
 import { CadmusRefsDocReferencesModule } from '@myrmidon/cadmus-refs-doc-references';
 import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
@@ -42,6 +43,7 @@ import { CodEditsPartFeatureComponent } from './cod-edits-part-feature/cod-edits
     MatTabsModule,
     MatTooltipModule,
     // Cadmus
+    NgToolsModule,
     CadmusStateModule,
     CadmusUiModule,
     CadmusUiPgModule,

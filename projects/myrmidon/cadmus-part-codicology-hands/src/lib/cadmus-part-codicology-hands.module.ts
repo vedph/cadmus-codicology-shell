@@ -12,6 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+import { NgToolsModule } from '@myrmidon/ng-tools';
 import { CadmusCodLocationModule } from '@myrmidon/cadmus-cod-location';
 import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
 import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
@@ -56,6 +57,7 @@ import { CodHandsPartFeatureComponent } from './cod-hands-part-feature/cod-hands
     MatTabsModule,
     MatTooltipModule,
     // Cadmus
+    NgToolsModule,
     CadmusStateModule,
     CadmusUiModule,
     CadmusUiPgModule,
