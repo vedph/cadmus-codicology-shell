@@ -43,7 +43,7 @@
     "@myrmidon/cadmus-cod-location": "0.0.10",
     "@myrmidon/cadmus-core": "^1.0.1",
     "@myrmidon/cadmus-graph-pg": "^1.0.0",
-    "@myrmidon/cadmus-graph-ui": "^1.0.1",
+    "@myrmidon/cadmus-graph-ui": "^1.0.3",
     "@myrmidon/cadmus-item-editor": "^1.0.2",
     "@myrmidon/cadmus-item-list": "^1.0.1",
     "@myrmidon/cadmus-item-search": "^1.0.1",

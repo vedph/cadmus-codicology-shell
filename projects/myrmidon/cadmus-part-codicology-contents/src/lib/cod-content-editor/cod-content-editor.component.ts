@@ -97,10 +97,7 @@ export class CodContentEditorComponent implements OnInit {
     this.note = formBuilder.control(null, Validators.maxLength(1000));
     this.incipit = formBuilder.control(null, Validators.maxLength(1000));
     this.explicit = formBuilder.control(null, Validators.maxLength(1000));
-    this.states = formBuilder.control(
-      [],
-      // NgToolsValidators.strictMinLengthValidator(1)
-    );
+    this.states = formBuilder.control([]);
     this.annotations = formBuilder.control([]);
     this.form = formBuilder.group({
       eid: this.eid,

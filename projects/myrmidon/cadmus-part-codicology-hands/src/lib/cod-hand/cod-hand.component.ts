@@ -222,6 +222,7 @@ export class CodHandComponent implements OnInit {
         if (yes) {
           const items = [...this.descriptions.value];
           items.splice(index, 1);
+          this.descriptions.setValue(items);
           this.descriptions.updateValueAndValidity();
           this.descriptions.markAsDirty();
         }
