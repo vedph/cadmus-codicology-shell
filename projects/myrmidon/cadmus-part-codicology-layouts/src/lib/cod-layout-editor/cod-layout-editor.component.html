@@ -117,6 +117,69 @@
     </mat-form-field>
   </div>
 
+  <!-- formula -->
+  <div>
+    <!-- formula -->
+    <form [formGroup]="formulaForm" (submit)="applyFormula()">
+      <mat-form-field class="long-text">
+        <input
+          type="text"
+          matInput
+          [formControl]="formula"
+          placeholder="layout formula (e.g. 250 × 160 = 30 / 5 [170 / 5] 40 × 15 [5 / 50 / 5* (20) 5 / 40] 5 / 15)"
+        />
+        <button
+          matTooltip="Apply formula"
+          type="submit"
+          mat-icon-button
+          matSuffix
+          [disabled]="formulaForm.invalid"
+          color="primary"
+        >
+          <mat-icon>check_circle</mat-icon>
+        </button>
+        <button
+          matTooltip="Update formula"
+          type="button"
+          color="warn"
+          mat-icon-button
+          matSuffix
+          [disabled]="!dimensions?.value?.length"
+          (click)="updateFormula()"
+        >
+          <mat-icon>login</mat-icon>
+        </button>
+        <mat-error
+          *ngIf="
+            $any(formula).errors?.pattern && (formula.dirty || formula.touched)
+          "
+          >invalid formula</mat-error
+        >
+      </mat-form-field>
+      <mat-error *ngIf="formulaError">{{ formulaError }}</mat-error>
+    </form>
+    <!-- layout figure -->
+    <div style="margin: 0 8px">
+      <mat-slider
+        min="400"
+        max="800"
+        step="10"
+        value="400"
+        (change)="onFigSliderChange($event)"
+      ></mat-slider>
+    </div>
+    <div
+      *ngIf="rectSet"
+      style="height: 400px; overflow: hidden"
+      [style.height.px]="figHeight"
+    >
+      <cadmus-cod-layout-figure
+        [rects]="rectSet"
+        [noScale]="false"
+      ></cadmus-cod-layout-figure>
+    </div>
+  </div>
+
   <!-- counts -->
   <fieldset>
     <legend>counts</legend>

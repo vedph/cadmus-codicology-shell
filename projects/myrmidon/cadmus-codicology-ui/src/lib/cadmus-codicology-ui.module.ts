@@ -17,9 +17,14 @@ import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
 
 import { CodImagesComponent } from './components/cod-images/cod-images.component';
 import { NoteSetComponent } from './components/note-set/note-set.component';
+import { CodLayoutFigureComponent } from './components/cod-layout-figure/cod-layout-figure.component';
 
 @NgModule({
-  declarations: [CodImagesComponent, NoteSetComponent],
+  declarations: [
+    CodImagesComponent,
+    NoteSetComponent,
+    CodLayoutFigureComponent,
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -36,8 +41,8 @@ import { NoteSetComponent } from './components/note-set/note-set.component';
     // vendors
     MarkdownModule,
     // general
-    NgMatToolsModule
+    NgMatToolsModule,
   ],
-  exports: [CodImagesComponent, NoteSetComponent],
+  exports: [CodImagesComponent, NoteSetComponent, CodLayoutFigureComponent],
 })
 export class CadmusCodicologyUiModule {}

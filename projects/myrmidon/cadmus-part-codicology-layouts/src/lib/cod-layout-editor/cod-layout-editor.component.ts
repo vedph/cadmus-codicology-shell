@@ -6,7 +6,13 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { MatSliderChange } from '@angular/material/slider';
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
+import {
+  CodLayoutRectSet,
+  CodLayoutService,
+  COD_LAYOUT_FORMULA_REGEX,
+} from '@myrmidon/cadmus-codicology-ui';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { PhysicalDimension } from '@myrmidon/cadmus-mat-physical-size';
 import { DecoratedCount } from '@myrmidon/cadmus-refs-decorated-counts';
@@ -70,11 +76,20 @@ export class CodLayoutEditorComponent implements OnInit {
   public note: FormControl;
   public form: FormGroup;
 
+  public formula: FormControl;
+  public formulaForm: FormGroup;
+  public formulaError?: string;
+  public rectSet: CodLayoutRectSet | undefined;
+  public figHeight = 400;
+
   public initialSample?: CodLocationRange;
   public initialRanges: CodLocationRange[];
   public initialCounts: DecoratedCount[];
 
-  constructor(private _formBuilder: FormBuilder) {
+  constructor(
+    private _formBuilder: FormBuilder,
+    private _codLayoutService: CodLayoutService
+  ) {
     this.layoutChange = new EventEmitter<CodLayout>();
     this.editorClose = new EventEmitter<any>();
     this.initialRanges = [];
@@ -104,6 +119,14 @@ export class CodLayoutEditorComponent implements OnInit {
       counts: this.counts,
       tag: this.tag,
       note: this.note,
+    });
+    // layout formula
+    this.formula = _formBuilder.control(null, [
+      Validators.required,
+      Validators.pattern(COD_LAYOUT_FORMULA_REGEX),
+    ]);
+    this.formulaForm = _formBuilder.group({
+      formula: this.formula,
     });
   }
 
@@ -141,8 +164,126 @@ export class CodLayoutEditorComponent implements OnInit {
       }
     }
 
+    // set the formula if at least height is present
+    if (layout.dimensions?.find((d) => d.tag === 'height')) {
+      this.updateFormula();
+    }
+
     this.form.markAsPristine();
   }
+
+  //#region Formula
+  private getHW(rectSet: CodLayoutRectSet): { height: number; width: number } {
+    return {
+      height: rectSet.height.reduce((a, b) => {
+        return a + b.value;
+      }, 0),
+      width: rectSet.width.reduce((a, b) => {
+        return a + b.value;
+      }, 0),
+    };
+  }
+
+  public updateFormula(): void {
+    const map = new Map<string, number>();
+    this.dimensions.controls.forEach((g) => {
+      const group = g as FormGroup;
+      map.set(group.controls['tag'].value, group.controls['value'].value);
+    });
+    this.formula.setValue(this._codLayoutService.buildFormula(map));
+  }
+
+  /**
+   * Apply the MS layout formula by adding all the dimensions got from it.
+   */
+  public applyFormula(): void {
+    // parse
+    if (this.formulaForm.invalid) {
+      return;
+    }
+    const result = this._codLayoutService.parseFormula(this.formula.value);
+    if (result.error) {
+      this.formulaError = result.error.message;
+      return;
+    } else {
+      this.formulaError = undefined;
+    }
+
+    // get rectangles
+    const map: Map<string, number> = result.value!;
+    this.rectSet = {
+      height: this._codLayoutService.getHeightRects(map),
+      width: this._codLayoutService.getWidthRects(map),
+      gap: 4,
+    };
+
+    // update dimensions: first collect all the measurements
+    // which are not found in the newly got set, nor do NOT belong
+    // to a layout formula, so we can preserve them
+    const extraDims = new Map<string, PhysicalDimension>();
+    this.dimensions.controls.forEach((g) => {
+      const group = g as FormGroup;
+      if (
+        !map.has(group.controls['tag'].value) &&
+        !this._codLayoutService.isLayoutMeasure(group.controls['tag'].value)
+      ) {
+        extraDims.set(
+          group.controls['tag'].value,
+          group.controls['value'].value
+        );
+      }
+    });
+
+    // then get the sorted formula keys, and add dimensions in order
+    this.dimensions.clear();
+    const sortedKeys = this._codLayoutService.getSortedKeys(
+      this._codLayoutService.getColumnCount(map),
+      map
+    );
+    sortedKeys.forEach((key) => {
+      this.dimensions.push(
+        this.getDimensionGroup({
+          tag: key,
+          value: map.get(key)!,
+          unit: 'mm',
+        })
+      );
+    });
+
+    // re-add the extra dimensions
+    extraDims.forEach((value, key) => {
+      this.dimensions.push(
+        this.getDimensionGroup({
+          tag: key,
+          value: value.value,
+          unit: value.unit,
+        })
+      );
+    });
+    this.dimensions.updateValueAndValidity();
+    this.dimensions.markAsDirty();
+
+    // check sum
+    const hw = this.getHW(this.rectSet);
+    const sb: string[] = [];
+    const expHeight = map.get('height');
+    const expWidth = map.get('width');
+    if (hw.height !== expHeight) {
+      sb.push(`expected (${expHeight}) and actual (${hw.height}) height`);
+    }
+    if (hw.width !== expWidth) {
+      sb.push(`expected (${expWidth}) and actual (${hw.width}) width`);
+    }
+    if (sb.length) {
+      sb.splice(0, 0, 'Mismatch: ');
+      this.formulaError = sb.join(' - ');
+    }
+  }
+
+  public onFigSliderChange(change: MatSliderChange): void {
+    this.figHeight = change.value!;
+  }
+  //#endregion
 
   private getModel(): CodLayout {
     return {

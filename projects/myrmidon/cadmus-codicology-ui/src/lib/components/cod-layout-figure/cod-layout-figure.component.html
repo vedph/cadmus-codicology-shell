@@ -1,0 +1,40 @@
+<!-- [attr.width.px]="width"
+  [attr.height.px]="height" -->
+  <svg
+  #fig
+  width="100%"
+  height="100%"
+  preserveAspectRatio="xMidYMid meet"
+  [attr.viewBox]="viewbox"
+  (click)="onSvgClick()"
+>
+  <g>
+    <!-- height -->
+    <g *ngIf="visMode === 1 || visMode === 3">
+      <rect
+        *ngFor="let r of heightRects"
+        [attr.x]="r.x"
+        [attr.y]="r.y"
+        [attr.width]="r.width"
+        [attr.height]="r.height"
+        [attr.fill]="r.fill"
+        [attr.title]="r.name"
+        stroke="#a0a0a0"
+      ></rect>
+    </g>
+
+    <!-- width -->
+    <g *ngIf="visMode >= 2" opacity="0.7">
+      <rect
+        *ngFor="let r of widthRects"
+        [attr.x]="r.x"
+        [attr.y]="r.y"
+        [attr.width]="r.width"
+        [attr.height]="r.height"
+        [attr.fill]="r.fill"
+        [attr.title]="r.name"
+        stroke="#a0a0a0"
+      ></rect>
+    </g>
+  </g>
+</svg>
