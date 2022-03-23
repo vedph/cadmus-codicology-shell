@@ -167,6 +167,7 @@ export class CodLayoutEditorComponent implements OnInit {
     // set the formula if at least height is present
     if (layout.dimensions?.find((d) => d.tag === 'height')) {
       this.updateFormula();
+      this.applyFormula();
     }
 
     this.form.markAsPristine();
@@ -191,6 +192,8 @@ export class CodLayoutEditorComponent implements OnInit {
       map.set(group.controls['tag'].value, group.controls['value'].value);
     });
     this.formula.setValue(this._codLayoutService.buildFormula(map));
+    this.formula.updateValueAndValidity();
+    this.formula.markAsDirty();
   }
 
   /**
