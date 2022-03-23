@@ -9,11 +9,9 @@ The project is used as an incubator shell for developing and testing frontend Ca
 
 Quick Docker image build:
 
-1. `npm run build-lib`
-2. `ng build`
-3. `docker build . -t vedph2020/cadmus-codicology-shell:1.0.2 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
-
-Remember to update version in `env.js`.
+1. `npm run build-lib`;
+2. remember to update version in `env.js`, then `ng build`;
+3. `docker build . -t vedph2020/cadmus-codicology-shell:1.0.3 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
 
 ## Shell Architecture
 
@@ -21,6 +19,10 @@ Remember to update version in `env.js`.
 - a pages library `cadmus-part-codicology-pg` imports all these libraries and provides routing: `ng g library @myrmidon/cadmus-part-codicology-pg --prefix cadmus`.
 
 ## History
+
+### 1.0.3
+
+- 2022-03-23: various fixes, added layout formula.
 
 ### 1.0.2
 
