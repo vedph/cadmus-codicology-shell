@@ -11,7 +11,6 @@ import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { Flag } from '@myrmidon/cadmus-ui-flags-picker';
 import { DialogService } from '@myrmidon/ng-mat-tools';
-import { NgToolsValidators } from '@myrmidon/ng-tools';
 
 import { CodContent, CodContentAnnotation } from '../cod-contents-part';
 

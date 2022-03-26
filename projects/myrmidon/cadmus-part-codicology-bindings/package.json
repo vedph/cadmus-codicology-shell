@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-bindings",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Cadmus codicology - bindings.",
   "keywords": [
     "Cadmus"

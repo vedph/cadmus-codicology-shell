@@ -8,7 +8,7 @@
     </mat-card-header>
     <mat-card-content>
       <mat-tab-group [(selectedIndex)]="tabIndex">
-        <mat-tab label="Shelfmarks">
+        <mat-tab label="shelfmarks">
           <div>
             <button
               type="button"
@@ -26,6 +26,7 @@
                 <th>tag</th>
                 <th>city</th>
                 <th>library</th>
+                <th>fund</th>
                 <th>location</th>
               </tr>
             </thead>
@@ -79,14 +80,17 @@
                 <td>{{ entry.tag }}</td>
                 <td>{{ entry.city }}</td>
                 <td>{{ entry.library }}</td>
+                <td>{{ entry.fund }}</td>
                 <td>{{ entry.location }}</td>
               </tr>
             </tbody>
           </table>
         </mat-tab>
 
-        <mat-tab label="unit" *ngIf="editedShelfmark">
+        <mat-tab label="shelfmark" *ngIf="editedShelfmark">
           <cadmus-cod-shelfmark-editor
+            [tagEntries]="tagEntries"
+            [libEntries]="libEntries"
             [shelfmark]="editedShelfmark"
             (shelfmarkChange)="onShelfmarkSave($event)"
             (editorClose)="onShelfmarkClose()"
