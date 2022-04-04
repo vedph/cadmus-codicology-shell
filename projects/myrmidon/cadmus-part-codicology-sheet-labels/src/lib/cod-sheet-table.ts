@@ -540,14 +540,15 @@ export class CodSheetTable {
     // trim columns if requested
     if (columns) {
       const cols = [...this._cols$.value];
+      i = rows[0].columns.length - 1;
       while (i > -1) {
-        i = rows[0].columns.length - 1;
         if (this.isColumnEmpty(i)) {
           cols.splice(i, 1);
           for (let j = 0; j < rows.length; j++) {
             rows[j].columns.splice(i, 1);
           }
         }
+        i--;
       }
       this._cols$.next(cols);
     }
