@@ -174,6 +174,39 @@ export class LabelGenerator {
     return cells;
   }
 
+  private static getNextValue(
+    action: CodLabelAction,
+    value?: string
+  ): string | undefined {
+    switch (action.type) {
+      case CodLabelActionType.Arabic:
+        value = (+value! + 1).toString();
+        break;
+      case CodLabelActionType.UpperRoman:
+        value = this.getNextRoman(value!, false);
+        break;
+      case CodLabelActionType.LowerRoman:
+        value = this.getNextRoman(value!, true);
+        break;
+      case CodLabelActionType.LatLowerLetter:
+        value = this.getNextLatLetter(value!, true);
+        break;
+      case CodLabelActionType.LatUpperLetter:
+        value = this.getNextLatLetter(value!, false);
+        break;
+      case CodLabelActionType.GrcLowerLetter:
+        value = this.getNextGrcLetter(value!, true);
+        break;
+      case CodLabelActionType.GrcUpperLetter:
+        value = this.getNextGrcLetter(value!, false);
+        break;
+      default:
+        // a custom value remains the same forever
+        break;
+    }
+    return value;
+  }
+
   /**
    * Generate a set of label cells from the specified action.
    * @param columnId The column ID.
@@ -195,50 +228,24 @@ export class LabelGenerator {
     const cells: CodLabelCell[] = [];
     let n = action.n;
     let v = action.v;
+    const count = action.page ? action.count : action.count * 2;
     let value = action.value;
-    for (let i = 0; i < action.count; i++) {
+    for (let i = 0; i < count; i++) {
       cells.push({
         rowId: n.toString() + (v ? 'v' : 'r'),
         id: columnId,
         value: value,
       });
       // calculate next row ID
-      if (action.page) {
-        if (v) {
-          n++;
-          v = false;
-        } else {
-          v = true;
-        }
-      } else {
+      if (v) {
         n++;
+        v = false;
+      } else {
+        v = true;
       }
       // calculate new value
-      switch (action.type) {
-        case CodLabelActionType.Arabic:
-          value = (+value! + 1).toString();
-          break;
-        case CodLabelActionType.UpperRoman:
-          value = this.getNextRoman(value!, false);
-          break;
-        case CodLabelActionType.LowerRoman:
-          value = this.getNextRoman(value!, true);
-          break;
-        case CodLabelActionType.LatLowerLetter:
-          value = this.getNextLatLetter(value!, true);
-          break;
-        case CodLabelActionType.LatUpperLetter:
-          value = this.getNextLatLetter(value!, false);
-          break;
-        case CodLabelActionType.GrcLowerLetter:
-          value = this.getNextGrcLetter(value!, true);
-          break;
-        case CodLabelActionType.GrcUpperLetter:
-          value = this.getNextGrcLetter(value!, false);
-          break;
-        default:
-          // a custom value remains the same forever
-          break;
+      if (action.page || i % 2 !== 0) {
+        value = this.getNextValue(action, value);
       }
     }
     return cells;

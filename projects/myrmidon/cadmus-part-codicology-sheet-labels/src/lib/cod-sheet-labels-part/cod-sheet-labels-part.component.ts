@@ -329,7 +329,8 @@ export class CodSheetLabelsPartComponent
           type = CodRowType.Body;
           break;
       }
-      this._table.appendRows(type, this.addCount.value || 1);
+      // count by 2 as operators work with sheets rather than pages
+      this._table.appendRows(type, 2 * (this.addCount.value || 1));
     } else {
       const id =
         this.addType.value.charAt(4) +
