@@ -20,6 +20,8 @@ Quick Docker image build:
 
 ## History
 
+- 2022-04-05: various fixes.
+
 ### 1.0.4
 
 - 2022-03-26: various fixes.

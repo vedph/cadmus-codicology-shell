@@ -1,6 +1,18 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-hands",
-  "version": "0.0.2",
+  "version": "0.0.3",
+  "description": "Cadmus codicology - hands.",
+  "keywords": [
+    "Cadmus"
+  ],
+  "homepage": "https://github.com/vedph/cadmus-codicology-shell",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vedph/cadmus-codicology-shell"
+  },
+  "author": {
+    "name": "Daniele Fusi"
+  },
   "peerDependencies": {
     "@angular/common": "^13.2.0",
     "@angular/core": "^13.2.0"
