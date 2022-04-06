@@ -33,16 +33,18 @@ import { CodLabelCellComponent } from './cod-label-cell/cod-label-cell.component
 import { CodSheetLabelsPartFeatureComponent } from './cod-sheet-labels-part-feature/cod-sheet-labels-part-feature.component';
 import { CellAdapterPipe } from './cod-sheet-labels-part/cell-adapter.pipe';
 import { CellTypeColorPipe } from './cod-sheet-labels-part/cell-type-color.pipe';
+import { CodLocationConverterComponent } from './cod-location-converter/cod-location-converter.component';
 
 @NgModule({
   declarations: [
-    CodNColDefinitionComponent,
     CodCColDefinitionComponent,
+    CodEndleafComponent,
+    CodLabelCellComponent,
+    CodLocationConverterComponent,
+    CodNColDefinitionComponent,
     CodSColDefinitionComponent,
     CodRColDefinitionComponent,
-    CodEndleafComponent,
     CodSheetLabelsPartComponent,
-    CodLabelCellComponent,
     CodSheetLabelsPartFeatureComponent,
     CellAdapterPipe,
     CellTypeColorPipe,
@@ -74,14 +76,15 @@ import { CellTypeColorPipe } from './cod-sheet-labels-part/cell-type-color.pipe'
     CadmusUiFlagsPickerModule,
   ],
   exports: [
-    CodNColDefinitionComponent,
     CodCColDefinitionComponent,
-    CodSColDefinitionComponent,
-    CodRColDefinitionComponent,
     CodEndleafComponent,
-    CodSheetLabelsPartComponent,
     CodLabelCellComponent,
-    CodSheetLabelsPartFeatureComponent
+    CodLocationConverterComponent,
+    CodNColDefinitionComponent,
+    CodRColDefinitionComponent,
+    CodSColDefinitionComponent,
+    CodSheetLabelsPartComponent,
+    CodSheetLabelsPartFeatureComponent,
   ],
 })
 export class CadmusPartCodicologySheetLabelsModule {}
