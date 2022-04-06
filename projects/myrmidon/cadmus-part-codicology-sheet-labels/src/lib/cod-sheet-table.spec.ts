@@ -1,6 +1,6 @@
 import { CodRowType, CodSheetTable } from './cod-sheet-table';
 
-fdescribe('CodSheetTable', () => {
+describe('CodSheetTable', () => {
   it('addColumn should add a new column', () => {
     const table = new CodSheetTable();
     table.addColumn('q');
