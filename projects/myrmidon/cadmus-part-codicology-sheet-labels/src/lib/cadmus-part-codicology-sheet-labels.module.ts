@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -8,17 +9,22 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { NgToolsModule } from '@myrmidon/ng-tools';
 import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
+import { AuthJwtLoginModule } from '@myrmidon/auth-jwt-login';
+import { CadmusCodicologyUiModule } from '@myrmidon/cadmus-codicology-ui';
 import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
 import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
 import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
 import { CadmusUiFlagsPickerModule } from '@myrmidon/cadmus-ui-flags-picker';
+import { CadmusRefsLookupModule } from '@myrmidon/cadmus-refs-lookup';
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
@@ -53,6 +59,7 @@ import { CodLocationConverterComponent } from './cod-location-converter/cod-loca
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    ClipboardModule,
     // material
     FlexLayoutModule,
     MatButtonModule,
@@ -61,12 +68,15 @@ import { CodLocationConverterComponent } from './cod-location-converter/cod-loca
     MatExpansionModule,
     MatIconModule,
     MatInputModule,
+    MatProgressBarModule,
     MatSelectModule,
+    MatSlideToggleModule,
     MatTabsModule,
     MatTooltipModule,
     // Cadmus
     NgToolsModule,
     NgMatToolsModule,
+    AuthJwtLoginModule,
     CadmusStateModule,
     CadmusUiModule,
     CadmusUiPgModule,
@@ -74,6 +84,8 @@ import { CodLocationConverterComponent } from './cod-location-converter/cod-loca
     CadmusRefsAssertedChronotopeModule,
     CadmusRefsHistoricalDateModule,
     CadmusUiFlagsPickerModule,
+    CadmusCodicologyUiModule,
+    CadmusRefsLookupModule
   ],
   exports: [
     CodCColDefinitionComponent,

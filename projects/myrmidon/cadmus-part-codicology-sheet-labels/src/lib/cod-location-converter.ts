@@ -1,3 +1,4 @@
+import { BehaviorSubject, Observable } from 'rxjs';
 import { CodRow } from './cod-sheet-labels-part';
 
 interface LabelEntry {
@@ -7,17 +8,30 @@ interface LabelEntry {
 
 export class CodLocationConverter {
   private _entries: { [key: string]: LabelEntry[] };
+  private _systems$: BehaviorSubject<string[]>;
+
+  /**
+   * The available numeric systems.
+   */
+  public get systems$(): Observable<string[]> {
+    return this._systems$.asObservable();
+  }
 
   constructor() {
     this._entries = {};
+    this._systems$ = new BehaviorSubject<string[]>([]);
   }
 
   public setRows(rows: CodRow[]): void {
     this._entries = {};
+
     for (let y = 0; y < rows.length; y++) {
       const row = rows[y];
       for (let x = 0; x < row.columns.length; x++) {
         const col = row.columns[x];
+        if (!col.id.startsWith('n.')) {
+          continue;
+        }
         if (!this._entries[col.id]) {
           this._entries[col.id] = [];
         }
@@ -29,6 +43,9 @@ export class CodLocationConverter {
         }
       }
     }
+    const systems: string[] = Object.getOwnPropertyNames(this._entries);
+    systems.sort();
+    this._systems$.next(systems);
   }
 
   public getLocation(system: string, label: string): string | null {

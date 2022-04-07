@@ -37,6 +37,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 // akita
 import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
@@ -71,6 +72,7 @@ import { CadmusGraphUiModule } from '@myrmidon/cadmus-graph-ui';
 import { CadmusItemEditorModule } from '@myrmidon/cadmus-item-editor';
 import { CadmusItemListModule } from '@myrmidon/cadmus-item-list';
 import { CadmusItemSearchModule } from '@myrmidon/cadmus-item-search';
+import { CadmusPartCodicologySheetLabelsModule } from '@myrmidon/cadmus-part-codicology-sheet-labels';
 import { CadmusThesaurusEditorModule } from '@myrmidon/cadmus-thesaurus-editor';
 import { CadmusThesaurusListModule } from '@myrmidon/cadmus-thesaurus-list';
 import { CadmusThesaurusUiModule } from '@myrmidon/cadmus-thesaurus-ui';
@@ -108,6 +110,7 @@ import { languageFactory } from '@myrmidon/ng-tools';
     // routing
     AppRoutingModule,
     // material
+    ClipboardModule,
     DragDropModule,
     MatAutocompleteModule,
     MatBadgeModule,
@@ -167,6 +170,8 @@ import { languageFactory } from '@myrmidon/ng-tools';
     CadmusThesaurusEditorModule,
     CadmusThesaurusListModule,
     CadmusThesaurusUiModule,
+    // for the slider
+    CadmusPartCodicologySheetLabelsModule,
   ],
   providers: [
     // environment service

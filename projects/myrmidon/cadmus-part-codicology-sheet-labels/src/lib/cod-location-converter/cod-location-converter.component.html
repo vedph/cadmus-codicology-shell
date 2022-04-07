@@ -1,1 +1,54 @@
-<p>cod-location-converter works!</p>
+<form [formGroup]="form" *ngIf="user$ | async">
+  <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+  <div class="form-row">
+    <!-- item -->
+    <cadmus-ref-lookup
+      [service]="lookupService"
+      [item]="item"
+      [baseFilter]="baseFilter"
+      label="item"
+      (itemChange)="onItemChange($event)"
+    ></cadmus-ref-lookup>
+
+    <!-- autoCopy -->
+    <mat-slide-toggle
+      [formControl]="autoCopy"
+      matTooltip="Toggle auto-copy"
+      style="margin-top: 22px"
+      >copy</mat-slide-toggle
+    >
+  </div>
+
+  <!-- systems -->
+  <div *ngIf="systems$ | async as systems" style="margin-top: 4px">
+    <div>
+      <mat-form-field *ngIf="systems.length">
+        <mat-select [formControl]="system" placeholder="system">
+          <mat-option *ngFor="let s of systems" [value]="s">
+            {{ s }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="
+            $any(system).errors?.required && (system.dirty || system.touched)
+          "
+          >system required</mat-error
+        >
+      </mat-form-field>
+    </div>
+
+    <div class="form-row" *ngIf="system.value">
+      <!-- label -->
+      <mat-form-field style="width: 4em">
+        <input matInput [formControl]="label" placeholder="label" />
+      </mat-form-field>
+
+      <mat-icon>sync_alt</mat-icon>
+
+      <!-- location -->
+      <mat-form-field style="width: 4em">
+        <input matInput [formControl]="location" placeholder="location" />
+      </mat-form-field>
+    </div>
+  </div>
+</form>

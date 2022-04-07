@@ -14,6 +14,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MarkdownModule } from 'ngx-markdown';
 
 import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
+import { CadmusApiModule } from '@myrmidon/cadmus-api';
+import { CadmusRefsLookupModule } from '@myrmidon/cadmus-refs-lookup';
 
 import { CodImagesComponent } from './components/cod-images/cod-images.component';
 import { NoteSetComponent } from './components/note-set/note-set.component';
@@ -42,6 +44,8 @@ import { CodLayoutFigureComponent } from './components/cod-layout-figure/cod-lay
     MarkdownModule,
     // general
     NgMatToolsModule,
+    CadmusApiModule,
+    CadmusRefsLookupModule,
   ],
   exports: [CodImagesComponent, NoteSetComponent, CodLayoutFigureComponent],
 })
