@@ -40,6 +40,12 @@
     <span class="tb-fill-remaining-space"></span>
 
     <div *ngIf="user" fxLayout="row" fxLayoutAlign="start center">
+      <!-- sidenav -->
+      <mat-slide-toggle
+        [formControl]="snavToggle"
+        matTooltip="Toggle tools"
+      ></mat-slide-toggle>
+
       <!-- indicators -->
       <img [src]="getGravatarUrl(user.email, 32)" [alt]="user.userName" />
       <mat-icon
@@ -90,14 +96,29 @@
 </header>
 
 <main>
-  <router-outlet></router-outlet>
+  <mat-sidenav-container>
+    <mat-sidenav
+      mode="side"
+      [opened]="snavToggle?.value"
+      style="min-height: 400px; width: 250px"
+    >
+      <fieldset>
+        <legend>cod location</legend>
+        <cadmus-cod-location-converter></cadmus-cod-location-converter>
+      </fieldset>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
 </main>
 
 <footer>
   <div layout="row" layout-align="center center">
     <p>
       Cadmus codicology shell by
-      <a href="https://www.fusisoft.net" target="_blank">Daniele Fusi</a> - version: {{version}}
+      <a href="https://www.fusisoft.net" target="_blank">Daniele Fusi</a> -
+      version: {{ version }}
     </p>
   </div>
 </footer>

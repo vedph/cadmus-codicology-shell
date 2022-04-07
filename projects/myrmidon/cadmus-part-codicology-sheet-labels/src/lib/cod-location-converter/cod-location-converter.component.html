@@ -1,20 +1,16 @@
-<form [formGroup]="form" *ngIf="user$ | async">
+<form [formGroup]="form" *ngIf="user$ | async" style="min-height: ">
   <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
-  <div class="form-row">
-    <!-- item -->
-    <cadmus-ref-lookup
-      [service]="lookupService"
-      [item]="item"
-      [baseFilter]="baseFilter"
-      label="item"
-      (itemChange)="onItemChange($event)"
-    ></cadmus-ref-lookup>
-
-    <!-- autoCopy -->
-    <mat-slide-toggle
-      [formControl]="autoCopy"
-      matTooltip="Toggle auto-copy"
-      style="margin-top: 22px"
+  <!-- item -->
+  <cadmus-ref-lookup
+    [service]="lookupService"
+    [item]="item"
+    [baseFilter]="baseFilter"
+    label="item"
+    (itemChange)="onItemChange($event)"
+  ></cadmus-ref-lookup>
+  <!-- autoCopy -->
+  <div>
+    <mat-slide-toggle [formControl]="autoCopy" matTooltip="Toggle auto-copy"
       >copy</mat-slide-toggle
     >
   </div>

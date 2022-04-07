@@ -17,3 +17,8 @@ mat-icon.small-icon {
 .tb-fill-remaining-space {
   flex: 1 1 auto;
 }
+fieldset {
+  border: 1px solid silver;
+  border-radius: 6px;
+  padding: 6px 12px;
+}
