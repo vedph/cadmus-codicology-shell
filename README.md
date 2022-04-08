@@ -20,6 +20,7 @@ Quick Docker image build:
 
 ## History
 
+- 2022-04-08: various fixes to decorations and labels, additions to ui.
 - 2022-04-05: various fixes.
 
 ### 1.0.4
