@@ -352,7 +352,9 @@
                   </button>
                 </td>
                 <td>{{ endleaf.location }}</td>
-                <td>{{ endleaf.material }}</td>
+                <td>
+                  {{ endleaf.material | flatLookup: matEntries:"id":"value" }}
+                </td>
               </tr>
             </tbody>
           </table>

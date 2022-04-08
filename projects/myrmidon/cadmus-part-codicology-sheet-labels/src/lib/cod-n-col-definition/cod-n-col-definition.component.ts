@@ -136,6 +136,7 @@ export class CodNColDefinitionComponent implements OnInit {
     this.position.setValue(model.position);
     this.initialColors = model.colors || [];
     this.hasDate.setValue(model.date ? true : false);
+    this.date.setValue(model.date);
     this.initialDate = model.date;
     this.note.setValue(model.note);
 

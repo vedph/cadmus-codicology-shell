@@ -125,9 +125,11 @@
     ></cadmus-ui-flags-picker>
   </fieldset>
 
-  <div>
+  <div class="form-row">
+    <mat-checkbox [formControl]="hasDate">date</mat-checkbox>
     <!-- date -->
     <cadmus-refs-historical-date
+      *ngIf="hasDate?.value"
       [date]="initialDate"
       (dateChange)="onDateChange($event)"
     ></cadmus-refs-historical-date>
