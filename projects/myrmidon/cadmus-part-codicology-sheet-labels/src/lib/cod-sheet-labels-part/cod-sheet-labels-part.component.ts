@@ -165,9 +165,13 @@ export class CodSheetLabelsPartComponent
 
   public ngOnInit(): void {
     this.rows$.subscribe((rows) => {
-      this.endleafRowIds = rows
-        .filter((r) => r.id.startsWith('('))
-        .map((r) => r.id);
+      this.endleafRowIds = [
+        ...new Set(
+          rows
+            .filter((r) => r.id.startsWith('('))
+            .map((r) => r.id.replace(/[rv]\)/, ')'))
+        ),
+      ];
     });
     this.addType.valueChanges.subscribe((v) => {
       this.adderColumn = v && (v as string).startsWith('col');

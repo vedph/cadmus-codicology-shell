@@ -1,4 +1,4 @@
-<form [formGroup]="form" *ngIf="user$ | async" style="min-height: ">
+<form [formGroup]="form" *ngIf="user$ | async">
   <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
   <!-- item -->
   <cadmus-ref-lookup
