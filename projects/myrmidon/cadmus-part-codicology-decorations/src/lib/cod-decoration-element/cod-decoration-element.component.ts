@@ -34,6 +34,8 @@ export class CodDecorationElementComponent implements OnInit {
   private _elemPosEntries: ThesaurusEntry[] | undefined;
   private _elemToolEntries: ThesaurusEntry[] | undefined;
   private _elemTypolEntries: ThesaurusEntry[] | undefined;
+  private _updatingForm?: boolean;
+  private _adjustingUI?: boolean;
 
   @ViewChild('dsceditor', { static: false }) dscEditor: any;
   public editorOptions = {
@@ -344,22 +346,28 @@ export class CodDecorationElementComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this._element) {
-      this.updateForm(this._element);
-    }
+    // if (this._element) {
+    //   this.updateForm(this._element);
+    // }
     this.onTabIndexChanged(0);
 
-    // filter thesauri according to element's type
+    // this.adjustUI();
+
     this.type.valueChanges
       .pipe(distinctUntilChanged(), debounceTime(300))
       .subscribe(() => {
-        this.adjustUI();
+        if (!this._updatingForm) {
+          this.adjustUI();
+        }
       });
-
-    this.adjustUI();
   }
 
   private adjustUI(): void {
+    if (this._adjustingUI) {
+      return;
+    }
+    this._adjustingUI = true;
+    console.log('adjustUI enter');
     // reset type-dependent values
     this.flags.reset();
     this.typologies.reset();
@@ -422,6 +430,8 @@ export class CodDecorationElementComponent implements OnInit {
 
     // visibility
     this.updateVisibility();
+    this._adjustingUI = false;
+    console.log('adjustUI exit');
   }
 
   public onTabIndexChanged(index: number): void {
@@ -436,36 +446,42 @@ export class CodDecorationElementComponent implements OnInit {
   }
 
   private updateForm(element: CodDecorationElement | undefined): void {
+    this._updatingForm = true;
+    console.log('updateForm enter');
     if (!element) {
       this.form.reset();
+      this._updatingForm = false;
+      console.log('updateForm exit');
       return;
     }
     // general
     this.type.setValue(element.type);
+    this.adjustUI();
 
     // let the UI adjust itself before setting type-dependent controls
-    setTimeout(() => {
-      this.key.setValue(element.key);
-      this.parentKey.setValue(element.parentKey);
-      this.initialRanges = element.ranges;
-      this.initialFlags = element.flags;
-      // typologies
-      this.subject.setValue(element.subject);
-      this.initialColors = element.colors || [];
-      this.initialTypologies = element.typologies || [];
-      this.initialGildings = element.gildings || [];
-      this.initialTechniques = element.techniques || [];
-      this.initialTools = element.tools || [];
-      this.initialPositions = element.positions || [];
-      this.lineHeight.setValue(element.lineHeight);
-      this.textRelation.setValue(element.textRelation);
-      // description
-      this.description.setValue(element.description);
-      this.initialImages = element.images || [];
-      this.note.setValue(element.note);
+    this.key.setValue(element.key);
+    this.parentKey.setValue(element.parentKey);
+    this.initialRanges = element.ranges;
+    this.initialFlags = element.flags;
+    this.instanceCount.setValue(element.instanceCount);
+    // typologies
+    this.subject.setValue(element.subject);
+    this.initialColors = element.colors || [];
+    this.initialTypologies = element.typologies || [];
+    this.initialGildings = element.gildings || [];
+    this.initialTechniques = element.techniques || [];
+    this.initialTools = element.tools || [];
+    this.initialPositions = element.positions || [];
+    this.lineHeight.setValue(element.lineHeight);
+    this.textRelation.setValue(element.textRelation);
+    // description
+    this.description.setValue(element.description);
+    this.initialImages = element.images || [];
+    this.note.setValue(element.note);
 
-      this.form.markAsPristine();
-    }, 800);
+    this.form.markAsPristine();
+    this._updatingForm = false;
+    console.log('updateForm exit');
   }
 
   private getElement(): CodDecorationElement {
@@ -551,11 +567,10 @@ export class CodDecorationElementComponent implements OnInit {
     this.positions.markAsDirty();
   }
 
-  // TODO: replace with generic pipe
-  public typeIdToString(id: string): string {
-    const entry = this.decElemTypeEntries?.find((e) => e.id === id);
-    return entry ? entry.value : id;
-  }
+  // public typeIdToString(id: string): string {
+  //   const entry = this.decElemTypeEntries?.find((e) => e.id === id);
+  //   return entry ? entry.value : id;
+  // }
 
   public cancel(): void {
     this.editorClose.emit();
