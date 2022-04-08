@@ -153,8 +153,6 @@ export class CodSheetLabelsPartComponent
     this.endleaves = formBuilder.control([]);
 
     this.form = formBuilder.group({
-      op: this.opForm,
-      add: this.addForm,
       nDefs: this.nDefs,
       cDefs: this.cDefs,
       sDefs: this.sDefs,
