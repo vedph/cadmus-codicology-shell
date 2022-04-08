@@ -318,6 +318,14 @@
                   <button
                     type="button"
                     mat-icon-button
+                    matTooltip="Clone this endleaf"
+                    (click)="cloneEndleaf(i)"
+                  >
+                    <mat-icon>content_copy</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
                     matTooltip="Move this endleaf up"
                     [disabled]="first"
                     (click)="moveEndleafUp(i)"

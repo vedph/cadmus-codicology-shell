@@ -562,6 +562,14 @@ export class CodSheetLabelsPartComponent
     }
   }
 
+  public cloneEndleaf(index: number): void {
+    const endleaves: CodEndleaf[] = [...this.endleaves.value];
+    endleaves.splice(index, 0, deepCopy(endleaves[index]));
+    this.endleaves.setValue(endleaves);
+    this.endleaves.updateValueAndValidity();
+    this.endleaves.markAsDirty();
+  }
+
   public onEndleafSave(item: CodEndleaf): void {
     this.endleaves.setValue(
       this.endleaves.value.map((x: CodEndleaf, i: number) =>
