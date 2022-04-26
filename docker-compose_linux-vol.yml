@@ -1,3 +1,5 @@
+version: "3.7"
+
 # Modified compose version using volumes in a Linux-based host.
 # MongoDB: localhost:27017, host folder: /var/db/mongo
 # MySql: localhost:3306, host folder: /var/db/mysql
