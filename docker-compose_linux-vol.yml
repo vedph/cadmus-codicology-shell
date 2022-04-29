@@ -31,6 +31,9 @@ services:
     container_name: cadmus-index
     # https://github.com/docker-library/mysql/issues/454
     command: --default-authentication-plugin=mysql_native_password
+     # https://stackoverflow.com/questions/55559386/how-to-fix-mbind-operation-not-permitted-in-mysql-error-log
+    cap_add:
+      - SYS_NICE  # CAP_SYS_NICE
     environment:
       # the password that will be set for the MySQL root superuser account
       # Note: use dictionary like here rather than array (- name = value)
@@ -46,7 +49,7 @@ services:
       - cadmus-network
 
   cadmus-api:
-    image: vedph2020/cadmus-codicology-api:1.0.1
+    image: vedph2020/cadmus-codicology-api:1.1.0
     ports:
       # https://stackoverflow.com/questions/48669548/why-does-aspnet-core-start-on-port-80-from-within-docker
       - 5152:80
@@ -74,7 +77,7 @@ services:
       - cadmus-network
 
   cadmus-web:
-    image: vedph2020/cadmus-codicology-shell:1.0.5
+    image: vedph2020/cadmus-codicology-shell:1.0.6
     ports:
       - 4200:80
     depends_on:
