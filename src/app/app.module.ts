@@ -204,11 +204,11 @@ import { languageFactory } from '@myrmidon/ng-tools';
       multi: true,
     },
     // LCID
-    {
-      provide: LOCALE_ID,
-      deps: [WindowRefService],
-      useFactory: languageFactory,
-    },
+    // {
+    //   provide: LOCALE_ID,
+    //   deps: [WindowRefService],
+    //   useFactory: languageFactory,
+    // },
   ],
   bootstrap: [AppComponent],
 })
