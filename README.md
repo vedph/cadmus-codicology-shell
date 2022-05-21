@@ -20,6 +20,8 @@ Quick Docker image build:
 
 ## History
 
+- 2022-05-21: fixed colors and gildings thesauri in decorations part.
+
 ### 1.0.7
 
 - 2022-05-05: updated packages and fixed locale issue.
