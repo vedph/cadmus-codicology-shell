@@ -52,9 +52,9 @@ export class CodEndleafComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public location: FormControl;
-  public material: FormControl;
-  public chronotope: FormControl;
+  public location: FormControl<string | null>;
+  public material: FormControl<string | null>;
+  public chronotope: FormControl<AssertedChronotope | null>;
   public form: FormGroup;
 
   public initialChronotope?: AssertedChronotope;
@@ -99,15 +99,15 @@ export class CodEndleafComponent implements OnInit {
   }
 
   public onChronotopeChange(chronotope: AssertedChronotope | undefined): void {
-    this.chronotope.setValue(chronotope);
+    this.chronotope.setValue(chronotope || null);
     this.chronotope.markAsDirty();
   }
 
   private getModel(): CodEndleaf {
     return {
-      location: this.location.value?.trim(),
-      material: this.material.value?.trim(),
-      chronotope: this.chronotope.value,
+      location: this.location.value?.trim() || '',
+      material: this.material.value?.trim() || '',
+      chronotope: this.chronotope.value || undefined,
     };
   }
 

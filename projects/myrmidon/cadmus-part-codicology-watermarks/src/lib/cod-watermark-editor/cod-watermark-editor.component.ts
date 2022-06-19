@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 
@@ -64,16 +64,16 @@ export class CodWatermarkEditorComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public name: FormControl;
-  public sampleRange: FormControl;
-  public ranges: FormControl;
-  public description: FormControl;
-  public ids: FormControl;
-  public hasSize: FormControl;
-  public size: FormControl;
-  public hasChronotope: FormControl;
-  public chronotope: FormControl;
-  public form: FormGroup;
+  public name: UntypedFormControl;
+  public sampleRange: UntypedFormControl;
+  public ranges: UntypedFormControl;
+  public description: UntypedFormControl;
+  public ids: UntypedFormControl;
+  public hasSize: UntypedFormControl;
+  public size: UntypedFormControl;
+  public hasChronotope: UntypedFormControl;
+  public chronotope: UntypedFormControl;
+  public form: UntypedFormGroup;
 
   public initialSampleRange?: CodLocationRange;
   public initialRanges?: CodLocationRange[];
@@ -81,7 +81,7 @@ export class CodWatermarkEditorComponent implements OnInit {
   public initialSize?: PhysicalSize;
   public initialChronotope?: AssertedChronotope;
 
-  constructor(formBuilder: FormBuilder) {
+  constructor(formBuilder: UntypedFormBuilder) {
     this.watermarkChange = new EventEmitter<CodWatermark>();
     this.editorClose = new EventEmitter<any>();
     // form

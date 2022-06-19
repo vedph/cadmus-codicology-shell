@@ -59,15 +59,15 @@ export class CodUnitEditorComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public eid: FormControl;
-  public tag: FormControl;
-  public noGregory: FormControl;
-  public material: FormControl;
-  public format: FormControl;
-  public state: FormControl;
-  public range: FormControl;
-  public chronotopes: FormControl;
-  public note: FormControl;
+  public eid: FormControl<string | null>;
+  public tag: FormControl<string | null>;
+  public noGregory: FormControl<boolean>;
+  public material: FormControl<string | null>;
+  public format: FormControl<string | null>;
+  public state: FormControl<string | null>;
+  public range: FormControl<CodLocationRange | null>;
+  public chronotopes: FormControl<AssertedChronotope[]>;
+  public note: FormControl<string | null>;
   public form: FormGroup;
 
   public initialRange?: CodLocationRange;
@@ -79,7 +79,7 @@ export class CodUnitEditorComponent implements OnInit {
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.tag = formBuilder.control(null, Validators.maxLength(50));
-    this.noGregory = formBuilder.control(false);
+    this.noGregory = formBuilder.control(false, { nonNullable: true });
     this.material = formBuilder.control(null, [
       Validators.required,
       Validators.maxLength(50),
@@ -93,10 +93,10 @@ export class CodUnitEditorComponent implements OnInit {
       Validators.maxLength(50),
     ]);
     this.range = formBuilder.control(null, Validators.required);
-    this.chronotopes = formBuilder.control(
-      [],
-      NgToolsValidators.strictMinLengthValidator(1)
-    );
+    this.chronotopes = formBuilder.control([], {
+      validators: NgToolsValidators.strictMinLengthValidator(1),
+      nonNullable: true,
+    });
     this.note = formBuilder.control(null, Validators.maxLength(1000));
     this.form = formBuilder.group({
       eid: this.eid,
@@ -123,21 +123,21 @@ export class CodUnitEditorComponent implements OnInit {
       return;
     }
 
-    this.eid.setValue(unit.eid);
-    this.tag.setValue(unit.tag);
-    this.noGregory.setValue(unit.noGregory? true : false);
+    this.eid.setValue(unit.eid || null);
+    this.tag.setValue(unit.tag || null);
+    this.noGregory.setValue(unit.noGregory ? true : false);
     this.material.setValue(unit.material);
     this.format.setValue(unit.format);
     this.state.setValue(unit.state);
     this.initialRange = unit.range;
     this.initialChronotopes = unit.chronotopes;
-    this.note.setValue(unit.note);
+    this.note.setValue(unit.note || null);
 
     this.form.markAsPristine();
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
-    this.range.setValue(ranges?.length ? ranges[0] : undefined);
+    this.range.setValue(ranges?.length ? ranges[0] : null);
     this.range.markAsDirty();
   }
 
@@ -151,10 +151,10 @@ export class CodUnitEditorComponent implements OnInit {
       eid: this.eid.value?.trim(),
       tag: this.tag.value?.trim(),
       noGregory: this.noGregory.value ? true : false,
-      material: this.material.value?.trim(),
-      format: this.format.value?.trim(),
-      state: this.state.value?.trim(),
-      range: this.range.value,
+      material: this.material.value?.trim() || '',
+      format: this.format.value?.trim() || '',
+      state: this.state.value?.trim() || '',
+      range: this.range.value!,
       chronotopes: this.chronotopes.value?.length
         ? this.chronotopes.value
         : undefined,

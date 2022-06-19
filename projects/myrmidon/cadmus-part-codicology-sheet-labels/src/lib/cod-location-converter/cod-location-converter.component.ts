@@ -38,10 +38,10 @@ export class CodLocationConverterComponent implements OnInit {
   public loading?: boolean;
   public baseFilter?: any;
 
-  public system: FormControl;
-  public autoCopy: FormControl;
-  public location: FormControl;
-  public label: FormControl;
+  public system: FormControl<string | null>;
+  public autoCopy: FormControl<boolean>;
+  public location: FormControl<string | null>;
+  public label: FormControl<string | null>;
   public form: FormGroup;
   public systems$: Observable<string[]>;
   public user$: Observable<User | null>;
@@ -82,7 +82,7 @@ export class CodLocationConverterComponent implements OnInit {
     this.user$ = authService.currentUser$;
     // form
     this.system = formBuilder.control(null, Validators.required);
-    this.autoCopy = formBuilder.control(false);
+    this.autoCopy = formBuilder.control(false, { nonNullable: true });
     this.location = formBuilder.control(null);
     this.label = formBuilder.control(null);
     this.form = formBuilder.group({
@@ -100,7 +100,7 @@ export class CodLocationConverterComponent implements OnInit {
       .subscribe((value) => {
         if (this.system.value && !this._labFrozen) {
           this._locFrozen = true;
-          const result = this._converter.getLocation(this.system.value, value);
+          const result = this._converter.getLocation(this.system.value, value!);
           console.log(result);
           if (this.autoCopy.value && result) {
             this._clipboard.copy(result);
@@ -119,7 +119,7 @@ export class CodLocationConverterComponent implements OnInit {
       .subscribe((value) => {
         if (this.system.value && !this._locFrozen) {
           this._labFrozen = true;
-          const result = this._converter.getLabel(this.system.value, value);
+          const result = this._converter.getLabel(this.system.value, value!);
           console.log(result);
           if (this.autoCopy.value && result) {
             this._clipboard.copy(result);

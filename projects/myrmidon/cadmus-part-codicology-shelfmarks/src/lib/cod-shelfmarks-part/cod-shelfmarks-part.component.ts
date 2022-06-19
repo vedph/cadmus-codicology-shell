@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormBuilder } from '@angular/forms';
+import { UntypedFormControl, UntypedFormBuilder } from '@angular/forms';
 import { take } from 'rxjs/operators';
 
 import { deepCopy, NgToolsValidators } from '@myrmidon/ng-tools';
@@ -37,11 +37,11 @@ export class CodShelfmarksPartComponent
   // cod-shelfmark-libraries
   public libEntries: ThesaurusEntry[] | undefined;
 
-  public shelfmarks: FormControl;
+  public shelfmarks: UntypedFormControl;
 
   constructor(
     authService: AuthJwtService,
-    formBuilder: FormBuilder,
+    formBuilder: UntypedFormBuilder,
     private _dialogService: DialogService
   ) {
     super(authService);

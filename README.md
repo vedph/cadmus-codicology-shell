@@ -11,7 +11,7 @@ Quick Docker image build:
 
 1. `npm run build-lib`;
 2. remember to update version in `env.js`, then `ng build`;
-3. `docker build . -t vedph2020/cadmus-codicology-shell:1.0.7 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
+3. `docker build . -t vedph2020/cadmus-codicology-shell:2.0.0 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
 
 ## Shell Architecture
 
@@ -20,6 +20,9 @@ Quick Docker image build:
 
 ## History
 
+### 2.0.0
+
+- 2022-06-19: upgraded to Angular 14 refactoring all the forms into typed.
 - 2022-05-21: fixed colors and gildings thesauri in decorations part.
 
 ### 1.0.7

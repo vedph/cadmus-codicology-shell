@@ -40,13 +40,13 @@ export class CodHandDescriptionComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public key: FormControl;
-  public dsc: FormControl;
-  public initials: FormControl;
-  public corrections: FormControl;
-  public punctuation: FormControl;
-  public abbreviations: FormControl;
-  public signs: FormControl;
+  public key: FormControl<string | null>;
+  public dsc: FormControl<string | null>;
+  public initials: FormControl<string | null>;
+  public corrections: FormControl<string | null>;
+  public punctuation: FormControl<string | null>;
+  public abbreviations: FormControl<string | null>;
+  public signs: FormControl<CodHandSign[]>;
   public form: FormGroup;
 
   public initialNoteSet?: NoteSet;
@@ -87,7 +87,7 @@ export class CodHandDescriptionComponent implements OnInit {
     this.corrections = formBuilder.control(null);
     this.punctuation = formBuilder.control(null);
     this.abbreviations = formBuilder.control(null);
-    this.signs = formBuilder.control([]);
+    this.signs = formBuilder.control([], { nonNullable: true });
     this.form = formBuilder.group({
       key: this.key,
       description: this.dsc,
@@ -114,14 +114,14 @@ export class CodHandDescriptionComponent implements OnInit {
       return;
     }
 
-    this.key.setValue(model.key);
-    this.dsc.setValue(model.description);
+    this.key.setValue(model.key || null);
+    this.dsc.setValue(model.description || null);
 
     const map = new Map<string, string | null>();
-    this.initials.setValue(model.initials);
-    this.corrections.setValue(model.corrections);
-    this.punctuation.setValue(model.punctuation);
-    this.abbreviations.setValue(model.abbreviations);
+    this.initials.setValue(model.initials || null);
+    this.corrections.setValue(model.corrections || null);
+    this.punctuation.setValue(model.punctuation || null);
+    this.abbreviations.setValue(model.abbreviations || null);
     if (model.initials) {
       map.set('i', model.initials);
     }

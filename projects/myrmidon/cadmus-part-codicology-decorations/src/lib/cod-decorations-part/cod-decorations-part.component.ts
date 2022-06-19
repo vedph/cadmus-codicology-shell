@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormBuilder, Validators } from '@angular/forms';
+import { FormControl, FormBuilder } from '@angular/forms';
 import { take } from 'rxjs/operators';
 
 import { deepCopy, NgToolsValidators } from '@myrmidon/ng-tools';
@@ -79,7 +79,7 @@ export class CodDecorationsPartComponent
   // external-id-scopes
   public idScopeEntries: ThesaurusEntry[] | undefined;
 
-  public decorations: FormControl;
+  public decorations: FormControl<CodDecoration[]>;
 
   constructor(
     authService: AuthJwtService,
@@ -90,10 +90,10 @@ export class CodDecorationsPartComponent
     this._editedIndex = -1;
     this.tabIndex = 0;
     // form
-    this.decorations = formBuilder.control(
-      [],
-      NgToolsValidators.strictMinLengthValidator(1)
-    );
+    this.decorations = formBuilder.control([], {
+      validators: NgToolsValidators.strictMinLengthValidator(1),
+      nonNullable: true,
+    });
     this.form = formBuilder.group({
       decorations: this.decorations,
     });

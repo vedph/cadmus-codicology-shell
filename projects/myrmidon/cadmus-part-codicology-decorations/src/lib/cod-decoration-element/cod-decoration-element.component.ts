@@ -64,26 +64,26 @@ export class CodDecorationElementComponent implements OnInit {
   public editorClose: EventEmitter<any>;
 
   // general
-  public key: FormControl;
-  public parentKey: FormControl;
-  public type: FormControl;
-  public flags: FormControl;
-  public ranges: FormControl;
-  public instanceCount: FormControl;
+  public key: FormControl<string | null>;
+  public parentKey: FormControl<string | null>;
+  public type: FormControl<string | null>;
+  public flags: FormControl<string[]>;
+  public ranges: FormControl<CodLocationRange[]>;
+  public instanceCount: FormControl<number>;
   // typologies
-  public typologies: FormControl;
-  public subject: FormControl;
-  public colors: FormControl;
-  public gildings: FormControl;
-  public techniques: FormControl;
-  public tools: FormControl;
-  public positions: FormControl;
-  public lineHeight: FormControl;
-  public textRelation: FormControl;
+  public typologies: FormControl<string[]>;
+  public subject: FormControl<string | null>;
+  public colors: FormControl<string[]>;
+  public gildings: FormControl<string[]>;
+  public techniques: FormControl<string[]>;
+  public tools: FormControl<string[]>;
+  public positions: FormControl<string[]>;
+  public lineHeight: FormControl<number>;
+  public textRelation: FormControl<string | null>;
   // description
-  public description: FormControl;
-  public images: FormControl;
-  public note: FormControl;
+  public description: FormControl<string | null>;
+  public images: FormControl<CodImage[]>;
+  public note: FormControl<string | null>;
   public form: FormGroup;
 
   public initialRanges: CodLocationRange[];
@@ -254,20 +254,23 @@ export class CodDecorationElementComponent implements OnInit {
       Validators.required,
       Validators.maxLength(50),
     ]);
-    this.flags = formBuilder.control([]);
-    this.ranges = formBuilder.control([]);
-    this.instanceCount = formBuilder.control(0);
-    this.typologies = formBuilder.control([]);
+    this.flags = formBuilder.control([], { nonNullable: true });
+    this.ranges = formBuilder.control([], { nonNullable: true });
+    this.instanceCount = formBuilder.control(0, { nonNullable: true });
+    this.typologies = formBuilder.control([], { nonNullable: true });
     this.subject = formBuilder.control(null, Validators.maxLength(100));
-    this.colors = formBuilder.control([]);
-    this.gildings = formBuilder.control([]);
-    this.techniques = formBuilder.control([]);
-    this.tools = formBuilder.control([]);
-    this.positions = formBuilder.control([]);
-    this.lineHeight = formBuilder.control(0, Validators.min(0));
+    this.colors = formBuilder.control([], { nonNullable: true });
+    this.gildings = formBuilder.control([], { nonNullable: true });
+    this.techniques = formBuilder.control([], { nonNullable: true });
+    this.tools = formBuilder.control([], { nonNullable: true });
+    this.positions = formBuilder.control([], { nonNullable: true });
+    this.lineHeight = formBuilder.control(0, {
+      validators: Validators.min(0),
+      nonNullable: true,
+    });
     this.textRelation = formBuilder.control(null, Validators.maxLength(100));
     this.description = formBuilder.control(null, Validators.maxLength(1000));
-    this.images = formBuilder.control([]);
+    this.images = formBuilder.control([], { nonNullable: true });
     this.note = formBuilder.control(null, Validators.maxLength(500));
     this.form = formBuilder.group({
       key: this.key,
@@ -308,11 +311,11 @@ export class CodDecorationElementComponent implements OnInit {
   }
 
   private getFilteredEntries(
-    entries: ThesaurusEntry[] | undefined,
-    prefix: string
+    entries: ThesaurusEntry[] | undefined | null,
+    prefix: string | null
   ): ThesaurusEntry[] | undefined {
     if (!prefix || !entries?.some((e) => e.id.indexOf('.') > -1)) {
-      return entries;
+      return entries || undefined;
     }
     const p = prefix + '.';
     return entries.filter((e) => e.id.startsWith(p));
@@ -459,25 +462,25 @@ export class CodDecorationElementComponent implements OnInit {
     this.adjustUI();
 
     // let the UI adjust itself before setting type-dependent controls
-    this.key.setValue(element.key);
-    this.parentKey.setValue(element.parentKey);
+    this.key.setValue(element.key || null);
+    this.parentKey.setValue(element.parentKey || null);
     this.initialRanges = element.ranges;
     this.initialFlags = element.flags;
-    this.instanceCount.setValue(element.instanceCount);
+    this.instanceCount.setValue(element.instanceCount || 0);
     // typologies
-    this.subject.setValue(element.subject);
+    this.subject.setValue(element.subject || null);
     this.initialColors = element.colors || [];
     this.initialTypologies = element.typologies || [];
     this.initialGildings = element.gildings || [];
     this.initialTechniques = element.techniques || [];
     this.initialTools = element.tools || [];
     this.initialPositions = element.positions || [];
-    this.lineHeight.setValue(element.lineHeight);
-    this.textRelation.setValue(element.textRelation);
+    this.lineHeight.setValue(element.lineHeight || 0);
+    this.textRelation.setValue(element.textRelation || null);
     // description
-    this.description.setValue(element.description);
+    this.description.setValue(element.description || null);
     this.initialImages = element.images || [];
-    this.note.setValue(element.note);
+    this.note.setValue(element.note || null);
 
     this.form.markAsPristine();
     this._updatingForm = false;
@@ -488,8 +491,8 @@ export class CodDecorationElementComponent implements OnInit {
     return {
       key: this.key.value?.trim(),
       parentKey: this.parentKey.value?.trim(),
-      type: this.type.value?.trim(),
-      flags: this.flags.value?.length ? this.flags.value : undefined,
+      type: this.type.value?.trim() || '',
+      flags: this.flags.value || [],
       ranges: this.ranges.value || [],
       instanceCount: this.instanceCount.value || 0,
       typologies: this.typologies.value?.length
@@ -514,13 +517,13 @@ export class CodDecorationElementComponent implements OnInit {
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
-    this.ranges.setValue(ranges);
+    this.ranges.setValue(ranges || []);
     this.ranges.updateValueAndValidity();
     this.ranges.markAsDirty();
   }
 
   public onImagesChange(images: CodImage[] | undefined): void {
-    this.images.setValue(images);
+    this.images.setValue(images || []);
     this.images.updateValueAndValidity();
     this.images.markAsDirty();
   }

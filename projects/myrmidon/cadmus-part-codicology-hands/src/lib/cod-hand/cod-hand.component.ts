@@ -77,12 +77,12 @@ export class CodHandComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public eid: FormControl;
-  public name: FormControl;
-  public descriptions: FormControl;
-  public instances: FormControl;
-  public subscriptions: FormControl;
-  public references: FormControl;
+  public eid: FormControl<string | null>;
+  public name: FormControl<string | null>;
+  public descriptions: FormControl<CodHandDescription[]>;
+  public instances: FormControl<CodHandInstance[]>;
+  public subscriptions: FormControl<CodHandSubscription[]>;
+  public references: FormControl<DocReference[]>;
   public form: FormGroup;
 
   public editedDscIndex: number;
@@ -108,13 +108,13 @@ export class CodHandComponent implements OnInit {
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.name = formBuilder.control(null, Validators.maxLength(50));
-    this.descriptions = formBuilder.control([]);
-    this.instances = formBuilder.control(
-      [],
-      NgToolsValidators.strictMinLengthValidator(1)
-    );
-    this.subscriptions = formBuilder.control([]);
-    this.references = formBuilder.control([]);
+    this.descriptions = formBuilder.control([], { nonNullable: true });
+    this.instances = formBuilder.control([], {
+      validators: NgToolsValidators.strictMinLengthValidator(1),
+      nonNullable: true,
+    });
+    this.subscriptions = formBuilder.control([], { nonNullable: true });
+    this.references = formBuilder.control([], { nonNullable: true });
     this.form = formBuilder.group({
       eid: this.eid,
       name: this.name,
@@ -153,8 +153,8 @@ export class CodHandComponent implements OnInit {
       return;
     }
 
-    this.eid.setValue(hand.eid);
-    this.name.setValue(hand.name);
+    this.eid.setValue(hand.eid || null);
+    this.name.setValue(hand.name || null);
     this.descriptions.setValue(hand.descriptions || []);
     this.instances.setValue(hand.instances || []);
     this.subscriptions.setValue(hand.subscriptions || []);
@@ -167,9 +167,7 @@ export class CodHandComponent implements OnInit {
     return {
       eid: this.eid.value?.trim(),
       name: this.name.value?.trim(),
-      descriptions: this.descriptions.value?.length
-        ? this.descriptions.value
-        : undefined,
+      descriptions: this.descriptions.value,
       instances: this.instances.value || [],
       subscriptions: this.subscriptions.value?.length
         ? this.subscriptions.value

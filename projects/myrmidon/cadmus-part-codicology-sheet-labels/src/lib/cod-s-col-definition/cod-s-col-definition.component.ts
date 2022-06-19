@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 
@@ -41,13 +41,13 @@ export class CodSColDefinitionComponent implements OnInit {
   public editorClose: EventEmitter<any>;
 
   public id: string;
-  public rank: FormControl;
-  public system: FormControl;
-  public position: FormControl;
-  public note: FormControl;
-  public form: FormGroup;
+  public rank: UntypedFormControl;
+  public system: UntypedFormControl;
+  public position: UntypedFormControl;
+  public note: UntypedFormControl;
+  public form: UntypedFormGroup;
 
-  constructor(formBuilder: FormBuilder) {
+  constructor(formBuilder: UntypedFormBuilder) {
     this.definitionChange = new EventEmitter<CodSColDefinition>();
     this.editorClose = new EventEmitter<any>();
     // form

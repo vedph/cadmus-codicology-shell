@@ -217,11 +217,7 @@
           <td>{{ entry.type | flatLookup: annTypeEntries:"id":"value" }}</td>
           <td>{{ entry.range | codLocationRange }}</td>
           <td>
-            {{
-              entry.text?.length > 40
-                ? entry.text.substr(0, 40) + "..."
-                : entry.text
-            }}
+            {{ entry.text | ellipsis }}
           </td>
         </tr>
       </tbody>

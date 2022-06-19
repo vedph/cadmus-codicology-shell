@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-material-dsc",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "Cadmus codicology - material description.",
   "keywords": [
     "Cadmus"
@@ -14,8 +14,8 @@
     "name": "Daniele Fusi"
   },
   "peerDependencies": {
-    "@angular/common": "^13.1.0",
-    "@angular/core": "^13.1.0"
+    "@angular/common": "^14.0.0",
+    "@angular/core": "^14.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"

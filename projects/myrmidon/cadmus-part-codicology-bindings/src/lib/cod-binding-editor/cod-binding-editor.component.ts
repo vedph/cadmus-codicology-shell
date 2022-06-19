@@ -63,13 +63,13 @@ export class CodBindingEditorComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public tag: FormControl;
-  public coverMaterial: FormControl;
-  public boardMaterial: FormControl;
-  public chronotope: FormControl;
-  public size: FormControl;
-  public hasSize: FormControl;
-  public description: FormControl;
+  public tag: FormControl<string | null>;
+  public coverMaterial: FormControl<string | null>;
+  public boardMaterial: FormControl<string | null>;
+  public chronotope: FormControl<AssertedChronotope | null>;
+  public size: FormControl<PhysicalSize | null>;
+  public hasSize: FormControl<boolean>;
+  public description: FormControl<string | null>;
   public form: FormGroup;
 
   public initialSize?: PhysicalSize;
@@ -90,7 +90,7 @@ export class CodBindingEditorComponent implements OnInit {
     ]);
     this.chronotope = formBuilder.control(null, Validators.required);
     this.size = formBuilder.control(null);
-    this.hasSize = formBuilder.control(false);
+    this.hasSize = formBuilder.control(false, { nonNullable: true });
     this.description = formBuilder.control(null, Validators.maxLength(5000));
     this.form = formBuilder.group({
       tag: this.tag,
@@ -115,10 +115,10 @@ export class CodBindingEditorComponent implements OnInit {
       return;
     }
 
-    this.tag.setValue(model.tag);
+    this.tag.setValue(model.tag || null);
     this.coverMaterial.setValue(model.coverMaterial);
     this.boardMaterial.setValue(model.boardMaterial);
-    this.description.setValue(model.description);
+    this.description.setValue(model.description || null);
     this.initialSize = model.size;
     this.hasSize.setValue(model.size ? true : false);
     this.initialChronotope = model.chronotope;
@@ -128,10 +128,10 @@ export class CodBindingEditorComponent implements OnInit {
   private getModel(): CodBinding | null {
     return {
       tag: this.tag.value?.trim(),
-      coverMaterial: this.coverMaterial.value?.trim(),
-      boardMaterial: this.boardMaterial.value?.trim(),
-      chronotope: this.chronotope.value,
-      size: this.hasSize.value ? this.size.value : undefined,
+      coverMaterial: this.coverMaterial.value?.trim() || '',
+      boardMaterial: this.boardMaterial.value?.trim() || '',
+      chronotope: this.chronotope.value!,
+      size: this.hasSize.value ? this.size.value || undefined : undefined,
       description: this.description.value?.trim(),
     };
   }
@@ -142,7 +142,7 @@ export class CodBindingEditorComponent implements OnInit {
   }
 
   public onChronotopeChange(chronotope: AssertedChronotope | undefined): void {
-    this.chronotope.setValue(chronotope);
+    this.chronotope.setValue(chronotope || null);
     this.chronotope.markAsDirty();
   }
 

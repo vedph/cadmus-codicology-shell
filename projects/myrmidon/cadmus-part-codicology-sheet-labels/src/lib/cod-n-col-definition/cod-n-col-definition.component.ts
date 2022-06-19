@@ -63,15 +63,15 @@ export class CodNColDefinitionComponent implements OnInit {
   public editorClose: EventEmitter<any>;
 
   public id: string;
-  public rank: FormControl;
-  public isPagination: FormControl;
-  public system: FormControl;
-  public technique: FormControl;
-  public position: FormControl;
-  public colors: FormControl;
-  public hasDate: FormControl;
-  public date: FormControl;
-  public note: FormControl;
+  public rank: FormControl<number>;
+  public isPagination: FormControl<boolean>;
+  public system: FormControl<string | null>;
+  public technique: FormControl<string | null>;
+  public position: FormControl<string | null>;
+  public colors: FormControl<string[]>;
+  public hasDate: FormControl<boolean>;
+  public date: FormControl<HistoricalDateModel | null>;
+  public note: FormControl<string | null>;
   public form: FormGroup;
 
   public initialColors: string[];
@@ -85,8 +85,8 @@ export class CodNColDefinitionComponent implements OnInit {
     this.clrFlags = [];
     // form
     this.id = '';
-    this.rank = formBuilder.control(0);
-    this.isPagination = formBuilder.control(false);
+    this.rank = formBuilder.control(0, { nonNullable: true });
+    this.isPagination = formBuilder.control(false, { nonNullable: true });
     this.system = formBuilder.control(null, [
       Validators.required,
       Validators.maxLength(50),
@@ -99,8 +99,8 @@ export class CodNColDefinitionComponent implements OnInit {
       Validators.required,
       Validators.maxLength(50),
     ]);
-    this.colors = formBuilder.control([]);
-    this.hasDate = formBuilder.control(false);
+    this.colors = formBuilder.control([], { nonNullable: true });
+    this.hasDate = formBuilder.control(false, { nonNullable: true });
     this.date = formBuilder.control(null);
     this.note = formBuilder.control(null, Validators.maxLength(1000));
     this.form = formBuilder.group({
@@ -129,16 +129,16 @@ export class CodNColDefinitionComponent implements OnInit {
     }
 
     this.id = model.id;
-    this.rank.setValue(model.rank);
-    this.isPagination.setValue(model.isPagination);
+    this.rank.setValue(model.rank || 0);
+    this.isPagination.setValue(model.isPagination || false);
     this.system.setValue(model.system);
     this.technique.setValue(model.technique);
     this.position.setValue(model.position);
     this.initialColors = model.colors || [];
     this.hasDate.setValue(model.date ? true : false);
-    this.date.setValue(model.date);
+    this.date.setValue(model.date || null);
     this.initialDate = model.date;
-    this.note.setValue(model.note);
+    this.note.setValue(model.note || null);
 
     this.form.markAsPristine();
   }
@@ -148,11 +148,11 @@ export class CodNColDefinitionComponent implements OnInit {
       id: this.id,
       rank: +this.rank.value || 0,
       isPagination: this.isPagination.value ? true : false,
-      system: this.system.value?.trim(),
-      technique: this.technique.value?.trim(),
-      position: this.position.value?.trim(),
+      system: this.system.value?.trim() || '',
+      technique: this.technique.value?.trim() || '',
+      position: this.position.value?.trim() || '',
       colors: this.colors.value?.length ? this.colors.value : undefined,
-      date: this.hasDate.value ? this.date.value : undefined,
+      date: this.hasDate.value ? this.date.value || undefined : undefined,
       note: this.note.value?.trim(),
     };
   }

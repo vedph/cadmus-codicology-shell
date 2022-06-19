@@ -65,9 +65,9 @@ export class NoteSetComponent implements OnInit {
   public noteChange: EventEmitter<KeyValue<string, string | null>>;
 
   public form: FormGroup;
-  public key: FormControl;
-  public text: FormControl;
-  public reqNotes: FormControl;
+  public key: FormControl<string | null>;
+  public text: FormControl<string | null>;
+  public reqNotes: FormControl<boolean>;
 
   public keys: KeyValue<string, string>[];
   public noteCount: number;
@@ -85,7 +85,10 @@ export class NoteSetComponent implements OnInit {
     // form
     this.text = formBuilder.control(null);
     this.key = formBuilder.control(null);
-    this.reqNotes = formBuilder.control(true, Validators.requiredTrue);
+    this.reqNotes = formBuilder.control(true, {
+      validators: Validators.requiredTrue,
+      nonNullable: true,
+    });
     this.form = formBuilder.group({
       note: this.key,
       text: this.text,
@@ -97,7 +100,7 @@ export class NoteSetComponent implements OnInit {
     // when a key changes, edit its note
     this.key.valueChanges
       .pipe(distinctUntilChanged(), debounceTime(10))
-      .subscribe((k: string) => {
+      .subscribe((k: string | null) => {
         this.editNote(k);
       });
 
@@ -157,12 +160,15 @@ export class NoteSetComponent implements OnInit {
   /**
    * Edit the note with the specified key.
    */
-  private editNote(key: string): void {
+  private editNote(key: string | null): void {
+    if (!key) {
+      return;
+    }
     if (!this._set.notes) {
       this._set.notes = new Map<string, string | null>();
     }
     this.text.clearValidators();
-    this.text.setValue(this._set.notes.get(key));
+    this.text.setValue(this._set.notes.get(key) || null);
 
     // set validators
     this.currentDef = this._set.definitions.find((d) => d.key === key);
@@ -242,7 +248,7 @@ export class NoteSetComponent implements OnInit {
     }
     this.saveNote({
       key: this.currentDef.key,
-      value: this.text.value?.trim(),
+      value: this.text.value?.trim() || '',
     });
   }
 

@@ -58,18 +58,18 @@ export class CodContentEditorComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public eid: FormControl;
-  public range: FormControl;
-  public tag: FormControl;
-  public title: FormControl;
-  public location: FormControl;
-  public claimedAuthor: FormControl;
-  public claimedTitle: FormControl;
-  public note: FormControl;
-  public incipit: FormControl;
-  public explicit: FormControl;
-  public states: FormControl;
-  public annotations: FormControl;
+  public eid: FormControl<string | null>;
+  public range: FormControl<CodLocationRange | null>;
+  public tag: FormControl<string | null>;
+  public title: FormControl<string | null>;
+  public location: FormControl<string | null>;
+  public claimedAuthor: FormControl<string | null>;
+  public claimedTitle: FormControl<string | null>;
+  public note: FormControl<string | null>;
+  public incipit: FormControl<string | null>;
+  public explicit: FormControl<string | null>;
+  public states: FormControl<string[]>;
+  public annotations: FormControl<CodContentAnnotation[] | null>;
   public form: FormGroup;
 
   public stateFlags: Flag[];
@@ -96,8 +96,8 @@ export class CodContentEditorComponent implements OnInit {
     this.note = formBuilder.control(null, Validators.maxLength(1000));
     this.incipit = formBuilder.control(null, Validators.maxLength(1000));
     this.explicit = formBuilder.control(null, Validators.maxLength(1000));
-    this.states = formBuilder.control([]);
-    this.annotations = formBuilder.control([]);
+    this.states = formBuilder.control([], { nonNullable: true });
+    this.annotations = formBuilder.control([], { nonNullable: true });
     this.form = formBuilder.group({
       eid: this.eid,
       range: this.range,
@@ -126,17 +126,17 @@ export class CodContentEditorComponent implements OnInit {
       return;
     }
 
-    this.eid.setValue(content.eid);
+    this.eid.setValue(content.eid || null);
     this.initialRange = content.range;
     this.initialStates = content.states || [];
-    this.tag.setValue(content.tag);
+    this.tag.setValue(content.tag || null);
     this.title.setValue(content.title);
-    this.location.setValue(content.location);
-    this.claimedAuthor.setValue(content.claimedAuthor);
-    this.claimedTitle.setValue(content.claimedTitle);
-    this.note.setValue(content.note);
-    this.incipit.setValue(content.incipit);
-    this.explicit.setValue(content.explicit);
+    this.location.setValue(content.location || null);
+    this.claimedAuthor.setValue(content.claimedAuthor || null);
+    this.claimedTitle.setValue(content.claimedTitle || null);
+    this.note.setValue(content.note || null);
+    this.incipit.setValue(content.incipit || null);
+    this.explicit.setValue(content.explicit || null);
     this.annotations.setValue(content.annotations || []);
 
     this.form.markAsPristine();
@@ -145,9 +145,9 @@ export class CodContentEditorComponent implements OnInit {
   private getModel(): CodContent | null {
     return {
       eid: this.eid.value?.trim(),
-      range: this.range.value,
+      range: this.range.value!,
       states: this.states.value || [],
-      title: this.title.value?.trim(),
+      title: this.title.value?.trim() || '',
       location: this.location.value?.trim(),
       claimedAuthor: this.claimedAuthor.value?.trim(),
       claimedTitle: this.claimedTitle.value?.trim(),
@@ -183,8 +183,8 @@ export class CodContentEditorComponent implements OnInit {
       explicit: '',
       text: '',
     };
-    this.annotations.setValue([...this.annotations.value, annotation]);
-    this.editAnnotation(this.annotations.value.length - 1);
+    this.annotations.setValue([...this.annotations.value!, annotation]);
+    this.editAnnotation(this.annotations.value!.length - 1);
   }
 
   public editAnnotation(index: number): void {
@@ -193,13 +193,13 @@ export class CodContentEditorComponent implements OnInit {
       this.editedAnnotation = undefined;
     } else {
       this._editedAnnotationIndex = index;
-      this.editedAnnotation = this.annotations.value[index];
+      this.editedAnnotation = this.annotations.value![index];
     }
   }
 
   public onAnnotationSave(annotation: CodContentAnnotation): void {
     this.annotations.setValue(
-      this.annotations.value.map((a: CodContentAnnotation, i: number) =>
+      this.annotations.value!.map((a: CodContentAnnotation, i: number) =>
         i === this._editedAnnotationIndex ? annotation : a
       )
     );
@@ -216,7 +216,7 @@ export class CodContentEditorComponent implements OnInit {
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          const entries = [...this.annotations.value];
+          const entries = [...this.annotations.value!];
           entries.splice(index, 1);
           this.annotations.setValue(entries);
         }
@@ -227,19 +227,19 @@ export class CodContentEditorComponent implements OnInit {
     if (index < 1) {
       return;
     }
-    const annotation = this.annotations.value[index];
-    const annotations = [...this.annotations.value];
+    const annotation = this.annotations.value![index];
+    const annotations = [...this.annotations.value!];
     annotations.splice(index, 1);
     annotations.splice(index - 1, 0, annotation);
     this.annotations.setValue(annotations);
   }
 
   public moveAnnotationDown(index: number): void {
-    if (index + 1 >= this.annotations.value.length) {
+    if (index + 1 >= this.annotations.value!.length) {
       return;
     }
-    const annotation = this.annotations.value[index];
-    const annotations = [...this.annotations.value];
+    const annotation = this.annotations.value![index];
+    const annotations = [...this.annotations.value!];
     annotations.splice(index, 1);
     annotations.splice(index + 1, 0, annotation);
     this.annotations.setValue(annotations);

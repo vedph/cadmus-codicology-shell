@@ -83,14 +83,14 @@ export class CodHandInstanceComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public script: FormControl;
-  public rank: FormControl;
-  public dscKey: FormControl;
-  public typologies: FormControl;
-  public colors: FormControl;
-  public ranges: FormControl;
-  public chronotope: FormControl;
-  public images: FormControl;
+  public script: FormControl<string | null>;
+  public rank: FormControl<number>;
+  public dscKey: FormControl<string | null>;
+  public typologies: FormControl<string[]>;
+  public colors: FormControl<string[]>;
+  public ranges: FormControl<CodLocationRange[]>;
+  public chronotope: FormControl<AssertedChronotope | null>;
+  public images: FormControl<CodImage[]>;
   public form: FormGroup;
 
   public typeFlags: Flag[];
@@ -119,19 +119,19 @@ export class CodHandInstanceComponent implements OnInit {
       Validators.required,
       Validators.maxLength(50),
     ]);
-    this.rank = formBuilder.control(0);
+    this.rank = formBuilder.control(0, { nonNullable: true });
     this.dscKey = formBuilder.control(null);
-    this.typologies = formBuilder.control(
-      [],
-      NgToolsValidators.strictMinLengthValidator(1)
-    );
-    this.colors = formBuilder.control([]);
-    this.ranges = formBuilder.control(
-      [],
-      NgToolsValidators.strictMinLengthValidator(1)
-    );
+    this.typologies = formBuilder.control([], {
+      validators: NgToolsValidators.strictMinLengthValidator(1),
+      nonNullable: true,
+    });
+    this.colors = formBuilder.control([], { nonNullable: true });
+    this.ranges = formBuilder.control([], {
+      validators: NgToolsValidators.strictMinLengthValidator(1),
+      nonNullable: true,
+    });
     this.chronotope = formBuilder.control(null);
-    this.images = formBuilder.control([]);
+    this.images = formBuilder.control([], { nonNullable: true });
     this.form = formBuilder.group({
       script: this.script,
       rank: this.rank,
@@ -157,8 +157,8 @@ export class CodHandInstanceComponent implements OnInit {
     }
 
     this.script.setValue(model.script);
-    this.rank.setValue(model.rank);
-    this.dscKey.setValue(model.descriptionKey);
+    this.rank.setValue(model.rank || 0);
+    this.dscKey.setValue(model.descriptionKey || null);
     this.initialTypologies = model.typologies || [];
     this.initialColors = model.colors || [];
     this.initialRanges = model.ranges || [];
@@ -182,13 +182,13 @@ export class CodHandInstanceComponent implements OnInit {
 
   private getModel(): CodHandInstance {
     return {
-      script: this.script.value?.trim(),
+      script: this.script.value?.trim() || '',
       rank: this.rank.value ? +this.rank.value : 0,
-      descriptionKey: this.dscKey.value,
+      descriptionKey: this.dscKey.value || undefined,
       typologies: this.typologies.value || [],
       colors: this.colors.value?.length ? this.colors.value : undefined,
       ranges: this.ranges.value || [],
-      chronotope: this.chronotope.value,
+      chronotope: this.chronotope.value || undefined,
       images: this.images.value?.length ? this.images.value : undefined,
     };
   }
@@ -206,7 +206,7 @@ export class CodHandInstanceComponent implements OnInit {
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
-    this.ranges.setValue(ranges);
+    this.ranges.setValue(ranges || []);
     this.ranges.updateValueAndValidity();
     this.ranges.markAsDirty();
   }
@@ -218,7 +218,7 @@ export class CodHandInstanceComponent implements OnInit {
   }
 
   public onImagesChange(images: CodImage[] | undefined): void {
-    this.images.setValue(images);
+    this.images.setValue(images || []);
     this.images.updateValueAndValidity();
     this.images.markAsDirty();
   }

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Route } from '@angular/router';
 
 // cadmus
 import { CadmusCoreModule, PendingChangesGuard } from '@myrmidon/cadmus-core';

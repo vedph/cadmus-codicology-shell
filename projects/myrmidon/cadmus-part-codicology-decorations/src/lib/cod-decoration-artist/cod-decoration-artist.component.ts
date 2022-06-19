@@ -68,13 +68,13 @@ export class CodDecorationArtistComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public eid: FormControl;
-  public type: FormControl;
-  public name: FormControl;
-  public ids: FormControl;
-  public styles: FormControl;
-  public elementKeys: FormControl;
-  public note: FormControl;
+  public eid: FormControl<string | null>;
+  public type: FormControl<string | null>;
+  public name: FormControl<string | null>;
+  public ids: FormControl<ExternalId[]>;
+  public styles: FormControl<CodDecorationArtistStyle[]>;
+  public elementKeys: FormControl<string | null>;
+  public note: FormControl<string | null>;
   public form: FormGroup;
 
   public initialIds?: ExternalId[];
@@ -94,8 +94,8 @@ export class CodDecorationArtistComponent implements OnInit {
       Validators.required,
       Validators.maxLength(100),
     ]);
-    this.ids = formBuilder.control([]);
-    this.styles = formBuilder.control([]);
+    this.ids = formBuilder.control([], { nonNullable: true });
+    this.styles = formBuilder.control([], { nonNullable: true });
     // space-delimited text
     this.elementKeys = formBuilder.control(null);
     this.note = formBuilder.control(null, Validators.maxLength(1000));
@@ -122,7 +122,7 @@ export class CodDecorationArtistComponent implements OnInit {
       return;
     }
 
-    this.eid.setValue(artist.eid);
+    this.eid.setValue(artist.eid || null);
     this.type.setValue(artist.type);
     this.name.setValue(artist.name);
     this.initialIds = artist.ids || [];
@@ -131,7 +131,7 @@ export class CodDecorationArtistComponent implements OnInit {
     this.elementKeys.setValue(
       artist.elementKeys ? artist.elementKeys.join(' ') : ''
     );
-    this.note.setValue(artist.note);
+    this.note.setValue(artist.note || null);
     this.form.markAsPristine();
   }
 
@@ -154,8 +154,8 @@ export class CodDecorationArtistComponent implements OnInit {
   private getArtist(): CodDecorationArtist {
     return {
       eid: this.eid.value?.trim(),
-      type: this.type.value?.trim(),
-      name: this.name.value?.trim(),
+      type: this.type.value?.trim() || '',
+      name: this.name.value?.trim() || '',
       ids: this.ids.value?.length ? this.ids.value : undefined,
       styles: this.styles.value?.length ? this.styles.value : undefined,
       elementKeys: this.parseElementKeys(this.elementKeys.value),

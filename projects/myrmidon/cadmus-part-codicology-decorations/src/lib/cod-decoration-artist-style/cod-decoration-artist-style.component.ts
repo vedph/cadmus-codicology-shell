@@ -48,11 +48,11 @@ export class CodDecorationArtistStyleComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public name: FormControl;
-  public hasChronotope: FormControl;
-  public chronotope: FormControl;
-  public hasAssertion: FormControl;
-  public assertion: FormControl;
+  public name: FormControl<string | null>;
+  public hasChronotope: FormControl<boolean>;
+  public chronotope: FormControl<AssertedChronotope | null>;
+  public hasAssertion: FormControl<boolean>;
+  public assertion: FormControl<Assertion | null>;
   public form: FormGroup;
 
   public initialChronotope?: AssertedChronotope;
@@ -66,9 +66,9 @@ export class CodDecorationArtistStyleComponent implements OnInit {
       Validators.required,
       Validators.maxLength(50),
     ]);
-    this.hasChronotope = formBuilder.control(false);
+    this.hasChronotope = formBuilder.control(false, { nonNullable: true });
     this.chronotope = formBuilder.control(null);
-    this.hasAssertion = formBuilder.control(false);
+    this.hasAssertion = formBuilder.control(false, { nonNullable: true });
     this.assertion = formBuilder.control(null);
     this.form = formBuilder.group({
       name: this.name,
@@ -95,18 +95,22 @@ export class CodDecorationArtistStyleComponent implements OnInit {
   }
 
   public onChronotopeChange(chronotope: AssertedChronotope | undefined): void {
-    this.chronotope.setValue(chronotope);
+    this.chronotope.setValue(chronotope || null);
   }
 
   public onAssertionChange(assertion: Assertion | undefined): void {
-    this.assertion.setValue(assertion);
+    this.assertion.setValue(assertion || null);
   }
 
   private getStyle(): CodDecorationArtistStyle {
     return {
-      name: this.name.value?.trim(),
-      chronotope: this.hasChronotope.value ? this.chronotope.value : undefined,
-      assertion: this.hasAssertion.value ? this.assertion.value : undefined,
+      name: this.name.value?.trim() || '',
+      chronotope: this.hasChronotope.value
+        ? this.chronotope.value || undefined
+        : undefined,
+      assertion: this.hasAssertion.value
+        ? this.assertion.value || undefined
+        : undefined,
     };
   }
 

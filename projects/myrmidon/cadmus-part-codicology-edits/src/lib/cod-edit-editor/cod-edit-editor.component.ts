@@ -86,17 +86,17 @@ export class CodEditEditorComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public eid: FormControl;
-  public type: FormControl;
-  public tag: FormControl;
-  public techniques: FormControl;
-  public ranges: FormControl;
-  public language: FormControl;
-  public date: FormControl;
-  public colors: FormControl;
-  public description: FormControl;
-  public text: FormControl;
-  public references: FormControl;
+  public eid: FormControl<string | null>;
+  public type: FormControl<string | null>;
+  public tag: FormControl<string | null>;
+  public techniques: FormControl<string[]>;
+  public ranges: FormControl<CodLocationRange[]>;
+  public language: FormControl<string | null>;
+  public date: FormControl<HistoricalDateModel | null>;
+  public colors: FormControl<string[]>;
+  public description: FormControl<string | null>;
+  public text: FormControl<string | null>;
+  public references: FormControl<DocReference[]>;
   public form: FormGroup;
 
   public initialRanges?: CodLocationRange[];
@@ -117,17 +117,17 @@ export class CodEditEditorComponent implements OnInit {
       Validators.maxLength(50),
     ]);
     this.tag = formBuilder.control(null, Validators.maxLength(50));
-    this.techniques = formBuilder.control([]);
-    this.ranges = formBuilder.control(
-      [],
-      NgToolsValidators.strictMinLengthValidator(1)
-    );
+    this.techniques = formBuilder.control([], { nonNullable: true });
+    this.ranges = formBuilder.control([], {
+      validators: NgToolsValidators.strictMinLengthValidator(1),
+      nonNullable: true,
+    });
     this.language = formBuilder.control(null, Validators.maxLength(50));
-    this.colors = formBuilder.control([]);
+    this.colors = formBuilder.control([], { nonNullable: true });
     this.date = formBuilder.control(null);
     this.description = formBuilder.control(null, Validators.maxLength(1000));
     this.text = formBuilder.control(null, Validators.maxLength(1000));
-    this.references = formBuilder.control([]);
+    this.references = formBuilder.control([], { nonNullable: true });
     this.form = formBuilder.group({
       eid: this.eid,
       type: this.type,
@@ -155,16 +155,16 @@ export class CodEditEditorComponent implements OnInit {
       return;
     }
 
-    this.eid.setValue(model.eid);
+    this.eid.setValue(model.eid || null);
     this.type.setValue(model.type);
-    this.tag.setValue(model.tag);
+    this.tag.setValue(model.tag || null);
     this.initialTechIds = model.techniques || [];
     this.initialRanges = model.ranges || [];
-    this.language.setValue(model.language);
+    this.language.setValue(model.language || null);
     this.initialDate = model.date;
     this.initialColorIds = model.colors || [];
-    this.description.setValue(model.description);
-    this.text.setValue(model.text);
+    this.description.setValue(model.description || null);
+    this.text.setValue(model.text || null);
     this.initialReferences = model.references || [];
 
     this.form.markAsPristine();
@@ -173,14 +173,14 @@ export class CodEditEditorComponent implements OnInit {
   private getModel(): CodEdit | null {
     return {
       eid: this.eid.value?.trim(),
-      type: this.type.value?.trim(),
+      type: this.type.value?.trim() || '',
       tag: this.tag.value?.trim(),
       techniques: this.techniques.value?.length
         ? this.techniques.value
         : undefined,
-      ranges: this.ranges.value?.length ? this.ranges.value : undefined,
+      ranges: this.ranges.value,
       language: this.language.value?.trim(),
-      date: this.date.value,
+      date: this.date.value || undefined,
       colors: this.colors.value?.length ? this.colors.value : undefined,
       description: this.description.value?.trim(),
       text: this.text.value?.trim(),

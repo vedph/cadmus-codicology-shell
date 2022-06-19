@@ -54,7 +54,7 @@ export class CodBindingsPartComponent
   // physical-size-units
   public szUnitEntries: ThesaurusEntry[] | undefined;
 
-  public entries: FormControl;
+  public entries: FormControl<CodBinding[]>;
 
   constructor(
     authService: AuthJwtService,
@@ -65,10 +65,10 @@ export class CodBindingsPartComponent
     this._editedIndex = -1;
     this.tabIndex = 0;
     // form
-    this.entries = formBuilder.control(
-      [],
-      NgToolsValidators.strictMinLengthValidator(1)
-    );
+    this.entries = formBuilder.control([], {
+      validators: NgToolsValidators.strictMinLengthValidator(1),
+      nonNullable: true,
+    });
     this.form = formBuilder.group({
       entries: this.entries,
     });

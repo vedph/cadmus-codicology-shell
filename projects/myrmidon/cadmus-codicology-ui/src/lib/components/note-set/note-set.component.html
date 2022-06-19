@@ -95,7 +95,7 @@
 
     <!-- preview -->
     <div *ngIf="currentDef?.markdown" class="preview">
-      <markdown [data]="text?.value"></markdown>
+      <markdown [data]="text?.value || undefined"></markdown>
     </div>
   </div>
 </form>

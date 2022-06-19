@@ -5,7 +5,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
+import { CodLocation, CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import { CodHandSign } from '../cod-hands-part';
@@ -36,10 +36,10 @@ export class CodHandSignComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public eid: FormControl;
-  public type: FormControl;
-  public sampleLocation: FormControl;
-  public description: FormControl;
+  public eid: FormControl<string | null>;
+  public type: FormControl<string | null>;
+  public sampleLocation: FormControl<CodLocation | null>;
+  public description: FormControl<string | null>;
   public form: FormGroup;
 
   public initialRange?: CodLocationRange;
@@ -75,12 +75,12 @@ export class CodHandSignComponent implements OnInit {
       return;
     }
 
-    this.eid.setValue(sign.eid);
+    this.eid.setValue(sign.eid || null);
     this.type.setValue(sign.type);
     this.initialRange = sign.sampleLocation
       ? { start: sign.sampleLocation, end: sign.sampleLocation }
       : undefined;
-    this.description.setValue(sign.description);
+    this.description.setValue(sign.description || null);
 
     this.form.markAsPristine();
   }
@@ -88,8 +88,8 @@ export class CodHandSignComponent implements OnInit {
   private getSign(): CodHandSign | null {
     return {
       eid: this.eid.value?.trim(),
-      type: this.type.value?.trim(),
-      sampleLocation: this.sampleLocation.value,
+      type: this.type.value?.trim() || '',
+      sampleLocation: this.sampleLocation.value!,
       description: this.description.value?.trim(),
     };
   }

@@ -58,7 +58,7 @@ export class CodHandsPartComponent
   // cod-hand-subscription-languages
   public subLangEntries: ThesaurusEntry[] | undefined;
 
-  public hands: FormControl;
+  public hands: FormControl<CodHand[]>;
 
   constructor(
     authService: AuthJwtService,
@@ -69,10 +69,10 @@ export class CodHandsPartComponent
     this._editedIndex = -1;
     this.tabIndex = 0;
     // form
-    this.hands = formBuilder.control(
-      [],
-      NgToolsValidators.strictMinLengthValidator(1)
-    );
+    this.hands = formBuilder.control([], {
+      validators: NgToolsValidators.strictMinLengthValidator(1),
+      nonNullable: true,
+    });
     this.form = formBuilder.group({
       entries: this.hands,
     });

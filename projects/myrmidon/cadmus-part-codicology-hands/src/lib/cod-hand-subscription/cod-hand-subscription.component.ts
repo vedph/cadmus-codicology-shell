@@ -37,10 +37,10 @@ export class CodHandSubscriptionComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public ranges: FormControl;
-  public language: FormControl;
-  public text: FormControl;
-  public note: FormControl;
+  public ranges: FormControl<CodLocationRange[]>;
+  public language: FormControl<string | null>;
+  public text: FormControl<string | null>;
+  public note: FormControl<string | null>;
   public form: FormGroup;
 
   public initialRanges?: CodLocationRange[];
@@ -49,10 +49,10 @@ export class CodHandSubscriptionComponent implements OnInit {
     this.subscriptionChange = new EventEmitter<CodHandSubscription>();
     this.editorClose = new EventEmitter<any>();
     // form
-    this.ranges = formBuilder.control(
-      [],
-      NgToolsValidators.strictMinLengthValidator(1)
-    );
+    this.ranges = formBuilder.control([], {
+      validators: NgToolsValidators.strictMinLengthValidator(1),
+      nonNullable: true,
+    });
     this.language = formBuilder.control(null, [
       Validators.required,
       Validators.maxLength(50),
@@ -81,8 +81,8 @@ export class CodHandSubscriptionComponent implements OnInit {
 
     this.initialRanges = subscription.range ? [subscription.range] : [];
     this.language.setValue(subscription.language);
-    this.text.setValue(subscription.text);
-    this.note.setValue(subscription.note);
+    this.text.setValue(subscription.text || null);
+    this.note.setValue(subscription.note || null);
 
     this.form.markAsPristine();
   }
@@ -95,8 +95,8 @@ export class CodHandSubscriptionComponent implements OnInit {
 
   private getSubscription(): CodHandSubscription {
     return {
-      range: this.ranges.value?.length ? this.ranges.value[0] : undefined,
-      language: this.language.value?.trim(),
+      range: this.ranges.value?.length ? this.ranges.value[0] : undefined as any,
+      language: this.language.value?.trim() || '',
       text: this.text.value?.trim(),
       note: this.note.value?.trim(),
     };

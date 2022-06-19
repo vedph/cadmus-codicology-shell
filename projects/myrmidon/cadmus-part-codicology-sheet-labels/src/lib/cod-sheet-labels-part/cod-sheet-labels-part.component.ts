@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  FormControl,
-  FormBuilder,
+  UntypedFormControl,
+  UntypedFormBuilder,
   Validators,
-  FormGroup,
+  UntypedFormGroup,
 } from '@angular/forms';
 import { filter, Observable, take } from 'rxjs';
 
@@ -61,22 +61,22 @@ export class CodSheetLabelsPartComponent
   public endleafRowIds: string[];
   public qPresent: boolean;
 
-  public opColumn: FormControl;
-  public opAction: FormControl;
-  public opForm: FormGroup;
+  public opColumn: UntypedFormControl;
+  public opAction: UntypedFormControl;
+  public opForm: UntypedFormGroup;
 
-  public addType: FormControl;
-  public addName: FormControl;
-  public addCount: FormControl;
-  public addForm: FormGroup;
+  public addType: UntypedFormControl;
+  public addName: UntypedFormControl;
+  public addCount: UntypedFormControl;
+  public addForm: UntypedFormGroup;
   public adderColumn: boolean;
 
-  public nDefs: FormControl;
-  public cDefs: FormControl;
-  public sDefs: FormControl;
-  public rDefs: FormControl;
+  public nDefs: UntypedFormControl;
+  public cDefs: UntypedFormControl;
+  public sDefs: UntypedFormControl;
+  public rDefs: UntypedFormControl;
 
-  public endleaves: FormControl;
+  public endleaves: UntypedFormControl;
 
   // C-COL
   // cod-catchwords-positions
@@ -109,7 +109,7 @@ export class CodSheetLabelsPartComponent
 
   constructor(
     authService: AuthJwtService,
-    formBuilder: FormBuilder,
+    formBuilder: UntypedFormBuilder,
     private _dialogService: DialogService
   ) {
     super(authService);

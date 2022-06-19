@@ -46,9 +46,9 @@ export class CodPalimpsestEditorComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public range: FormControl;
-  public chronotope: FormControl;
-  public note: FormControl;
+  public range: FormControl<CodLocationRange | null>;
+  public chronotope: FormControl<AssertedChronotope | null>;
+  public note: FormControl<string | null>;
   public form: FormGroup;
 
   public initialRange?: CodLocationRange;
@@ -82,13 +82,13 @@ export class CodPalimpsestEditorComponent implements OnInit {
 
     this.initialRange = palimpsest.range;
     this.initialChronotope = palimpsest.chronotope;
-    this.note.setValue(palimpsest.note);
+    this.note.setValue(palimpsest.note || null);
 
     this.form.markAsPristine();
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
-    this.range.setValue(ranges?.length ? ranges[0] : undefined);
+    this.range.setValue(ranges?.length ? ranges[0] : null);
     this.range.updateValueAndValidity();
     this.range.markAsDirty();
   }
@@ -101,8 +101,8 @@ export class CodPalimpsestEditorComponent implements OnInit {
 
   private getModel(): CodPalimpsest | null {
     return {
-      range: this.range.value,
-      chronotope: this.chronotope.value,
+      range: this.range.value!,
+      chronotope: this.chronotope.value!,
       note: this.note.value?.trim(),
     };
   }

@@ -36,11 +36,11 @@ export class CodContentAnnotationComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public type: FormControl;
-  public range: FormControl;
-  public incipit: FormControl;
-  public explicit: FormControl;
-  public text: FormControl;
+  public type: FormControl<string | null>;
+  public range: FormControl<CodLocationRange | null>;
+  public incipit: FormControl<string | null>;
+  public explicit: FormControl<string | null>;
+  public text: FormControl<string | null>;
   public form: FormGroup;
 
   public initialRange?: CodLocationRange;
@@ -97,16 +97,16 @@ export class CodContentAnnotationComponent implements OnInit {
 
   private getModel(): CodContentAnnotation | null {
     return {
-      type: this.type.value?.trim(),
-      range: this.range.value,
-      incipit: this.incipit.value?.trim(),
-      explicit: this.explicit.value?.trim(),
-      text: this.text.value?.trim(),
+      type: this.type.value?.trim() || '',
+      range: this.range.value!,
+      incipit: this.incipit.value?.trim() || '',
+      explicit: this.explicit.value?.trim() || '',
+      text: this.text.value?.trim() || '',
     };
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
-    this.range.setValue(ranges?.length ? ranges[0] : undefined);
+    this.range.setValue(ranges?.length ? ranges[0] : null);
   }
 
   public cancel(): void {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormBuilder, Validators } from '@angular/forms';
+import { FormControl, FormBuilder } from '@angular/forms';
 import { take } from 'rxjs/operators';
 
 import { deepCopy, NgToolsValidators } from '@myrmidon/ng-tools';
@@ -40,7 +40,7 @@ export class CodContentsPartComponent
   // cod-content-annotation-types
   public annTypeEntries: ThesaurusEntry[] | undefined;
 
-  public contents: FormControl;
+  public contents: FormControl<CodContent[]>;
 
   constructor(
     authService: AuthJwtService,
@@ -51,10 +51,10 @@ export class CodContentsPartComponent
     this._editedIndex = -1;
     this.tabIndex = 0;
     // form
-    this.contents = formBuilder.control(
-      [],
-      NgToolsValidators.strictMinLengthValidator(1)
-    );
+    this.contents = formBuilder.control([], {
+      validators: NgToolsValidators.strictMinLengthValidator(1),
+      nonNullable: true,
+    });
     this.form = formBuilder.group({
       entries: this.contents,
     });

@@ -1,10 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -147,14 +141,14 @@ export class CodDecorationComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public eid: FormControl;
-  public name: FormControl;
-  public flags: FormControl;
-  public chronotopes: FormControl;
-  public artists: FormControl;
-  public note: FormControl;
-  public references: FormControl;
-  public elements: FormControl;
+  public eid: FormControl<string | null>;
+  public name: FormControl<string | null>;
+  public flags: FormControl<string[]>;
+  public chronotopes: FormControl<AssertedChronotope[]>;
+  public artists: FormControl<CodDecorationArtist[]>;
+  public note: FormControl<string | null>;
+  public references: FormControl<DocReference[]>;
+  public elements: FormControl<CodDecorationElement[]>;
   public form: FormGroup;
 
   public initialChronotopes: AssertedChronotope[];
@@ -196,12 +190,12 @@ export class CodDecorationComponent implements OnInit {
       Validators.required,
       Validators.maxLength(50),
     ]);
-    this.flags = formBuilder.control([]);
-    this.chronotopes = formBuilder.control([]);
-    this.artists = formBuilder.control([]);
-    this.note = formBuilder.control(Validators.maxLength(1000));
-    this.references = formBuilder.control([]);
-    this.elements = formBuilder.control([]);
+    this.flags = formBuilder.control([], { nonNullable: true });
+    this.chronotopes = formBuilder.control([], { nonNullable: true });
+    this.artists = formBuilder.control([], { nonNullable: true });
+    this.note = formBuilder.control(null, Validators.maxLength(1000));
+    this.references = formBuilder.control([], { nonNullable: true });
+    this.elements = formBuilder.control([], { nonNullable: true });
     this.form = formBuilder.group({
       eid: this.eid,
       name: this.name,
@@ -233,9 +227,9 @@ export class CodDecorationComponent implements OnInit {
     this.initialReferences = decoration.references || [];
     this.initialFlags = decoration.flags || [];
 
-    this.eid.setValue(decoration.eid);
+    this.eid.setValue(decoration.eid || null);
     this.name.setValue(decoration.name);
-    this.note.setValue(decoration.note);
+    this.note.setValue(decoration.note || null);
     this.artists.setValue(decoration.artists || []);
     this.elements.setValue(decoration.elements || []);
 
@@ -263,7 +257,7 @@ export class CodDecorationComponent implements OnInit {
   private getDecoration(): CodDecoration {
     return {
       eid: this.eid.value?.trim(),
-      name: this.name.value?.trim(),
+      name: this.name.value?.trim() || '',
       flags: this.flags.value?.length ? this.flags.value : undefined,
       chronotopes: this.chronotopes.value?.length
         ? this.chronotopes.value
@@ -312,7 +306,7 @@ export class CodDecorationComponent implements OnInit {
       return;
     }
     let keys: string[] = this.elements.value.map(
-      (e: CodDecorationElement) => e.key
+      (e: CodDecorationElement) => e.key!
     );
     this.parentKeys = [...new Set(keys)].sort();
   }

@@ -7,7 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatSliderChange } from '@angular/material/slider';
-import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
+import { CodLocation, CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import {
   CodLayoutRectSet,
   CodLayoutService,
@@ -64,19 +64,19 @@ export class CodLayoutEditorComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public sample: FormControl;
-  public ranges: FormControl;
+  public sample: FormControl<CodLocation | null>;
+  public ranges: FormControl<CodLocationRange[]>;
   public dimensions: FormArray;
-  public ruling: FormControl;
-  public derolez: FormControl;
-  public pricking: FormControl;
-  public columnCount: FormControl;
-  public counts: FormControl;
-  public tag: FormControl;
-  public note: FormControl;
+  public ruling: FormControl<string | null>;
+  public derolez: FormControl<string | null>;
+  public pricking: FormControl<string | null>;
+  public columnCount: FormControl<number>;
+  public counts: FormControl<DecoratedCount[]>;
+  public tag: FormControl<string | null>;
+  public note: FormControl<string | null>;
   public form: FormGroup;
 
-  public formula: FormControl;
+  public formula: FormControl<string | null>;
   public formulaForm: FormGroup;
   public formulaError?: string;
   public rectSet: CodLayoutRectSet | undefined;
@@ -96,16 +96,16 @@ export class CodLayoutEditorComponent implements OnInit {
     this.initialCounts = [];
     // form
     this.sample = _formBuilder.control(null, Validators.required);
-    this.ranges = _formBuilder.control(
-      [],
-      NgToolsValidators.strictMinLengthValidator(1)
-    );
+    this.ranges = _formBuilder.control([], {
+      validators: NgToolsValidators.strictMinLengthValidator(1),
+      nonNullable: true,
+    });
     this.dimensions = _formBuilder.array([]);
     this.ruling = _formBuilder.control(null, Validators.maxLength(50));
     this.derolez = _formBuilder.control(null, Validators.maxLength(50));
     this.pricking = _formBuilder.control(null, Validators.maxLength(50));
-    this.columnCount = _formBuilder.control(0);
-    this.counts = _formBuilder.control([]);
+    this.columnCount = _formBuilder.control(0, { nonNullable: true });
+    this.counts = _formBuilder.control([], { nonNullable: true });
     this.tag = _formBuilder.control(null, Validators.maxLength(50));
     this.note = _formBuilder.control(null, Validators.maxLength(1000));
     this.form = _formBuilder.group({
@@ -149,13 +149,13 @@ export class CodLayoutEditorComponent implements OnInit {
         }
       : undefined;
     this.initialRanges = layout.ranges;
-    this.ruling.setValue(layout.rulingTechnique);
-    this.derolez.setValue(layout.derolez);
-    this.pricking.setValue(layout.pricking);
+    this.ruling.setValue(layout.rulingTechnique || null);
+    this.derolez.setValue(layout.derolez || null);
+    this.pricking.setValue(layout.pricking || null);
     this.columnCount.setValue(layout.columnCount);
     this.initialCounts = layout.counts || [];
-    this.tag.setValue(layout.tag);
-    this.note.setValue(layout.note);
+    this.tag.setValue(layout.tag || null);
+    this.note.setValue(layout.note || null);
 
     this.dimensions.clear();
     if (layout.dimensions?.length) {
@@ -290,7 +290,7 @@ export class CodLayoutEditorComponent implements OnInit {
 
   private getModel(): CodLayout {
     return {
-      sample: this.sample.value,
+      sample: this.sample.value!,
       ranges: this.ranges.value || [],
       dimensions: this.getDimensions(),
       rulingTechnique: this.ruling.value?.trim(),
@@ -304,13 +304,13 @@ export class CodLayoutEditorComponent implements OnInit {
   }
 
   public onSampleLocationChange(ranges: CodLocationRange[] | null): void {
-    this.sample.setValue(ranges?.length ? ranges[0].start : undefined);
+    this.sample.setValue(ranges?.length ? ranges[0].start : null);
     this.sample.updateValueAndValidity();
     this.sample.markAsDirty();
   }
 
   public onRangeLocationChange(ranges: CodLocationRange[] | null): void {
-    this.ranges.setValue(ranges);
+    this.ranges.setValue(ranges || []);
     this.ranges.updateValueAndValidity();
     this.ranges.markAsDirty();
   }

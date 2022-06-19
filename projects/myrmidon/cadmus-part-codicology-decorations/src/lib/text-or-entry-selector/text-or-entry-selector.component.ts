@@ -23,7 +23,7 @@ export class TextOrEntrySelectorComponent implements OnInit {
   private _id: string | undefined;
   private _free: boolean;
 
-  public idCtl: FormControl;
+  public idCtl: FormControl<string|null>;
   public form: FormGroup;
 
   /**
@@ -41,7 +41,7 @@ export class TextOrEntrySelectorComponent implements OnInit {
   }
   public set id(value: string | undefined) {
     this._id = value;
-    this.idCtl.setValue(value);
+    this.idCtl.setValue(value || null);
     this.idCtl.markAsPristine();
   }
 
@@ -81,12 +81,12 @@ export class TextOrEntrySelectorComponent implements OnInit {
    * If this is a free entry, it is prefixed with $.
    */
   @Output()
-  public idChange: EventEmitter<ThesaurusEntry>;
+  public idChange: EventEmitter<string>;
 
   constructor(formBuilder: FormBuilder) {
     this.label = 'entry';
     this._free = false;
-    this.idChange = new EventEmitter<ThesaurusEntry>();
+    this.idChange = new EventEmitter<string>();
     // form
     this.idCtl = formBuilder.control(null);
     this.form = formBuilder.group({
@@ -98,7 +98,7 @@ export class TextOrEntrySelectorComponent implements OnInit {
     this.idChange.emit(
       this._free && !this.idCtl.value?.startsWith(FREE_PREFIX)
         ? FREE_PREFIX + this.idCtl.value
-        : this.idCtl.value
+        : this.idCtl.value!
     );
   }
 

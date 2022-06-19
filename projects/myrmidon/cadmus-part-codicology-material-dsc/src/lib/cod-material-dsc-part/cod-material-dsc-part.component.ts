@@ -34,10 +34,10 @@ export class CodMaterialDscPartComponent
   private _editedPsIndex: number;
   public tabIndex: number;
   public editedUt: CodUnit | undefined;
-  public editedPs: CodUnit | undefined;
+  public editedPs: CodPalimpsest | undefined;
 
-  public units: FormControl;
-  public palimpsests: FormControl;
+  public units: FormControl<CodUnit[]>;
+  public palimpsests: FormControl<CodPalimpsest[]>;
 
   // cod-unit-tags
   public tagEntries: ThesaurusEntry[] | undefined;
@@ -66,11 +66,11 @@ export class CodMaterialDscPartComponent
     this._editedPsIndex = -1;
     this.tabIndex = 0;
     // form
-    this.units = formBuilder.control(
-      [],
-      NgToolsValidators.strictMinLengthValidator(1)
-    );
-    this.palimpsests = formBuilder.control([]);
+    this.units = formBuilder.control([], {
+      validators: NgToolsValidators.strictMinLengthValidator(1),
+      nonNullable: true,
+    });
+    this.palimpsests = formBuilder.control([], { nonNullable: true });
     this.form = formBuilder.group({
       units: this.units,
       palimpsests: this.palimpsests,

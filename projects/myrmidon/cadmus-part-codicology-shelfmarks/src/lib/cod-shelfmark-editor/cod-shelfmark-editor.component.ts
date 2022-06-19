@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
@@ -37,14 +37,14 @@ export class CodShelfmarkEditorComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public tag: FormControl;
-  public city: FormControl;
-  public library: FormControl;
-  public fund: FormControl;
-  public location: FormControl;
-  public form: FormGroup;
+  public tag: UntypedFormControl;
+  public city: UntypedFormControl;
+  public library: UntypedFormControl;
+  public fund: UntypedFormControl;
+  public location: UntypedFormControl;
+  public form: UntypedFormGroup;
 
-  constructor(formBuilder: FormBuilder) {
+  constructor(formBuilder: UntypedFormBuilder) {
     this.shelfmarkChange = new EventEmitter<CodShelfmark>();
     this.editorClose = new EventEmitter<any>();
     // form

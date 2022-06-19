@@ -45,8 +45,8 @@ export class CodLabelCellComponent implements OnInit {
   public noteElement?: ElementRef;
 
   public editMode: 'none' | 'value' | 'note';
-  public value: FormControl;
-  public note: FormControl;
+  public value: FormControl<string | null>;
+  public note: FormControl<string | null>;
   public form: FormGroup;
 
   constructor(formBuilder: FormBuilder) {
@@ -94,8 +94,8 @@ export class CodLabelCellComponent implements OnInit {
       this.form.reset();
       return;
     }
-    this.value.setValue(cell.value);
-    this.note.setValue(cell.note);
+    this.value.setValue(cell.value || null);
+    this.note.setValue(cell.note || null);
   }
 
   private getCell(): CodLabelCell {

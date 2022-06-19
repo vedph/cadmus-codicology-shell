@@ -49,7 +49,7 @@ export class CodEditsPartComponent
   // doc-reference-tags
   public refTagEntries: ThesaurusEntry[] | undefined;
 
-  public edits: FormControl;
+  public edits: FormControl<CodEdit[]>;
 
   constructor(
     authService: AuthJwtService,
@@ -60,10 +60,10 @@ export class CodEditsPartComponent
     this._editedIndex = -1;
     this.tabIndex = 0;
     // form
-    this.edits = formBuilder.control(
-      [],
-      NgToolsValidators.strictMinLengthValidator(1)
-    );
+    this.edits = formBuilder.control([], {
+      validators: NgToolsValidators.strictMinLengthValidator(1),
+      nonNullable: true,
+    });
     this.form = formBuilder.group({
       edits: this.edits,
     });
