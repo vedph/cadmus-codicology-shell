@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
-  UntypedFormBuilder,
-  UntypedFormControl,
-  UntypedFormGroup,
+  FormBuilder,
+  FormControl,
+  FormGroup,
   Validators,
 } from '@angular/forms';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
@@ -37,14 +37,14 @@ export class CodShelfmarkEditorComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public tag: UntypedFormControl;
-  public city: UntypedFormControl;
-  public library: UntypedFormControl;
-  public fund: UntypedFormControl;
-  public location: UntypedFormControl;
-  public form: UntypedFormGroup;
+  public tag: FormControl<string | null>;
+  public city: FormControl<string | null>;
+  public library: FormControl<string | null>;
+  public fund: FormControl<string | null>;
+  public location: FormControl<string | null>;
+  public form: FormGroup;
 
-  constructor(formBuilder: UntypedFormBuilder) {
+  constructor(formBuilder: FormBuilder) {
     this.shelfmarkChange = new EventEmitter<CodShelfmark>();
     this.editorClose = new EventEmitter<any>();
     // form
@@ -81,10 +81,10 @@ export class CodShelfmarkEditorComponent implements OnInit {
       return;
     }
 
-    this.tag.setValue(model.tag);
+    this.tag.setValue(model.tag || null);
     this.city.setValue(model.city);
     this.library.setValue(model.library);
-    this.fund.setValue(model.fund);
+    this.fund.setValue(model.fund || null);
     this.location.setValue(model.location);
     this.form.markAsPristine();
   }
@@ -92,10 +92,10 @@ export class CodShelfmarkEditorComponent implements OnInit {
   private getModel(): CodShelfmark | null {
     return {
       tag: this.tag.value?.trim(),
-      city: this.city.value?.trim(),
-      library: this.library.value?.trim(),
+      city: this.city.value?.trim() || '',
+      library: this.library.value?.trim() || '',
       fund: this.fund.value?.trim(),
-      location: this.location.value?.trim(),
+      location: this.location.value?.trim() || '',
     };
   }
 

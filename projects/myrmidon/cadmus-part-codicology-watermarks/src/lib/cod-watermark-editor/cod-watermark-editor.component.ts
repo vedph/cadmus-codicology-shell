@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
-  UntypedFormBuilder,
-  UntypedFormControl,
-  UntypedFormGroup,
+  FormBuilder,
+  FormControl,
+  FormGroup,
   Validators,
 } from '@angular/forms';
 
@@ -64,16 +64,16 @@ export class CodWatermarkEditorComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public name: UntypedFormControl;
-  public sampleRange: UntypedFormControl;
-  public ranges: UntypedFormControl;
-  public description: UntypedFormControl;
-  public ids: UntypedFormControl;
-  public hasSize: UntypedFormControl;
-  public size: UntypedFormControl;
-  public hasChronotope: UntypedFormControl;
-  public chronotope: UntypedFormControl;
-  public form: UntypedFormGroup;
+  public name: FormControl<string | null>;
+  public sampleRange: FormControl<CodLocationRange | null>;
+  public ranges: FormControl<CodLocationRange[]>;
+  public description: FormControl<string | null>;
+  public ids: FormControl<RankedExternalId[]>;
+  public hasSize: FormControl<boolean>;
+  public size: FormControl<PhysicalSize | null>;
+  public hasChronotope: FormControl<boolean>;
+  public chronotope: FormControl<AssertedChronotope | null>;
+  public form: FormGroup;
 
   public initialSampleRange?: CodLocationRange;
   public initialRanges?: CodLocationRange[];
@@ -81,7 +81,7 @@ export class CodWatermarkEditorComponent implements OnInit {
   public initialSize?: PhysicalSize;
   public initialChronotope?: AssertedChronotope;
 
-  constructor(formBuilder: UntypedFormBuilder) {
+  constructor(formBuilder: FormBuilder) {
     this.watermarkChange = new EventEmitter<CodWatermark>();
     this.editorClose = new EventEmitter<any>();
     // form
@@ -90,12 +90,12 @@ export class CodWatermarkEditorComponent implements OnInit {
       Validators.maxLength(50),
     ]);
     this.sampleRange = formBuilder.control(null, Validators.required);
-    this.ranges = formBuilder.control(null);
+    this.ranges = formBuilder.control([], { nonNullable: true });
     this.description = formBuilder.control(null, Validators.maxLength(5000));
-    this.ids = formBuilder.control([]);
-    this.hasSize = formBuilder.control(false);
+    this.ids = formBuilder.control([], { nonNullable: true });
+    this.hasSize = formBuilder.control(false, { nonNullable: true });
     this.size = formBuilder.control(null);
-    this.hasChronotope = formBuilder.control(false);
+    this.hasChronotope = formBuilder.control(false, { nonNullable: true });
     this.chronotope = formBuilder.control(null);
     this.form = formBuilder.group({
       name: this.name,
@@ -130,7 +130,7 @@ export class CodWatermarkEditorComponent implements OnInit {
     this.hasSize.setValue(model.size ? true : false);
     this.initialChronotope = model.chronotope;
     this.hasChronotope.setValue(model.chronotope ? true : false);
-    this.description.setValue(model.description);
+    this.description.setValue(model.description || null);
 
     this.form.markAsPristine();
   }
@@ -167,13 +167,15 @@ export class CodWatermarkEditorComponent implements OnInit {
 
   private getModel(): CodWatermark {
     return {
-      name: this.name.value?.trim(),
-      sampleRange: this.sampleRange.value,
+      name: this.name.value?.trim() || '',
+      sampleRange: this.sampleRange.value!,
       ranges: this.ranges.value?.length ? this.ranges.value : undefined,
       ids: this.ids.value?.length ? this.ids.value : undefined,
-      size: this.hasSize.value ? this.size.value : undefined,
-      chronotope: this.hasChronotope.value ? this.chronotope.value : undefined,
-      description: this.description.value?.trim()
+      size: this.hasSize.value ? this.size.value || undefined : undefined,
+      chronotope: this.hasChronotope.value
+        ? this.chronotope.value || undefined
+        : undefined,
+      description: this.description.value?.trim(),
     };
   }
 

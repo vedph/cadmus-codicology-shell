@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormBuilder } from '@angular/forms';
+import { FormControl, FormBuilder } from '@angular/forms';
 import { take } from 'rxjs/operators';
 
 import { deepCopy, NgToolsValidators } from '@myrmidon/ng-tools';
@@ -37,21 +37,21 @@ export class CodShelfmarksPartComponent
   // cod-shelfmark-libraries
   public libEntries: ThesaurusEntry[] | undefined;
 
-  public shelfmarks: UntypedFormControl;
+  public shelfmarks: FormControl<CodShelfmark[]>;
 
   constructor(
     authService: AuthJwtService,
-    formBuilder: UntypedFormBuilder,
+    formBuilder: FormBuilder,
     private _dialogService: DialogService
   ) {
     super(authService);
     this._editedIndex = -1;
     this.tabIndex = 0;
     // form
-    this.shelfmarks = formBuilder.control(
-      [],
-      NgToolsValidators.strictMinLengthValidator(1)
-    );
+    this.shelfmarks = formBuilder.control([], {
+      nonNullable: true,
+      validators: NgToolsValidators.strictMinLengthValidator(1),
+    });
     this.form = formBuilder.group({
       entries: this.shelfmarks,
     });

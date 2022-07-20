@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
-  UntypedFormBuilder,
-  UntypedFormControl,
-  UntypedFormGroup,
+  FormBuilder,
+  FormControl,
+  FormGroup,
   Validators,
 } from '@angular/forms';
 
@@ -41,18 +41,18 @@ export class CodSColDefinitionComponent implements OnInit {
   public editorClose: EventEmitter<any>;
 
   public id: string;
-  public rank: UntypedFormControl;
-  public system: UntypedFormControl;
-  public position: UntypedFormControl;
-  public note: UntypedFormControl;
-  public form: UntypedFormGroup;
+  public rank: FormControl<number>;
+  public system: FormControl<string | null>;
+  public position: FormControl<string | null>;
+  public note: FormControl<string | null>;
+  public form: FormGroup;
 
-  constructor(formBuilder: UntypedFormBuilder) {
+  constructor(formBuilder: FormBuilder) {
     this.definitionChange = new EventEmitter<CodSColDefinition>();
     this.editorClose = new EventEmitter<any>();
     // form
     this.id = '';
-    this.rank = formBuilder.control(0);
+    this.rank = formBuilder.control(0, { nonNullable: true });
     this.system = formBuilder.control(null, [
       Validators.required,
       Validators.maxLength(50),
@@ -86,7 +86,7 @@ export class CodSColDefinitionComponent implements OnInit {
     this.rank.setValue(model.rank || 0);
     this.system.setValue(model.system);
     this.position.setValue(model.position);
-    this.note.setValue(model.note);
+    this.note.setValue(model.note || null);
     this.form.markAsPristine();
   }
 
@@ -94,8 +94,8 @@ export class CodSColDefinitionComponent implements OnInit {
     return {
       id: this.id,
       rank: +this.rank.value || 0,
-      system: this.system.value?.trim(),
-      position: this.position.value?.trim(),
+      system: this.system.value?.trim() || '',
+      position: this.position.value?.trim() || '',
       note: this.note.value?.trim(),
     };
   }

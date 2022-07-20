@@ -9,7 +9,7 @@ import {
   User,
 } from '@myrmidon/auth-jwt-login';
 import { EnvService } from '@myrmidon/ng-tools';
-import { UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
   public logged?: boolean;
   public itemBrowsers?: ThesaurusEntry[];
   public version?: string;
-  public snavToggle: UntypedFormControl;
+  public snavToggle: FormControl<boolean>;
 
   constructor(
     @Inject('itemBrowserKeys')
@@ -31,11 +31,11 @@ export class AppComponent implements OnInit {
     private _appService: AppService,
     private _appQuery: AppQuery,
     private _router: Router,
-    formBuilder: UntypedFormBuilder,
-    env: EnvService,
+    formBuilder: FormBuilder,
+    env: EnvService
   ) {
     this.version = env.get('version');
-    this.snavToggle = formBuilder.control(false);
+    this.snavToggle = formBuilder.control(false, { nonNullable: true });
   }
 
   ngOnInit(): void {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormBuilder, Validators } from '@angular/forms';
+import { FormControl, FormBuilder, Validators } from '@angular/forms';
 import { take } from 'rxjs/operators';
 
 import { deepCopy, NgToolsValidators } from '@myrmidon/ng-tools';
@@ -54,21 +54,21 @@ export class CodWatermarksPartComponent
   // physical-size-units
   public szUnitEntries: ThesaurusEntry[] | undefined;
 
-  public watermarks: UntypedFormControl;
+  public watermarks: FormControl<CodWatermark[]>;
 
   constructor(
     authService: AuthJwtService,
-    formBuilder: UntypedFormBuilder,
+    formBuilder: FormBuilder,
     private _dialogService: DialogService
   ) {
     super(authService);
     this._editedIndex = -1;
     this.tabIndex = 0;
     // form
-    this.watermarks = formBuilder.control(
-      [],
-      NgToolsValidators.strictMinLengthValidator(1)
-    );
+    this.watermarks = formBuilder.control([], {
+      nonNullable: true,
+      validators: NgToolsValidators.strictMinLengthValidator(1),
+    });
     this.form = formBuilder.group({
       watermarks: this.watermarks,
     });

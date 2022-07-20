@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  UntypedFormControl,
-  UntypedFormBuilder,
+  FormControl,
+  FormBuilder,
   Validators,
-  UntypedFormGroup,
+  FormGroup,
 } from '@angular/forms';
 import { filter, Observable, take } from 'rxjs';
 
@@ -61,22 +61,22 @@ export class CodSheetLabelsPartComponent
   public endleafRowIds: string[];
   public qPresent: boolean;
 
-  public opColumn: UntypedFormControl;
-  public opAction: UntypedFormControl;
-  public opForm: UntypedFormGroup;
+  public opColumn: FormControl<string | null>;
+  public opAction: FormControl<string | null>;
+  public opForm: FormGroup;
 
-  public addType: UntypedFormControl;
-  public addName: UntypedFormControl;
-  public addCount: UntypedFormControl;
-  public addForm: UntypedFormGroup;
+  public addType: FormControl<string>;
+  public addName: FormControl<string | null>;
+  public addCount: FormControl<number>;
+  public addForm: FormGroup;
   public adderColumn: boolean;
 
-  public nDefs: UntypedFormControl;
-  public cDefs: UntypedFormControl;
-  public sDefs: UntypedFormControl;
-  public rDefs: UntypedFormControl;
+  public nDefs: FormControl<CodNColDefinition[]>;
+  public cDefs: FormControl<CodCColDefinition[]>;
+  public sDefs: FormControl<CodSColDefinition[]>;
+  public rDefs: FormControl<CodRColDefinition[]>;
 
-  public endleaves: UntypedFormControl;
+  public endleaves: FormControl;
 
   // C-COL
   // cod-catchwords-positions
@@ -109,7 +109,7 @@ export class CodSheetLabelsPartComponent
 
   constructor(
     authService: AuthJwtService,
-    formBuilder: UntypedFormBuilder,
+    formBuilder: FormBuilder,
     private _dialogService: DialogService
   ) {
     super(authService);
@@ -136,19 +136,22 @@ export class CodSheetLabelsPartComponent
       opAction: this.opAction,
     });
 
-    this.addType = formBuilder.control('row-2', Validators.required);
+    this.addType = formBuilder.control('row-2', {
+      nonNullable: true,
+      validators: Validators.required,
+    });
     this.addName = formBuilder.control(null, Validators.maxLength(50));
-    this.addCount = formBuilder.control(1);
+    this.addCount = formBuilder.control(1, { nonNullable: true });
     this.addForm = formBuilder.group({
       addType: this.addType,
       addName: this.addName,
       addCount: this.addCount,
     });
 
-    this.nDefs = formBuilder.control([]);
-    this.cDefs = formBuilder.control([]);
-    this.sDefs = formBuilder.control([]);
-    this.rDefs = formBuilder.control([]);
+    this.nDefs = formBuilder.control([], { nonNullable: true });
+    this.cDefs = formBuilder.control([], { nonNullable: true });
+    this.sDefs = formBuilder.control([], { nonNullable: true });
+    this.rDefs = formBuilder.control([], { nonNullable: true });
 
     this.endleaves = formBuilder.control([]);
 
@@ -172,7 +175,7 @@ export class CodSheetLabelsPartComponent
       ];
     });
     this.addType.valueChanges.subscribe((v) => {
-      this.adderColumn = v && (v as string).startsWith('col');
+      this.adderColumn = v && (v as string).startsWith('col') ? true : false;
     });
     this.initEditor();
   }
@@ -308,8 +311,8 @@ export class CodSheetLabelsPartComponent
       return;
     }
     const cells = LabelGenerator.generateFrom(
-      this.opColumn.value,
-      this.opAction.value
+      this.opColumn.value!,
+      this.opAction.value!
     );
     this._table.addCells(cells);
   }
@@ -354,7 +357,7 @@ export class CodSheetLabelsPartComponent
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          this._table.deleteColumn(this.opColumn.value);
+          this._table.deleteColumn(this.opColumn.value!);
         }
       });
   }
