@@ -44,7 +44,7 @@
 
     <!-- dscKey -->
     <mat-form-field *ngIf="dscKeys?.length">
-      <mat-select [formControl]="dscKey" placeholder="key">
+      <mat-select [formControl]="dscKey" placeholder="dsc.key">
         <mat-option [value]="null">--</mat-option>
         <mat-option *ngFor="let k of dscKeys" [value]="k">{{ k }}</mat-option>
       </mat-select>

@@ -47,7 +47,7 @@
     "@myrmidon/cadmus-item-editor": "^1.1.0",
     "@myrmidon/cadmus-item-list": "^1.1.0",
     "@myrmidon/cadmus-item-search": "^1.1.0",
-    "@myrmidon/cadmus-mat-physical-size": "0.0.3",
+    "@myrmidon/cadmus-mat-physical-size": "0.1.1",
     "@myrmidon/cadmus-profile-core": "^1.1.0",
     "@myrmidon/cadmus-refs-asserted-chronotope": "0.0.7",
     "@myrmidon/cadmus-refs-assertion": "0.0.4",

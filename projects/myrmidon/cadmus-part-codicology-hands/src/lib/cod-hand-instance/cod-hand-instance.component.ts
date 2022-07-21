@@ -84,11 +84,11 @@ export class CodHandInstanceComponent implements OnInit {
   public editorClose: EventEmitter<any>;
 
   public script: FormControl<string | null>;
-  public rank: FormControl<number>;
-  public dscKey: FormControl<string | null>;
   public typologies: FormControl<string[]>;
   public colors: FormControl<string[]>;
   public ranges: FormControl<CodLocationRange[]>;
+  public rank: FormControl<number>;
+  public dscKey: FormControl<string | null>;
   public chronotope: FormControl<AssertedChronotope | null>;
   public images: FormControl<CodImage[]>;
   public form: FormGroup;

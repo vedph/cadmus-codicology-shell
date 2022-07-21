@@ -20,6 +20,8 @@ Quick Docker image build:
 
 ## History
 
+- 2022-07-21: fixes and updates.
+
 ### 2.0.0
 
 - 2022-06-19: upgraded to Angular 14 refactoring all the forms into typed.
