@@ -1,7 +1,7 @@
 import { CodLocationConverter } from './cod-location-converter';
 import { CodRow } from './cod-sheet-labels-part';
 
-fdescribe('CodLocationConverterService', () => {
+describe('CodLocationConverterService', () => {
   const rows: CodRow[] = [
     {
       id: '1r',

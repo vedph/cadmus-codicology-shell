@@ -1,6 +1,6 @@
 import { CodRowType, CodSheetTable } from './cod-sheet-table';
 
-describe('CodSheetTable', () => {
+fdescribe('CodSheetTable', () => {
   it('addColumn should add a new column', () => {
     const table = new CodSheetTable();
     table.addColumn('q');
@@ -341,5 +341,48 @@ describe('CodSheetTable', () => {
         expect(row.columns[1].note).toBeFalsy();
       }
     }
+  });
+
+  it('addCells should interpolate and append not existing rows (before tail)', () => {
+    const table = new CodSheetTable();
+    // 1r 1v (/1r) (/1v) X q n
+    table.addColumn('q');
+    table.addColumn('n');
+    table.appendRows(CodRowType.Body, 2);
+    table.appendRows(CodRowType.EndleafBack, 2);
+
+    table.addCells([
+      {
+        rowId: '2v',
+        id: 'n',
+        value: 'x',
+        note: 'note',
+      },
+    ]);
+
+    const rows = table.getRows();
+    expect(rows.length).toBe(6);
+
+    const expIds = ['1r', '1v', '2r', '2v', '(/1r)', '(/1v)'];
+    for (let i = 0; i < 4; i++) {
+      const row = rows[i];
+      expect(row.id).toBe(expIds[i]);
+      expect(row.columns.length).toBe(2);
+      expect(row.columns[0].id).toBe('q');
+      expect(row.columns[0].value).toBeFalsy();
+      expect(row.columns[0].note).toBeFalsy();
+
+      expect(row.columns[1].id).toBe('n');
+      if (i === 3) {
+        expect(row.columns[1].value).toBe('x');
+        expect(row.columns[1].note).toBe('note');
+      } else {
+        expect(row.columns[1].value).toBeFalsy();
+        expect(row.columns[1].note).toBeFalsy();
+      }
+    }
+
+    expect(rows[4].id).toBe('(/1r)');
+    expect(rows[5].id).toBe('(/1v)');
   });
 });

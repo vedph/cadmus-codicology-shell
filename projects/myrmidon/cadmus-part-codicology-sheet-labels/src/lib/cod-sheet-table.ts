@@ -58,6 +58,12 @@ export class CodSheetTable {
   private _colPrefixes: string[];
 
   /**
+   * True to drop overflow rows when adding columns; false to
+   * add new rows to fit them.
+   */
+  public overflowDropping: boolean | undefined;
+
+  /**
    * The list of all the column IDs in the table, in their order.
    * Table columns are arranged in a fixed order: first by type,
    * then by their ID. Type order is q, n, c, s, r.
@@ -421,7 +427,7 @@ export class CodSheetTable {
       // next page (each row is a page)
       rowIndex++;
       this.incRowPage(interp);
-      rows.push({
+      rows.splice(rowIndex++, 0, {
         id: this.buildRowId(interp.type, interp.n, interp.v),
         columns: this.getNewColumns(),
         ...interp,
@@ -430,7 +436,7 @@ export class CodSheetTable {
 
     // point to the target row
     return {
-      rowIndex: rowIndex + 1,
+      rowIndex,
       rows,
     };
   }
@@ -460,10 +466,18 @@ export class CodSheetTable {
 
     // set cells starting from 1st
     const p = this.parseRowId(cells[0].rowId)!;
+    // determine the limit for the target rows area
+    let limit = rowIndex;
+    while (limit < rows.length && rows[limit].type === p.type) {
+      limit++;
+    }
 
     for (let i = 0; i < cells.length; i++) {
       // if the row does not exist, append it
-      if (rowIndex >= rows.length) {
+      if (rowIndex >= limit) {
+        if (this.overflowDropping) {
+          break;
+        }
         const row = {
           id: cells[i].rowId,
           columns: this.getNewColumns(),
@@ -472,7 +486,7 @@ export class CodSheetTable {
         const col = row.columns.find((c) => c.id === cells[0].id);
         col!.value = cells[i].value;
         col!.note = cells[i].note;
-        rows.push(row);
+        rows.splice(rowIndex, 0, row);
       } else {
         rows[rowIndex].columns[columnIndex].value = cells[i].value;
         rows[rowIndex].columns[columnIndex].note = cells[i].note;
