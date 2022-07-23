@@ -1,6 +1,6 @@
 <form [formGroup]="form" (submit)="save()">
   <div class="type-head">
-    {{ type?.value | flatLookup: decElemTypeEntries:"id":"value" }}
+    {{ type.value | flatLookup: decElemTypeEntries:"id":"value" }}
   </div>
   <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event)">
     <!-- GENERAL -->

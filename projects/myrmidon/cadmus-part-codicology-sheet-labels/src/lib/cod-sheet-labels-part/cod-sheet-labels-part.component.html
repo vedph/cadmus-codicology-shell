@@ -39,7 +39,7 @@
                   mat-icon-button
                   color="primary"
                   matTooltip="Edit the selected column definition"
-                  [disabled]="!opColumn?.value"
+                  [disabled]="!opColumn.value"
                   (click)="onEditColumnDefinition()"
                 >
                   <mat-icon>fact_check</mat-icon>
@@ -49,7 +49,7 @@
                   mat-icon-button
                   color="warn"
                   matTooltip="Delete the selected column"
-                  [disabled]="!opColumn?.value"
+                  [disabled]="!opColumn.value"
                   (click)="onDeleteColumn()"
                 >
                   <mat-icon>delete</mat-icon>
@@ -255,7 +255,7 @@
                 <th></th>
                 <th
                   *ngFor="let c of columns"
-                  [class.selected]="c === opColumn?.value"
+                  [class.selected]="c === opColumn.value"
                 >
                   {{ c }}
                 </th>

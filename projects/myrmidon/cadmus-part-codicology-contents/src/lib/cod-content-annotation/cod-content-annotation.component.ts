@@ -107,6 +107,8 @@ export class CodContentAnnotationComponent implements OnInit {
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
     this.range.setValue(ranges?.length ? ranges[0] : null);
+    this.range.updateValueAndValidity();
+    this.range.markAsDirty();
   }
 
   public cancel(): void {
