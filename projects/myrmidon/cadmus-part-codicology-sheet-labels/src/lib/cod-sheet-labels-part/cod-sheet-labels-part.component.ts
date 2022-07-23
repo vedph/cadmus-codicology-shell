@@ -76,7 +76,8 @@ export class CodSheetLabelsPartComponent
   public sDefs: FormControl<CodSColDefinition[]>;
   public rDefs: FormControl<CodRColDefinition[]>;
 
-  public endleaves: FormControl;
+  public endleaves: FormControl<CodEndleaf[]>;
+  public autoAppend: FormControl<boolean>;
 
   // C-COL
   // cod-catchwords-positions
@@ -114,6 +115,8 @@ export class CodSheetLabelsPartComponent
   ) {
     super(authService);
     this._table = new CodSheetTable();
+    this._table.overflowDropping = true;
+
     this.columns$ = this._table.columnIds$;
     this.rows$ = this._table.rows$;
     this.endleafRowIds = [];
@@ -153,7 +156,7 @@ export class CodSheetLabelsPartComponent
     this.sDefs = formBuilder.control([], { nonNullable: true });
     this.rDefs = formBuilder.control([], { nonNullable: true });
 
-    this.endleaves = formBuilder.control([]);
+    this.endleaves = formBuilder.control([], { nonNullable: true });
 
     this.form = formBuilder.group({
       nDefs: this.nDefs,
@@ -162,6 +165,8 @@ export class CodSheetLabelsPartComponent
       rDefs: this.rDefs,
       endleaves: this.endleaves,
     });
+
+    this.autoAppend = formBuilder.control(false, { nonNullable: true });
   }
 
   public ngOnInit(): void {
@@ -176,6 +181,9 @@ export class CodSheetLabelsPartComponent
     });
     this.addType.valueChanges.subscribe((v) => {
       this.adderColumn = v && (v as string).startsWith('col') ? true : false;
+    });
+    this.autoAppend.valueChanges.subscribe((v) => {
+      this._table.overflowDropping = v ? false : true;
     });
     this.initEditor();
   }
