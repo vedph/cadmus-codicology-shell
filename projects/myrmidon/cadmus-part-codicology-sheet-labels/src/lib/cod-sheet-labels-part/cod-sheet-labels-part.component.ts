@@ -5,7 +5,7 @@ import {
   Validators,
   FormGroup,
 } from '@angular/forms';
-import { filter, Observable, take } from 'rxjs';
+import { Observable, take } from 'rxjs';
 
 import { deepCopy } from '@myrmidon/ng-tools';
 import { DialogService } from '@myrmidon/ng-mat-tools';

@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import { LOCALE_ID, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
@@ -73,12 +73,13 @@ import { CadmusGraphUiModule } from '@myrmidon/cadmus-graph-ui';
 import { CadmusItemEditorModule } from '@myrmidon/cadmus-item-editor';
 import { CadmusItemListModule } from '@myrmidon/cadmus-item-list';
 import { CadmusItemSearchModule } from '@myrmidon/cadmus-item-search';
-import { CadmusPartCodicologySheetLabelsModule } from '@myrmidon/cadmus-part-codicology-sheet-labels';
+//import { CadmusPartCodicologySheetLabelsModule } from '@myrmidon/cadmus-part-codicology-sheet-labels';
 import { CadmusThesaurusEditorModule } from '@myrmidon/cadmus-thesaurus-editor';
 import { CadmusThesaurusListModule } from '@myrmidon/cadmus-thesaurus-list';
 import { CadmusThesaurusUiModule } from '@myrmidon/cadmus-thesaurus-ui';
 
 // locals
+import { CadmusPartCodicologySheetLabelsModule } from 'projects/myrmidon/cadmus-part-codicology-sheet-labels/src/public-api';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -89,8 +90,6 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { PART_EDITOR_KEYS } from './part-editor-keys';
 import { INDEX_LOOKUP_DEFINITIONS } from './index-lookup-definitions';
 import { ITEM_BROWSER_KEYS } from './item-browser-keys';
-import { WindowRefService } from '@myrmidon/ng-tools';
-import { languageFactory } from '@myrmidon/ng-tools';
 
 @NgModule({
   declarations: [

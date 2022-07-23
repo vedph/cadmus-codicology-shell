@@ -318,7 +318,7 @@ export class CodSheetTable {
       value: cell.value,
       note: cell.note,
     });
-    rows[colIndex].columns = cols;
+    rows[rowIndex].columns = cols;
     this._rows$.next(deepCopy(rows));
   }
 

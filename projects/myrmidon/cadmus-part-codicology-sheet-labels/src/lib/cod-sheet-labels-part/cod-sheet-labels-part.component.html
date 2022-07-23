@@ -267,7 +267,7 @@
                 <td *ngFor="let rc of r.columns">
                   <cadmus-cod-label-cell
                     [color]="$any(rc.id | cellTypeColor)"
-                    [cell]="$any(rc | cellAdapter: rc.id)"
+                    [cell]="$any(rc | cellAdapter: r.id)"
                     (cellChange)="onCellChange($event)"
                   ></cadmus-cod-label-cell>
                 </td>
