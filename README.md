@@ -20,6 +20,7 @@ Quick Docker image build:
 
 ## History
 
+- 2022-07-23: changed `CodContent` model by adding `author` and changing `range` to `ranges`.
 - 2022-07-21: fixes and updates.
 
 ### 2.0.0

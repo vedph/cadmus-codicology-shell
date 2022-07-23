@@ -8,11 +8,11 @@
         >EID too long</mat-error
       >
     </mat-form-field>
-    <!-- range -->
+    <!-- ranges -->
     <cadmus-cod-location
-      label="range"
+      label="ranges"
       [required]="true"
-      [location]="initialRange ? [initialRange] : []"
+      [location]="initialRanges"
       (locationChange)="onLocationChange($event)"
     ></cadmus-cod-location>
     <!-- tag (bound) -->
@@ -33,6 +33,17 @@
     </mat-form-field>
   </div>
   <div>
+    <!-- author -->
+    <mat-form-field>
+      <input matInput [formControl]="author" placeholder="author" />
+      <mat-error
+        *ngIf="
+          $any(author).errors?.maxLength && (author.dirty || author.touched)
+        "
+        >author too long</mat-error
+      >
+    </mat-form-field>
+
     <!-- title -->
     <mat-form-field>
       <input matInput [formControl]="title" placeholder="title" />

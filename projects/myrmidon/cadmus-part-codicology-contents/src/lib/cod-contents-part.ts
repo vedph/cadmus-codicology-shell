@@ -11,7 +11,8 @@ export interface CodContentAnnotation {
 
 export interface CodContent {
   eid?: string;
-  range: CodLocationRange;
+  author?: string;
+  ranges: CodLocationRange[];
   states: string[];
   title: string;
   location?: string;
@@ -95,81 +96,91 @@ export const COD_CONTENTS_PART_SCHEMA = {
         anyOf: [
           {
             type: 'object',
-            required: ['range', 'states', 'title'],
+            required: ['ranges', 'states', 'title'],
             properties: {
               eid: {
                 type: 'string',
               },
-              range: {
-                type: 'object',
-                required: ['start', 'end'],
-                properties: {
-                  start: {
-                    type: 'object',
-                    required: ['n'],
-                    properties: {
-                      endleaf: {
-                        type: 'integer',
-                      },
-                      s: {
-                        type: 'string',
-                      },
-                      n: {
-                        type: 'integer',
-                      },
-                      rmn: {
-                        type: 'boolean',
-                      },
-                      sfx: {
-                        type: 'string',
-                      },
-                      v: {
-                        type: 'boolean',
-                      },
-                      c: {
-                        type: 'integer',
-                      },
-                      l: {
-                        type: 'integer',
-                      },
-                      word: {
-                        type: 'string',
+              author: {
+                type: 'string'
+              },
+              ranges: {
+                type: 'array',
+                items: {
+                  anyOf: [
+                    {
+                      type: 'object',
+                      required: ['start', 'end'],
+                      properties: {
+                        start: {
+                          type: 'object',
+                          required: ['n'],
+                          properties: {
+                            endleaf: {
+                              type: 'integer',
+                            },
+                            s: {
+                              type: 'string',
+                            },
+                            n: {
+                              type: 'integer',
+                            },
+                            rmn: {
+                              type: 'boolean',
+                            },
+                            sfx: {
+                              type: 'string',
+                            },
+                            v: {
+                              type: 'boolean',
+                            },
+                            c: {
+                              type: 'integer',
+                            },
+                            l: {
+                              type: 'integer',
+                            },
+                            word: {
+                              type: 'string',
+                            },
+                          },
+                        },
+                        end: {
+                          type: 'object',
+                          required: ['n'],
+                          properties: {
+                            endleaf: {
+                              type: 'integer',
+                            },
+                            s: {
+                              type: 'string',
+                            },
+                            n: {
+                              type: 'integer',
+                            },
+                            rmn: {
+                              type: 'boolean',
+                            },
+                            sfx: {
+                              type: 'string',
+                            },
+                            v: {
+                              type: 'boolean',
+                            },
+                            c: {
+                              type: 'integer',
+                            },
+                            l: {
+                              type: 'integer',
+                            },
+                            word: {
+                              type: 'string',
+                            },
+                          },
+                        },
                       },
                     },
-                  },
-                  end: {
-                    type: 'object',
-                    required: ['n'],
-                    properties: {
-                      endleaf: {
-                        type: 'integer',
-                      },
-                      s: {
-                        type: 'string',
-                      },
-                      n: {
-                        type: 'integer',
-                      },
-                      rmn: {
-                        type: 'boolean',
-                      },
-                      sfx: {
-                        type: 'string',
-                      },
-                      v: {
-                        type: 'boolean',
-                      },
-                      c: {
-                        type: 'integer',
-                      },
-                      l: {
-                        type: 'integer',
-                      },
-                      word: {
-                        type: 'string',
-                      },
-                    },
-                  },
+                  ],
                 },
               },
               states: {

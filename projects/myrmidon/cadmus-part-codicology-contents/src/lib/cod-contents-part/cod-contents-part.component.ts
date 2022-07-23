@@ -119,7 +119,7 @@ export class CodContentsPartComponent
 
   public addContent(): void {
     const content: CodContent = {
-      range: { start: { n: 0 }, end: { n: 0 } },
+      ranges: [],
       states: [],
       title: '',
     };

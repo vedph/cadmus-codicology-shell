@@ -8,7 +8,7 @@ import {
 import { take } from 'rxjs';
 
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { CadmusValidators, ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { Flag } from '@myrmidon/cadmus-ui-flags-picker';
 import { DialogService } from '@myrmidon/ng-mat-tools';
 
@@ -59,7 +59,8 @@ export class CodContentEditorComponent implements OnInit {
   public editorClose: EventEmitter<any>;
 
   public eid: FormControl<string | null>;
-  public range: FormControl<CodLocationRange | null>;
+  public author: FormControl<string | null>;
+  public ranges: FormControl<CodLocationRange[]>;
   public tag: FormControl<string | null>;
   public title: FormControl<string | null>;
   public location: FormControl<string | null>;
@@ -74,7 +75,7 @@ export class CodContentEditorComponent implements OnInit {
 
   public stateFlags: Flag[];
   public initialStates?: string[];
-  public initialRange?: CodLocationRange;
+  public initialRanges: CodLocationRange[];
   public editedAnnotation?: CodContentAnnotation;
 
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
@@ -84,7 +85,11 @@ export class CodContentEditorComponent implements OnInit {
     this._editedAnnotationIndex = -1;
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
-    this.range = formBuilder.control(null, Validators.required);
+    this.author = formBuilder.control(null, Validators.maxLength(50));
+    this.ranges = formBuilder.control([], {
+      validators: CadmusValidators.strictMinLengthValidator(1),
+      nonNullable: true,
+    });
     this.tag = formBuilder.control(null, Validators.maxLength(50));
     this.title = formBuilder.control(null, [
       Validators.required,
@@ -100,7 +105,8 @@ export class CodContentEditorComponent implements OnInit {
     this.annotations = formBuilder.control([], { nonNullable: true });
     this.form = formBuilder.group({
       eid: this.eid,
-      range: this.range,
+      author: this.author,
+      ranges: this.ranges,
       tag: this.tag,
       title: this.title,
       location: this.location,
@@ -112,6 +118,7 @@ export class CodContentEditorComponent implements OnInit {
       states: this.states,
       annotations: this.annotations,
     });
+    this.initialRanges = [];
   }
 
   ngOnInit(): void {
@@ -127,7 +134,8 @@ export class CodContentEditorComponent implements OnInit {
     }
 
     this.eid.setValue(content.eid || null);
-    this.initialRange = content.range;
+    this.author.setValue(content.author || null);
+    this.initialRanges = content.ranges || [];
     this.initialStates = content.states || [];
     this.tag.setValue(content.tag || null);
     this.title.setValue(content.title);
@@ -145,7 +153,8 @@ export class CodContentEditorComponent implements OnInit {
   private getModel(): CodContent | null {
     return {
       eid: this.eid.value?.trim(),
-      range: this.range.value!,
+      author: this.author.value?.trim(),
+      ranges: this.ranges.value || [],
       states: this.states.value || [],
       title: this.title.value?.trim() || '',
       location: this.location.value?.trim(),
@@ -163,9 +172,9 @@ export class CodContentEditorComponent implements OnInit {
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
     console.log('locationChange');
-    this.range.setValue(ranges ? ranges[0] : null);
-    this.range.updateValueAndValidity();
-    this.range.markAsDirty();
+    this.ranges.setValue(ranges || []);
+    this.ranges.updateValueAndValidity();
+    this.ranges.markAsDirty();
   }
 
   public onStateIdsChange(ids: string[]): void {
