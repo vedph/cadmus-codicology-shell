@@ -11,7 +11,7 @@ Quick Docker image build:
 
 1. `npm run build-lib`;
 2. remember to update version in `env.js`, then `ng build`;
-3. `docker build . -t vedph2020/cadmus-codicology-shell:2.0.0 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
+3. `docker build . -t vedph2020/cadmus-codicology-shell:2.0.1 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
 
 ## Shell Architecture
 
@@ -19,6 +19,8 @@ Quick Docker image build:
 - a pages library `cadmus-part-codicology-pg` imports all these libraries and provides routing: `ng g library @myrmidon/cadmus-part-codicology-pg --prefix cadmus`.
 
 ## History
+
+### 2.0.1
 
 - 2022-07-23: changed `CodContent` model by adding `author` and changing `range` to `ranges`.
 - 2022-07-21: fixes and updates.
