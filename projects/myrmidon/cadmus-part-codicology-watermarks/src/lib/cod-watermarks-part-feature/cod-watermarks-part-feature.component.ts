@@ -42,8 +42,8 @@ export class CodWatermarksPartFeatureComponent
 
   public ngOnInit(): void {
     this.initEditor([
-      'external-id-tags',
-      'external-id-scopes',
+      'asserted-id-tags',
+      'asserted-id-scopes',
       'chronotope-tags',
       'assertion-tags',
       'doc-reference-types',

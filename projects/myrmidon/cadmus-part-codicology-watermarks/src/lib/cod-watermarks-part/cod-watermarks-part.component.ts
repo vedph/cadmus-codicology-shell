@@ -16,7 +16,7 @@ import {
 
 /**
  * CodWatermarksPart editor component.
- * Thesauri: external-id-tags, external-id-scopes,
+ * Thesauri: asserted-id-tags, asserted-id-scopes,
  * chronotope-tags, assertion-tags, doc-reference-types,
  * doc-reference-tags, physical-size-tags, physical-size-dim-tags,
  * physical-size-units (all optional).
@@ -35,9 +35,9 @@ export class CodWatermarksPartComponent
   public tabIndex: number;
   public editedWatermark: CodWatermark | undefined;
 
-  // external-id-tags
+  // asserted-id-tags
   public idTagEntries: ThesaurusEntry[] | undefined;
-  // external-id-scopes
+  // asserted-id-scopes
   public idScopeEntries: ThesaurusEntry[] | undefined;
   // chronotope-tags
   public ctTagEntries: ThesaurusEntry[] | undefined;
@@ -92,7 +92,19 @@ export class CodWatermarksPartComponent
   }
 
   protected override onThesauriSet(): void {
-    let key = 'chronotope-tags';
+    let key = 'asserted-id-tags';
+    if (this.thesauri && this.thesauri[key]) {
+      this.assTagEntries = this.thesauri[key].entries;
+    } else {
+      this.assTagEntries = undefined;
+    }
+    key = 'asserted-id-scopes';
+    if (this.thesauri && this.thesauri[key]) {
+      this.idScopeEntries = this.thesauri[key].entries;
+    } else {
+      this.idScopeEntries = undefined;
+    }
+    key = 'chronotope-tags';
     if (this.thesauri && this.thesauri[key]) {
       this.ctTagEntries = this.thesauri[key].entries;
     } else {

@@ -49,7 +49,7 @@
   </div>
   <fieldset>
     <legend>identifiers</legend>
-    <cadmus-refs-external-ids
+    <cadmus-refs-asserted-ids
       [tagEntries]="idTagEntries"
       [scopeEntries]="idScopeEntries"
       [assTagEntries]="assTagEntries"
@@ -57,8 +57,9 @@
       [refTypeEntries]="refTypeEntries"
       [ids]="initialIds || []"
       (idsChange)="onIdsChange($event)"
-    ></cadmus-refs-external-ids>
+    ></cadmus-refs-asserted-ids>
   </fieldset>
+  <br>
   <div>
     <mat-checkbox [formControl]="hasSize">has size</mat-checkbox>
     <fieldset *ngIf="hasSize?.value">

@@ -1,8 +1,8 @@
 import { Part } from '@myrmidon/cadmus-core';
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
-import { RankedExternalId } from '@myrmidon/cadmus-refs-external-ids';
 import { PhysicalSize } from '@myrmidon/cadmus-mat-physical-size';
 import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
+import { AssertedId } from '@myrmidon/cadmus-refs-asserted-ids';
 
 /**
  * A watermark.
@@ -11,7 +11,7 @@ export interface CodWatermark {
   name: string;
   sampleRange: CodLocationRange;
   ranges?: CodLocationRange[];
-  ids?: RankedExternalId[];
+  ids?: AssertedId[];
   size?: PhysicalSize;
   chronotope?: AssertedChronotope;
   description?: string;
@@ -242,15 +242,15 @@ export const COD_WATERMARKS_PART_SCHEMA = {
         anyOf: [
           {
             type: 'object',
-            required: ['value'],
+            required: ['value', 'scope'],
             properties: {
+              tag: {
+                type: 'string',
+              },
               value: {
                 type: 'string',
               },
               scope: {
-                type: 'string',
-              },
-              tag: {
                 type: 'string',
               },
               assertion: {
@@ -269,26 +269,22 @@ export const COD_WATERMARKS_PART_SCHEMA = {
                   references: {
                     type: 'array',
                     items: {
-                      anyOf: [
-                        {
-                          type: 'object',
-                          required: ['citation'],
-                          properties: {
-                            type: {
-                              type: 'string',
-                            },
-                            tag: {
-                              type: 'string',
-                            },
-                            citation: {
-                              type: 'string',
-                            },
-                            note: {
-                              type: 'string',
-                            },
-                          },
+                      type: 'object',
+                      required: ['citation'],
+                      properties: {
+                        type: {
+                          type: 'string',
                         },
-                      ],
+                        tag: {
+                          type: 'string',
+                        },
+                        citation: {
+                          type: 'string',
+                        },
+                        note: {
+                          type: 'string',
+                        },
+                      },
                     },
                   },
                 },

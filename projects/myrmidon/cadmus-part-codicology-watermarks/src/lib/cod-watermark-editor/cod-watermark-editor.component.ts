@@ -10,7 +10,7 @@ import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { PhysicalSize } from '@myrmidon/cadmus-mat-physical-size';
 import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
-import { RankedExternalId } from '@myrmidon/cadmus-refs-external-ids';
+import { AssertedId } from '@myrmidon/cadmus-refs-asserted-ids';
 
 import { CodWatermark } from '../cod-watermarks-part';
 
@@ -31,10 +31,10 @@ export class CodWatermarkEditorComponent implements OnInit {
     this.updateForm(value);
   }
 
-  // external-id-tags
+  // asserted-id-tags
   @Input()
   public idTagEntries: ThesaurusEntry[] | undefined;
-  // external-id-scopes
+  // asserted-id-scopes
   @Input()
   public idScopeEntries: ThesaurusEntry[] | undefined;
   // chronotope-tags
@@ -68,7 +68,7 @@ export class CodWatermarkEditorComponent implements OnInit {
   public sampleRange: FormControl<CodLocationRange | null>;
   public ranges: FormControl<CodLocationRange[]>;
   public description: FormControl<string | null>;
-  public ids: FormControl<RankedExternalId[]>;
+  public ids: FormControl<AssertedId[]>;
   public hasSize: FormControl<boolean>;
   public size: FormControl<PhysicalSize | null>;
   public hasChronotope: FormControl<boolean>;
@@ -77,7 +77,7 @@ export class CodWatermarkEditorComponent implements OnInit {
 
   public initialSampleRange?: CodLocationRange;
   public initialRanges?: CodLocationRange[];
-  public initialIds?: RankedExternalId[];
+  public initialIds?: AssertedId[];
   public initialSize?: PhysicalSize;
   public initialChronotope?: AssertedChronotope;
 
@@ -147,7 +147,7 @@ export class CodWatermarkEditorComponent implements OnInit {
     this.ranges.markAsDirty();
   }
 
-  public onIdsChange(ids: RankedExternalId[] | null) {
+  public onIdsChange(ids: AssertedId[] | null) {
     this.ids.setValue(ids || []);
     this.ids.updateValueAndValidity();
     this.ids.markAsDirty();

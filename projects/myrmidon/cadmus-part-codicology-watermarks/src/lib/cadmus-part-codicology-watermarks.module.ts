@@ -19,7 +19,7 @@ import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
 import { CadmusCodLocationModule } from '@myrmidon/cadmus-cod-location';
 import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
 import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
-import { CadmusRefsExternalIdsModule } from '@myrmidon/cadmus-refs-external-ids';
+import { CadmusRefsAssertedIdsModule } from '@myrmidon/cadmus-refs-asserted-ids';
 import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
 
 import { CodWatermarksPartComponent } from './cod-watermarks-part/cod-watermarks-part.component';
@@ -52,7 +52,7 @@ import { CodWatermarksPartFeatureComponent } from './cod-watermarks-part-feature
     CadmusCodLocationModule,
     CadmusMatPhysicalSizeModule,
     CadmusRefsAssertedChronotopeModule,
-    CadmusRefsExternalIdsModule,
+    CadmusRefsAssertedIdsModule,
     CadmusRefsHistoricalDateModule,
   ],
   exports: [
