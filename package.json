@@ -55,7 +55,6 @@
     "@myrmidon/cadmus-refs-chronotope": "0.0.5",
     "@myrmidon/cadmus-refs-decorated-counts": "0.1.1",
     "@myrmidon/cadmus-refs-doc-references": "^0.1.2",
-    "@myrmidon/cadmus-refs-external-ids": "^0.1.3",
     "@myrmidon/cadmus-refs-historical-date": "^0.1.2",
     "@myrmidon/cadmus-refs-lookup": "^0.0.7",
     "@myrmidon/cadmus-refs-proper-name": "0.0.4",

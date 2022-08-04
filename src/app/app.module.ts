@@ -59,7 +59,7 @@ import { AuthJwtAdminModule } from '@myrmidon/auth-jwt-admin';
 // cadmus bricks
 import { CadmusRefsDocReferencesModule } from '@myrmidon/cadmus-refs-doc-references';
 import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
-import { CadmusRefsExternalIdsModule } from '@myrmidon/cadmus-refs-external-ids';
+import { CadmusRefsAssertedIdsModule } from '@myrmidon/cadmus-refs-asserted-ids';
 
 // cadmus
 import { CadmusApiModule } from '@myrmidon/cadmus-api';
@@ -155,7 +155,7 @@ import { ITEM_BROWSER_KEYS } from './item-browser-keys';
     // cadmus bricks
     CadmusRefsDocReferencesModule,
     CadmusRefsHistoricalDateModule,
-    CadmusRefsExternalIdsModule,
+    CadmusRefsAssertedIdsModule,
     // cadmus
     CadmusApiModule,
     CadmusCoreModule,

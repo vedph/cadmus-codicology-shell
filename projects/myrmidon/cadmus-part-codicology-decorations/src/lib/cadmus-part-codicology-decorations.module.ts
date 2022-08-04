@@ -21,7 +21,6 @@ import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size'
 import { CadmusRefsAssertionModule } from '@myrmidon/cadmus-refs-assertion';
 import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
 import { CadmusRefsDocReferencesModule } from '@myrmidon/cadmus-refs-doc-references';
-import { CadmusRefsExternalIdsModule } from '@myrmidon/cadmus-refs-external-ids';
 import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
@@ -36,6 +35,7 @@ import { CodDecorationArtistComponent } from './cod-decoration-artist/cod-decora
 import { CodDecorationComponent } from './cod-decoration/cod-decoration.component';
 import { CodDecorationsPartComponent } from './cod-decorations-part/cod-decorations-part.component';
 import { CodDecorationsPartFeatureComponent } from './cod-decorations-part-feature/cod-decorations-part-feature.component';
+import { CadmusRefsAssertedIdsModule } from '@myrmidon/cadmus-refs-asserted-ids';
 
 @NgModule({
   declarations: [
@@ -72,9 +72,9 @@ import { CodDecorationsPartFeatureComponent } from './cod-decorations-part-featu
     CadmusUiPgModule,
     CadmusMatPhysicalSizeModule,
     CadmusRefsAssertedChronotopeModule,
+    CadmusRefsAssertedIdsModule,
     CadmusRefsAssertionModule,
     CadmusRefsDocReferencesModule,
-    CadmusRefsExternalIdsModule,
     CadmusRefsHistoricalDateModule,
     CadmusUiFlagsPickerModule,
     CadmusCodLocationModule,

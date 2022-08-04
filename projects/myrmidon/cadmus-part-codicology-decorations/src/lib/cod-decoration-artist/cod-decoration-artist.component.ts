@@ -7,10 +7,7 @@ import {
 } from '@angular/forms';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import {
-  ExternalId,
-  RankedExternalId,
-} from '@myrmidon/cadmus-refs-external-ids';
+import { AssertedId } from '@myrmidon/cadmus-refs-asserted-ids';
 import { DialogService } from '@myrmidon/ng-mat-tools';
 import { take } from 'rxjs';
 
@@ -71,13 +68,13 @@ export class CodDecorationArtistComponent implements OnInit {
   public eid: FormControl<string | null>;
   public type: FormControl<string | null>;
   public name: FormControl<string | null>;
-  public ids: FormControl<ExternalId[]>;
+  public ids: FormControl<AssertedId[]>;
   public styles: FormControl<CodDecorationArtistStyle[]>;
   public elementKeys: FormControl<string | null>;
   public note: FormControl<string | null>;
   public form: FormGroup;
 
-  public initialIds?: ExternalId[];
+  public initialIds?: AssertedId[];
   public editedStyle?: CodDecorationArtistStyle;
 
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
@@ -163,7 +160,7 @@ export class CodDecorationArtistComponent implements OnInit {
     };
   }
 
-  public onIdsChange(ids: RankedExternalId[]): void {
+  public onIdsChange(ids: AssertedId[]): void {
     this.ids.setValue(ids);
     this.ids.updateValueAndValidity();
     this.ids.markAsDirty();

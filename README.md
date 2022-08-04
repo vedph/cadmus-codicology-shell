@@ -11,7 +11,7 @@ Quick Docker image build:
 
 1. `npm run build-lib`; if you are going to use the libraries, publish them via `publish.bat`;
 2. remember to update version in `env.js`, then `ng build`;
-3. `docker build . -t vedph2020/cadmus-codicology-shell:2.0.1 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
+3. `docker build . -t vedph2020/cadmus-codicology-shell:2.0.2 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
 
 ## Shell Architecture
 
@@ -20,6 +20,9 @@ Quick Docker image build:
 
 ## History
 
+### 2.0.2
+
+- 2022-08-04: replaced external ID with asserted ID removing dependency from `@myrmidon/cadmus-refs-external-ids`.
 - 2022-08-03: minor fixes and version bump for all the libraries.
 
 ### 2.0.1

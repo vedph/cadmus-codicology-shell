@@ -2,10 +2,10 @@ import { Part } from '@myrmidon/cadmus-core';
 
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
-import { ExternalId } from '@myrmidon/cadmus-refs-external-ids';
 import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
 import { Assertion } from '@myrmidon/cadmus-refs-assertion';
 import { CodImage } from '@myrmidon/cadmus-codicology-ui';
+import { AssertedId } from '@myrmidon/cadmus-refs-asserted-ids';
 
 /**
  * A conventional style in a decoration's artist.
@@ -23,7 +23,7 @@ export interface CodDecorationArtist {
   eid?: string;
   type: string;
   name: string;
-  ids?: ExternalId[];
+  ids?: AssertedId[];
   styles?: CodDecorationArtistStyle[];
   elementKeys?: string[];
   note?: string;
