@@ -187,6 +187,7 @@
   <fieldset>
     <legend>counts</legend>
     <cadmus-refs-decorated-counts
+      [idEntries]="cntIdEntries"
       [tagEntries]="cntTagEntries"
       [counts]="initialCounts"
       (countsChange)="onCountsChange($event)"

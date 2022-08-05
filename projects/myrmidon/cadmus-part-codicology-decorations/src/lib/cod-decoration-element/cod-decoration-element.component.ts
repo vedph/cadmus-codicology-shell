@@ -354,7 +354,7 @@ export class CodDecorationElementComponent implements OnInit {
     // }
     this.onTabIndexChanged(0);
 
-    // this.adjustUI();
+    this.adjustUI();
 
     this.type.valueChanges
       .pipe(distinctUntilChanged(), debounceTime(300))

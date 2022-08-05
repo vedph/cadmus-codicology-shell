@@ -46,6 +46,7 @@ export class CodLayoutsPartFeatureComponent
       'cod-layout-ruling-techniques',
       'cod-layout-derolez',
       'cod-layout-prickings',
+      'decorated-count-ids',
       'decorated-count-tags',
       'physical-size-dim-tags',
       'physical-size-units',

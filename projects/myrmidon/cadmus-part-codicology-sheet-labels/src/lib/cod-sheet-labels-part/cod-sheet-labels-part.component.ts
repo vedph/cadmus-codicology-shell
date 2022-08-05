@@ -426,6 +426,7 @@ export class CodSheetLabelsPartComponent
     this.closeAllDefEditors();
 
     switch (this.opColumn.value.charAt(0)) {
+      // numbering
       case 'n':
         const nDefs = this.nDefs.value as CodNColDefinition[];
         let nDef = nDefs.find((d) => d.id === this.opColumn.value);
@@ -443,6 +444,7 @@ export class CodSheetLabelsPartComponent
         this.editedNDef = nDef;
         this.editedDefId = nDef.id;
         break;
+      // catchword
       case 'c':
         const cDefs = this.cDefs.value as CodCColDefinition[];
         let cDef = cDefs.find((d) => d.id === this.opColumn.value);
@@ -458,6 +460,7 @@ export class CodSheetLabelsPartComponent
         this.editedCDef = cDef;
         this.editedDefId = cDef.id;
         break;
+      // signature
       case 's':
         const sDefs = this.sDefs.value as CodSColDefinition[];
         let sDef = sDefs.find((d) => d.id === this.opColumn.value);
@@ -469,11 +472,12 @@ export class CodSheetLabelsPartComponent
             position: this.getDefaultEntryId(this.possEntries),
           };
         } else {
-          this._editedNDefIndex = sDefs.indexOf(sDef);
+          this._editedSDefIndex = sDefs.indexOf(sDef);
         }
         this.editedSDef = sDef;
         this.editedDefId = sDef.id;
         break;
+      // register signature
       case 'r':
         const rDefs = this.rDefs.value as CodRColDefinition[];
         let rDef = rDefs.find((d) => d.id === this.opColumn.value);
@@ -484,7 +488,7 @@ export class CodSheetLabelsPartComponent
             position: this.getDefaultEntryId(this.possEntries),
           };
         } else {
-          this._editedNDefIndex = rDefs.indexOf(rDef);
+          this._editedRDefIndex = rDefs.indexOf(rDef);
         }
         this.editedRDef = rDef;
         this.editedDefId = rDef.id;

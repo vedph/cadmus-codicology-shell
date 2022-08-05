@@ -49,6 +49,9 @@ export class CodLayoutEditorComponent implements OnInit {
   // cod-layout-prickings
   @Input()
   public prkEntries: ThesaurusEntry[] | undefined;
+  // decorated-count-ids
+  @Input()
+  public cntIdEntries: ThesaurusEntry[] | undefined;
   // decorated-count-tags
   @Input()
   public cntTagEntries: ThesaurusEntry[] | undefined;

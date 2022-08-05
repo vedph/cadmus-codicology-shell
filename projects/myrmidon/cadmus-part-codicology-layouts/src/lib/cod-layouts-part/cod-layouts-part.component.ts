@@ -17,8 +17,8 @@ import {
 /**
  * CodLayoutsPart editor component.
  * Thesauri: cod-layout-tags, cod-layout-ruling-techniques, cod-layout-derolez,
- * cod-layout-prickings, decorated-count-tags, physical-size-dim-tags,
- * physical-size-units.
+ * cod-layout-prickings, decorated-count-ids, decorated-count-tags,
+ * physical-size-dim-tags, physical-size-units.
  */
 @Component({
   selector: 'cadmus-cod-layouts-part',
@@ -42,6 +42,8 @@ export class CodLayoutsPartComponent
   public drzEntries: ThesaurusEntry[] | undefined;
   // cod-layout-prickings
   public prkEntries: ThesaurusEntry[] | undefined;
+  // decorated-count-ids
+  public cntIdEntries: ThesaurusEntry[] | undefined;
   // decorated-count-tags
   public cntTagEntries: ThesaurusEntry[] | undefined;
   // physical-size-dim-tags
@@ -110,6 +112,12 @@ export class CodLayoutsPartComponent
       this.prkEntries = this.thesauri[key].entries;
     } else {
       this.prkEntries = undefined;
+    }
+    key = 'decorated-count-ids';
+    if (this.thesauri && this.thesauri[key]) {
+      this.cntIdEntries = this.thesauri[key].entries;
+    } else {
+      this.cntIdEntries = undefined;
     }
     key = 'decorated-count-tags';
     if (this.thesauri && this.thesauri[key]) {
