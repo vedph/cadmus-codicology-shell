@@ -20,6 +20,11 @@ Quick Docker image build:
 
 ## History
 
+- 2022-09-24:
+  - updated Angular and Cadmus packages.
+  - fix to decoration element editor (`cadmus-part-codicology-decorations`).
+  - set required for hands instance ranges control (`cadmus-part-codicology-hands`).
+
 ### 2.0.4
 
 - 2022-09-15: updated Angular and Cadmus packages.

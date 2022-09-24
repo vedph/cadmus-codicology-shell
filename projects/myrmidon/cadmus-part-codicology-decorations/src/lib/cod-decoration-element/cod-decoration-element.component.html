@@ -82,7 +82,7 @@
         <!-- lineHeight -->
         <mat-form-field
           style="flex: 0 0 auto; width: 4em"
-          *ngIf="!$any(hidden)?.lineHeight"
+          [hidden]="hidden?.lineHeight"
         >
           <input
             matInput
@@ -94,7 +94,7 @@
         </mat-form-field>
         <!-- textRelation -->
         <mat-form-field
-          *ngIf="!$any(hidden)?.textRelation"
+          [hidden]="hidden?.textRelation"
           style="display: 1 0 auto"
         >
           <input
@@ -122,7 +122,7 @@
       </fieldset>
 
       <!-- subject -->
-      <div *ngIf="!$any(hidden)?.subject">
+      <div [hidden]="hidden?.subject">
         <mat-form-field>
           <input matInput [formControl]="subject" placeholder="subject" />
           <mat-error
@@ -136,7 +136,7 @@
       </div>
 
       <!-- colors -->
-      <fieldset *ngIf="availColors?.length && !$any(hidden)?.colors">
+      <fieldset [hidden]="!availColors.length || hidden?.colors">
         <legend>colors</legend>
         <cadmus-ui-flags-picker
           [flags]="availColors"
@@ -147,8 +147,8 @@
 
       <!-- gildings -->
       <fieldset
-        *ngIf="
-          (availGildings?.length || elemGildingFree) && !$any(hidden)?.gildings
+        [hidden]="
+          (!availGildings.length && !elemGildingFree) || hidden?.gildings
         "
       >
         <legend>gildings</legend>
@@ -162,9 +162,8 @@
 
       <!-- techniques -->
       <fieldset
-        *ngIf="
-          (availTechniques?.length || elemTechniqueFree) &&
-          !$any(hidden)?.techniques
+        [hidden]="
+          (!availTechniques.length && !elemTechniqueFree) || hidden?.techniques
         "
       >
         <legend>techniques</legend>
@@ -178,7 +177,7 @@
 
       <!-- tools -->
       <fieldset
-        *ngIf="(availTools?.length || elemToolFree) && !$any(hidden)?.tools"
+        [hidden]="(!availTools.length && !elemToolFree) || hidden?.tools"
       >
         <legend>tools</legend>
         <cadmus-ui-flags-picker
@@ -191,9 +190,8 @@
 
       <!-- positions -->
       <fieldset
-        *ngIf="
-          (availPositions?.length || elemPositionFree) &&
-          !$any(hidden)?.positions
+        [hidden]="
+          (!availPositions.length && !elemPositionFree) || hidden?.positions
         "
       >
         <legend>positions</legend>

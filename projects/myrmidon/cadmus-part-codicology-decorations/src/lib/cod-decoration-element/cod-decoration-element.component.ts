@@ -20,6 +20,27 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { CodDecorationElement } from '../cod-decorations-part';
 
+/**
+ * List of hidden fields in decoration element component.
+ * This is set by examining the values of the thesaurus
+ * named "cod-decoration-type-hidden" having as key the
+ * element type ID (e.g. "pag-inc"), and as value a space
+ * delimited list of field names. Each of these field names
+ * corresponds to a property of this object.
+ */
+interface HiddenDecElemFields {
+  flags?: boolean;
+  typologies?: boolean;
+  subject?: boolean;
+  colors?: boolean;
+  gildings?: boolean;
+  techniques?: boolean;
+  tools?: boolean;
+  positions?: boolean;
+  lineHeight?: boolean;
+  textRelation?: boolean;
+}
+
 @Component({
   selector: 'cadmus-cod-decoration-element',
   templateUrl: './cod-decoration-element.component.html',
@@ -36,6 +57,7 @@ export class CodDecorationElementComponent implements OnInit {
   private _elemTypolEntries: ThesaurusEntry[] | undefined;
   private _updatingForm?: boolean;
   private _adjustingUI?: boolean;
+  private _inited?: boolean;
 
   @ViewChild('dsceditor', { static: false }) dscEditor: any;
   public editorOptions = {
@@ -214,10 +236,8 @@ export class CodDecorationElementComponent implements OnInit {
 
   // this object has a property for each control
   // to be hidden, having the same name of the control
-  // and value=true. Names you can use are: flags,
-  // typologies, subject, colors, gilding, technique,
-  // tool, position, lineHeight, textRelation.
-  public hidden: { [key: string]: boolean } | undefined;
+  // and value=true.
+  public hidden?: HiddenDecElemFields;
 
   constructor(formBuilder: FormBuilder) {
     this.elementChange = new EventEmitter<CodDecorationElement>();
@@ -335,7 +355,7 @@ export class CodDecorationElementComponent implements OnInit {
   }
 
   private updateVisibility(): void {
-    const hidden: { [key: string]: boolean } = {};
+    const hidden: any = {};
     const entry = this.decTypeHiddenEntries?.find(
       (e) => e.id === this.type.value
     );
@@ -346,12 +366,10 @@ export class CodDecorationElementComponent implements OnInit {
       });
     }
     this.hidden = hidden;
+    console.log('hidden: ' + JSON.stringify(this.hidden));
   }
 
   ngOnInit(): void {
-    // if (this._element) {
-    //   this.updateForm(this._element);
-    // }
     this.onTabIndexChanged(0);
 
     this.adjustUI();
@@ -363,6 +381,7 @@ export class CodDecorationElementComponent implements OnInit {
           this.adjustUI();
         }
       });
+    this._inited = true;
   }
 
   private adjustUI(): void {
@@ -459,31 +478,36 @@ export class CodDecorationElementComponent implements OnInit {
     }
     // general
     this.type.setValue(element.type);
+    // let the UI adjust itself before setting type-dependent controls
     this.adjustUI();
 
-    // let the UI adjust itself before setting type-dependent controls
-    this.key.setValue(element.key || null);
-    this.parentKey.setValue(element.parentKey || null);
-    this.initialRanges = element.ranges;
-    this.initialFlags = element.flags;
-    this.instanceCount.setValue(element.instanceCount || 0);
-    // typologies
-    this.subject.setValue(element.subject || null);
-    this.initialColors = element.colors || [];
-    this.initialTypologies = element.typologies || [];
-    this.initialGildings = element.gildings || [];
-    this.initialTechniques = element.techniques || [];
-    this.initialTools = element.tools || [];
-    this.initialPositions = element.positions || [];
-    this.lineHeight.setValue(element.lineHeight || 0);
-    this.textRelation.setValue(element.textRelation || null);
-    // description
-    this.description.setValue(element.description || null);
-    this.initialImages = element.images || [];
-    this.note.setValue(element.note || null);
+    // set other controls
+    // HACK
+    setTimeout(() => {
+      this.key.setValue(element.key || null);
+      this.parentKey.setValue(element.parentKey || null);
+      this.initialRanges = element.ranges;
+      this.initialFlags = element.flags;
+      this.instanceCount.setValue(element.instanceCount || 0);
+      // typologies
+      this.subject.setValue(element.subject || null);
+      this.initialColors = element.colors || [];
+      this.initialTypologies = element.typologies || [];
+      this.initialGildings = element.gildings || [];
+      this.initialTechniques = element.techniques || [];
+      this.initialTools = element.tools || [];
+      this.initialPositions = element.positions || [];
+      this.lineHeight.setValue(element.lineHeight || 0);
+      this.textRelation.setValue(element.textRelation || null);
+      // description
+      this.description.setValue(element.description || null);
+      this.initialImages = element.images || [];
+      this.note.setValue(element.note || null);
 
-    this.form.markAsPristine();
-    this._updatingForm = false;
+      this.form.markAsPristine();
+      this._updatingForm = false;
+      console.log('updateForm tm exit');
+    }, 0);
     console.log('updateForm exit');
   }
 

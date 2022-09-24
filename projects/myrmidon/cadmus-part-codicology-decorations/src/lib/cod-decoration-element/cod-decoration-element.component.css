@@ -15,3 +15,9 @@ fieldset {
   border-radius: 6px;
   padding: 6px 12px;
 }
+/*
+https://stackoverflow.com/questions/35578083/what-is-the-equivalent-of-ngshow-and-nghide-in-angular-2
+*/
+[hidden] {
+  display: none !important;
+}
