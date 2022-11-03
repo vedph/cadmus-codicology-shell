@@ -20,6 +20,8 @@ Quick Docker image build:
 
 ## History
 
+- 2022-11-03: updated Angular and Cadmus packages.
+
 ### 2.0.5
 
 - 2022-09-24:
