@@ -24,6 +24,7 @@ Quick Docker image build:
 
 ### 2.0.5
 
+- 2022-11-10: updated Angular.
 - 2022-09-24:
   - updated Angular and Cadmus packages.
   - fix to decoration element editor (`cadmus-part-codicology-decorations`).
