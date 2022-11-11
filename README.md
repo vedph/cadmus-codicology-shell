@@ -20,6 +20,9 @@ Quick Docker image build:
 
 ## History
 
+- 2022-11-11:
+  - fix to layout editor (counts not loaded: `@myrmidon/cadmus-part-codicology-layouts`).
+  - fix to hand instance editor (`@myrmidon/cadmus-part-codicology-hands`).
 - 2022-11-03: updated Angular and Cadmus packages.
 
 ### 2.0.5

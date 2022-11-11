@@ -159,11 +159,22 @@ export class CodHandInstanceComponent implements OnInit {
     this.script.setValue(model.script);
     this.rank.setValue(model.rank || 0);
     this.dscKey.setValue(model.descriptionKey || null);
-    this.initialTypologies = model.typologies || [];
+
+    this.typologies.setValue(model.typologies);
+    this.initialTypologies = model.typologies;
+
+    this.colors.setValue(model.colors || []);
     this.initialColors = model.colors || [];
-    this.initialRanges = model.ranges || [];
+
+    this.ranges.setValue(model.ranges);
+    this.initialRanges = model.ranges;
+
+    this.chronotope.setValue(model.chronotope || null);
     this.initialChronotope = model.chronotope;
+
+    this.images.setValue(model.images || []);
     this.initialImages = model.images || [];
+
     this.form.markAsPristine();
   }
 

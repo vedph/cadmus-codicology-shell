@@ -156,6 +156,7 @@ export class CodLayoutEditorComponent implements OnInit {
     this.derolez.setValue(layout.derolez || null);
     this.pricking.setValue(layout.pricking || null);
     this.columnCount.setValue(layout.columnCount);
+    this.counts.setValue(layout.counts || []);
     this.initialCounts = layout.counts || [];
     this.tag.setValue(layout.tag || null);
     this.note.setValue(layout.note || null);
