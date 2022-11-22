@@ -1,5 +1,5 @@
-<form [formGroup]="form!" (submit)="save()">
-  <mat-card>
+<form [formGroup]="form" (submit)="save()">
+  <mat-card appearance="outlined">
     <mat-card-header>
       <div mat-card-avatar>
         <mat-icon>picture_in_picture</mat-icon>
@@ -16,8 +16,9 @@
               <legend>action</legend>
               <form [formGroup]="opForm" class="form-row" (submit)="onAction()">
                 <!-- opColumn -->
-                <mat-form-field style="width: 7em">
-                  <mat-select [formControl]="opColumn" placeholder="column">
+                <mat-form-field style="width: 8em">
+                  <mat-label>column</mat-label>
+                  <mat-select [formControl]="opColumn">
                     <mat-option
                       *ngFor="let c of columns$ | async"
                       [value]="c"
@@ -56,11 +57,11 @@
                 </button>
 
                 <!-- opAction -->
-                <mat-form-field style="width: 6em">
+                <mat-form-field style="width: 7em">
+                  <mat-label>action</mat-label>
                   <input
                     matInput
                     [formControl]="opAction"
-                    placeholder="action"
                     (keyup.enter)="$any($event.target).select()"
                   />
                   <mat-error
@@ -107,7 +108,8 @@
               >
                 <!-- addType -->
                 <mat-form-field>
-                  <mat-select [formControl]="addType" placeholder="type">
+                  <mat-label>type</mat-label>
+                  <mat-select [formControl]="addType">
                     <mat-optgroup label="rows">
                       <mat-option value="row-1">front endleaf</mat-option>
                       <mat-option value="row-2">body</mat-option>
@@ -134,7 +136,8 @@
 
                 <!-- addName -->
                 <mat-form-field *ngIf="adderColumn">
-                  <input matInput [formControl]="addName" placeholder="name" />
+                  <mat-label>name</mat-label>
+                  <input matInput [formControl]="addName" />
                   <mat-error
                     *ngIf="
                       $any(addName).errors?.required &&
@@ -152,13 +155,13 @@
                 </mat-form-field>
 
                 <!-- addCount -->
-                <mat-form-field *ngIf="!adderColumn" style="width: 4em">
+                <mat-form-field *ngIf="!adderColumn" style="width: 6em">
+                  <mat-label>count</mat-label>
                   <input
                     matInput
                     [formControl]="addCount"
                     type="number"
                     min="1"
-                    placeholder="count"
                   />
                 </mat-form-field>
 
@@ -289,9 +292,10 @@
               type="button"
               mat-icon-button
               color="primary"
+              matTooltip="Add endleaf"
               (click)="addEndleaf()"
             >
-              <mat-icon>add_circle</mat-icon> add endleaf
+              <mat-icon>add_circle</mat-icon>
             </button>
           </div>
           <table *ngIf="endleaves?.value?.length">

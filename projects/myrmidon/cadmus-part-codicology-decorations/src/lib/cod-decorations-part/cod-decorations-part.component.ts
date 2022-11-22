@@ -1,12 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormBuilder } from '@angular/forms';
+import {
+  FormControl,
+  FormBuilder,
+  FormGroup,
+  UntypedFormGroup,
+} from '@angular/forms';
 import { take } from 'rxjs/operators';
 
-import { deepCopy, NgToolsValidators } from '@myrmidon/ng-tools';
+import { NgToolsValidators } from '@myrmidon/ng-tools';
 import { DialogService } from '@myrmidon/ng-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
-import { ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { EditedObject, ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
+import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import {
   CodDecoration,
@@ -86,7 +91,7 @@ export class CodDecorationsPartComponent
     formBuilder: FormBuilder,
     private _dialogService: DialogService
   ) {
-    super(authService);
+    super(authService, formBuilder);
     this._editedIndex = -1;
     this.tabIndex = 0;
     // form
@@ -94,178 +99,176 @@ export class CodDecorationsPartComponent
       validators: NgToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
-    this.form = formBuilder.group({
+  }
+
+  public override ngOnInit(): void {
+    super.ngOnInit();
+  }
+
+  protected buildForm(formBuilder: FormBuilder): FormGroup | UntypedFormGroup {
+    return formBuilder.group({
       decorations: this.decorations,
     });
   }
 
-  public ngOnInit(): void {
-    this.initEditor();
-  }
-
-  private updateForm(model: CodDecorationsPart): void {
-    if (!model) {
-      this.form!.reset();
-      return;
-    }
-    this.decorations.setValue(model.decorations || []);
-    this.form!.markAsPristine();
-  }
-
-  protected onModelSet(model: CodDecorationsPart): void {
-    this.updateForm(deepCopy(model));
-  }
-
-  protected override onThesauriSet(): void {
+  private updateThesauri(thesauri: ThesauriSet): void {
     let key = 'cod-decoration-flags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.decFlagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.decFlagEntries = thesauri[key].entries;
     } else {
       this.decFlagEntries = undefined;
     }
 
     key = 'cod-decoration-element-flags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.decElemFlagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.decElemFlagEntries = thesauri[key].entries;
     } else {
       this.decElemFlagEntries = undefined;
     }
 
     key = 'cod-decoration-element-types';
-    if (this.thesauri && this.thesauri[key]) {
-      this.decElemTypeEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.decElemTypeEntries = thesauri[key].entries;
     } else {
       this.decElemTypeEntries = undefined;
     }
 
     key = 'cod-decoration-type-hidden';
-    if (this.thesauri && this.thesauri[key]) {
-      this.decTypeHiddenEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.decTypeHiddenEntries = thesauri[key].entries;
     } else {
       this.decTypeHiddenEntries = undefined;
     }
 
     key = 'cod-decoration-element-colors';
-    if (this.thesauri && this.thesauri[key]) {
-      this.decElemColorEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.decElemColorEntries = thesauri[key].entries;
     } else {
       this.decElemColorEntries = undefined;
     }
 
     key = 'cod-decoration-element-gildings';
-    if (this.thesauri && this.thesauri[key]) {
-      this.decElemGildingEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.decElemGildingEntries = thesauri[key].entries;
     } else {
       this.decElemGildingEntries = undefined;
     }
 
     key = 'cod-decoration-element-techniques';
-    if (this.thesauri && this.thesauri[key]) {
-      this.decElemTechEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.decElemTechEntries = thesauri[key].entries;
     } else {
       this.decElemTechEntries = undefined;
     }
 
     key = 'cod-decoration-element-positions';
-    if (this.thesauri && this.thesauri[key]) {
-      this.decElemPosEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.decElemPosEntries = thesauri[key].entries;
     } else {
       this.decElemPosEntries = undefined;
     }
 
     key = 'cod-decoration-element-tools';
-    if (this.thesauri && this.thesauri[key]) {
-      this.decElemToolEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.decElemToolEntries = thesauri[key].entries;
     } else {
       this.decElemToolEntries = undefined;
     }
 
     key = 'cod-decoration-element-typologies';
-    if (this.thesauri && this.thesauri[key]) {
-      this.decElemTypolEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.decElemTypolEntries = thesauri[key].entries;
     } else {
       this.decElemTypolEntries = undefined;
     }
 
     key = 'cod-image-types';
-    if (this.thesauri && this.thesauri[key]) {
-      this.imgTypeEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.imgTypeEntries = thesauri[key].entries;
     } else {
       this.imgTypeEntries = undefined;
     }
 
     key = 'cod-decoration-artist-types';
-    if (this.thesauri && this.thesauri[key]) {
-      this.artTypeEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.artTypeEntries = thesauri[key].entries;
     } else {
       this.artTypeEntries = undefined;
     }
 
     key = 'cod-decoration-artist-style-names';
-    if (this.thesauri && this.thesauri[key]) {
-      this.artStyleEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.artStyleEntries = thesauri[key].entries;
     } else {
       this.artStyleEntries = undefined;
     }
 
     key = 'chronotope-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.ctTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.ctTagEntries = thesauri[key].entries;
     } else {
       this.ctTagEntries = undefined;
     }
 
     key = 'assertion-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.assTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.assTagEntries = thesauri[key].entries;
     } else {
       this.assTagEntries = undefined;
     }
 
     key = 'doc-reference-types';
-    if (this.thesauri && this.thesauri[key]) {
-      this.refTypeEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.refTypeEntries = thesauri[key].entries;
     } else {
       this.refTypeEntries = undefined;
     }
 
     key = 'doc-reference-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.refTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.refTagEntries = thesauri[key].entries;
     } else {
       this.refTagEntries = undefined;
     }
 
     key = 'external-id-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.idTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.idTagEntries = thesauri[key].entries;
     } else {
       this.idTagEntries = undefined;
     }
 
     key = 'external-id-scopes';
-    if (this.thesauri && this.thesauri[key]) {
-      this.idScopeEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.idScopeEntries = thesauri[key].entries;
     } else {
       this.idScopeEntries = undefined;
     }
   }
 
-  protected getModelFromForm(): CodDecorationsPart {
-    let part = this.model;
+  private updateForm(part?: CodDecorationsPart): void {
     if (!part) {
-      part = {
-        itemId: this.itemId || '',
-        id: '',
-        typeId: COD_DECORATIONS_PART_TYPEID,
-        roleId: this.roleId,
-        timeCreated: new Date(),
-        creatorId: '',
-        timeModified: new Date(),
-        userId: '',
-        decorations: [],
-      };
+      this.form.reset();
+      return;
     }
+    this.decorations.setValue(part.decorations || []);
+    this.form.markAsPristine();
+  }
+
+  protected override onDataSet(data?: EditedObject<CodDecorationsPart>): void {
+    // thesauri
+    if (data?.thesauri) {
+      this.updateThesauri(data.thesauri);
+    }
+
+    // form
+    this.updateForm(data?.value);
+  }
+
+  protected getValue(): CodDecorationsPart {
+    let part = this.getEditedPart(
+      COD_DECORATIONS_PART_TYPEID
+    ) as CodDecorationsPart;
     part.decorations = this.decorations.value || [];
     return part;
   }

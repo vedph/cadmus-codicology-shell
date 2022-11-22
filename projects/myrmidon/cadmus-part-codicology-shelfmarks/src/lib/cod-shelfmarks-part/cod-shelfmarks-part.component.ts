@@ -1,12 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormBuilder } from '@angular/forms';
+import {
+  FormControl,
+  FormBuilder,
+  FormGroup,
+  UntypedFormGroup,
+} from '@angular/forms';
 import { take } from 'rxjs/operators';
 
 import { deepCopy, NgToolsValidators } from '@myrmidon/ng-tools';
 import { DialogService } from '@myrmidon/ng-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
-import { ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { EditedObject, ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
+import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import {
   CodShelfmark,
@@ -44,7 +49,7 @@ export class CodShelfmarksPartComponent
     formBuilder: FormBuilder,
     private _dialogService: DialogService
   ) {
-    super(authService);
+    super(authService, formBuilder);
     this._editedIndex = -1;
     this.tabIndex = 0;
     // form
@@ -52,58 +57,56 @@ export class CodShelfmarksPartComponent
       nonNullable: true,
       validators: NgToolsValidators.strictMinLengthValidator(1),
     });
-    this.form = formBuilder.group({
-      entries: this.shelfmarks,
+  }
+
+  public override ngOnInit(): void {
+    super.ngOnInit();
+  }
+
+  protected buildForm(formBuilder: FormBuilder): FormGroup | UntypedFormGroup {
+    return formBuilder.group({
+      shelfmarks: this.shelfmarks,
     });
   }
 
-  public ngOnInit(): void {
-    this.initEditor();
-  }
-
-  private updateForm(model: CodShelfmarksPart): void {
-    if (!model) {
-      this.form!.reset();
-      return;
-    }
-    this.shelfmarks.setValue(model.shelfmarks || []);
-    this.form!.markAsPristine();
-  }
-
-  protected onModelSet(model: CodShelfmarksPart): void {
-    this.updateForm(deepCopy(model));
-  }
-
-  protected override onThesauriSet(): void {
+  private updateThesauri(thesauri: ThesauriSet): void {
     let key = 'cod-shelfmark-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.tagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.tagEntries = thesauri[key].entries;
     } else {
       this.tagEntries = undefined;
     }
     key = 'cod-shelfmark-libraries';
-    if (this.thesauri && this.thesauri[key]) {
-      this.libEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.libEntries = thesauri[key].entries;
     } else {
       this.libEntries = undefined;
     }
   }
 
-  protected getModelFromForm(): CodShelfmarksPart {
-    let part = this.model;
+  private updateForm(part?: CodShelfmarksPart): void {
     if (!part) {
-      part = {
-        itemId: this.itemId || '',
-        id: '',
-        typeId: COD_SHELFMARKS_PART_TYPEID,
-        roleId: this.roleId,
-        timeCreated: new Date(),
-        creatorId: '',
-        timeModified: new Date(),
-        userId: '',
-        shelfmarks: [],
-      };
+      this.form.reset();
+      return;
     }
+    this.shelfmarks.setValue(part.shelfmarks || []);
+    this.form.markAsPristine();
+  }
+
+  protected override onDataSet(data?: EditedObject<CodShelfmarksPart>): void {
+    // thesauri
+    if (data?.thesauri) {
+      this.updateThesauri(data.thesauri);
+    }
+
+    // form
+    this.updateForm(data?.value);
+  }
+
+  protected getValue(): CodShelfmarksPart {
+    let part = this.getEditedPart(
+      COD_SHELFMARKS_PART_TYPEID
+    ) as CodShelfmarksPart;
     part.shelfmarks = this.shelfmarks.value || [];
     return part;
   }

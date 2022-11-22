@@ -8,6 +8,7 @@ import {
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { PhysicalSize } from '@myrmidon/cadmus-mat-physical-size';
 import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
+
 import { CodBinding } from '../cod-bindings-part';
 
 @Component({

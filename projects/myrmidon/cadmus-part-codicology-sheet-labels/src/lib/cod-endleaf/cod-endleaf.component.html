@@ -2,7 +2,8 @@
   <div class="form-row">
     <!-- location -->
     <mat-form-field>
-      <mat-select [formControl]="location" placeholder="location">
+      <mat-label>location</mat-label>
+      <mat-select [formControl]="location">
         <mat-option *ngFor="let l of locations" [value]="l">{{ l }}</mat-option>
       </mat-select>
       <mat-error
@@ -16,7 +17,8 @@
 
     <!-- material (bound) -->
     <mat-form-field *ngIf="matEntries?.length" class="form-col">
-      <mat-select [formControl]="material" placeholder="material">
+      <mat-label>material</mat-label>
+      <mat-select [formControl]="material">
         <mat-option *ngFor="let e of matEntries" [value]="e.id">{{
           e.value
         }}</mat-option>
@@ -31,7 +33,8 @@
     </mat-form-field>
     <!-- material (free) -->
     <mat-form-field *ngIf="!matEntries?.length" class="form-col">
-      <input matInput [formControl]="material" placeholder="material" />
+      <mat-label>material</mat-label>
+      <input matInput [formControl]="material" />
       <mat-error
         *ngIf="
           $any(material).errors?.required &&

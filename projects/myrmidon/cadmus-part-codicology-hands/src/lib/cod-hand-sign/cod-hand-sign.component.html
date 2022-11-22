@@ -2,7 +2,8 @@
   <div class="form-row">
     <!-- type (bound) -->
     <mat-form-field *ngIf="typeEntries?.length">
-      <mat-select [formControl]="type" placeholder="type">
+      <mat-label>type</mat-label>
+      <mat-select [formControl]="type">
         <mat-option *ngFor="let e of typeEntries" [value]="e.id">{{
           e.value
         }}</mat-option>
@@ -15,7 +16,8 @@
 
     <!-- type (free) -->
     <mat-form-field *ngIf="!typeEntries?.length">
-      <input matInput [formControl]="type" placeholder="type" />
+      <mat-label>type</mat-label>
+      <input matInput [formControl]="type" />
       <mat-error
         *ngIf="$any(type).errors?.required && (type.dirty || type.touched)"
         >type required</mat-error
@@ -28,7 +30,8 @@
 
     <!-- eid -->
     <mat-form-field>
-      <input matInput [formControl]="eid" placeholder="EID" />
+      <mat-label>EID</mat-label>
+      <input matInput [formControl]="eid" />
       <mat-error
         *ngIf="$any(eid).errors?.maxLength && (eid.dirty || eid.touched)"
         >EID too long</mat-error
@@ -44,11 +47,8 @@
   <div>
     <!-- description -->
     <mat-form-field class="long-text">
-      <textarea
-        matInput
-        [formControl]="description"
-        placeholder="description"
-      ></textarea>
+      <mat-label>description</mat-label>
+      <textarea matInput [formControl]="description"></textarea>
       <mat-error
         *ngIf="
           $any(description).errors?.maxLength &&

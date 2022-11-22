@@ -9,9 +9,10 @@
       <mat-form-field
         *ngIf="decElemTypeEntries?.length"
         style="width: 14em"
-        appearance="fill"
+        appearance="outline"
       >
-        <mat-select [formControl]="type" placeholder="type">
+        <mat-label>type</mat-label>
+        <mat-select [formControl]="type">
           <mat-option *ngFor="let e of decElemTypeEntries" [value]="e.id">{{
             e.value
           }}</mat-option>
@@ -23,14 +24,9 @@
       </mat-form-field>
       &nbsp;
       <!-- instanceCount -->
-      <mat-form-field style="width: 4em">
-        <input
-          matInput
-          [formControl]="instanceCount"
-          placeholder="count"
-          type="number"
-          min="0"
-        />
+      <mat-form-field style="width: 6em">
+        <mat-label>count</mat-label>
+        <input matInput [formControl]="instanceCount" type="number" min="0" />
       </mat-form-field>
 
       <!-- ranges -->
@@ -53,7 +49,8 @@
       <div>
         <!-- key -->
         <mat-form-field>
-          <input matInput [formControl]="key" placeholder="key" />
+          <mat-label>key</mat-label>
+          <input matInput [formControl]="key" />
           <mat-error
             *ngIf="$any(key).errors?.pattern && (key.dirty || key.touched)"
             >invalid key</mat-error
@@ -66,7 +63,8 @@
         &nbsp;
         <!-- parentKey -->
         <mat-form-field *ngIf="parentKeys?.length">
-          <mat-select [formControl]="parentKey" placeholder="parent key">
+          <mat-label>parent key</mat-label>
+          <mat-select [formControl]="parentKey">
             <mat-option [value]="null">(none)</mat-option>
             <mat-option *ngFor="let k of parentKeys" [value]="k">{{
               k
@@ -84,30 +82,22 @@
           style="flex: 0 0 auto; width: 4em"
           [hidden]="hidden?.lineHeight"
         >
-          <input
-            matInput
-            type="number"
-            min="0"
-            [formControl]="lineHeight"
-            placeholder="ln.h"
-          />
+          <mat-label>ln.h</mat-label>
+          <input matInput type="number" min="0" [formControl]="lineHeight" />
         </mat-form-field>
         <!-- textRelation -->
         <mat-form-field
           [hidden]="hidden?.textRelation"
           style="display: 1 0 auto"
         >
-          <input
-            matInput
-            [formControl]="textRelation"
-            placeholder="text relation"
-          />
+          <mat-label>text relation</mat-label>
+          <input matInput [formControl]="textRelation" />
           <mat-error
             *ngIf="
               $any(textRelation).errors?.maxLength &&
               (textRelation.dirty || textRelation.touched)
             "
-            >textRelation too long</mat-error
+            >text relation too long</mat-error
           >
         </mat-form-field>
       </div>
@@ -124,7 +114,8 @@
       <!-- subject -->
       <div [hidden]="hidden?.subject">
         <mat-form-field>
-          <input matInput [formControl]="subject" placeholder="subject" />
+          <mat-label>subject</mat-label>
+          <input matInput [formControl]="subject" />
           <mat-error
             *ngIf="
               $any(subject).errors?.maxLength &&
@@ -231,12 +222,8 @@
       <div>
         <!-- note -->
         <mat-form-field class="long-text">
-          <textarea
-            rows="2"
-            matInput
-            [formControl]="note"
-            placeholder="note"
-          ></textarea>
+          <mat-label>note</mat-label>
+          <textarea rows="2" matInput [formControl]="note"></textarea>
           <mat-error
             *ngIf="$any(note).errors?.maxLength && (note.dirty || note.touched)"
             >note too long</mat-error

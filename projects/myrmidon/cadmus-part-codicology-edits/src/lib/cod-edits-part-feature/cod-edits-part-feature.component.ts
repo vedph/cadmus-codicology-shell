@@ -2,14 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import {
-  EditItemQuery,
-  EditItemService,
-  EditPartFeatureBase,
-} from '@myrmidon/cadmus-state';
-
-import { EditCodEditsPartQuery } from './edit-cod-edits-part.query';
-import { EditCodEditsPartService } from './edit-cod-edits-part.service';
+import { EditPartFeatureBase, PartEditorService } from '@myrmidon/cadmus-state';
+import { ItemService, ThesaurusService } from '@myrmidon/cadmus-api';
 
 @Component({
   selector: 'cadmus-cod-edits-part-feature',
@@ -24,24 +18,22 @@ export class CodEditsPartFeatureComponent
     router: Router,
     route: ActivatedRoute,
     snackbar: MatSnackBar,
-    editPartQuery: EditCodEditsPartQuery,
-    editPartService: EditCodEditsPartService,
-    editItemQuery: EditItemQuery,
-    editItemService: EditItemService
+    itemService: ItemService,
+    thesaurusService: ThesaurusService,
+    editorService: PartEditorService
   ) {
     super(
       router,
       route,
       snackbar,
-      editPartQuery,
-      editPartService,
-      editItemQuery,
-      editItemService
+      itemService,
+      thesaurusService,
+      editorService
     );
   }
 
-  public ngOnInit(): void {
-    this.initEditor([
+  protected override getReqThesauriIds(): string[] {
+    return [
       'cod-edit-colors',
       'cod-edit-techniques',
       'cod-edit-types',
@@ -49,6 +41,6 @@ export class CodEditsPartFeatureComponent
       'cod-edit-languages',
       'doc-reference-types',
       'doc-reference-tags',
-    ]);
+    ];
   }
 }

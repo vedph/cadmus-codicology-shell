@@ -1,12 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormBuilder, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormBuilder,
+  Validators,
+  FormGroup,
+  UntypedFormGroup,
+} from '@angular/forms';
 import { take } from 'rxjs/operators';
 
 import { deepCopy, NgToolsValidators } from '@myrmidon/ng-tools';
 import { DialogService } from '@myrmidon/ng-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
-import { ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { EditedObject, ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
+import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import {
   CodWatermark,
@@ -61,7 +67,7 @@ export class CodWatermarksPartComponent
     formBuilder: FormBuilder,
     private _dialogService: DialogService
   ) {
-    super(authService);
+    super(authService, formBuilder);
     this._editedIndex = -1;
     this.tabIndex = 0;
     // form
@@ -69,100 +75,98 @@ export class CodWatermarksPartComponent
       nonNullable: true,
       validators: NgToolsValidators.strictMinLengthValidator(1),
     });
-    this.form = formBuilder.group({
+  }
+
+  public override ngOnInit(): void {
+    super.ngOnInit();
+  }
+
+  protected buildForm(formBuilder: FormBuilder): FormGroup | UntypedFormGroup {
+    return formBuilder.group({
       watermarks: this.watermarks,
     });
   }
 
-  public ngOnInit(): void {
-    this.initEditor();
-  }
-
-  private updateForm(model: CodWatermarksPart): void {
-    if (!model) {
-      this.form!.reset();
-      return;
-    }
-    this.watermarks.setValue(model.watermarks || []);
-    this.form!.markAsPristine();
-  }
-
-  protected onModelSet(model: CodWatermarksPart): void {
-    this.updateForm(deepCopy(model));
-  }
-
-  protected override onThesauriSet(): void {
+  private updateThesauri(thesauri: ThesauriSet): void {
     let key = 'asserted-id-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.assTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.assTagEntries = thesauri[key].entries;
     } else {
       this.assTagEntries = undefined;
     }
     key = 'asserted-id-scopes';
-    if (this.thesauri && this.thesauri[key]) {
-      this.idScopeEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.idScopeEntries = thesauri[key].entries;
     } else {
       this.idScopeEntries = undefined;
     }
     key = 'chronotope-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.ctTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.ctTagEntries = thesauri[key].entries;
     } else {
       this.ctTagEntries = undefined;
     }
     key = 'assertion-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.assTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.assTagEntries = thesauri[key].entries;
     } else {
       this.assTagEntries = undefined;
     }
     key = 'doc-reference-types';
-    if (this.thesauri && this.thesauri[key]) {
-      this.refTypeEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.refTypeEntries = thesauri[key].entries;
     } else {
       this.refTypeEntries = undefined;
     }
     key = 'doc-reference-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.refTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.refTagEntries = thesauri[key].entries;
     } else {
       this.refTagEntries = undefined;
     }
     key = 'physical-size-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.szTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.szTagEntries = thesauri[key].entries;
     } else {
       this.szTagEntries = undefined;
     }
     key = 'physical-size-dim-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.szDimTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.szDimTagEntries = thesauri[key].entries;
     } else {
       this.szDimTagEntries = undefined;
     }
     key = 'physical-size-units';
-    if (this.thesauri && this.thesauri[key]) {
-      this.szUnitEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.szUnitEntries = thesauri[key].entries;
     } else {
       this.szUnitEntries = undefined;
     }
   }
 
-  protected getModelFromForm(): CodWatermarksPart {
-    let part = this.model;
+  private updateForm(part?: CodWatermarksPart): void {
     if (!part) {
-      part = {
-        itemId: this.itemId || '',
-        id: '',
-        typeId: COD_WATERMARKS_PART_TYPEID,
-        roleId: this.roleId,
-        timeCreated: new Date(),
-        creatorId: '',
-        timeModified: new Date(),
-        userId: '',
-        watermarks: [],
-      };
+      this.form.reset();
+      return;
     }
+    this.watermarks.setValue(part.watermarks || []);
+    this.form.markAsPristine();
+  }
+
+  protected override onDataSet(data?: EditedObject<CodWatermarksPart>): void {
+    // thesauri
+    if (data?.thesauri) {
+      this.updateThesauri(data.thesauri);
+    }
+
+    // form
+    this.updateForm(data?.value);
+  }
+
+  protected getValue(): CodWatermarksPart {
+    let part = this.getEditedPart(
+      COD_WATERMARKS_PART_TYPEID
+    ) as CodWatermarksPart;
     part.watermarks = this.watermarks.value || [];
     return part;
   }

@@ -1,12 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormBuilder } from '@angular/forms';
+import {
+  FormControl,
+  FormBuilder,
+  FormGroup,
+  UntypedFormGroup,
+} from '@angular/forms';
 import { take } from 'rxjs/operators';
 
-import { deepCopy, NgToolsValidators } from '@myrmidon/ng-tools';
+import { NgToolsValidators } from '@myrmidon/ng-tools';
 import { DialogService } from '@myrmidon/ng-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
-import { ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { EditedObject, ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
+import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
+
 import {
   CodBinding,
   CodBindingsPart,
@@ -61,7 +67,7 @@ export class CodBindingsPartComponent
     formBuilder: FormBuilder,
     private _dialogService: DialogService
   ) {
-    super(authService);
+    super(authService, formBuilder);
     this._editedIndex = -1;
     this.tabIndex = 0;
     // form
@@ -69,106 +75,102 @@ export class CodBindingsPartComponent
       validators: NgToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
-    this.form = formBuilder.group({
+  }
+
+  public override ngOnInit(): void {
+    super.ngOnInit();
+  }
+
+  protected buildForm(formBuilder: FormBuilder): FormGroup | UntypedFormGroup {
+    return formBuilder.group({
       entries: this.entries,
     });
   }
 
-  public ngOnInit(): void {
-    this.initEditor();
-  }
-
-  private updateForm(model: CodBindingsPart): void {
-    if (!model) {
-      this.form!.reset();
-      return;
-    }
-    this.entries.setValue(model.bindings || []);
-    this.form!.markAsPristine();
-  }
-
-  protected onModelSet(model: CodBindingsPart): void {
-    this.updateForm(deepCopy(model));
-  }
-
-  protected override onThesauriSet(): void {
+  private updateThesauri(thesauri: ThesauriSet): void {
     let key = 'cod-binding-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.tagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.tagEntries = thesauri[key].entries;
     } else {
       this.tagEntries = undefined;
     }
     key = 'cod-binding-cover-materials';
-    if (this.thesauri && this.thesauri[key]) {
-      this.coverEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.coverEntries = thesauri[key].entries;
     } else {
       this.coverEntries = undefined;
     }
     key = 'cod-binding-board-materials';
-    if (this.thesauri && this.thesauri[key]) {
-      this.boardEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.boardEntries = thesauri[key].entries;
     } else {
       this.boardEntries = undefined;
     }
     key = 'chronotope-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.ctTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.ctTagEntries = thesauri[key].entries;
     } else {
       this.ctTagEntries = undefined;
     }
     key = 'assertion-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.assTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.assTagEntries = thesauri[key].entries;
     } else {
       this.assTagEntries = undefined;
     }
     key = 'doc-reference-types';
-    if (this.thesauri && this.thesauri[key]) {
-      this.refTypeEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.refTypeEntries = thesauri[key].entries;
     } else {
       this.refTypeEntries = undefined;
     }
     key = 'doc-reference-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.refTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.refTagEntries = thesauri[key].entries;
     } else {
       this.refTagEntries = undefined;
     }
     key = 'physical-size-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.szTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.szTagEntries = thesauri[key].entries;
     } else {
       this.szTagEntries = undefined;
     }
     key = 'physical-size-dim-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.szDimTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.szDimTagEntries = thesauri[key].entries;
     } else {
       this.szDimTagEntries = undefined;
     }
     key = 'physical-size-units';
-    if (this.thesauri && this.thesauri[key]) {
-      this.szUnitEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.szUnitEntries = thesauri[key].entries;
     } else {
       this.szUnitEntries = undefined;
     }
   }
 
-  protected getModelFromForm(): CodBindingsPart {
-    let part = this.model;
+  private updateForm(part?: CodBindingsPart): void {
     if (!part) {
-      part = {
-        itemId: this.itemId || '',
-        id: '',
-        typeId: COD_BINDINGS_PART_TYPEID,
-        roleId: this.roleId,
-        timeCreated: new Date(),
-        creatorId: '',
-        timeModified: new Date(),
-        userId: '',
-        bindings: [],
-      };
+      this.form.reset();
+      return;
     }
+    this.entries.setValue(part.bindings || []);
+    this.form.markAsPristine();
+  }
+
+  protected override onDataSet(data?: EditedObject<CodBindingsPart>): void {
+    // thesauri
+    if (data?.thesauri) {
+      this.updateThesauri(data.thesauri);
+    }
+
+    // form
+    this.updateForm(data?.value);
+  }
+
+  protected getValue(): CodBindingsPart {
+    let part = this.getEditedPart(COD_BINDINGS_PART_TYPEID) as CodBindingsPart;
     part.bindings = this.entries.value || [];
     return part;
   }

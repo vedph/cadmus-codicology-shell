@@ -55,7 +55,8 @@
         <div class="form-row">
           <!-- type (bound) -->
           <mat-form-field *ngIf="typeEntries?.length">
-            <mat-select formControlName="type" placeholder="type">
+            <mat-label>type</mat-label>
+            <mat-select formControlName="type">
               <mat-option *ngFor="let e of typeEntries" [value]="e.id">{{
                 e.value
               }}</mat-option>
@@ -71,7 +72,8 @@
           </mat-form-field>
           <!-- type (free) -->
           <mat-form-field *ngIf="!typeEntries?.length">
-            <input matInput formControlName="type" placeholder="type" />
+            <mat-label>type</mat-label>
+            <input matInput formControlName="type" />
             <mat-error
               *ngIf="
                 $any(item)['controls'].type.errors?.required &&
@@ -93,7 +95,8 @@
           <!-- id -->
           &nbsp;
           <mat-form-field>
-            <input matInput formControlName="id" placeholder="ID" />
+            <mat-label>ID</mat-label>
+            <input matInput formControlName="id" />
             <mat-error
               *ngIf="
                 $any(item)['controls'].id.errors?.required &&
@@ -115,7 +118,8 @@
           <!-- sourceId -->
           &nbsp;
           <mat-form-field>
-            <input matInput formControlName="sourceId" placeholder="source" />
+            <mat-label>source</mat-label>
+            <input matInput formControlName="sourceId" />
             <mat-error
               *ngIf="
                 $any(item)['controls'].sourceId.errors?.required &&
@@ -137,7 +141,8 @@
         <div class="form-row">
           <!-- label -->
           <mat-form-field style="flex: 1 0 auto">
-            <input matInput formControlName="label" placeholder="label" />
+            <mat-label>label</mat-label>
+            <input matInput formControlName="label" />
             <mat-error
               *ngIf="
                 $any(item)['controls'].label.errors?.maxLength &&
@@ -151,10 +156,10 @@
           <!-- copyright -->
           &nbsp;
           <mat-form-field>
+            <mat-label>copyright</mat-label>
             <input
               matInput
               formControlName="copyright"
-              placeholder="copyright"
             />
             <mat-error
               *ngIf="

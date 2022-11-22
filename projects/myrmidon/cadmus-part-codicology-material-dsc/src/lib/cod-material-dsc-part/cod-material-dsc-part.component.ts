@@ -1,10 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormBuilder, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormBuilder,
+  FormGroup,
+  UntypedFormGroup,
+} from '@angular/forms';
 
-import { deepCopy, NgToolsValidators } from '@myrmidon/ng-tools';
+import { NgToolsValidators } from '@myrmidon/ng-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
-import { ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { EditedObject, ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
+import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import {
   CodMaterialDscPart,
@@ -61,7 +66,7 @@ export class CodMaterialDscPartComponent
     formBuilder: FormBuilder,
     private _dialogService: DialogService
   ) {
-    super(authService);
+    super(authService, formBuilder);
     this._editedUtIndex = -1;
     this._editedPsIndex = -1;
     this.tabIndex = 0;
@@ -71,96 +76,94 @@ export class CodMaterialDscPartComponent
       nonNullable: true,
     });
     this.palimpsests = formBuilder.control([], { nonNullable: true });
-    this.form = formBuilder.group({
+  }
+
+  public override ngOnInit(): void {
+    super.ngOnInit();
+  }
+
+  protected buildForm(formBuilder: FormBuilder): FormGroup | UntypedFormGroup {
+    return formBuilder.group({
       units: this.units,
       palimpsests: this.palimpsests,
     });
   }
 
-  public ngOnInit(): void {
-    this.initEditor();
-  }
-
-  private updateForm(model: CodMaterialDscPart): void {
-    if (!model) {
-      this.form!.reset();
-      return;
-    }
-    this.units.setValue(model.units || []);
-    this.palimpsests.setValue(model.palimpsests || []);
-    this.form!.markAsPristine();
-  }
-
-  protected onModelSet(model: CodMaterialDscPart): void {
-    this.updateForm(deepCopy(model));
-  }
-
-  protected override onThesauriSet(): void {
+  private updateThesauri(thesauri: ThesauriSet): void {
     let key = 'cod-unit-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.tagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.tagEntries = thesauri[key].entries;
     } else {
       this.tagEntries = undefined;
     }
     key = 'cod-unit-materials';
-    if (this.thesauri && this.thesauri[key]) {
-      this.materialEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.materialEntries = thesauri[key].entries;
     } else {
       this.materialEntries = undefined;
     }
     key = 'cod-unit-formats';
-    if (this.thesauri && this.thesauri[key]) {
-      this.formatEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.formatEntries = thesauri[key].entries;
     } else {
       this.formatEntries = undefined;
     }
     key = 'cod-unit-states';
-    if (this.thesauri && this.thesauri[key]) {
-      this.stateEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.stateEntries = thesauri[key].entries;
     } else {
       this.stateEntries = undefined;
     }
     key = 'chronotope-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.ctTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.ctTagEntries = thesauri[key].entries;
     } else {
       this.ctTagEntries = undefined;
     }
     key = 'assertion-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.assTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.assTagEntries = thesauri[key].entries;
     } else {
       this.assTagEntries = undefined;
     }
     key = 'doc-reference-types';
-    if (this.thesauri && this.thesauri[key]) {
-      this.refTypeEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.refTypeEntries = thesauri[key].entries;
     } else {
       this.refTypeEntries = undefined;
     }
     key = 'doc-reference-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.refTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.refTagEntries = thesauri[key].entries;
     } else {
       this.refTagEntries = undefined;
     }
   }
 
-  protected getModelFromForm(): CodMaterialDscPart {
-    let part = this.model;
+  private updateForm(part?: CodMaterialDscPart): void {
     if (!part) {
-      part = {
-        itemId: this.itemId || '',
-        id: '',
-        typeId: COD_MATERIAL_DSC_PART_TYPEID,
-        roleId: this.roleId,
-        timeCreated: new Date(),
-        creatorId: '',
-        timeModified: new Date(),
-        userId: '',
-        units: [],
-      };
+      this.form.reset();
+      return;
     }
+    this.units.setValue(part.units || []);
+    this.palimpsests.setValue(part.palimpsests || []);
+    this.form.markAsPristine();
+  }
+
+  protected override onDataSet(data?: EditedObject<CodMaterialDscPart>): void {
+    // thesauri
+    if (data?.thesauri) {
+      this.updateThesauri(data.thesauri);
+    }
+
+    // form
+    this.updateForm(data?.value);
+  }
+
+  protected getValue(): CodMaterialDscPart {
+    let part = this.getEditedPart(
+      COD_MATERIAL_DSC_PART_TYPEID
+    ) as CodMaterialDscPart;
     part.units = this.units.value || [];
     part.palimpsests = this.palimpsests.value?.length
       ? this.palimpsests.value

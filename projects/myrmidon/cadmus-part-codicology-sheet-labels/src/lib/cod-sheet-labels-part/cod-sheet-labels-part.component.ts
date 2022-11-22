@@ -4,14 +4,15 @@ import {
   FormBuilder,
   Validators,
   FormGroup,
+  UntypedFormGroup,
 } from '@angular/forms';
 import { Observable, take } from 'rxjs';
 
 import { deepCopy } from '@myrmidon/ng-tools';
 import { DialogService } from '@myrmidon/ng-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
-import { ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { EditedObject, ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
+import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import {
   CodCColDefinition,
@@ -113,7 +114,7 @@ export class CodSheetLabelsPartComponent
     formBuilder: FormBuilder,
     private _dialogService: DialogService
   ) {
-    super(authService);
+    super(authService, formBuilder);
     this._table = new CodSheetTable();
     this._table.overflowDropping = true;
 
@@ -158,18 +159,12 @@ export class CodSheetLabelsPartComponent
 
     this.endleaves = formBuilder.control([], { nonNullable: true });
 
-    this.form = formBuilder.group({
-      nDefs: this.nDefs,
-      cDefs: this.cDefs,
-      sDefs: this.sDefs,
-      rDefs: this.rDefs,
-      endleaves: this.endleaves,
-    });
-
     this.autoAppend = formBuilder.control(false, { nonNullable: true });
   }
 
-  public ngOnInit(): void {
+  public override ngOnInit(): void {
+    super.ngOnInit();
+
     this.rows$.subscribe((rows) => {
       this.endleafRowIds = [
         ...new Set(
@@ -185,20 +180,104 @@ export class CodSheetLabelsPartComponent
     this.autoAppend.valueChanges.subscribe((v) => {
       this._table.overflowDropping = v ? false : true;
     });
-    this.initEditor();
   }
 
-  private updateForm(model: CodSheetLabelsPart): void {
-    if (!model) {
-      this.form!.reset();
+  protected buildForm(formBuilder: FormBuilder): FormGroup | UntypedFormGroup {
+    return formBuilder.group({
+      nDefs: this.nDefs,
+      cDefs: this.cDefs,
+      sDefs: this.sDefs,
+      rDefs: this.rDefs,
+      endleaves: this.endleaves,
+    });
+  }
+
+  private updateThesauri(thesauri: ThesauriSet): void {
+    let key = 'cod-catchwords-positions';
+    if (this.hasThesaurus(key)) {
+      this.poscEntries = thesauri[key].entries;
+    } else {
+      this.poscEntries = undefined;
+    }
+    key = 'cod-numbering-systems';
+    if (this.hasThesaurus(key)) {
+      this.sysnEntries = thesauri[key].entries;
+    } else {
+      this.sysnEntries = undefined;
+    }
+    key = 'cod-numbering-techniques';
+    if (this.hasThesaurus(key)) {
+      this.techEntries = thesauri[key].entries;
+    } else {
+      this.techEntries = undefined;
+    }
+    key = 'cod-numbering-positions';
+    if (this.hasThesaurus(key)) {
+      this.posnEntries = thesauri[key].entries;
+    } else {
+      this.posnEntries = undefined;
+    }
+    key = 'cod-numbering-colors';
+    if (this.hasThesaurus(key)) {
+      this.clrEntries = thesauri[key].entries;
+    } else {
+      this.clrEntries = undefined;
+    }
+    key = 'cod-quiresig-systems';
+    if (this.hasThesaurus(key)) {
+      this.syssEntries = thesauri[key].entries;
+    } else {
+      this.syssEntries = undefined;
+    }
+    key = 'cod-quiresig-positions';
+    if (this.hasThesaurus(key)) {
+      this.possEntries = thesauri[key].entries;
+    } else {
+      this.possEntries = undefined;
+    }
+    key = 'cod-endleaf-materials';
+    if (this.hasThesaurus(key)) {
+      this.matEntries = thesauri[key].entries;
+    } else {
+      this.matEntries = undefined;
+    }
+    key = 'chronotope-tags';
+    if (this.hasThesaurus(key)) {
+      this.ctTagEntries = thesauri[key].entries;
+    } else {
+      this.ctTagEntries = undefined;
+    }
+    key = 'assertion-tags';
+    if (this.hasThesaurus(key)) {
+      this.assTagEntries = thesauri[key].entries;
+    } else {
+      this.assTagEntries = undefined;
+    }
+    key = 'doc-reference-types';
+    if (this.hasThesaurus(key)) {
+      this.refTypeEntries = thesauri[key].entries;
+    } else {
+      this.refTypeEntries = undefined;
+    }
+    key = 'doc-reference-tags';
+    if (this.hasThesaurus(key)) {
+      this.refTagEntries = thesauri[key].entries;
+    } else {
+      this.refTagEntries = undefined;
+    }
+  }
+
+  private updateForm(part?: CodSheetLabelsPart): void {
+    if (!part) {
+      this.form.reset();
       return;
     }
-    this._table.setRows(model.rows || []);
-    this.nDefs.setValue(model.nDefinitions || []);
-    this.cDefs.setValue(model.cDefinitions || []);
-    this.sDefs.setValue(model.sDefinitions || []);
-    this.rDefs.setValue(model.rDefinitions || []);
-    this.endleaves.setValue(model.endleaves || []);
+    this._table.setRows(part.rows || []);
+    this.nDefs.setValue(part.nDefinitions || []);
+    this.cDefs.setValue(part.cDefinitions || []);
+    this.sDefs.setValue(part.sDefinitions || []);
+    this.rDefs.setValue(part.rDefinitions || []);
+    this.endleaves.setValue(part.endleaves || []);
 
     // other values in UI
     this.qPresent = this._table.hasColumn('q');
@@ -206,103 +285,23 @@ export class CodSheetLabelsPartComponent
       this.addType.setValue('row-2');
     }
 
-    this.form!.markAsPristine();
+    this.form.markAsPristine();
   }
 
-  protected onModelSet(model: CodSheetLabelsPart): void {
-    this.updateForm(deepCopy(model));
+  protected override onDataSet(data?: EditedObject<CodSheetLabelsPart>): void {
+    // thesauri
+    if (data?.thesauri) {
+      this.updateThesauri(data.thesauri);
+    }
+
+    // form
+    this.updateForm(data?.value);
   }
 
-  protected override onThesauriSet(): void {
-    let key = 'cod-catchwords-positions';
-    if (this.thesauri && this.thesauri[key]) {
-      this.poscEntries = this.thesauri[key].entries;
-    } else {
-      this.poscEntries = undefined;
-    }
-    key = 'cod-numbering-systems';
-    if (this.thesauri && this.thesauri[key]) {
-      this.sysnEntries = this.thesauri[key].entries;
-    } else {
-      this.sysnEntries = undefined;
-    }
-    key = 'cod-numbering-techniques';
-    if (this.thesauri && this.thesauri[key]) {
-      this.techEntries = this.thesauri[key].entries;
-    } else {
-      this.techEntries = undefined;
-    }
-    key = 'cod-numbering-positions';
-    if (this.thesauri && this.thesauri[key]) {
-      this.posnEntries = this.thesauri[key].entries;
-    } else {
-      this.posnEntries = undefined;
-    }
-    key = 'cod-numbering-colors';
-    if (this.thesauri && this.thesauri[key]) {
-      this.clrEntries = this.thesauri[key].entries;
-    } else {
-      this.clrEntries = undefined;
-    }
-    key = 'cod-quiresig-systems';
-    if (this.thesauri && this.thesauri[key]) {
-      this.syssEntries = this.thesauri[key].entries;
-    } else {
-      this.syssEntries = undefined;
-    }
-    key = 'cod-quiresig-positions';
-    if (this.thesauri && this.thesauri[key]) {
-      this.possEntries = this.thesauri[key].entries;
-    } else {
-      this.possEntries = undefined;
-    }
-    key = 'cod-endleaf-materials';
-    if (this.thesauri && this.thesauri[key]) {
-      this.matEntries = this.thesauri[key].entries;
-    } else {
-      this.matEntries = undefined;
-    }
-    key = 'chronotope-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.ctTagEntries = this.thesauri[key].entries;
-    } else {
-      this.ctTagEntries = undefined;
-    }
-    key = 'assertion-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.assTagEntries = this.thesauri[key].entries;
-    } else {
-      this.assTagEntries = undefined;
-    }
-    key = 'doc-reference-types';
-    if (this.thesauri && this.thesauri[key]) {
-      this.refTypeEntries = this.thesauri[key].entries;
-    } else {
-      this.refTypeEntries = undefined;
-    }
-    key = 'doc-reference-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.refTagEntries = this.thesauri[key].entries;
-    } else {
-      this.refTagEntries = undefined;
-    }
-  }
-
-  protected getModelFromForm(): CodSheetLabelsPart {
-    let part = this.model;
-    if (!part) {
-      part = {
-        itemId: this.itemId || '',
-        id: '',
-        typeId: COD_SHEET_LABELS_PART_TYPEID,
-        roleId: this.roleId,
-        timeCreated: new Date(),
-        creatorId: '',
-        timeModified: new Date(),
-        userId: '',
-        rows: [],
-      };
-    }
+  protected getValue(): CodSheetLabelsPart {
+    let part = this.getEditedPart(
+      COD_SHEET_LABELS_PART_TYPEID
+    ) as CodSheetLabelsPart;
     part.rows = this._table.getRows();
     part.nDefinitions = this.nDefs.value?.length ? this.nDefs.value : undefined;
     part.cDefinitions = this.cDefs.value?.length ? this.cDefs.value : undefined;

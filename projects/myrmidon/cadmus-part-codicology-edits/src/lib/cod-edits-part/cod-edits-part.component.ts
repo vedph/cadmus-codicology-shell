@@ -1,12 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormBuilder } from '@angular/forms';
+import {
+  FormControl,
+  FormBuilder,
+  FormGroup,
+  UntypedFormGroup,
+} from '@angular/forms';
 import { take } from 'rxjs/operators';
 
 import { deepCopy, NgToolsValidators } from '@myrmidon/ng-tools';
 import { DialogService } from '@myrmidon/ng-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
-import { ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { EditedObject, ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
+import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import {
   CodEdit,
@@ -56,7 +61,7 @@ export class CodEditsPartComponent
     formBuilder: FormBuilder,
     private _dialogService: DialogService
   ) {
-    super(authService);
+    super(authService, formBuilder);
     this._editedIndex = -1;
     this.tabIndex = 0;
     // form
@@ -64,88 +69,84 @@ export class CodEditsPartComponent
       validators: NgToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
-    this.form = formBuilder.group({
+  }
+
+  public override ngOnInit(): void {
+    super.ngOnInit();
+  }
+
+  protected buildForm(formBuilder: FormBuilder): FormGroup | UntypedFormGroup {
+    return formBuilder.group({
       edits: this.edits,
     });
   }
 
-  public ngOnInit(): void {
-    this.initEditor();
-  }
-
-  private updateForm(model: CodEditsPart): void {
-    if (!model) {
-      this.form!.reset();
-      return;
-    }
-    this.edits.setValue(model.edits || []);
-    this.form!.markAsPristine();
-  }
-
-  protected onModelSet(model: CodEditsPart): void {
-    this.updateForm(deepCopy(model));
-  }
-
-  protected override onThesauriSet(): void {
+  private updateThesauri(thesauri: ThesauriSet): void {
     let key = 'cod-edit-colors';
-    if (this.thesauri && this.thesauri[key]) {
-      this.colorEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.colorEntries = thesauri[key].entries;
     } else {
       this.colorEntries = undefined;
     }
     key = 'cod-edit-techniques';
-    if (this.thesauri && this.thesauri[key]) {
-      this.techEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.techEntries = thesauri[key].entries;
     } else {
       this.techEntries = undefined;
     }
     key = 'cod-edit-types';
-    if (this.thesauri && this.thesauri[key]) {
-      this.typeEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.typeEntries = thesauri[key].entries;
     } else {
       this.typeEntries = undefined;
     }
     key = 'cod-edit-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.tagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.tagEntries = thesauri[key].entries;
     } else {
       this.tagEntries = undefined;
     }
     key = 'cod-edit-languages';
-    if (this.thesauri && this.thesauri[key]) {
-      this.langEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.langEntries = thesauri[key].entries;
     } else {
       this.langEntries = undefined;
     }
     key = 'doc-reference-types';
-    if (this.thesauri && this.thesauri[key]) {
-      this.refTypeEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.refTypeEntries = thesauri[key].entries;
     } else {
       this.refTypeEntries = undefined;
     }
     key = 'doc-reference-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.refTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.refTagEntries = thesauri[key].entries;
     } else {
       this.refTagEntries = undefined;
     }
   }
 
-  protected getModelFromForm(): CodEditsPart {
-    let part = this.model;
+  private updateForm(part?: CodEditsPart): void {
     if (!part) {
-      part = {
-        itemId: this.itemId || '',
-        id: '',
-        typeId: COD_EDITS_PART_TYPEID,
-        roleId: this.roleId,
-        timeCreated: new Date(),
-        creatorId: '',
-        timeModified: new Date(),
-        userId: '',
-        edits: [],
-      };
+      this.form.reset();
+      return;
     }
+    this.edits.setValue(part.edits || []);
+    this.form.markAsPristine();
+  }
+
+  protected override onDataSet(data?: EditedObject<CodEditsPart>): void {
+    // thesauri
+    if (data?.thesauri) {
+      this.updateThesauri(data.thesauri);
+    }
+
+    // form
+    this.updateForm(data?.value);
+  }
+
+  protected getValue(): CodEditsPart {
+    let part = this.getEditedPart(COD_EDITS_PART_TYPEID) as CodEditsPart;
     part.edits = this.edits.value || [];
     return part;
   }

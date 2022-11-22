@@ -2,14 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import {
-  EditItemQuery,
-  EditItemService,
-  EditPartFeatureBase,
-} from '@myrmidon/cadmus-state';
-
-import { EditCodBindingsPartQuery } from './edit-cod-bindings-part.query';
-import { EditCodBindingsPartService } from './edit-cod-bindings-part.service';
+import { EditPartFeatureBase, PartEditorService } from '@myrmidon/cadmus-state';
+import { ItemService, ThesaurusService } from '@myrmidon/cadmus-api';
 
 @Component({
   selector: 'cadmus-cod-bindings-part-feature',
@@ -24,24 +18,22 @@ export class CodBindingsPartFeatureComponent
     router: Router,
     route: ActivatedRoute,
     snackbar: MatSnackBar,
-    editPartQuery: EditCodBindingsPartQuery,
-    editPartService: EditCodBindingsPartService,
-    editItemQuery: EditItemQuery,
-    editItemService: EditItemService
+    itemService: ItemService,
+    thesaurusService: ThesaurusService,
+    editorService: PartEditorService
   ) {
     super(
       router,
       route,
       snackbar,
-      editPartQuery,
-      editPartService,
-      editItemQuery,
-      editItemService
+      itemService,
+      thesaurusService,
+      editorService
     );
   }
 
-  public ngOnInit(): void {
-    this.initEditor([
+  protected override getReqThesauriIds(): string[] {
+    return [
       'cod-binding-tags',
       'cod-binding-cover-materials',
       'cod-binding-board-materials',
@@ -52,6 +44,6 @@ export class CodBindingsPartFeatureComponent
       'physical-size-tags',
       'physical-size-dim-tags',
       'physical-size-units',
-    ]);
+    ];
   }
 }

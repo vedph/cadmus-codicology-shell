@@ -2,7 +2,8 @@
   <div>
     <!-- tag (bound) -->
     <mat-form-field *ngIf="tagEntries?.length" style="width: 8em">
-      <mat-select [formControl]="tag" placeholder="tag">
+      <mat-label>tag</mat-label>
+      <mat-select [formControl]="tag">
         <mat-option *ngFor="let e of tagEntries" [value]="e.id">{{
           e.value
         }}</mat-option>
@@ -10,7 +11,8 @@
     </mat-form-field>
     <!-- tag (free) -->
     <mat-form-field *ngIf="!tagEntries?.length">
-      <input matInput [formControl]="tag" placeholder="tag" />
+      <mat-label>tag</mat-label>
+      <input matInput [formControl]="tag" />
       <mat-error
         *ngIf="$any(tag).errors?.maxLength && (tag.dirty || tag.touched)"
         >tag too long</mat-error
@@ -19,7 +21,8 @@
     <!-- city -->
     &nbsp;
     <mat-form-field>
-      <input matInput [formControl]="city" placeholder="city" />
+      <mat-label>city</mat-label>
+      <input matInput [formControl]="city" />
       <mat-error
         *ngIf="$any(city).errors?.required && (city.dirty || city.touched)"
         >city required</mat-error
@@ -33,7 +36,8 @@
   <div>
     <!-- library (bound) -->
     <mat-form-field *ngIf="libEntries?.length" style="width: 8em">
-      <mat-select [formControl]="library" placeholder="library">
+      <mat-label>library</mat-label>
+      <mat-select [formControl]="library">
         <mat-option *ngFor="let e of libEntries" [value]="e.id">{{
           e.value
         }}</mat-option>
@@ -47,7 +51,8 @@
     </mat-form-field>
     <!-- library (free) -->
     <mat-form-field *ngIf="!libEntries?.length">
-      <input matInput [formControl]="library" placeholder="library" />
+      <mat-label>library</mat-label>
+      <input matInput [formControl]="library" />
       <mat-error
         *ngIf="
           $any(library).errors?.required && (library.dirty || library.touched)
@@ -64,7 +69,8 @@
     <!-- fund -->
     &nbsp;
     <mat-form-field>
-      <input matInput [formControl]="fund" placeholder="fund" />
+      <mat-label>fund</mat-label>
+      <input matInput [formControl]="fund" />
       <mat-error
         *ngIf="$any(fund).errors?.maxLength && (fund.dirty || fund.touched)"
         >fund too long</mat-error
@@ -73,7 +79,8 @@
     <!-- location -->
     &nbsp;
     <mat-form-field>
-      <input matInput [formControl]="location" placeholder="location" />
+      <mat-label>location</mat-label>
+      <input matInput [formControl]="location" />
       <mat-error
         *ngIf="
           $any(location).errors?.required &&

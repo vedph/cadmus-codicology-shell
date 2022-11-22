@@ -2,7 +2,8 @@
   <div class="form-row">
     <!-- eid -->
     <mat-form-field style="flex: 0 0 auto">
-      <input matInput [formControl]="eid" placeholder="eid" />
+      <mat-label>EID</mat-label>
+      <input matInput [formControl]="eid" />
       <mat-error
         *ngIf="$any(eid).errors?.maxLength && (eid.dirty || eid.touched)"
         >eid too long</mat-error
@@ -11,7 +12,8 @@
 
     <!-- type (bound) -->
     <mat-form-field *ngIf="typeEntries?.length" style="flex: 0 0 auto">
-      <mat-select [formControl]="type" placeholder="type">
+      <mat-label>type</mat-label>
+      <mat-select [formControl]="type">
         <mat-option *ngFor="let e of typeEntries" [value]="e.id">{{
           e.value
         }}</mat-option>
@@ -23,7 +25,8 @@
     </mat-form-field>
     <!-- type (free) -->
     <mat-form-field *ngIf="!typeEntries?.length" style="flex: 0 0 auto">
-      <input matInput [formControl]="type" placeholder="type" />
+      <mat-label>type</mat-label>
+      <input matInput [formControl]="type" />
       <mat-error
         *ngIf="$any(type).errors?.required && (type.dirty || type.touched)"
         >type required</mat-error
@@ -36,7 +39,8 @@
 
     <!-- tag (bound) -->
     <mat-form-field *ngIf="tagEntries?.length" style="flex: 0 0 auto">
-      <mat-select [formControl]="tag" placeholder="tag">
+      <mat-label>tag</mat-label>
+      <mat-select [formControl]="tag">
         <mat-option *ngFor="let e of tagEntries" [value]="e.id">{{
           e.value
         }}</mat-option>
@@ -44,7 +48,8 @@
     </mat-form-field>
     <!-- tag (free) -->
     <mat-form-field *ngIf="!tagEntries?.length" style="flex: 0 0 auto">
-      <input matInput [formControl]="tag" placeholder="tag" />
+      <mat-label>tag</mat-label>
+      <input matInput [formControl]="tag" />
       <mat-error
         *ngIf="$any(tag).errors?.maxLength && (tag.dirty || tag.touched)"
         >tag too long</mat-error
@@ -75,7 +80,8 @@
   <div class="form-row">
     <!-- language (bound) -->
     <mat-form-field *ngIf="langEntries?.length" style="flex: 0 0 auto">
-      <mat-select [formControl]="language" placeholder="language">
+      <mat-label>language</mat-label>
+      <mat-select [formControl]="language">
         <mat-option *ngFor="let e of langEntries" [value]="e.id">{{
           e.value
         }}</mat-option>
@@ -83,7 +89,8 @@
     </mat-form-field>
     <!-- language (free) -->
     <mat-form-field *ngIf="!langEntries?.length" style="flex: 0 0 auto">
-      <input matInput [formControl]="language" placeholder="language" />
+      <mat-label>language</mat-label>
+      <input matInput [formControl]="language" />
       <mat-error
         *ngIf="
           $any(language).errors?.maxLength &&
@@ -113,12 +120,8 @@
   <!-- description -->
   <div>
     <mat-form-field class="long-text">
-      <textarea
-        rows="2"
-        matInput
-        [formControl]="description"
-        placeholder="description"
-      ></textarea>
+      <mat-label>description</mat-label>
+      <textarea rows="2" matInput [formControl]="description"></textarea>
       <mat-error
         *ngIf="
           $any(description).errors?.maxLength &&
@@ -132,12 +135,8 @@
   <!-- text -->
   <div>
     <mat-form-field class="long-text">
-      <textarea
-        matInput
-        rows="2"
-        [formControl]="text"
-        placeholder="text"
-      ></textarea>
+      <mat-label>text</mat-label>
+      <textarea matInput rows="2" [formControl]="text"></textarea>
       <mat-error
         *ngIf="$any(text).errors?.maxLength && (text.dirty || text.touched)"
         >text too long</mat-error

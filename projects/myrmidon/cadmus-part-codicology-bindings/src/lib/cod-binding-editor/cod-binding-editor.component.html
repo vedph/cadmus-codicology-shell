@@ -2,7 +2,8 @@
   <div>
     <!-- tag (bound) -->
     <mat-form-field *ngIf="tagEntries?.length" style="width: 8em">
-      <mat-select [formControl]="tag" placeholder="tag">
+      <mat-label>tag</mat-label>
+      <mat-select [formControl]="tag">
         <mat-option *ngFor="let e of tagEntries" [value]="e.id">{{
           e.value
         }}</mat-option>
@@ -10,7 +11,8 @@
     </mat-form-field>
     <!-- tag (free) -->
     <mat-form-field *ngIf="!tagEntries?.length">
-      <input matInput [formControl]="tag" placeholder="tag" />
+      <mat-label>tag</mat-label>
+      <input matInput [formControl]="tag" />
       <mat-error
         *ngIf="$any(tag).errors?.maxLength && (tag.dirty || tag.touched)"
         >tag too long</mat-error
@@ -20,7 +22,8 @@
 
     <!-- cover (bound) -->
     <mat-form-field *ngIf="coverEntries?.length" style="width: 8em">
-      <mat-select [formControl]="coverMaterial" placeholder="cover">
+      <mat-label>cover</mat-label>
+      <mat-select [formControl]="coverMaterial">
         <mat-option *ngFor="let e of coverEntries" [value]="e.id">{{
           e.value
         }}</mat-option>
@@ -35,11 +38,8 @@
     </mat-form-field>
     <!-- cover (free) -->
     <mat-form-field *ngIf="!coverEntries?.length">
-      <input
-        matInput
-        [formControl]="coverMaterial"
-        placeholder="cover material"
-      />
+      <mat-label>cover material</mat-label>
+      <input matInput [formControl]="coverMaterial" />
       <mat-error
         *ngIf="
           $any(coverMaterial).errors?.required &&
@@ -59,7 +59,8 @@
     &nbsp;
     <!-- board (bound) -->
     <mat-form-field *ngIf="boardEntries?.length" style="width: 8em">
-      <mat-select [formControl]="boardMaterial" placeholder="board">
+      <mat-label>board</mat-label>
+      <mat-select [formControl]="boardMaterial">
         <mat-option *ngFor="let e of boardEntries" [value]="e.id">{{
           e.value
         }}</mat-option>
@@ -74,11 +75,8 @@
     </mat-form-field>
     <!-- board (free) -->
     <mat-form-field *ngIf="!boardEntries?.length">
-      <input
-        matInput
-        [formControl]="boardMaterial"
-        placeholder="board material"
-      />
+      <mat-label>board material</mat-label>
+      <input matInput [formControl]="boardMaterial" />
       <mat-error
         *ngIf="
           $any(boardMaterial).errors?.required &&
@@ -114,12 +112,8 @@
   <br />
   <div>
     <mat-form-field style="width: 100%">
-      <textarea
-        rows="3"
-        matInput
-        [formControl]="description"
-        placeholder="description"
-      ></textarea>
+      <mat-label>description</mat-label>
+      <textarea rows="3" matInput [formControl]="description"></textarea>
       <mat-error
         *ngIf="
           $any(description).errors?.maxLength &&

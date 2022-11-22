@@ -2,7 +2,8 @@
   <div>
     <!-- name -->
     <mat-form-field>
-      <input matInput [formControl]="name" placeholder="name" />
+      <mat-label>name</mat-label>
+      <input matInput [formControl]="name" />
       <mat-error
         *ngIf="$any(name).errors?.required && (name.dirty || name.touched)"
         >name required</mat-error

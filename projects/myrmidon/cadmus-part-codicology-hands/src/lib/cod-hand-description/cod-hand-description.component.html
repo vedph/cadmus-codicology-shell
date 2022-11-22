@@ -2,7 +2,8 @@
   <div>
     <!-- key -->
     <mat-form-field>
-      <input matInput [formControl]="key" placeholder="key" />
+      <mat-label>key</mat-label>
+      <input matInput [formControl]="key" />
       <mat-error
         *ngIf="$any(key).errors?.maxLength && (key.dirty || key.touched)"
         >key too long</mat-error
@@ -12,12 +13,8 @@
   <div>
     <!-- description -->
     <mat-form-field class="long-text">
-      <textarea
-        matInput
-        rows="2"
-        [formControl]="dsc"
-        placeholder="description"
-      ></textarea>
+      <mat-label>description</mat-label>
+      <textarea matInput rows="2" [formControl]="dsc"></textarea>
       <mat-error
         *ngIf="$any(dsc).errors?.maxLength && (dsc.dirty || dsc.touched)"
         >description too long</mat-error
@@ -35,8 +32,14 @@
   <div>
     <!-- signs -->
     <div>
-      <button type="button" mat-icon-button color="primary" (click)="addSign()">
-        <mat-icon>add_circle</mat-icon> add sign
+      <button
+        type="button"
+        mat-icon-button
+        color="primary"
+        (click)="addSign()"
+        matTooltip="Add sign"
+      >
+        <mat-icon>add_circle</mat-icon>
       </button>
     </div>
     <table *ngIf="signs?.value?.length">

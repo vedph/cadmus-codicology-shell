@@ -2,7 +2,8 @@
   <div style="display: flex; gap: 8px; align-items: center">
     <!-- eid -->
     <mat-form-field style="flex: 0 0 auto">
-      <input matInput [formControl]="eid" placeholder="EID" />
+      <mat-label>EID</mat-label>
+      <input matInput [formControl]="eid" />
       <mat-error
         *ngIf="$any(eid).errors?.maxLength && (eid.dirty || eid.touched)"
         >EID too long</mat-error
@@ -11,7 +12,8 @@
 
     <!-- name -->
     <mat-form-field style="flex: 0 0 auto">
-      <input matInput [formControl]="name" placeholder="name" />
+      <mat-label>name</mat-label>
+      <input matInput [formControl]="name" />
       <mat-error
         *ngIf="$any(name).errors?.maxLength && (name.dirty || name.touched)"
         >name too long</mat-error
@@ -32,9 +34,10 @@
         type="button"
         mat-icon-button
         color="primary"
+        matTooltip="Add description"
         (click)="addDescription()"
       >
-        <mat-icon>add_circle</mat-icon> add description
+        <mat-icon>add_circle</mat-icon>
       </button>
     </div>
     <table *ngIf="descriptions?.value?.length">
@@ -124,9 +127,10 @@
         type="button"
         mat-icon-button
         color="primary"
+        matTooltip="Add instance"
         (click)="addInstance()"
       >
-        <mat-icon>add_circle</mat-icon> add instance
+        <mat-icon>add_circle</mat-icon>
       </button>
     </div>
     <table *ngIf="instances?.value?.length">
@@ -226,9 +230,10 @@
         type="button"
         mat-icon-button
         color="primary"
+        matTooltip="Add subscription"
         (click)="addSubscription()"
       >
-        <mat-icon>add_circle</mat-icon> add subscription
+        <mat-icon>add_circle</mat-icon>
       </button>
     </div>
     <table *ngIf="subscriptions?.value?.length">

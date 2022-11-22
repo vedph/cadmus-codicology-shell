@@ -1,5 +1,5 @@
-<form [formGroup]="form!" (submit)="save()">
-  <mat-card>
+<form [formGroup]="form" (submit)="save()">
+  <mat-card appearance="outlined">
     <mat-card-header>
       <div mat-card-avatar>
         <mat-icon>picture_in_picture</mat-icon>
@@ -14,9 +14,10 @@
               type="button"
               mat-icon-button
               color="primary"
+              matTooltip="Add hand"
               (click)="addHand()"
             >
-              <mat-icon>add_circle</mat-icon> add hand
+              <mat-icon>add_circle</mat-icon>
             </button>
           </div>
           <table *ngIf="hands?.value?.length">
@@ -79,7 +80,7 @@
                 </td>
                 <td>{{ hand.eid }}</td>
                 <td>{{ hand.name }}</td>
-                <td>{{ hand.descriptions.length}}</td>
+                <td>{{ hand.descriptions.length }}</td>
                 <td>{{ hand.instances.length }}</td>
                 <td>{{ hand.subscriptions?.length || 0 }}</td>
               </tr>

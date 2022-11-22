@@ -27,12 +27,14 @@ export class ItemRefLookupService implements RefLookupService {
       return of([]);
     }
     return this._itemService
-      .getItems({
-        pageNumber: 1,
-        pageSize: filter.limit,
-        title: filter.text,
-        facetId: filter.facetId,
-      })
+      .getItems(
+        {
+          title: filter.text,
+          facetId: filter.facetId,
+        },
+        1,
+        filter.limit
+      )
       .pipe(
         map((page) => {
           return page.items;

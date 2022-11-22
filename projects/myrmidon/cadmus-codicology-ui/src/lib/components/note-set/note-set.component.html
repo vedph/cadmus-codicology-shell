@@ -3,7 +3,8 @@
   <div>
     <!-- keys -->
     <mat-form-field *ngIf="keys?.length" style="width: 12em">
-      <mat-select [formControl]="key" placeholder="note">
+      <mat-label>note</mat-label>
+      <mat-select [formControl]="key">
         <mat-option *ngFor="let k of keys" [value]="k.key">{{
           k.value
         }}</mat-option>

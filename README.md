@@ -20,6 +20,10 @@ Quick Docker image build:
 
 ## History
 
+- 2022-11-22:
+  - upgraded to Angular 15
+  - replaced Akita with ELF
+  - all libraries version numbers bumped to 2.0.0
 - 2022-11-11:
   - fix to layout editor (counts not loaded: `@myrmidon/cadmus-part-codicology-layouts`).
   - fix to hand instance editor (`@myrmidon/cadmus-part-codicology-hands`).

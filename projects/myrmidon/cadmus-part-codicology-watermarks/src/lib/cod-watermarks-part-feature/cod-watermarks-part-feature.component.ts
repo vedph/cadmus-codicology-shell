@@ -2,14 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import {
-  EditItemQuery,
-  EditItemService,
-  EditPartFeatureBase,
-} from '@myrmidon/cadmus-state';
-
-import { EditCodWatermarksPartQuery } from './edit-cod-watermarks-part.query';
-import { EditCodWatermarksPartService } from './edit-cod-watermarks-part.service';
+import { EditPartFeatureBase, PartEditorService } from '@myrmidon/cadmus-state';
+import { ItemService, ThesaurusService } from '@myrmidon/cadmus-api';
 
 @Component({
   selector: 'cadmus-cod-watermarks-part-feature',
@@ -24,24 +18,22 @@ export class CodWatermarksPartFeatureComponent
     router: Router,
     route: ActivatedRoute,
     snackbar: MatSnackBar,
-    editPartQuery: EditCodWatermarksPartQuery,
-    editPartService: EditCodWatermarksPartService,
-    editItemQuery: EditItemQuery,
-    editItemService: EditItemService
+    itemService: ItemService,
+    thesaurusService: ThesaurusService,
+    editorService: PartEditorService
   ) {
     super(
       router,
       route,
       snackbar,
-      editPartQuery,
-      editPartService,
-      editItemQuery,
-      editItemService
+      itemService,
+      thesaurusService,
+      editorService
     );
   }
 
-  public ngOnInit(): void {
-    this.initEditor([
+  protected override getReqThesauriIds(): string[] {
+    return [
       'asserted-id-tags',
       'asserted-id-scopes',
       'chronotope-tags',
@@ -51,6 +43,6 @@ export class CodWatermarksPartFeatureComponent
       'physical-size-tags',
       'physical-size-dim-tags',
       'physical-size-units',
-    ]);
+    ];
   }
 }

@@ -19,7 +19,8 @@
   <div *ngIf="systems$ | async as systems" style="margin-top: 4px">
     <div>
       <mat-form-field *ngIf="systems.length">
-        <mat-select [formControl]="system" placeholder="system">
+        <mat-label>system</mat-label>
+        <mat-select [formControl]="system">
           <mat-option *ngFor="let s of systems" [value]="s">
             {{ s }}
           </mat-option>
@@ -36,14 +37,16 @@
     <div class="form-row" *ngIf="system.value">
       <!-- label -->
       <mat-form-field style="width: 4em">
-        <input matInput [formControl]="label" placeholder="label" />
+        <mat-label>label</mat-label>
+        <input matInput [formControl]="label" />
       </mat-form-field>
 
       <mat-icon>sync_alt</mat-icon>
 
       <!-- location -->
       <mat-form-field style="width: 4em">
-        <input matInput [formControl]="location" placeholder="location" />
+        <mat-label>location</mat-label>
+        <input matInput [formControl]="location" />
       </mat-form-field>
     </div>
   </div>

@@ -5,7 +5,8 @@
       <div>
         <!-- id -->
         <mat-form-field>
-          <input matInput [formControl]="eid" placeholder="ID" />
+          <mat-label>ID</mat-label>
+          <input matInput [formControl]="eid" />
           <mat-error
             *ngIf="$any(eid).errors?.required && (eid.dirty || eid.touched)"
             >EID required</mat-error
@@ -18,7 +19,8 @@
         &nbsp;
         <!-- name -->
         <mat-form-field>
-          <input matInput [formControl]="name" placeholder="name" />
+          <mat-label>name</mat-label>
+          <input matInput [formControl]="name" />
           <mat-error
             *ngIf="$any(name).errors?.required && (name.dirty || name.touched)"
             >name required</mat-error
@@ -42,12 +44,8 @@
 
       <!-- note -->
       <mat-form-field class="long-text">
-        <textarea
-          rows="3"
-          matInput
-          [formControl]="note"
-          placeholder="note"
-        ></textarea>
+        <mat-label>note</mat-label>
+        <textarea rows="3" matInput [formControl]="note"></textarea>
         <mat-error
           *ngIf="$any(note).errors?.maxLength && (note.dirty || note.touched)"
           >note too long</mat-error
@@ -107,9 +105,10 @@
             type="button"
             mat-icon-button
             color="primary"
+            matTooltip="Add artist"
             (click)="addArtist()"
           >
-            <mat-icon>add_circle</mat-icon> add artist
+            <mat-icon>add_circle</mat-icon>
           </button>
         </div>
         <table *ngIf="artists?.value?.length">
@@ -206,9 +205,10 @@
           type="button"
           mat-icon-button
           color="primary"
+          matTooltip="Add element"
           (click)="addElement()"
         >
-          <mat-icon>add_circle</mat-icon> add element
+          <mat-icon>add_circle</mat-icon>
         </button>
       </div>
       <table *ngIf="elements?.value?.length">
@@ -271,7 +271,9 @@
             </td>
             <td>{{ element.key }}</td>
             <td>{{ element.parentKey }}</td>
-            <td>{{ element.type | flatLookup: decElemTypeEntries:"id":"value" }}</td>
+            <td>
+              {{ element.type | flatLookup: decElemTypeEntries:"id":"value" }}
+            </td>
             <td>{{ element.subject }}</td>
             <td>{{ element.ranges | codLocationRange }}</td>
           </tr>

@@ -1,12 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormBuilder } from '@angular/forms';
+import {
+  FormControl,
+  FormBuilder,
+  FormGroup,
+  UntypedFormGroup,
+} from '@angular/forms';
 import { take } from 'rxjs/operators';
 
 import { deepCopy, NgToolsValidators } from '@myrmidon/ng-tools';
 import { DialogService } from '@myrmidon/ng-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
-import { ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { EditedObject, ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
+import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import {
   CodLayout,
@@ -58,7 +63,7 @@ export class CodLayoutsPartComponent
     formBuilder: FormBuilder,
     private _dialogService: DialogService
   ) {
-    super(authService);
+    super(authService, formBuilder);
     this._editedIndex = -1;
     this.tabIndex = 0;
     // form
@@ -66,94 +71,90 @@ export class CodLayoutsPartComponent
       validators: NgToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
-    this.form = formBuilder.group({
+  }
+
+  public override ngOnInit(): void {
+    super.ngOnInit();
+  }
+
+  protected buildForm(formBuilder: FormBuilder): FormGroup | UntypedFormGroup {
+    return formBuilder.group({
       entries: this.entries,
     });
   }
 
-  public ngOnInit(): void {
-    this.initEditor();
-  }
-
-  private updateForm(model: CodLayoutsPart): void {
-    if (!model) {
-      this.form!.reset();
-      return;
-    }
-    this.entries.setValue(model.layouts || []);
-    this.form!.markAsPristine();
-  }
-
-  protected onModelSet(model: CodLayoutsPart): void {
-    this.updateForm(deepCopy(model));
-  }
-
-  protected override onThesauriSet(): void {
+  private updateThesauri(thesauri: ThesauriSet): void {
     let key = 'cod-layout-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.tagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.tagEntries = thesauri[key].entries;
     } else {
       this.tagEntries = undefined;
     }
     key = 'cod-layout-ruling-techniques';
-    if (this.thesauri && this.thesauri[key]) {
-      this.rulTechEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.rulTechEntries = thesauri[key].entries;
     } else {
       this.rulTechEntries = undefined;
     }
     key = 'cod-layout-derolez';
-    if (this.thesauri && this.thesauri[key]) {
-      this.drzEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.drzEntries = thesauri[key].entries;
     } else {
       this.drzEntries = undefined;
     }
     key = 'cod-layout-prickings';
-    if (this.thesauri && this.thesauri[key]) {
-      this.prkEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.prkEntries = thesauri[key].entries;
     } else {
       this.prkEntries = undefined;
     }
     key = 'decorated-count-ids';
-    if (this.thesauri && this.thesauri[key]) {
-      this.cntIdEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.cntIdEntries = thesauri[key].entries;
     } else {
       this.cntIdEntries = undefined;
     }
     key = 'decorated-count-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.cntTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.cntTagEntries = thesauri[key].entries;
     } else {
       this.cntTagEntries = undefined;
     }
     key = 'physical-size-dim-tags';
-    if (this.thesauri && this.thesauri[key]) {
-      this.szDimTagEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.szDimTagEntries = thesauri[key].entries;
     } else {
       this.szDimTagEntries = undefined;
     }
     key = 'physical-size-units';
-    if (this.thesauri && this.thesauri[key]) {
-      this.szUnitEntries = this.thesauri[key].entries;
+    if (this.hasThesaurus(key)) {
+      this.szUnitEntries = thesauri[key].entries;
     } else {
       this.szUnitEntries = undefined;
     }
   }
 
-  protected getModelFromForm(): CodLayoutsPart {
-    let part = this.model;
+  private updateForm(part?: CodLayoutsPart): void {
     if (!part) {
-      part = {
-        itemId: this.itemId || '',
-        id: '',
-        typeId: COD_LAYOUTS_PART_TYPEID,
-        roleId: this.roleId,
-        timeCreated: new Date(),
-        creatorId: '',
-        timeModified: new Date(),
-        userId: '',
-        layouts: [],
-      };
+      this.form.reset();
+      return;
     }
+    this.entries.setValue(part.layouts || []);
+    this.form.markAsPristine();
+  }
+
+  protected override onDataSet(data?: EditedObject<CodLayoutsPart>): void {
+    // thesauri
+    if (data?.thesauri) {
+      this.updateThesauri(data.thesauri);
+    }
+
+    // form
+    this.updateForm(data?.value);
+  }
+
+  protected getValue(): CodLayoutsPart {
+    let part = this.getEditedPart(COD_LAYOUTS_PART_TYPEID) as CodLayoutsPart;
     part.layouts = this.entries.value || [];
     return part;
   }

@@ -1,22 +1,17 @@
 <form [formGroup]="form" (submit)="save()">
   <div class="form-row">
-
     <!-- rank -->
-    <mat-form-field style="width: 4em">
-      <input
-        matInput
-        [formControl]="rank"
-        placeholder="rank"
-        type="number"
-        min="0"
-      />
+    <mat-form-field style="width: 6em">
+      <mat-label>rank</mat-label>
+      <input matInput [formControl]="rank" type="number" min="0" />
     </mat-form-field>
   </div>
 
   <div class="form-row">
     <!-- system (bound) -->
     <mat-form-field *ngIf="sysEntries?.length" class="form-col">
-      <mat-select [formControl]="system" placeholder="system">
+      <mat-label>system</mat-label>
+      <mat-select [formControl]="system">
         <mat-option *ngFor="let e of sysEntries" [value]="e.id">{{
           e.value
         }}</mat-option>
@@ -30,7 +25,8 @@
     </mat-form-field>
     <!-- system (free) -->
     <mat-form-field *ngIf="!sysEntries?.length" class="form-col">
-      <input matInput [formControl]="system" placeholder="system" />
+      <mat-label>system</mat-label>
+      <input matInput [formControl]="system" />
       <mat-error
         *ngIf="
           $any(system).errors?.required && (system.dirty || system.touched)
@@ -47,7 +43,8 @@
 
     <!-- position (bound) -->
     <mat-form-field *ngIf="posEntries?.length" class="form-col">
-      <mat-select [formControl]="position" placeholder="position">
+      <mat-label>position</mat-label>
+      <mat-select [formControl]="position">
         <mat-option *ngFor="let e of posEntries" [value]="e.id">{{
           e.value
         }}</mat-option>
@@ -62,7 +59,8 @@
     </mat-form-field>
     <!-- position (free) -->
     <mat-form-field *ngIf="!posEntries?.length" class="form-col">
-      <input matInput [formControl]="position" placeholder="position" />
+      <mat-label>position</mat-label>
+      <input matInput [formControl]="position" />
       <mat-error
         *ngIf="
           $any(position).errors?.required &&
@@ -83,7 +81,8 @@
   <div>
     <!-- note -->
     <mat-form-field class="long-text">
-      <input matInput [formControl]="note" placeholder="note" />
+      <mat-label>note</mat-label>
+      <input matInput [formControl]="note" />
       <mat-error
         *ngIf="$any(note).errors?.maxLength && (note.dirty || note.touched)"
         >note too long</mat-error

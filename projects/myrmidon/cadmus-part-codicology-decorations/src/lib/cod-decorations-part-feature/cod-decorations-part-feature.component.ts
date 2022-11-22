@@ -2,14 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import {
-  EditItemQuery,
-  EditItemService,
-  EditPartFeatureBase,
-} from '@myrmidon/cadmus-state';
-
-import { EditCodDecorationsPartQuery } from './edit-cod-decorations-part.query';
-import { EditCodDecorationsPartService } from './edit-cod-decorations-part.service';
+import { EditPartFeatureBase, PartEditorService } from '@myrmidon/cadmus-state';
+import { ItemService, ThesaurusService } from '@myrmidon/cadmus-api';
 
 @Component({
   selector: 'cadmus-cod-decorations-part-feature',
@@ -24,24 +18,22 @@ export class CodDecorationsPartFeatureComponent
     router: Router,
     route: ActivatedRoute,
     snackbar: MatSnackBar,
-    editPartQuery: EditCodDecorationsPartQuery,
-    editPartService: EditCodDecorationsPartService,
-    editItemQuery: EditItemQuery,
-    editItemService: EditItemService
+    itemService: ItemService,
+    thesaurusService: ThesaurusService,
+    editorService: PartEditorService
   ) {
     super(
       router,
       route,
       snackbar,
-      editPartQuery,
-      editPartService,
-      editItemQuery,
-      editItemService
+      itemService,
+      thesaurusService,
+      editorService
     );
   }
 
-  public ngOnInit(): void {
-    this.initEditor([
+  protected override getReqThesauriIds(): string[] {
+    return [
       'cod-decoration-flags',
       'cod-decoration-element-flags',
       'cod-decoration-element-types',
@@ -59,7 +51,7 @@ export class CodDecorationsPartFeatureComponent
       'doc-reference-types',
       'doc-reference-tags',
       'external-id-tags',
-      'external-id-scopes'
-    ]);
+      'external-id-scopes',
+    ];
   }
 }

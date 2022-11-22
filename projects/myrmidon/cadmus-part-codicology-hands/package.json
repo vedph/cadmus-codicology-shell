@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-hands",
-  "version": "1.0.4",
+  "version": "2.0.0",
   "description": "Cadmus codicology - hands.",
   "keywords": [
     "Cadmus"
@@ -14,10 +14,10 @@
     "name": "Daniele Fusi"
   },
   "peerDependencies": {
-    "@angular/common": "^14.0.0",
-    "@angular/core": "^14.0.0"
+    "@angular/common": "^15.0.0",
+    "@angular/core": "^15.0.0"
   },
   "dependencies": {
-    "tslib": "^2.3.0"
+    "tslib": "^2.4.0"
   }
 }

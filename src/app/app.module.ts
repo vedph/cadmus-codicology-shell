@@ -40,8 +40,6 @@ import { MatTreeModule } from '@angular/material/tree';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 
-// akita
-import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
 // ngx-monaco
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 // ngx-markdown
@@ -144,7 +142,6 @@ import { ITEM_BROWSER_KEYS } from './item-browser-keys';
     MatTreeModule,
     FlexLayoutModule,
     // vendors
-    AkitaNgDevtools.forRoot(),
     MonacoEditorModule.forRoot(),
     MarkdownModule.forRoot(),
     // myrmidon

@@ -1,5 +1,5 @@
-<form [formGroup]="form!" (submit)="save()">
-  <mat-card>
+<form [formGroup]="form" (submit)="save()">
+  <mat-card appearance="outlined">
     <mat-card-header>
       <div mat-card-avatar>
         <mat-icon>picture_in_picture</mat-icon>
@@ -15,9 +15,10 @@
               type="button"
               mat-icon-button
               color="primary"
+              matTooltip="Add unit"
               (click)="addUnit()"
             >
-              <mat-icon>add_circle</mat-icon> add unit
+              <mat-icon>add_circle</mat-icon>
             </button>
           </div>
           <table *ngIf="units?.value?.length">
@@ -90,9 +91,10 @@
                 type="button"
                 mat-icon-button
                 color="primary"
+                matTooltip="Add palimpsest"
                 (click)="addPalimpsest()"
               >
-                <mat-icon>add_circle</mat-icon> add palimpsest
+                <mat-icon>add_circle</mat-icon>
               </button>
             </div>
             <table *ngIf="palimpsests?.value?.length">

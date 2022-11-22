@@ -2,7 +2,8 @@
   <div class="form-row">
     <!-- name -->
     <mat-form-field>
-      <input matInput [formControl]="name" placeholder="name" />
+      <mat-label>name</mat-label>
+      <input matInput [formControl]="name" />
       <mat-error
         *ngIf="$any(name).errors?.required && (name.dirty || name.touched)"
         >name required</mat-error
@@ -32,12 +33,8 @@
   <div>
     <!-- description -->
     <mat-form-field class="long-text">
-      <textarea
-        matInput
-        rows="2"
-        [formControl]="description"
-        placeholder="description"
-      ></textarea>
+      <mat-label>description</mat-label>
+      <textarea matInput rows="2" [formControl]="description"></textarea>
       <mat-error
         *ngIf="
           $any(description).errors?.maxLength &&
@@ -59,7 +56,7 @@
       (idsChange)="onIdsChange($event)"
     ></cadmus-refs-asserted-ids>
   </fieldset>
-  <br>
+  <br />
   <div>
     <mat-checkbox [formControl]="hasSize">has size</mat-checkbox>
     <fieldset *ngIf="hasSize?.value">

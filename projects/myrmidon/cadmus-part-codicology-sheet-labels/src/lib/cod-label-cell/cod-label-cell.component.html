@@ -4,10 +4,7 @@
   [style.background-color]="color || 'transparent'"
 >
   <!-- display -->
-  <div
-    *ngIf="editMode === 'none'"
-    class="form-row-center"
-  >
+  <div *ngIf="editMode === 'none'" class="form-row-center">
     <span>{{ cell.value }}</span>
     <span *ngIf="cell.note" [matTooltip]="cell.note">
       <mat-icon>description</mat-icon>
@@ -41,11 +38,11 @@
   >
     <!-- value -->
     <mat-form-field *ngIf="editMode === 'value'">
+      <mat-label>value</mat-label>
       <input
         #valueInput
         matInput
         type="text"
-        placeholder="value"
         spellcheck="false"
         [formControl]="value"
         (keydown.esc)="cancelEdit()"
@@ -57,11 +54,11 @@
     </mat-form-field>
     <!-- note -->
     <mat-form-field *ngIf="editMode === 'note'">
+      <mat-label>note</mat-label>
       <input
         #noteInput
         matInput
         type="text"
-        placeholder="note"
         [formControl]="note"
         (keydown.esc)="cancelEdit()"
       />
