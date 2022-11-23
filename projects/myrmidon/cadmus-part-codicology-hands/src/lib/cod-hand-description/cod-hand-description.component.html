@@ -24,10 +24,10 @@
   <fieldset>
     <legend>notes</legend>
     <!-- notes -->
-    <cadmus-note-set
+    <cadmus-ui-note-set
       [set]="initialNoteSet"
       (noteChange)="onNoteChange($event)"
-    ></cadmus-note-set>
+    ></cadmus-ui-note-set>
   </fieldset>
   <div>
     <!-- signs -->
@@ -120,7 +120,7 @@
   </div>
 
   <!-- buttons -->
-  <div>
+  <div class="toolbar-row">
     <button
       type="button"
       color="warn"
@@ -139,5 +139,6 @@
     >
       <mat-icon>check_circle</mat-icon>
     </button>
+    <span>description</span>
   </div>
 </form>

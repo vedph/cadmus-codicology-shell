@@ -85,9 +85,14 @@
   <!-- styles -->
   <fieldset>
     <legend>styles</legend>
-    <button mat-icon-button type="button" color="primary" (click)="addStyle()">
+    <button
+      mat-icon-button
+      type="button"
+      color="primary"
+      matTooltip="Add style"
+      (click)="addStyle()"
+    >
       <mat-icon>add_circle</mat-icon>
-      add style
     </button>
     <table>
       <thead>

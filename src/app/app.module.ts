@@ -88,6 +88,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { PART_EDITOR_KEYS } from './part-editor-keys';
 import { INDEX_LOOKUP_DEFINITIONS } from './index-lookup-definitions';
 import { ITEM_BROWSER_KEYS } from './item-browser-keys';
+import { CadmusUiNoteSetModule } from '@myrmidon/cadmus-ui-note-set';
 
 @NgModule({
   declarations: [
@@ -153,6 +154,7 @@ import { ITEM_BROWSER_KEYS } from './item-browser-keys';
     CadmusRefsDocReferencesModule,
     CadmusRefsHistoricalDateModule,
     CadmusRefsAssertedIdsModule,
+    CadmusUiNoteSetModule,
     // cadmus
     CadmusApiModule,
     CadmusCoreModule,

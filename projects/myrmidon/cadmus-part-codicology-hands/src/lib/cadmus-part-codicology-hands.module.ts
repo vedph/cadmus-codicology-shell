@@ -23,6 +23,7 @@ import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
 import { CadmusCodicologyUiModule } from '@myrmidon/cadmus-codicology-ui';
 import { CadmusUiFlagsPickerModule } from '@myrmidon/cadmus-ui-flags-picker';
+import { CadmusUiNoteSetModule } from '@myrmidon/cadmus-ui-note-set';
 
 import { CodHandSubscriptionComponent } from './cod-hand-subscription/cod-hand-subscription.component';
 import { CodHandSignComponent } from './cod-hand-sign/cod-hand-sign.component';
@@ -58,6 +59,7 @@ import { CodHandsPartFeatureComponent } from './cod-hands-part-feature/cod-hands
     MatTooltipModule,
     // Cadmus
     NgToolsModule,
+    CadmusUiNoteSetModule,
     CadmusStateModule,
     CadmusUiModule,
     CadmusUiPgModule,

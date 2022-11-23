@@ -6,8 +6,8 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { NoteSet, NoteSetDefinition } from '@myrmidon/cadmus-codicology-ui';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { NoteSet, NoteSetDefinition } from '@myrmidon/cadmus-ui-note-set';
 import { DialogService } from '@myrmidon/ng-mat-tools';
 import { take } from 'rxjs';
 

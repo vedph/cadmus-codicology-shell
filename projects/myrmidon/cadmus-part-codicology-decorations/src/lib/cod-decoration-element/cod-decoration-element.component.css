@@ -21,3 +21,11 @@ https://stackoverflow.com/questions/35578083/what-is-the-equivalent-of-ngshow-an
 [hidden] {
   display: none !important;
 }
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.toolbar-row * {
+  flex: 0 0 auto;
+}

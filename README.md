@@ -20,6 +20,7 @@ Quick Docker image build:
 
 ## History
 
+- 2022-11-23: moved note set from `@myrmidon/cadmus-codicology-ui` to Cadmus bricks.
 - 2022-11-22:
   - upgraded to Angular 15
   - replaced Akita with ELF

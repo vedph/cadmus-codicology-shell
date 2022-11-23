@@ -18,15 +18,10 @@ import { CadmusApiModule } from '@myrmidon/cadmus-api';
 import { CadmusRefsLookupModule } from '@myrmidon/cadmus-refs-lookup';
 
 import { CodImagesComponent } from './components/cod-images/cod-images.component';
-import { NoteSetComponent } from './components/note-set/note-set.component';
 import { CodLayoutFigureComponent } from './components/cod-layout-figure/cod-layout-figure.component';
 
 @NgModule({
-  declarations: [
-    CodImagesComponent,
-    NoteSetComponent,
-    CodLayoutFigureComponent,
-  ],
+  declarations: [CodImagesComponent, CodLayoutFigureComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -47,6 +42,6 @@ import { CodLayoutFigureComponent } from './components/cod-layout-figure/cod-lay
     CadmusApiModule,
     CadmusRefsLookupModule,
   ],
-  exports: [CodImagesComponent, NoteSetComponent, CodLayoutFigureComponent],
+  exports: [CodImagesComponent, CodLayoutFigureComponent],
 })
 export class CadmusCodicologyUiModule {}

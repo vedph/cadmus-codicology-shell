@@ -19,3 +19,11 @@ fieldset {
   border-radius: 6px;
   padding: 6px 12px;
 }
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.toolbar-row * {
+  flex: 0 0 auto;
+}

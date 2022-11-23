@@ -13,3 +13,11 @@ fieldset {
 .form-row * {
   flex: 0 0 auto;
 }
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.toolbar-row * {
+  flex: 0 0 auto;
+}
