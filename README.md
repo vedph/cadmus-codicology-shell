@@ -1,5 +1,24 @@
 # Cadmus Codicology Shell
 
+- [Cadmus Codicology Shell](#cadmus-codicology-shell)
+  - [Shell Architecture](#shell-architecture)
+  - [History](#history)
+    - [3.0.0](#300)
+    - [2.0.5](#205)
+    - [2.0.4](#204)
+    - [2.0.3](#203)
+    - [2.0.2](#202)
+    - [2.0.1](#201)
+    - [2.0.0](#200)
+    - [1.0.7](#107)
+    - [1.0.6](#106)
+    - [1.0.5](#105)
+    - [1.0.4](#104)
+    - [1.0.3](#103)
+    - [1.0.2](#102)
+    - [1.0.1](#101)
+    - [1.0.0](#100)
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.1.3.
 
 The project is used as an incubator shell for developing and testing frontend Cadmus codicological components:
@@ -11,7 +30,7 @@ Quick Docker image build:
 
 1. `npm run build-lib`; if you are going to use the libraries, publish them via `publish.bat`;
 2. remember to update version in `env.js`, then `ng build`;
-3. `docker build . -t vedph2020/cadmus-codicology-shell:2.0.5 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
+3. `docker build . -t vedph2020/cadmus-codicology-shell:3.0.0 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
 
 ## Shell Architecture
 
@@ -19,6 +38,8 @@ Quick Docker image build:
 - a pages library `cadmus-part-codicology-pg` imports all these libraries and provides routing: `ng g library @myrmidon/cadmus-part-codicology-pg --prefix cadmus`.
 
 ## History
+
+### 3.0.0
 
 - 2022-11-23: moved note set from `@myrmidon/cadmus-codicology-ui` to Cadmus bricks.
 - 2022-11-22:
