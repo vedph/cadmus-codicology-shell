@@ -10,9 +10,10 @@
       <mat-tab-group>
         <!-- LABELS -->
         <mat-tab label="labels">
-          <div fxLayout="row" fxLayout.lt-md="column">
+          <!-- bar -->
+          <div id="bar">
             <!-- operation -->
-            <fieldset fxFlex="50%" fxFlex.lt-md="100%">
+            <fieldset style="grid-area: operation">
               <legend>action</legend>
               <form [formGroup]="opForm" class="form-row" (submit)="onAction()">
                 <!-- opColumn -->
@@ -99,7 +100,7 @@
             </fieldset>
 
             <!-- adder -->
-            <fieldset fxFlex="50%" fxFlex.lt-md="100%">
+            <fieldset style="grid-area: adder">
               <legend>adder</legend>
               <form
                 [formGroup]="addForm"

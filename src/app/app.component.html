@@ -25,17 +25,20 @@
       <a mat-button routerLink="/items">Items</a>
     </ng-container>
 
-    <a mat-button routerLink="/search" *ngIf="logged">Search</a>
-    <a mat-button routerLink="/graph" *ngIf="logged">Graph</a>
-
-    <a
+    <!-- search menu -->
+    <button mat-button routerLink="/search" *ngIf="logged">Search</button>
+    <!-- graph menu -->
+    <button mat-button routerLink="/graph" *ngIf="logged">Graph</button>
+    <!-- thesauri menu -->
+    <button
       mat-button
       routerLink="/thesauri"
       *ngIf="
         user && (user.roles.includes('admin') || user.roles.includes('editor'))
       "
-      >Thesauri</a
     >
+      Thesauri
+    </button>
 
     <span class="tb-fill-remaining-space"></span>
 
@@ -62,9 +65,6 @@
         }}"
         >feedback</mat-icon
       >
-      <!-- <button mat-icon-button [mat-menu-trigger-for]="menu">
-        <mat-icon>more_vert</mat-icon>
-      </button> -->
 
       <!-- user menu -->
       <button mat-button [matMenuTriggerFor]="userMenu">User</button>
@@ -86,12 +86,14 @@
       </mat-menu>
     </div>
 
-    <div *ngIf="!logged">
-      <a mat-button routerLink="/login">Login</a>
-    </div>
-    <div *ngIf="logged">
-      <a mat-button (click)="logout()">Logout</a>
-    </div>
+    <!-- login -->
+    <button *ngIf="!logged" mat-icon-button routerLink="/login">
+      <mat-icon>login</mat-icon>
+    </button>
+    <!-- logout -->
+    <button *ngIf="logged" mat-icon-button (click)="logout()">
+      <mat-icon>logout</mat-icon>
+    </button>
   </mat-toolbar>
 </header>
 

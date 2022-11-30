@@ -53,3 +53,20 @@ table.labels td {
   font-family: "Courier New", Courier, monospace;
   color: coral;
 }
+
+div#bar {
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: "operation adder";
+  gap: 8px;
+}
+/* lt-md */
+@media only screen and (max-width: 959px) {
+  div#bar {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "operation"
+      "adder";
+  }
+}

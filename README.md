@@ -39,6 +39,11 @@ Quick Docker image build:
 
 ## History
 
+- 2022-11-30:
+  - updated packages after removing `@angular/flex-layout` from Cadmus shell.
+  - removed usages of Angular Flex Layout from `@myrmidon/cadmus-part-codicology-sheet-labels`.
+  - fix to `@myrmidon/cadmus-part-codicology-contents` (still using `CadmusValidators`).
+
 ### 3.0.0
 
 - 2022-11-23: moved note set from `@myrmidon/cadmus-codicology-ui` to Cadmus bricks.

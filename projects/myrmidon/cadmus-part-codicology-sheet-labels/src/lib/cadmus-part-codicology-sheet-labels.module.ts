@@ -14,7 +14,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { NgToolsModule } from '@myrmidon/ng-tools';
 import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
@@ -61,7 +60,6 @@ import { CodLocationConverterComponent } from './cod-location-converter/cod-loca
     ReactiveFormsModule,
     ClipboardModule,
     // material
-    FlexLayoutModule,
     MatButtonModule,
     MatCardModule,
     MatCheckboxModule,

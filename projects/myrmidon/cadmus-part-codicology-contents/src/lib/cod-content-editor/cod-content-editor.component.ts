@@ -8,9 +8,10 @@ import {
 import { take } from 'rxjs';
 
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
-import { CadmusValidators, ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { Flag } from '@myrmidon/cadmus-ui-flags-picker';
 import { DialogService } from '@myrmidon/ng-mat-tools';
+import { NgToolsValidators } from '@myrmidon/ng-tools';
 
 import { CodContent, CodContentAnnotation } from '../cod-contents-part';
 
@@ -87,7 +88,7 @@ export class CodContentEditorComponent implements OnInit {
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.author = formBuilder.control(null, Validators.maxLength(50));
     this.ranges = formBuilder.control([], {
-      validators: CadmusValidators.strictMinLengthValidator(1),
+      validators: NgToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
     this.tag = formBuilder.control(null, Validators.maxLength(50));

@@ -37,7 +37,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 
 // ngx-monaco
@@ -141,7 +140,6 @@ import { CadmusUiNoteSetModule } from '@myrmidon/cadmus-ui-note-set';
     MatTooltipModule,
     MatToolbarModule,
     MatTreeModule,
-    FlexLayoutModule,
     // vendors
     MonacoEditorModule.forRoot(),
     MarkdownModule.forRoot(),
