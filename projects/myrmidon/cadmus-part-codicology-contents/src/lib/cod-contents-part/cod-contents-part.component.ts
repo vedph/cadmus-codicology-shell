@@ -93,7 +93,7 @@ export class CodContentsPartComponent
     }
   }
 
-  private updateForm(part?: CodContentsPart): void {
+  private updateForm(part?: CodContentsPart | null): void {
     if (!part) {
       this.form.reset();
       return;

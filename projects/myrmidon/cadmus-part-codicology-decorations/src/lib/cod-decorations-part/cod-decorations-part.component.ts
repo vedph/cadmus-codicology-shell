@@ -246,7 +246,7 @@ export class CodDecorationsPartComponent
     }
   }
 
-  private updateForm(part?: CodDecorationsPart): void {
+  private updateForm(part?: CodDecorationsPart | null): void {
     if (!part) {
       this.form.reset();
       return;

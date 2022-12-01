@@ -267,7 +267,7 @@ export class CodSheetLabelsPartComponent
     }
   }
 
-  private updateForm(part?: CodSheetLabelsPart): void {
+  private updateForm(part?: CodSheetLabelsPart | null): void {
     if (!part) {
       this.form.reset();
       return;

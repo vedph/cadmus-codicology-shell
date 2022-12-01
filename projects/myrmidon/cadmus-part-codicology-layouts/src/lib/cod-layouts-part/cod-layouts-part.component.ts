@@ -134,7 +134,7 @@ export class CodLayoutsPartComponent
     }
   }
 
-  private updateForm(part?: CodLayoutsPart): void {
+  private updateForm(part?: CodLayoutsPart | null): void {
     if (!part) {
       this.form.reset();
       return;

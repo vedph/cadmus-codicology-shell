@@ -13,12 +13,11 @@
           <div>
             <button
               type="button"
-              mat-icon-button
+              mat-flat-button
               color="primary"
-              matTooltip="Add unit"
               (click)="addUnit()"
             >
-              <mat-icon>add_circle</mat-icon>
+              <mat-icon>add_circle</mat-icon> unit
             </button>
           </div>
           <table *ngIf="units?.value?.length">
@@ -78,7 +77,12 @@
                   </button>
                 </td>
                 <td>{{ unit.range | codLocationRange }}</td>
-                <td>{{ unit.material | flatLookup:materialEntries:'id':'value' }}</td>
+                <td>
+                  {{
+                    unit.material
+                      | flatLookup : materialEntries : "id" : "value"
+                  }}
+                </td>
                 <td>{{ unit.chronotopes?.length || 0 }}</td>
               </tr>
             </tbody>
@@ -89,12 +93,11 @@
             <div>
               <button
                 type="button"
-                mat-icon-button
+                mat-flat-button
                 color="primary"
-                matTooltip="Add palimpsest"
                 (click)="addPalimpsest()"
               >
-                <mat-icon>add_circle</mat-icon>
+                <mat-icon>add_circle</mat-icon> palimpsest
               </button>
             </div>
             <table *ngIf="palimpsests?.value?.length">

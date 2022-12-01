@@ -126,7 +126,7 @@ export class CodEditsPartComponent
     }
   }
 
-  private updateForm(part?: CodEditsPart): void {
+  private updateForm(part?: CodEditsPart | null): void {
     if (!part) {
       this.form.reset();
       return;

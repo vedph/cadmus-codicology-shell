@@ -106,10 +106,9 @@
             type="button"
             mat-icon-button
             color="primary"
-            matTooltip="Add artist"
             (click)="addArtist()"
           >
-            <mat-icon>add_circle</mat-icon>
+            <mat-icon>add_circle</mat-icon> artist
           </button>
         </div>
         <table *ngIf="artists?.value?.length">
@@ -204,12 +203,11 @@
       <div>
         <button
           type="button"
-          mat-icon-button
+          mat-flat-button
           color="primary"
-          matTooltip="Add element"
           (click)="addElement()"
         >
-          <mat-icon>add_circle</mat-icon>
+          <mat-icon>add_circle</mat-icon> element
         </button>
       </div>
       <table *ngIf="elements?.value?.length">

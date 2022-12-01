@@ -12,12 +12,11 @@
           <div>
             <button
               type="button"
-              mat-icon-button
+              mat-flat-button
               color="primary"
-              matTooltip="Add hand"
               (click)="addHand()"
             >
-              <mat-icon>add_circle</mat-icon>
+              <mat-icon>add_circle</mat-icon> hand
             </button>
           </div>
           <table *ngIf="hands?.value?.length">

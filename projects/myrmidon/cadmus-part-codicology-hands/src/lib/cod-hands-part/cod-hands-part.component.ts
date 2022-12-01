@@ -153,7 +153,7 @@ export class CodHandsPartComponent
     }
   }
 
-  private updateForm(part?: CodHandsPart): void {
+  private updateForm(part?: CodHandsPart | null): void {
     if (!part) {
       this.form.reset();
       return;

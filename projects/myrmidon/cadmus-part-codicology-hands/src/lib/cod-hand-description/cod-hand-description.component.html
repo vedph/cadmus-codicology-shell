@@ -34,12 +34,11 @@
     <div>
       <button
         type="button"
-        mat-icon-button
+        mat-flat-button
         color="primary"
         (click)="addSign()"
-        matTooltip="Add sign"
       >
-        <mat-icon>add_circle</mat-icon>
+        <mat-icon>add_circle</mat-icon> sign
       </button>
     </div>
     <table *ngIf="signs?.value?.length">

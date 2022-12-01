@@ -12,12 +12,11 @@
           <div>
             <button
               type="button"
-              mat-icon-button
+              mat-flat-button
               color="primary"
-              matTooltip="Add edit"
               (click)="addEdit()"
             >
-              <mat-icon>add_circle</mat-icon>
+              <mat-icon>add_circle</mat-icon> edit
             </button>
           </div>
           <table *ngIf="edits?.value?.length">

@@ -32,12 +32,11 @@
     <div>
       <button
         type="button"
-        mat-icon-button
+        mat-flat-button
         color="primary"
-        matTooltip="Add description"
         (click)="addDescription()"
       >
-        <mat-icon>add_circle</mat-icon>
+        <mat-icon>add_circle</mat-icon> description
       </button>
     </div>
     <table *ngIf="descriptions?.value?.length">
@@ -125,12 +124,11 @@
     <div>
       <button
         type="button"
-        mat-icon-button
+        mat-flat-button
         color="primary"
-        matTooltip="Add instance"
         (click)="addInstance()"
       >
-        <mat-icon>add_circle</mat-icon>
+        <mat-icon>add_circle</mat-icon> instance
       </button>
     </div>
     <table *ngIf="instances?.value?.length">
@@ -228,12 +226,11 @@
     <div>
       <button
         type="button"
-        mat-icon-button
+        mat-flat-button
         color="primary"
-        matTooltip="Add subscription"
         (click)="addSubscription()"
       >
-        <mat-icon>add_circle</mat-icon>
+        <mat-icon>add_circle</mat-icon> subscription
       </button>
     </div>
     <table *ngIf="subscriptions?.value?.length">

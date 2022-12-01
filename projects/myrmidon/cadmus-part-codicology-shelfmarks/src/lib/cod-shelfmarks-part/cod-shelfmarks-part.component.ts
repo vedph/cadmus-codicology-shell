@@ -84,7 +84,7 @@ export class CodShelfmarksPartComponent
     }
   }
 
-  private updateForm(part?: CodShelfmarksPart): void {
+  private updateForm(part?: CodShelfmarksPart | null): void {
     if (!part) {
       this.form.reset();
       return;

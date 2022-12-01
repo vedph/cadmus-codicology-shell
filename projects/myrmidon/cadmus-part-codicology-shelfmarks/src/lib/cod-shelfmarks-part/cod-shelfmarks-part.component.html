@@ -12,12 +12,11 @@
           <div>
             <button
               type="button"
-              mat-icon-button
+              mat-flat-button
               color="primary"
-              matTooltip="Add shelfmark"
               (click)="addShelfmark()"
             >
-              <mat-icon>add_circle</mat-icon>
+              <mat-icon>add_circle</mat-icon> shelfmark
             </button>
           </div>
           <table *ngIf="shelfmarks?.value?.length">

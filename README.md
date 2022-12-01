@@ -3,6 +3,7 @@
 - [Cadmus Codicology Shell](#cadmus-codicology-shell)
   - [Shell Architecture](#shell-architecture)
   - [History](#history)
+    - [3.0.1](#301)
     - [3.0.0](#300)
     - [2.0.5](#205)
     - [2.0.4](#204)
@@ -30,7 +31,7 @@ Quick Docker image build:
 
 1. `npm run build-lib`; if you are going to use the libraries, publish them via `publish.bat`;
 2. remember to update version in `env.js`, then `ng build`;
-3. `docker build . -t vedph2020/cadmus-codicology-shell:3.0.0 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
+3. `docker build . -t vedph2020/cadmus-codicology-shell:3.0.1 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
 
 ## Shell Architecture
 
@@ -39,6 +40,9 @@ Quick Docker image build:
 
 ## History
 
+### 3.0.1
+
+- 2022-12-01: updated packages.
 - 2022-11-30:
   - updated packages after removing `@angular/flex-layout` from Cadmus shell.
   - removed usages of Angular Flex Layout from `@myrmidon/cadmus-part-codicology-sheet-labels`.

@@ -150,7 +150,7 @@ export class CodBindingsPartComponent
     }
   }
 
-  private updateForm(part?: CodBindingsPart): void {
+  private updateForm(part?: CodBindingsPart | null): void {
     if (!part) {
       this.form.reset();
       return;

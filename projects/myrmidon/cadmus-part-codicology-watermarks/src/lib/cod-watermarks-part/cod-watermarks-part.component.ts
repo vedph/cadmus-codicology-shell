@@ -144,7 +144,7 @@ export class CodWatermarksPartComponent
     }
   }
 
-  private updateForm(part?: CodWatermarksPart): void {
+  private updateForm(part?: CodWatermarksPart | null): void {
     if (!part) {
       this.form.reset();
       return;

@@ -140,7 +140,7 @@ export class CodMaterialDscPartComponent
     }
   }
 
-  private updateForm(part?: CodMaterialDscPart): void {
+  private updateForm(part?: CodMaterialDscPart | null): void {
     if (!part) {
       this.form.reset();
       return;
