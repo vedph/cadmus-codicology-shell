@@ -40,6 +40,8 @@ Quick Docker image build:
 
 ## History
 
+- 2022-12-02: updated packages.
+
 ### 3.0.1
 
 - 2022-12-01: updated packages.
