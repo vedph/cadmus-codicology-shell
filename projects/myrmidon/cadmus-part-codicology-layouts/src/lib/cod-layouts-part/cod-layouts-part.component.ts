@@ -160,40 +160,38 @@ export class CodLayoutsPartComponent
   }
 
   public addLayout(): void {
-    const layout: CodLayout = {
+    this.editLayout({
       sample: { n: 0 },
       ranges: [],
       columnCount: 0,
-    };
-    this.entries.setValue([...this.entries.value, layout]);
-    this.editLayout(this.entries.value.length - 1);
+    });
   }
 
-  public editLayout(index: number): void {
-    if (index < 0) {
+  public editLayout(layout: CodLayout | null, index = -1): void {
+    if (!layout) {
       this._editedIndex = -1;
       this.tabIndex = 0;
       this.editedLayout = undefined;
     } else {
       this._editedIndex = index;
-      this.editedLayout = this.entries.value[index];
+      this.editedLayout = layout;
       setTimeout(() => {
         this.tabIndex = 1;
-      }, 300);
+      });
     }
   }
 
-  public onLayoutSave(entry: CodLayout): void {
-    this.entries.setValue(
-      this.entries.value.map((e: CodLayout, i: number) =>
-        i === this._editedIndex ? entry : e
-      )
-    );
-    this.editLayout(-1);
-  }
+  public onLayoutSave(layout: CodLayout): void {
+    const layouts = [...this.entries.value];
 
-  public onLayoutClose(): void {
-    this.editLayout(-1);
+    if (this._editedIndex > -1) {
+      layouts.splice(this._editedIndex, 1, layout);
+    } else {
+      layouts.push(layout);
+    }
+
+    this.entries.setValue(layouts);
+    this.editLayout(null);
   }
 
   public deleteLayout(index: number): void {

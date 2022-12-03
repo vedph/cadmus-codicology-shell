@@ -119,40 +119,38 @@ export class CodContentsPartComponent
   }
 
   public addContent(): void {
-    const content: CodContent = {
+    this.editContent({
       ranges: [],
       states: [],
       title: '',
-    };
-    this.contents.setValue([...this.contents.value, content]);
-    this.editContent(this.contents.value.length - 1);
+    });
   }
 
-  public editContent(index: number): void {
-    if (index < 0) {
+  public editContent(content: CodContent | null, index = -1): void {
+    if (!content) {
       this._editedIndex = -1;
       this.tabIndex = 0;
       this.editedContent = undefined;
     } else {
       this._editedIndex = index;
-      this.editedContent = this.contents.value[index];
+      this.editedContent = content;
       setTimeout(() => {
         this.tabIndex = 1;
-      }, 300);
+      });
     }
   }
 
-  public onContentSave(entry: CodContent): void {
-    this.contents.setValue(
-      this.contents.value.map((e: CodContent, i: number) =>
-        i === this._editedIndex ? entry : e
-      )
-    );
-    this.editContent(-1);
-  }
+  public onContentSave(content: CodContent): void {
+    const contents = [...this.contents.value];
 
-  public onContentClose(): void {
-    this.editContent(-1);
+    if (this._editedIndex > -1) {
+      contents.splice(this._editedIndex, 1, content);
+    } else {
+      contents.push(content);
+    }
+
+    this.contents.setValue(contents);
+    this.editContent(null);
   }
 
   public deleteContent(index: number): void {

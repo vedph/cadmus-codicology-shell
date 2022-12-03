@@ -44,7 +44,7 @@
                     mat-icon-button
                     color="primary"
                     matTooltip="Edit this watermark"
-                    (click)="editWatermark(i)"
+                    (click)="editWatermark(entry, i)"
                   >
                     <mat-icon>edit</mat-icon>
                   </button>
@@ -97,7 +97,7 @@
             [szUnitEntries]="szUnitEntries"
             [watermark]="editedWatermark"
             (watermarkChange)="onWatermarkSave($event)"
-            (editorClose)="onWatermarkClose()"
+            (editorClose)="editWatermark(null)"
           ></cadmus-cod-watermark-editor>
         </mat-tab>
       </mat-tab-group>

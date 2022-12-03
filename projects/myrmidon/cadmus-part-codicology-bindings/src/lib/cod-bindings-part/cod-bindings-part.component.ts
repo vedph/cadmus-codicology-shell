@@ -176,40 +176,37 @@ export class CodBindingsPartComponent
   }
 
   public addBinding(): void {
-    const binding: CodBinding = {
+    this.editBinding({
       coverMaterial: this.coverEntries?.length ? this.coverEntries[0].id : '',
       boardMaterial: this.boardEntries?.length ? this.boardEntries[0].id : '',
       chronotope: {},
-    };
-    this.entries.setValue([...this.entries.value, binding]);
-    this.editBinding(this.entries.value.length - 1);
+    });
   }
 
-  public editBinding(index: number): void {
-    if (index < 0) {
+  public editBinding(binding: CodBinding | null, index = -1): void {
+    if (!binding) {
       this._editedIndex = -1;
       this.tabIndex = 0;
       this.editedBinding = undefined;
     } else {
       this._editedIndex = index;
-      this.editedBinding = this.entries.value[index];
+      this.editedBinding = binding;
       setTimeout(() => {
         this.tabIndex = 1;
-      }, 300);
+      });
     }
   }
 
-  public onBindingSave(entry: CodBinding): void {
-    this.entries.setValue(
-      this.entries.value.map((e: CodBinding, i: number) =>
-        i === this._editedIndex ? entry : e
-      )
-    );
-    this.editBinding(-1);
-  }
+  public onBindingSave(binding: CodBinding): void {
+    const bindings = [...this.entries.value];
+    if (this._editedIndex > -1) {
+      bindings.splice(this._editedIndex, 1, binding);
+    } else {
+      bindings.push(binding);
+    }
 
-  public onBindingClose(): void {
-    this.editBinding(-1);
+    this.entries.setValue(bindings);
+    this.editBinding(null);
   }
 
   public deleteBinding(index: number): void {

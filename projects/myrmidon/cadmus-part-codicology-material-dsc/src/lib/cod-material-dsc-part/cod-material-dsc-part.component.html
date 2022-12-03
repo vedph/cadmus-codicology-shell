@@ -44,7 +44,7 @@
                     mat-icon-button
                     color="primary"
                     matTooltip="Edit this unit"
-                    (click)="editUnit(i)"
+                    (click)="editUnit(unit, i)"
                   >
                     <mat-icon>edit</mat-icon>
                   </button>
@@ -124,7 +124,7 @@
                       mat-icon-button
                       color="primary"
                       matTooltip="Edit this palimpsest"
-                      (click)="editPalimpsest(i)"
+                      (click)="editPalimpsest(entry, i)"
                     >
                       <mat-icon>edit</mat-icon>
                     </button>
@@ -177,7 +177,7 @@
             [refTagEntries]="refTagEntries"
             [unit]="editedUt"
             (unitChange)="onUnitSave($event)"
-            (editorClose)="onUnitClose()"
+            (editorClose)="editUnit(null)"
           ></cadmus-cod-unit-editor>
         </mat-tab>
 
@@ -189,7 +189,7 @@
             [refTypeEntries]="refTypeEntries"
             [palimpsest]="editedPs"
             (palimpsestChange)="onPalimpsestSave($event)"
-            (editorClose)="onPalimpsestClose()"
+            (editorClose)="editPalimpsest(null)"
           ></cadmus-cod-palimpsest-editor>
         </mat-tab>
       </mat-tab-group>

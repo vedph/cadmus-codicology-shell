@@ -172,44 +172,42 @@ export class CodWatermarksPartComponent
   }
 
   public addWatermark(): void {
-    const entry: CodWatermark = {
+    this.editWatermark({
       name: '',
       sampleRange: {
         start: { n: 0 },
         end: { n: 0 },
       },
-    };
-    this.watermarks.setValue([...this.watermarks.value, entry]);
-    this.editWatermark(this.watermarks.value.length - 1);
+    });
   }
 
-  public editWatermark(index: number): void {
-    if (index < 0) {
+  public editWatermark(watermark: CodWatermark | null, index = -1): void {
+    if (!watermark) {
       this._editedIndex = -1;
       this.tabIndex = 0;
       this.editedWatermark = undefined;
     } else {
       this._editedIndex = index;
-      this.editedWatermark = this.watermarks.value[index];
+      this.editedWatermark = watermark;
       setTimeout(() => {
         this.tabIndex = 1;
-      }, 300);
+      });
     }
   }
 
-  public onWatermarkSave(entry: CodWatermark): void {
-    this.watermarks.setValue(
-      this.watermarks.value.map((e: CodWatermark, i: number) =>
-        i === this._editedIndex ? entry : e
-      )
-    );
+  public onWatermarkSave(watermark: CodWatermark): void {
+    const watermarks = [...this.watermarks.value];
+
+    if (this._editedIndex > -1) {
+      watermarks.splice(this._editedIndex, 1, watermark);
+    } else {
+      watermarks.push(watermark);
+    }
+
+    this.watermarks.setValue(watermarks);
     this.watermarks.updateValueAndValidity();
     this.watermarks.markAsDirty();
-    this.editWatermark(-1);
-  }
-
-  public onWatermarkClose(): void {
-    this.editWatermark(-1);
+    this.editWatermark(null);
   }
 
   public deleteWatermark(index: number): void {

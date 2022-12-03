@@ -182,39 +182,33 @@ export class CodHandDescriptionComponent implements OnInit {
 
   //#region signs
   public addSign(): void {
-    const sign: CodHandSign = {
+    this.editSign({
       type: this.sgnTypeEntries?.length ? this.sgnTypeEntries[0].id : '',
       sampleLocation: { n: 0 },
-    };
-    this.signs.setValue([...this.signs.value, sign]);
-    this.signs.updateValueAndValidity();
-    this.signs.markAsDirty();
-    this.editSign(this.signs.value.length - 1);
+    });
   }
 
-  public editSign(index: number): void {
-    if (index < 0) {
+  public editSign(sign: CodHandSign | null, index = -1): void {
+    if (!sign) {
       this.editedSignIndex = -1;
       this.editedSign = undefined;
     } else {
       this.editedSignIndex = index;
-      this.editedSign = this.signs.value[index];
+      this.editedSign = sign;
     }
   }
 
   public onSignSave(sign: CodHandSign): void {
-    this.signs.setValue(
-      this.signs.value.map((x: CodHandSign, i: number) =>
-        i === this.editedSignIndex ? sign : x
-      )
-    );
+    const signs = [...this.signs.value];
+    if (this.editedSignIndex > -1) {
+      signs.splice(this.editedSignIndex, 1, sign);
+    } else {
+      signs.push(sign);
+    }
+    this.signs.setValue(signs);
     this.signs.updateValueAndValidity();
     this.signs.markAsDirty();
-    this.editSign(-1);
-  }
-
-  public onSignClose(): void {
-    this.editSign(-1);
+    this.editSign(null);
   }
 
   public deleteSign(index: number): void {

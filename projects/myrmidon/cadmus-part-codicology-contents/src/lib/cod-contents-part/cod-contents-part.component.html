@@ -43,7 +43,7 @@
                     mat-icon-button
                     color="primary"
                     matTooltip="Edit this content"
-                    (click)="editContent(i)"
+                    (click)="editContent(entry, i)"
                   >
                     <mat-icon>edit</mat-icon>
                   </button>
@@ -90,7 +90,7 @@
             [annTypeEntries]="annTypeEntries"
             [content]="editedContent"
             (contentChange)="onContentSave($event)"
-            (editorClose)="onContentClose()"
+            (editorClose)="editContent(null)"
           >
           </cadmus-cod-content-editor>
         </mat-tab>

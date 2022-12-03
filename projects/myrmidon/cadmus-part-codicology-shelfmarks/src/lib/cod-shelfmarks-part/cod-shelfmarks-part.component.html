@@ -45,7 +45,7 @@
                     mat-icon-button
                     color="primary"
                     matTooltip="Edit this shelfmark"
-                    (click)="editShelfmark(i)"
+                    (click)="editShelfmark(entry, i)"
                   >
                     <mat-icon>edit</mat-icon>
                   </button>
@@ -93,7 +93,7 @@
             [libEntries]="libEntries"
             [shelfmark]="editedShelfmark"
             (shelfmarkChange)="onShelfmarkSave($event)"
-            (editorClose)="onShelfmarkClose()"
+            (editorClose)="editShelfmark(null)"
           ></cadmus-cod-shelfmark-editor>
         </mat-tab>
       </mat-tab-group>

@@ -274,42 +274,38 @@ export class CodDecorationsPartComponent
   }
 
   public addDecoration(): void {
-    const decoration: CodDecoration = {
+    this.editDecoration({
       name: '',
-    };
-    this.decorations.setValue([...this.decorations.value, decoration]);
-    this.decorations.updateValueAndValidity();
-    this.decorations.markAsDirty();
-    this.editDecoration(this.decorations.value.length - 1);
+    });
   }
 
-  public editDecoration(index: number): void {
-    if (index < 0) {
+  public editDecoration(decoration : CodDecoration | null, index = -1): void {
+    if (!decoration) {
       this._editedIndex = -1;
       this.tabIndex = 0;
       this.editedDecoration = undefined;
     } else {
       this._editedIndex = index;
-      this.editedDecoration = this.decorations.value[index];
+      this.editedDecoration = decoration;
       setTimeout(() => {
         this.tabIndex = 1;
-      }, 300);
+      });
     }
   }
 
-  public onDecorationSave(entry: CodDecoration): void {
-    this.decorations.setValue(
-      this.decorations.value.map((e: CodDecoration, i: number) =>
-        i === this._editedIndex ? entry : e
-      )
-    );
-    this.decorations.updateValueAndValidity();
-    this.editDecoration(-1);
-    this.decorations.markAsDirty();
-  }
+  public onDecorationSave(decoration: CodDecoration): void {
+    const decorations = [...this.decorations.value];
 
-  public onDecorationClose(): void {
-    this.editDecoration(-1);
+    if (this._editedIndex > -1) {
+      decorations.splice(this._editedIndex, 1, decoration);
+    } else {
+      decorations.push(decoration);
+    }
+
+    this.decorations.setValue(decorations);
+    this.decorations.markAsDirty();
+    this.decorations.updateValueAndValidity();
+    this.editDecoration(null);
   }
 
   public deleteDecoration(index: number): void {

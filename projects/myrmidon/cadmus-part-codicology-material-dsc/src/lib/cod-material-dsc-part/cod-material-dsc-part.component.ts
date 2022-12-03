@@ -173,48 +173,44 @@ export class CodMaterialDscPartComponent
 
   //#region Units
   public addUnit(): void {
-    const unit: CodUnit = {
+    this.editUnit({
       material: this.materialEntries?.length ? this.materialEntries[0].id : '',
       format: this.formatEntries?.length ? this.formatEntries[0].id : '',
       state: this.stateEntries?.length ? this.stateEntries[0].id : '',
       range: { start: { n: 0 }, end: { n: 0 } },
-    };
-    this.units.setValue([...this.units.value, unit]);
-    this.units.updateValueAndValidity();
-    this.units.markAsDirty();
-    this.editUnit(this.units.value.length - 1);
+    });
   }
 
-  public editUnit(index: number): void {
+  public editUnit(unit: CodUnit | null, index = -1): void {
     this._editedPsIndex = -1;
     this.editedPs = undefined;
 
-    if (index < 0) {
+    if (!unit) {
       this._editedUtIndex = -1;
       this.tabIndex = 0;
       this.editedUt = undefined;
     } else {
       this._editedUtIndex = index;
-      this.editedUt = this.units.value[index];
+      this.editedUt = unit;
       setTimeout(() => {
         this.tabIndex = 1;
-      }, 300);
+      });
     }
   }
 
-  public onUnitSave(entry: CodUnit): void {
-    this.units.setValue(
-      this.units.value.map((e: CodUnit, i: number) =>
-        i === this._editedUtIndex ? entry : e
-      )
-    );
+  public onUnitSave(unit: CodUnit): void {
+    const units = [...this.units.value];
+
+    if (this._editedUtIndex > -1) {
+      units.splice(this._editedUtIndex, 1, unit);
+    } else {
+      units.push(unit);
+    }
+
+    this.units.setValue(units);
     this.units.updateValueAndValidity();
     this.units.markAsDirty();
-    this.editUnit(-1);
-  }
-
-  public onUnitClose(): void {
-    this.editUnit(-1);
+    this.editUnit(null);
   }
 
   public deleteUnit(index: number): void {
@@ -261,45 +257,41 @@ export class CodMaterialDscPartComponent
 
   //#region Palimpsests
   public addPalimpsest(): void {
-    const palimpsest: CodPalimpsest = {
+    this.editPalimpsest({
       range: { start: { n: 0 }, end: { n: 0 } },
-    };
-    this.palimpsests.setValue([...this.palimpsests.value, palimpsest]);
-    this.palimpsests.updateValueAndValidity();
-    this.palimpsests.markAsDirty();
-    this.editPalimpsest(this.palimpsests.value.length - 1);
+    });
   }
 
-  public editPalimpsest(index: number): void {
+  public editPalimpsest(palimpsest: CodPalimpsest | null, index = -1): void {
     this._editedUtIndex = -1;
     this.editedUt = undefined;
 
-    if (index < 0) {
+    if (!palimpsest) {
       this._editedPsIndex = -1;
       this.tabIndex = 0;
       this.editedPs = undefined;
     } else {
       this._editedPsIndex = index;
-      this.editedPs = this.palimpsests.value[index];
+      this.editedPs = palimpsest;
       setTimeout(() => {
         this.tabIndex = 2;
-      }, 300);
+      });
     }
   }
 
-  public onPalimpsestSave(entry: CodPalimpsest): void {
-    this.palimpsests.setValue(
-      this.palimpsests.value.map((e: CodPalimpsest, i: number) =>
-        i === this._editedPsIndex ? entry : e
-      )
-    );
+  public onPalimpsestSave(palimpsest: CodPalimpsest): void {
+    const palimpsests = [...this.palimpsests.value];
+
+    if (this._editedPsIndex > -1) {
+      palimpsests.splice(this._editedPsIndex, 1, palimpsest);
+    } else {
+      palimpsests.push(palimpsest);
+    }
+
+    this.palimpsests.setValue(palimpsests);
     this.palimpsests.updateValueAndValidity();
     this.palimpsests.markAsDirty();
-    this.editPalimpsest(-1);
-  }
-
-  public onPalimpsestClose(): void {
-    this.editPalimpsest(-1);
+    this.editPalimpsest(null);
   }
 
   public deletePalimpsest(index: number): void {

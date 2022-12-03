@@ -152,39 +152,37 @@ export class CodEditsPartComponent
   }
 
   public addEdit(): void {
-    const edit: CodEdit = {
+    this.editEdit({
       type: this.typeEntries?.length ? this.typeEntries[0].id : '',
       ranges: [],
-    };
-    this.edits.setValue([...this.edits.value, edit]);
-    this.editEdit(this.edits.value.length - 1);
+    });
   }
 
-  public editEdit(index: number): void {
-    if (index < 0) {
+  public editEdit(edit: CodEdit | null, index = -1): void {
+    if (!edit) {
       this._editedIndex = -1;
       this.tabIndex = 0;
       this.editedEdit = undefined;
     } else {
       this._editedIndex = index;
-      this.editedEdit = this.edits.value[index];
+      this.editedEdit = edit;
       setTimeout(() => {
         this.tabIndex = 1;
-      }, 300);
+      });
     }
   }
 
-  public onEditSave(entry: CodEdit): void {
-    this.edits.setValue(
-      this.edits.value.map((e: CodEdit, i: number) =>
-        i === this._editedIndex ? entry : e
-      )
-    );
-    this.editEdit(-1);
-  }
+  public onEditSave(edit: CodEdit): void {
+    const edits = [...this.edits.value];
 
-  public onEditClose(): void {
-    this.editEdit(-1);
+    if (this._editedIndex > -1) {
+      edits.splice(this._editedIndex, 1, edit);
+    } else {
+      edits.push(edit);
+    }
+
+    this.edits.setValue(edits);
+    this.editEdit(null);
   }
 
   public deleteEdit(index: number): void {

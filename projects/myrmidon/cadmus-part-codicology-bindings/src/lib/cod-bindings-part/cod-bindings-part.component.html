@@ -45,7 +45,7 @@
                     mat-icon-button
                     color="primary"
                     matTooltip="Edit this binding"
-                    (click)="editBinding(i)"
+                    (click)="editBinding(entry, i)"
                   >
                     <mat-icon>edit</mat-icon>
                   </button>
@@ -102,7 +102,7 @@
             [szUnitEntries]="szUnitEntries"
             [binding]="editedBinding"
             (bindingChange)="onBindingSave($event)"
-            (editorClose)="onBindingClose()"
+            (editorClose)="editBinding(null)"
           ></cadmus-cod-binding-editor>
         </mat-tab>
       </mat-tab-group>

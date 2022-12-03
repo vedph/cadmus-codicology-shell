@@ -183,39 +183,32 @@ export class CodHandsPartComponent
       descriptions: [],
       instances: [],
     };
-    this.hands.setValue([...this.hands.value, hand]);
-    this.hands.updateValueAndValidity();
-    this.hands.markAsDirty();
-    this.editHand(this.hands.value.length - 1);
+    this.editHand(hand);
   }
 
-  public editHand(index: number): void {
-    if (index < 0) {
-      this._editedIndex = -1;
-      this.tabIndex = 0;
-      this.editedHand = undefined;
+  public editHand(hand: CodHand | null, index = -1): void {
+    this._editedIndex = index;
+    this.editedHand = hand || undefined;
+    setTimeout(() => {
+      this.tabIndex = hand ? 1 : 0;
+    });
+  }
+
+  public onHandSave(hand: CodHand): void {
+    const hands = [...this.hands.value];
+    if (this._editedIndex > -1) {
+      hands.splice(this._editedIndex, 1, hand);
     } else {
-      this._editedIndex = index;
-      this.editedHand = this.hands.value[index];
-      setTimeout(() => {
-        this.tabIndex = 1;
-      }, 300);
+      hands.push(hand);
     }
-  }
-
-  public onHandSave(entry: CodHand): void {
-    this.hands.setValue(
-      this.hands.value.map((e: CodHand, i: number) =>
-        i === this._editedIndex ? entry : e
-      )
-    );
+    this.hands.setValue(hands);
     this.hands.updateValueAndValidity();
     this.hands.markAsDirty();
-    this.editHand(-1);
+    this.editHand(null);
   }
 
   public onHandClose(): void {
-    this.editHand(-1);
+    this.editHand(null);
   }
 
   public deleteHand(index: number): void {

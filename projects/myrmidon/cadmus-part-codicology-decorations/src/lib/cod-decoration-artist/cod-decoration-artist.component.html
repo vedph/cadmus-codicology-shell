@@ -115,7 +115,7 @@
               type="button"
               matTooltip="Edit this style"
               color="primary"
-              (click)="editStyle(i)"
+              (click)="editStyle(s, i)"
             >
               <mat-icon>edit</mat-icon>
             </button>
@@ -162,7 +162,7 @@
         [refTypeEntries]="refTypeEntries"
         [style]="editedStyle"
         (styleChange)="onStyleSave($event)"
-        (editorClose)="onStyleClose()"
+        (editorClose)="editStyle(null)"
       ></cadmus-cod-decoration-artist-style>
     </mat-expansion-panel>
   </fieldset>

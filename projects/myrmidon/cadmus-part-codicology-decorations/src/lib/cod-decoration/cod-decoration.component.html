@@ -104,7 +104,7 @@
         <div>
           <button
             type="button"
-            mat-icon-button
+            mat-flat-button
             color="primary"
             (click)="addArtist()"
           >
@@ -135,7 +135,7 @@
                   mat-icon-button
                   color="primary"
                   matTooltip="Edit this artist"
-                  (click)="editArtist(i)"
+                  (click)="editArtist(artist, i)"
                 >
                   <mat-icon>edit</mat-icon>
                 </button>
@@ -193,7 +193,7 @@
             [idScopeEntries]="idScopeEntries"
             [artist]="editedArtist"
             (artistChange)="onArtistSave($event)"
-            (editorClose)="onArtistClose()"
+            (editorClose)="editArtist(null)"
           ></cadmus-cod-decoration-artist>
         </mat-expansion-panel>
       </mat-expansion-panel>
@@ -236,7 +236,7 @@
                 mat-icon-button
                 color="primary"
                 matTooltip="Edit this element"
-                (click)="editElement(i)"
+                (click)="editElement(element, i)"
               >
                 <mat-icon>edit</mat-icon>
               </button>
@@ -296,7 +296,7 @@
         [element]="editedElement"
         [parentKeys]="parentKeys"
         (elementChange)="onElementSave($event)"
-        (editorClose)="onElementClose()"
+        (editorClose)="editElement(null)"
       ></cadmus-cod-decoration-element>
     </mat-tab>
   </mat-tab-group>
@@ -316,7 +316,7 @@
     <button
       type="submit"
       color="primary"
-      mat-icon-button
+      mat-flat-button
       matTooltip="Accept decoration changes"
       [disabled]="form.invalid || form.pristine"
     >

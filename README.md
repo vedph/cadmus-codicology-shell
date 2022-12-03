@@ -3,6 +3,7 @@
 - [Cadmus Codicology Shell](#cadmus-codicology-shell)
   - [Shell Architecture](#shell-architecture)
   - [History](#history)
+    - [3.0.2](#302)
     - [3.0.1](#301)
     - [3.0.0](#300)
     - [2.0.5](#205)
@@ -31,7 +32,7 @@ Quick Docker image build:
 
 1. `npm run build-lib`; if you are going to use the libraries, publish them via `publish.bat`;
 2. remember to update version in `env.js`, then `ng build`;
-3. `docker build . -t vedph2020/cadmus-codicology-shell:3.0.1 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
+3. `docker build . -t vedph2020/cadmus-codicology-shell:3.0.2 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
 
 ## Shell Architecture
 
@@ -40,7 +41,59 @@ Quick Docker image build:
 
 ## History
 
+### 3.0.2
+
+- 2022-12-03:
+  - fixes to button styles.
+  - changed code template for editing multiple entries in an array. See below.
 - 2022-12-02: updated packages.
+
+New template:
+
+```ts
+  public add__NAME__(): void {
+    this.edit__NAME__({});
+  }
+
+  public edit__NAME__(entry: __NAME__ | null, index = -1): void {
+    if (!entry) {
+      this.editedEntryIndex = -1;
+      this.editedEntry = undefined;
+    } else {
+      this.editedEntryIndex = index;
+      this.editedEntry = entry;
+    }
+  }
+
+  public on__NAME__Save(entry: __NAME__): void {
+    const __NAME__s = [...this.__NAME__s.value];
+    if (this.editedEntryIndex > -1) {
+      __NAME__s.splice(this.editedEntryIndex, 1, entry);
+    } else {
+      __NAME__s.push(entry);
+    }
+
+    this.__NAME__s.setValue(__NAME__s);
+    this.__NAME__s.updateValueAndValidity();
+    this.__NAME__s.markAsDirty();
+    this.edit__NAME__(null);
+  }
+
+  public delete__NAME__(index: number): void {
+    this._dialogService
+      .confirm('Confirmation', 'Delete __NAME__?')
+      .pipe(take(1))
+      .subscribe((yes) => {
+        if (yes) {
+          const __NAME__s = [...this.__NAME__s.value];
+          __NAME__s.splice(index, 1);
+          this.__NAME__s.setValue(__NAME__s);
+          this.__NAME__s.updateValueAndValidity();
+          this.__NAME__s.markAsDirty();
+        }
+      });
+  }
+```
 
 ### 3.0.1
 

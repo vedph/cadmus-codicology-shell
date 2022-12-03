@@ -1,6 +1,6 @@
 <form [formGroup]="form" (submit)="save()">
   <div class="type-head">
-    {{ type.value | flatLookup: decElemTypeEntries:"id":"value" }}
+    {{ type.value | flatLookup : decElemTypeEntries : "id" : "value" }}
   </div>
   <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event)">
     <!-- GENERAL -->
@@ -31,6 +31,7 @@
 
       <!-- ranges -->
       <cadmus-cod-location
+        label="ranges"
         [required]="true"
         [location]="initialRanges || null"
         (locationChange)="onLocationChange($event)"
@@ -46,7 +47,7 @@
         ></cadmus-ui-flags-picker>
       </fieldset>
 
-      <br>
+      <br />
       <div>
         <!-- key -->
         <mat-form-field>

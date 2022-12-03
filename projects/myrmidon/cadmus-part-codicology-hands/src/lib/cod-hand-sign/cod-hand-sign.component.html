@@ -38,9 +38,10 @@
       >
     </mat-form-field>
 
-    <!-- sampleLocation -->
+    <!-- sampleRanges -->
     <cadmus-cod-location
-      [location]="initialRange ? [initialRange] : []"
+      label="sample loc."
+      [location]="initialRanges || null"
       (locationChange)="onLocationChange($event)"
     ></cadmus-cod-location>
   </div>

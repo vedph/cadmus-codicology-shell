@@ -180,36 +180,34 @@ export class CodHandComponent implements OnInit {
 
   //#region descriptions
   public addDescription(): void {
-    const dsc: CodHandDescription = {};
-    this.descriptions.setValue([...this.descriptions.value, dsc]);
-    this.descriptions.updateValueAndValidity();
-    this.descriptions.markAsDirty();
-    this.editDescription(this.descriptions.value.length - 1);
+    this.editDescription({});
   }
 
-  public editDescription(index: number): void {
-    if (index < 0) {
+  public editDescription(
+    description: CodHandDescription | null,
+    index = -1
+  ): void {
+    if (!description) {
       this.editedDscIndex = -1;
       this.editedDsc = undefined;
     } else {
       this.editedDscIndex = index;
-      this.editedDsc = this.descriptions.value[index];
+      this.editedDsc = description;
     }
   }
 
-  public onDescriptionSave(item: CodHandDescription): void {
-    this.descriptions.setValue(
-      this.descriptions.value.map((x: CodHandDescription, i: number) =>
-        i === this.editedDscIndex ? item : x
-      )
-    );
+  public onDescriptionSave(dsc: CodHandDescription): void {
+    const descriptions = [...this.descriptions.value];
+    if (this.editedDscIndex > -1) {
+      descriptions.splice(this.editedDscIndex, 1, dsc);
+    } else {
+      descriptions.push(dsc);
+    }
+
+    this.descriptions.setValue(descriptions);
     this.descriptions.updateValueAndValidity();
     this.descriptions.markAsDirty();
-    this.editDescription(-1);
-  }
-
-  public onDescriptionClose(): void {
-    this.editDescription(-1);
+    this.editDescription(null);
   }
 
   public deleteDescription(index: number): void {
@@ -218,9 +216,9 @@ export class CodHandComponent implements OnInit {
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          const items = [...this.descriptions.value];
-          items.splice(index, 1);
-          this.descriptions.setValue(items);
+          const descriptions = [...this.descriptions.value];
+          descriptions.splice(index, 1);
+          this.descriptions.setValue(descriptions);
           this.descriptions.updateValueAndValidity();
           this.descriptions.markAsDirty();
         }
@@ -256,40 +254,34 @@ export class CodHandComponent implements OnInit {
 
   //#region instances
   public addInstance(): void {
-    const item: CodHandInstance = {
+    this.editInstance({
       script: this.scriptEntries?.length ? this.scriptEntries[0].id : '',
       typologies: [],
       ranges: [],
-    };
-    this.instances.setValue([...this.instances.value, item]);
-    this.instances.updateValueAndValidity();
-    this.instances.markAsDirty();
-    this.editInstance(this.instances.value.length - 1);
+    });
   }
 
-  public editInstance(index: number): void {
-    if (index < 0) {
+  public editInstance(instance: CodHandInstance | null, index = -1): void {
+    if (!instance) {
       this.editedIstIndex = -1;
       this.editedIst = undefined;
     } else {
       this.editedIstIndex = index;
-      this.editedIst = this.instances.value[index];
+      this.editedIst = instance;
     }
   }
 
-  public onInstanceSave(item: CodHandInstance): void {
-    this.instances.setValue(
-      this.instances.value.map((x: CodHandInstance, i: number) =>
-        i === this.editedIstIndex ? item : x
-      )
-    );
+  public onInstanceSave(instance: CodHandInstance): void {
+    const instances = [...this.instances.value];
+    if (this.editedIstIndex > -1) {
+      instances.splice(this.editedIstIndex, 1, instance);
+    } else {
+      instances.push(instance);
+    }
+    this.instances.setValue(instances);
     this.instances.updateValueAndValidity();
     this.instances.markAsDirty();
-    this.editInstance(-1);
-  }
-
-  public onInstanceClose(): void {
-    this.editInstance(-1);
+    this.editInstance(null);
   }
 
   public deleteInstance(index: number): void {
@@ -336,39 +328,36 @@ export class CodHandComponent implements OnInit {
 
   //#region subscriptions
   public addSubscription(): void {
-    const sub: CodHandSubscription = {
+    this.editSubscription({
       range: { start: { n: 0 }, end: { n: 0 } },
       language: this.subLangEntries?.length ? this.subLangEntries[0].id : '',
-    };
-    this.subscriptions.setValue([...this.subscriptions.value, sub]);
-    this.subscriptions.updateValueAndValidity();
-    this.subscriptions.markAsDirty();
-    this.editSubscription(this.subscriptions.value.length - 1);
+    });
   }
 
-  public editSubscription(index: number): void {
-    if (index < 0) {
+  public editSubscription(
+    subscription: CodHandSubscription | null,
+    index = -1
+  ): void {
+    if (!subscription) {
       this.editedSubIndex = -1;
       this.editedSub = undefined;
     } else {
       this.editedSubIndex = index;
-      this.editedSub = this.subscriptions.value[index];
+      this.editedSub = subscription;
     }
   }
 
-  public onSubscriptionSave(item: CodHandSubscription): void {
-    this.subscriptions.setValue(
-      this.subscriptions.value.map((x: CodHandSubscription, i: number) =>
-        i === this.editedSubIndex ? item : x
-      )
-    );
+  public onSubscriptionSave(subscription: CodHandSubscription): void {
+    const subscriptions = [...this.subscriptions.value];
+    if (this.editedSubIndex > -1) {
+      subscriptions.splice(this.editedSubIndex, 1, subscription);
+    } else {
+      subscriptions.push(subscription);
+    }
+    this.subscriptions.setValue(subscriptions);
     this.subscriptions.updateValueAndValidity();
     this.subscriptions.markAsDirty();
-    this.editSubscription(-1);
-  }
-
-  public onSubscriptionClose(): void {
-    this.editSubscription(-1);
+    this.editSubscription(null);
   }
 
   public deleteSubscription(index: number): void {

@@ -112,40 +112,38 @@ export class CodShelfmarksPartComponent
   }
 
   public addShelfmark(): void {
-    const entry: CodShelfmark = {
+    this.editShelfmark({
       city: '',
       library: this.libEntries?.length ? this.libEntries[0].id : '',
       location: '',
-    };
-    this.shelfmarks.setValue([...this.shelfmarks.value, entry]);
-    this.editShelfmark(this.shelfmarks.value.length - 1);
+    });
   }
 
-  public editShelfmark(index: number): void {
-    if (index < 0) {
+  public editShelfmark(shelfmark: CodShelfmark | null, index = -1): void {
+    if (!shelfmark) {
       this._editedIndex = -1;
       this.tabIndex = 0;
       this.editedShelfmark = undefined;
     } else {
       this._editedIndex = index;
-      this.editedShelfmark = this.shelfmarks.value[index];
+      this.editedShelfmark = shelfmark;
       setTimeout(() => {
         this.tabIndex = 1;
-      }, 300);
+      });
     }
   }
 
-  public onShelfmarkSave(entry: CodShelfmark): void {
-    this.shelfmarks.setValue(
-      this.shelfmarks.value.map((e: CodShelfmark, i: number) =>
-        i === this._editedIndex ? entry : e
-      )
-    );
-    this.editShelfmark(-1);
-  }
+  public onShelfmarkSave(shelfmark: CodShelfmark): void {
+    const shelfmarks = [...this.shelfmarks.value];
 
-  public onShelfmarkClose(): void {
-    this.editShelfmark(-1);
+    if (this._editedIndex > -1) {
+      shelfmarks.splice(this._editedIndex, 1, shelfmark);
+    } else {
+      shelfmarks.push(shelfmark);
+    }
+
+    this.shelfmarks.setValue(shelfmarks);
+    this.editShelfmark(null);
   }
 
   public deleteShelfmark(index: number): void {

@@ -554,23 +554,19 @@ export class CodSheetLabelsPartComponent
 
   //#region endleaves
   public addEndleaf(): void {
-    const item: CodEndleaf = {
+    this.editEndleaf({
       location: '',
       material: this.matEntries?.length ? this.matEntries[0].id : '',
-    };
-    this.endleaves.setValue([...this.endleaves.value, item]);
-    this.endleaves.updateValueAndValidity();
-    this.endleaves.markAsDirty();
-    this.editEndleaf(this.endleaves.value.length - 1);
+    });
   }
 
-  public editEndleaf(index: number): void {
-    if (index < 0) {
+  public editEndleaf(endleaf: CodEndleaf | null, index = -1): void {
+    if (!endleaf) {
       this._editedEndleafIndex = -1;
       this.editedEndleaf = undefined;
     } else {
       this._editedEndleafIndex = index;
-      this.editedEndleaf = this.endleaves.value[index];
+      this.editedEndleaf = endleaf;
     }
   }
 
@@ -582,19 +578,19 @@ export class CodSheetLabelsPartComponent
     this.endleaves.markAsDirty();
   }
 
-  public onEndleafSave(item: CodEndleaf): void {
-    this.endleaves.setValue(
-      this.endleaves.value.map((x: CodEndleaf, i: number) =>
-        i === this._editedEndleafIndex ? item : x
-      )
-    );
+  public onEndleafSave(endleaf: CodEndleaf): void {
+    const endleaves = [...this.endleaves.value];
+
+    if (this._editedEndleafIndex > -1) {
+      endleaves.splice(this._editedEndleafIndex, 1, endleaf);
+    } else {
+      endleaves.push(endleaf);
+    }
+
+    this.endleaves.setValue(endleaves);
     this.endleaves.updateValueAndValidity();
     this.endleaves.markAsDirty();
-    this.editEndleaf(-1);
-  }
-
-  public onEndleafClose(): void {
-    this.editEndleaf(-1);
+    this.editEndleaf(null);
   }
 
   public deleteEndleaf(index: number): void {

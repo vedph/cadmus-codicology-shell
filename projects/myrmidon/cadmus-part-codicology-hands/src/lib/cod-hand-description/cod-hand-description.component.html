@@ -29,7 +29,7 @@
       (noteChange)="onNoteChange($event)"
     ></cadmus-ui-note-set>
   </fieldset>
-  <div>
+  <div style="margin-top: 6px">
     <!-- signs -->
     <div>
       <button
@@ -65,7 +65,7 @@
               mat-icon-button
               color="primary"
               matTooltip="Edit this sign"
-              (click)="editSign(i)"
+              (click)="editSign(sign, i)"
             >
               <mat-icon>edit</mat-icon>
             </button>
@@ -113,7 +113,7 @@
         [typeEntries]="sgnTypeEntries"
         [sign]="editedSign"
         (signChange)="onSignSave($event)"
-        (editorClose)="onSignClose()"
+        (editorClose)="editSign(null)"
       ></cadmus-cod-hand-sign>
     </mat-expansion-panel>
   </div>

@@ -43,7 +43,7 @@
                     mat-icon-button
                     color="primary"
                     matTooltip="Edit this layout"
-                    (click)="editLayout(i)"
+                    (click)="editLayout(entry, i)"
                   >
                     <mat-icon>edit</mat-icon>
                   </button>
@@ -95,7 +95,7 @@
             [szUnitEntries]="szUnitEntries"
             [layout]="editedLayout"
             (layoutChange)="onLayoutSave($event)"
-            (editorClose)="onLayoutClose()"
+            (editorClose)="editLayout(null)"
           ></cadmus-cod-layout-editor>
         </mat-tab>
       </mat-tab-group>

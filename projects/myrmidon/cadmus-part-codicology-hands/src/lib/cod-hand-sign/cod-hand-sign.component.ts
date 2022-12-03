@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { CodLocation, CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { NgToolsValidators } from '@myrmidon/ng-tools';
 
 import { CodHandSign } from '../cod-hands-part';
 
@@ -38,11 +39,11 @@ export class CodHandSignComponent implements OnInit {
 
   public eid: FormControl<string | null>;
   public type: FormControl<string | null>;
-  public sampleLocation: FormControl<CodLocation | null>;
+  public sampleRanges: FormControl<CodLocationRange[] | null>;
   public description: FormControl<string | null>;
   public form: FormGroup;
 
-  public initialRange?: CodLocationRange;
+  public initialRanges?: CodLocationRange[];
 
   constructor(formBuilder: FormBuilder) {
     this.signChange = new EventEmitter<CodHandSign>();
@@ -53,12 +54,15 @@ export class CodHandSignComponent implements OnInit {
       Validators.required,
       Validators.maxLength(50),
     ]);
-    this.sampleLocation = formBuilder.control(null, Validators.required);
+    this.sampleRanges = formBuilder.control(
+      [],
+      NgToolsValidators.strictMinLengthValidator(1)
+    );
     this.description = formBuilder.control(null, Validators.maxLength(1000));
     this.form = formBuilder.group({
       eid: this.eid,
       type: this.type,
-      sampleLocation: this.sampleLocation,
+      sampleRanges: this.sampleRanges,
       description: this.description,
     });
   }
@@ -77,27 +81,29 @@ export class CodHandSignComponent implements OnInit {
 
     this.eid.setValue(sign.eid || null);
     this.type.setValue(sign.type);
-    this.initialRange = sign.sampleLocation
-      ? { start: sign.sampleLocation, end: sign.sampleLocation }
-      : undefined;
+    this.initialRanges = sign.sampleLocation
+      ? [{ start: sign.sampleLocation, end: sign.sampleLocation }]
+      : [];
     this.description.setValue(sign.description || null);
 
     this.form.markAsPristine();
   }
 
-  private getSign(): CodHandSign | null {
+  private getSign(): CodHandSign {
     return {
       eid: this.eid.value?.trim(),
       type: this.type.value?.trim() || '',
-      sampleLocation: this.sampleLocation.value!,
+      sampleLocation: this.sampleRanges.value?.length
+        ? this.sampleRanges.value[0].start
+        : ({} as CodLocation),
       description: this.description.value?.trim(),
     };
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
-    this.sampleLocation.setValue(ranges ? ranges[0].start : null);
-    this.sampleLocation.updateValueAndValidity();
-    this.sampleLocation.markAsDirty();
+    this.sampleRanges.setValue(ranges || null);
+    this.sampleRanges.updateValueAndValidity();
+    this.sampleRanges.markAsDirty();
   }
 
   public cancel(): void {
@@ -109,9 +115,6 @@ export class CodHandSignComponent implements OnInit {
       return;
     }
     const model = this.getSign();
-    if (!model) {
-      return;
-    }
     this.signChange.emit(model);
   }
 }

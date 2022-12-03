@@ -62,7 +62,7 @@
               mat-icon-button
               color="primary"
               matTooltip="Edit this description"
-              (click)="editDescription(i)"
+              (click)="editDescription(description, i)"
             >
               <mat-icon>edit</mat-icon>
             </button>
@@ -108,7 +108,7 @@
         [sgnTypeEntries]="sgnTypeEntries"
         [description]="editedDsc"
         (descriptionChange)="onDescriptionSave($event)"
-        (editorClose)="onDescriptionClose()"
+        (editorClose)="editDescription(null)"
       ></cadmus-cod-hand-description>
     </mat-expansion-panel>
   </mat-expansion-panel>
@@ -154,7 +154,7 @@
               mat-icon-button
               color="primary"
               matTooltip="Edit this instance"
-              (click)="editInstance(i)"
+              (click)="editInstance(instance, i)"
             >
               <mat-icon>edit</mat-icon>
             </button>
@@ -209,7 +209,7 @@
         [instance]="editedIst"
         [dscKeys]="dscKeys"
         (instanceChange)="onInstanceSave($event)"
-        (editorClose)="onInstanceClose()"
+        (editorClose)="editInstance(null)"
       >
       </cadmus-cod-hand-instance>
     </mat-expansion-panel>
@@ -256,7 +256,7 @@
               mat-icon-button
               color="primary"
               matTooltip="Edit this subscription"
-              (click)="editSubscription(i)"
+              (click)="editSubscription(subscription, i)"
             >
               <mat-icon>edit</mat-icon>
             </button>
@@ -305,7 +305,7 @@
         [langEntries]="subLangEntries"
         [subscription]="editedSub"
         (subscriptionChange)="onSubscriptionSave($event)"
-        (editorClose)="onSubscriptionClose()"
+        (editorClose)="editSubscription(null)"
       ></cadmus-cod-hand-subscription>
     </mat-expansion-panel>
   </mat-expansion-panel>

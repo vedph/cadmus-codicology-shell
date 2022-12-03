@@ -321,7 +321,7 @@
                     mat-icon-button
                     color="primary"
                     matTooltip="Edit this endleaf"
-                    (click)="editEndleaf(i)"
+                    (click)="editEndleaf(endleaf, i)"
                   >
                     <mat-icon>edit</mat-icon>
                   </button>
@@ -384,7 +384,7 @@
                 [locations]="endleafRowIds"
                 [endleaf]="editedEndleaf"
                 (endleafChange)="onEndleafSave($event)"
-                (editorClose)="onEndleafClose()"
+                (editorClose)="editEndleaf(null)"
               ></cadmus-cod-endleaf>
             </fieldset>
           </mat-expansion-panel>

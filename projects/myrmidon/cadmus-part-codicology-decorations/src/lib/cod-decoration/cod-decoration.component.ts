@@ -5,13 +5,13 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { take } from 'rxjs';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
 import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
 import { Flag } from '@myrmidon/cadmus-ui-flags-picker';
 import { DialogService } from '@myrmidon/ng-mat-tools';
-import { take } from 'rxjs';
 
 import {
   CodDecoration,
@@ -273,30 +273,26 @@ export class CodDecorationComponent implements OnInit {
 
   //#region elements
   public addElement(): void {
-    const element: CodDecorationElement = {
+    this.editElement({
       type: this.decElemTypeEntries?.length
         ? this.decElemTypeEntries[0].id
         : '',
       flags: [],
       ranges: [],
-    };
-    this.elements.setValue([...this.elements.value, element]);
-    this.elements.updateValueAndValidity();
-    this.elements.markAsDirty();
-    this.editElement(this.elements.value.length - 1);
+    });
   }
 
-  public editElement(index: number): void {
-    if (index < 0) {
+  public editElement(element: CodDecorationElement | null, index = -1): void {
+    if (!element) {
       this.editedElementIndex = -1;
       this.tabIndex = 0;
       this.editedElement = undefined;
     } else {
       this.editedElementIndex = index;
-      this.editedElement = this.elements.value[index];
+      this.editedElement = element;
       setTimeout(() => {
         this.tabIndex = 1;
-      }, 300);
+      });
     }
   }
 
@@ -311,20 +307,20 @@ export class CodDecorationComponent implements OnInit {
     this.parentKeys = [...new Set(keys)].sort();
   }
 
-  public onElementSave(item: CodDecorationElement): void {
-    this.elements.setValue(
-      this.elements.value.map((x: CodDecorationElement, i: number) =>
-        i === this.editedElementIndex ? item : x
-      )
-    );
+  public onElementSave(element: CodDecorationElement): void {
+    const elements = [...this.elements.value];
+
+    if (this.editedElementIndex > -1) {
+      elements.splice(this.editedElementIndex, 1, element);
+    } else {
+      elements.push(element);
+    }
+
+    this.elements.setValue(elements);
     this.elements.updateValueAndValidity();
     this.elements.markAsDirty();
-    this.editElement(-1);
+    this.editElement(null);
     this.updateParentKeys();
-  }
-
-  public onElementClose(): void {
-    this.editElement(-1);
   }
 
   public removeElement(index: number): void {
@@ -371,39 +367,35 @@ export class CodDecorationComponent implements OnInit {
 
   //#region artists
   public addArtist(): void {
-    const artist: CodDecorationArtist = {
+    this.editArtist({
       type: this.artTypeEntries?.length ? this.artTypeEntries[0].id : '',
       name: '',
-    };
-    this.artists.setValue([...this.artists.value, artist]);
-    this.artists.updateValueAndValidity();
-    this.artists.markAsDirty();
-    this.editArtist(this.artists.value.length - 1);
+    });
   }
 
-  public editArtist(index: number): void {
-    if (index < 0) {
+  public editArtist(artist: CodDecorationArtist | null, index = -1): void {
+    if (!artist) {
       this.editedArtistIndex = -1;
       this.editedArtist = undefined;
     } else {
       this.editedArtistIndex = index;
-      this.editedArtist = this.artists.value[index];
+      this.editedArtist = artist;
     }
   }
 
-  public onArtistSave(item: CodDecorationArtist): void {
-    this.artists.setValue([
-      ...this.artists.value.map((x: CodDecorationArtist, i: number) =>
-        i === this.editedArtistIndex ? item : x
-      ),
-    ]);
+  public onArtistSave(artist: CodDecorationArtist): void {
+    const artists = [...this.artists.value];
+
+    if (this.editedArtistIndex > -1) {
+      artists.splice(this.editedArtistIndex, 1, artist);
+    } else {
+      artists.push(artist);
+    }
+
+    this.artists.setValue(artists);
     this.artists.updateValueAndValidity();
     this.artists.markAsDirty();
-    this.editArtist(-1);
-  }
-
-  public onArtistClose(): void {
-    this.editArtist(-1);
+    this.editArtist(null);
   }
 
   public removeArtist(index: number): void {

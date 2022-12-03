@@ -168,38 +168,33 @@ export class CodDecorationArtistComponent implements OnInit {
 
   //#region styles
   public addStyle(): void {
-    const style: CodDecorationArtistStyle = {
+    this.editStyle({
       name: this.artStyleEntries?.length ? this.artStyleEntries[0].id : '',
-    };
-    this.styles.setValue([...this.styles.value, style]);
-    this.styles.updateValueAndValidity();
-    this.styles.markAsDirty();
-    this.editStyle(this.styles.value.length - 1);
+    });
   }
 
-  public editStyle(index: number): void {
-    if (index < 0) {
+  public editStyle(style: CodDecorationArtistStyle | null, index = -1): void {
+    if (!style) {
       this._editedStyleIndex = -1;
       this.editedStyle = undefined;
     } else {
       this._editedStyleIndex = index;
-      this.editedStyle = this.styles.value[index];
+      this.editedStyle = style;
     }
   }
 
-  public onStyleSave(item: CodDecorationArtistStyle): void {
-    this.styles.setValue(
-      this.styles.value.map((x: CodDecorationArtistStyle, i: number) =>
-        i === this._editedStyleIndex ? item : x
-      )
-    );
+  public onStyleSave(style: CodDecorationArtistStyle): void {
+    const styles = [...this.styles.value];
+
+    if (this._editedStyleIndex > -1) {
+      styles.splice(this._editedStyleIndex, 1, style);
+    } else {
+      styles.push(style);
+    }
+
     this.styles.updateValueAndValidity();
     this.styles.markAsDirty();
-    this.editStyle(-1);
-  }
-
-  public onStyleClose(): void {
-    this.editStyle(-1);
+    this.editStyle(null);
   }
 
   public removeStyle(index: number): void {
