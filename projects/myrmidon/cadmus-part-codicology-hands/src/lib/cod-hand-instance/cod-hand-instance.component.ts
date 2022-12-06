@@ -175,7 +175,9 @@ export class CodHandInstanceComponent implements OnInit {
     this.initialRanges = model.ranges;
 
     this.chronotope.setValue(model.chronotope || null);
-    this.initialChronotope = model.chronotope;
+    // using {} forces binding to work,
+    // else we would re-set undefined without triggering form update
+    this.initialChronotope = model.chronotope || {};
 
     this.images.setValue(model.images || []);
     this.initialImages = model.images || [];
