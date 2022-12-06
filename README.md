@@ -43,6 +43,9 @@ Quick Docker image build:
 
 ### 3.0.2
 
+- 2022-12-06:
+  - updated packages.
+  - fixed codicology instance not reset properly on new instance.
 - 2022-12-03:
   - fixes to button styles.
   - changed code template for editing multiple entries in an array. See below.

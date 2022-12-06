@@ -153,6 +153,11 @@ export class CodHandInstanceComponent implements OnInit {
   private updateForm(model: CodHandInstance | undefined): void {
     if (!model) {
       this.form.reset();
+      this.initialTypologies = [];
+      this.initialColors = [];
+      this.initialRanges = [];
+      this.initialChronotope = undefined;
+      this.initialImages = [];
       return;
     }
 
