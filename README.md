@@ -43,6 +43,8 @@ Quick Docker image build:
 
 ## History
 
+- 2022-12-24: updated Angular and packages.
+
 ### 3.0.4
 
 - 2022-12-06: fixed chronotope not reset in hand instance editor.
