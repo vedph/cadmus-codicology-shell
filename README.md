@@ -43,7 +43,9 @@ Quick Docker image build:
 
 ## History
 
-- 2022-12-24: updated Angular and packages.
+- 2022-12-24:
+  - updated Angular and packages.
+  - minor fixes to add buttons in contents and layouts.
 
 ### 3.0.4
 
