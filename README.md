@@ -44,6 +44,8 @@ Quick Docker image build:
 
 ## History
 
+- 2022-12-15: version numbers updates for aesthetic changes.
+
 ### 3.0.5
 
 - 2022-12-15: updated Cadmus packages for fixes.
