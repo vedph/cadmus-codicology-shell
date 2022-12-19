@@ -232,6 +232,7 @@ export class CodDecorationComponent implements OnInit {
     this.note.setValue(decoration.note || null);
     this.artists.setValue(decoration.artists || []);
     this.elements.setValue(decoration.elements || []);
+    this.updateParentKeys();
 
     this.form.markAsPristine();
   }
@@ -327,13 +328,14 @@ export class CodDecorationComponent implements OnInit {
     this._dialogService
       .confirm('Confirmation', 'Delete element?')
       .pipe(take(1))
-      .subscribe((yes) => {
+      .subscribe((yes: boolean) => {
         if (yes) {
           const items = [...this.elements.value];
           items.splice(index, 1);
           this.elements.setValue(items);
           this.elements.updateValueAndValidity();
           this.elements.markAsDirty();
+          this.updateParentKeys();
         }
       });
   }

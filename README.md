@@ -44,6 +44,9 @@ Quick Docker image build:
 
 ## History
 
+- 2022-12-19:
+  - updated Angular.
+  - fix to parent keys not updated when loading/deleting elements in decoration editor (`@myrmidon/cadmus-part-codicology-decorations`).
 - 2022-12-15: version numbers updates for aesthetic changes.
 
 ### 3.0.5
