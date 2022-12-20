@@ -57,7 +57,6 @@ export class CodDecorationElementComponent implements OnInit {
   private _elemTypolEntries: ThesaurusEntry[] | undefined;
   private _updatingForm?: boolean;
   private _adjustingUI?: boolean;
-  private _inited?: boolean;
 
   @ViewChild('dsceditor', { static: false }) dscEditor: any;
   public editorOptions = {
@@ -381,7 +380,6 @@ export class CodDecorationElementComponent implements OnInit {
           this.adjustUI();
         }
       });
-    this._inited = true;
   }
 
   private adjustUI(): void {
@@ -491,12 +489,25 @@ export class CodDecorationElementComponent implements OnInit {
       this.instanceCount.setValue(element.instanceCount || 0);
       // typologies
       this.subject.setValue(element.subject || null);
-      this.initialColors = element.colors || [];
-      this.initialTypologies = element.typologies || [];
-      this.initialGildings = element.gildings || [];
-      this.initialTechniques = element.techniques || [];
-      this.initialTools = element.tools || [];
-      this.initialPositions = element.positions || [];
+
+      this.colors.setValue(element.colors || []);
+      this.initialColors = this.colors.value;
+
+      this.typologies.setValue(element.typologies || []);
+      this.initialTypologies = this.typologies.value;
+
+      this.gildings.setValue(element.gildings || []);
+      this.initialGildings = this.gildings.value;
+
+      this.techniques.setValue(element.techniques || []);
+      this.initialTechniques = this.techniques.value;
+
+      this.tools.setValue(element.tools || []);
+      this.initialTools = this.tools.value;
+
+      this.positions.setValue(element.positions || []);
+      this.initialPositions = this.positions.value;
+
       this.lineHeight.setValue(element.lineHeight || 0);
       this.textRelation.setValue(element.textRelation || null);
       // description
@@ -559,36 +570,54 @@ export class CodDecorationElementComponent implements OnInit {
   }
 
   public onTypologiesChange(ids: string[]): void {
+    if (this._updatingForm) {
+      return;
+    }
     this.typologies.setValue(ids);
     this.typologies.updateValueAndValidity();
     this.typologies.markAsDirty();
   }
 
   public onColorsChange(ids: string[]): void {
+    if (this._updatingForm) {
+      return;
+    }
     this.colors.setValue(ids);
     this.colors.updateValueAndValidity();
     this.colors.markAsDirty();
   }
 
   public onGildingsChange(ids: string[]): void {
+    if (this._updatingForm) {
+      return;
+    }
     this.gildings.setValue(ids);
     this.gildings.updateValueAndValidity();
     this.gildings.markAsDirty();
   }
 
   public onTechniquesChange(ids: string[]): void {
+    if (this._updatingForm) {
+      return;
+    }
     this.techniques.setValue(ids);
     this.techniques.updateValueAndValidity();
     this.techniques.markAsDirty();
   }
 
   public onToolsChange(ids: string[]): void {
+    if (this._updatingForm) {
+      return;
+    }
     this.tools.setValue(ids);
     this.tools.updateValueAndValidity();
     this.tools.markAsDirty();
   }
 
   public onPositionsChange(ids: string[]): void {
+    if (this._updatingForm) {
+      return;
+    }
     this.positions.setValue(ids);
     this.positions.updateValueAndValidity();
     this.positions.markAsDirty();
