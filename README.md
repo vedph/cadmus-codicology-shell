@@ -44,6 +44,7 @@ Quick Docker image build:
 
 ## History
 
+- 2022-12-21: fix typologies thesaurus not bound in decorations (`@myrmidon/cadmus-part-codicology-decorations`).
 - 2022-12-20: fix to flags not updated when loading decoration element (`@myrmidon/cadmus-part-codicology-decorations`).
 - 2022-12-19:
   - updated Angular.
