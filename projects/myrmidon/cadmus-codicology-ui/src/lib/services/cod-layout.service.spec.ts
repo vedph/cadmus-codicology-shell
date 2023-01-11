@@ -125,7 +125,7 @@ describe('CodLayoutService', () => {
   });
 
   const text1 =
-    // H   W   | mt   he ah   fw  mb | ml   clw  cw   cre cg clw  cw cre  mr
+    // H   W   | mt   he ah   fw  mb | ml clw  cw   cre cg clw  cw cre  mr
     '250 × 160 = 30 / 5 [170 / 5] 40 × 15 [5 / 50 / 5* (20) 5 / 40] 5 / 15';
   it('should parse ' + text1, () => {
     const r = service.parseFormula(text1);

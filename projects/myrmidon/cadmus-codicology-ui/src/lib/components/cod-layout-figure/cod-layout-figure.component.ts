@@ -67,6 +67,9 @@ export class CodLayoutFigureComponent implements OnInit, AfterViewInit {
     return this._rectSet;
   }
   public set rects(value: CodLayoutRectSet | undefined) {
+    if (this._rectSet === value) {
+      return;
+    }
     this._rectSet = value;
     if (this._afterInit) {
       this.refresh();

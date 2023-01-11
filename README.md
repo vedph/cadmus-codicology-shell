@@ -31,6 +31,10 @@ The project is used as an incubator shell for developing and testing frontend Ca
 - [backend models](https://github.com/vedph/cadmus-codicology)
 - [API](https://github.com/vedph/cadmus-codicology-api)
 
+Per-library documentation:
+
+- [codicology UI library](projects/myrmidon/cadmus-codicology-ui/README.md)
+
 Quick Docker image build:
 
 1. `npm run build-lib`; if you are going to use the libraries, publish them via `publish.bat`;
@@ -44,6 +48,9 @@ Quick Docker image build:
 
 ## History
 
+- 2023-01-11:
+  - layout figure: added explode feature.
+  - sheet labels: changed add formula behavior (label generator) so that r/v suffixes are added (e.g. `1*3=10` = `10r`, `10v`, `11r`).
 - 2022-12-21: fix typologies thesaurus not bound in decorations (`@myrmidon/cadmus-part-codicology-decorations`).
 - 2022-12-20: fix to flags not updated when loading decoration element (`@myrmidon/cadmus-part-codicology-decorations`).
 - 2022-12-19:

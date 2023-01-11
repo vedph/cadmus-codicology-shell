@@ -234,7 +234,7 @@ export class LabelGenerator {
       cells.push({
         rowId: n.toString() + (v ? 'v' : 'r'),
         id: columnId,
-        value: value,
+        value: value + (action.page? '' : v ? 'v' : 'r'),
       });
       // calculate next row ID
       if (v) {

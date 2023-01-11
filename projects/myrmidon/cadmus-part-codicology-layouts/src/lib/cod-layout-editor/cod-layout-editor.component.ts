@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -6,7 +6,6 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { MatSliderChange } from '@angular/material/slider';
 import { CodLocation, CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import {
   CodLayoutRectSet,
@@ -17,22 +16,29 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { PhysicalDimension } from '@myrmidon/cadmus-mat-physical-size';
 import { DecoratedCount } from '@myrmidon/cadmus-refs-decorated-counts';
 import { NgToolsValidators } from '@myrmidon/ng-tools';
+import { distinctUntilChanged, Subscription } from 'rxjs';
 
 import { CodLayout } from '../cod-layouts-part';
+
+const FIG_HEIGHT = 400;
 
 @Component({
   selector: 'cadmus-cod-layout-editor',
   templateUrl: './cod-layout-editor.component.html',
   styleUrls: ['./cod-layout-editor.component.css'],
 })
-export class CodLayoutEditorComponent implements OnInit {
+export class CodLayoutEditorComponent implements OnInit, OnDestroy {
   private _layout: CodLayout | undefined;
+  private _subGap?: Subscription;
 
   @Input()
   public get layout(): CodLayout | undefined {
     return this._layout;
   }
   public set layout(value: CodLayout | undefined) {
+    if (this._layout === value) {
+      return;
+    }
     this._layout = value;
     this.updateForm(value);
   }
@@ -83,7 +89,8 @@ export class CodLayoutEditorComponent implements OnInit {
   public formulaForm: FormGroup;
   public formulaError?: string;
   public rectSet: CodLayoutRectSet | undefined;
-  public figHeight = 400;
+  public figHeight = FIG_HEIGHT;
+  public figHasGap: FormControl<boolean>;
 
   public initialSample?: CodLocationRange;
   public initialRanges: CodLocationRange[];
@@ -131,12 +138,20 @@ export class CodLayoutEditorComponent implements OnInit {
     this.formulaForm = _formBuilder.group({
       formula: this.formula,
     });
+    // figure
+    this.figHasGap = _formBuilder.control(false, { nonNullable: true });
   }
 
   ngOnInit(): void {
-    if (this._layout) {
-      this.updateForm(this._layout);
-    }
+    this._subGap = this.figHasGap.valueChanges
+      .pipe(distinctUntilChanged())
+      .subscribe((value) => {
+        this.toggleFigExploded(value);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this._subGap?.unsubscribe();
   }
 
   private updateForm(layout: CodLayout | undefined): void {
@@ -221,7 +236,7 @@ export class CodLayoutEditorComponent implements OnInit {
     this.rectSet = {
       height: this._codLayoutService.getHeightRects(map),
       width: this._codLayoutService.getWidthRects(map),
-      gap: 4,
+      gap: this.figHasGap.value ? 4 : 0,
     };
 
     // update dimensions: first collect all the measurements
@@ -287,8 +302,18 @@ export class CodLayoutEditorComponent implements OnInit {
     }
   }
 
-  public onFigSliderChange(change: MatSliderChange): void {
-    this.figHeight = change.value!;
+  public onFigSliderChange(value: number): void {
+    this.figHeight = FIG_HEIGHT * value;
+  }
+
+  private toggleFigExploded(value: boolean): void {
+    if (!this.rectSet) {
+      return;
+    }
+    this.rectSet = {
+      ...this.rectSet,
+      gap: value ? 4 : 0,
+    };
   }
   //#endregion
 

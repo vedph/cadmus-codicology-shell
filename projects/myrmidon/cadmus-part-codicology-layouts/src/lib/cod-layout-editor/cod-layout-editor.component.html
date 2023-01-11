@@ -170,19 +170,12 @@
     <mat-expansion-panel>
       <mat-expansion-panel-header>figure</mat-expansion-panel-header>
       <div style="margin: 0 8px">
-        <mat-slider min="400" max="800" step="10" #ngSlider
-          ><input
-            matSliderThumb
-            (change)="
-              onFigSliderChange({
-                source: ngSliderThumb,
-                parent: ngSlider,
-                value: ngSliderThumb.value
-              })
-            "
-            #ngSliderThumb="matSliderThumb"
-            value="400"
-        /></mat-slider>
+        <mat-slider min="1" max="3" value="1" step="0.1">
+          <input matSliderThumb (valueChange)="onFigSliderChange($event)" />
+        </mat-slider>
+        <mat-checkbox style="margin-left: 8px" [formControl]="figHasGap"
+          >exploded</mat-checkbox
+        >
       </div>
       <div
         *ngIf="rectSet"
@@ -196,17 +189,6 @@
       </div>
     </mat-expansion-panel>
   </div>
-
-  <!-- counts -->
-  <fieldset>
-    <legend>counts</legend>
-    <cadmus-refs-decorated-counts
-      [idEntries]="cntIdEntries"
-      [tagEntries]="cntTagEntries"
-      [counts]="initialCounts"
-      (countsChange)="onCountsChange($event)"
-    ></cadmus-refs-decorated-counts>
-  </fieldset>
 
   <!-- dimensions -->
   <fieldset>
@@ -350,6 +332,18 @@
       </div>
     </div>
   </fieldset>
+
+  <!-- counts -->
+  <fieldset>
+    <legend>counts</legend>
+    <cadmus-refs-decorated-counts
+      [idEntries]="cntIdEntries"
+      [tagEntries]="cntTagEntries"
+      [counts]="initialCounts"
+      (countsChange)="onCountsChange($event)"
+    ></cadmus-refs-decorated-counts>
+  </fieldset>
+
   <br />
   <div>
     <!-- note -->
