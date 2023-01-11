@@ -17,3 +17,37 @@ fieldset {
   border-radius: 6px;
   padding: 6px 12px;
 }
+div#container {
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "editor figure";
+  gap: 8px;
+  margin-top: 8px;
+}
+#editor {
+  grid-area: editor;
+  border: 1px solid silver;
+  border-radius: 6px;
+  padding: 6px;
+}
+#figure {
+  grid-area: figure;
+  border: 1px solid silver;
+  border-radius: 6px;
+  padding: 6px;
+}
+#fig-container {
+  display: flex;
+  justify-content: center;
+}
+
+/* lt-md */
+@media only screen and (max-width: 959px) {
+  div#container {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "editor"
+      "figure";
+  }
+}
