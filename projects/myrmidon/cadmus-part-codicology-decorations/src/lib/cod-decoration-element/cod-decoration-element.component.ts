@@ -487,9 +487,14 @@ export class CodDecorationElementComponent implements OnInit {
     setTimeout(() => {
       this.key.setValue(element.key || null);
       this.parentKey.setValue(element.parentKey || null);
-      this.initialRanges = element.ranges;
-      this.initialFlags = element.flags;
       this.instanceCount.setValue(element.instanceCount || 0);
+
+      this.ranges.setValue(element.ranges || []);
+      this.initialRanges = element.ranges;
+
+      this.flags.setValue(element.flags || []);
+      this.initialFlags = element.flags;
+
       // typologies
       this.subject.setValue(element.subject || null);
 

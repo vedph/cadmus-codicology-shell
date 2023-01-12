@@ -49,6 +49,8 @@ Quick Docker image build:
 
 ## History
 
+- 2023-01-12: fix to decoration element editor, also moving it to an expander from a nested tab (`@myrmidon/cadmus-part-codicology-decorations`).
+
 ### 3.0.6
 
 - 2023-01-12:

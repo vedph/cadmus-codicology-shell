@@ -166,8 +166,6 @@ export class CodDecorationComponent implements OnInit {
   public editedArtistIndex: number;
   public editedArtist?: CodDecorationArtist;
 
-  public tabIndex: number;
-
   public editorOptions = {
     theme: 'vs-light',
     language: 'markdown',
@@ -180,7 +178,6 @@ export class CodDecorationComponent implements OnInit {
     this.editedElementIndex = -1;
     this.parentKeys = [];
     this.editedArtistIndex = -1;
-    this.tabIndex = 0;
     this.decorationChange = new EventEmitter<CodDecoration>();
     this.editorClose = new EventEmitter<any>();
     this.initialChronotopes = [];
@@ -289,14 +286,10 @@ export class CodDecorationComponent implements OnInit {
   public editElement(element: CodDecorationElement | null, index = -1): void {
     if (!element) {
       this.editedElementIndex = -1;
-      this.tabIndex = 0;
       this.editedElement = undefined;
     } else {
       this.editedElementIndex = index;
       this.editedElement = element;
-      setTimeout(() => {
-        this.tabIndex = 1;
-      });
     }
   }
 
