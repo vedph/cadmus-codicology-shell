@@ -25,6 +25,9 @@ export class CodDecorationArtistStyleComponent implements OnInit {
     return this._style;
   }
   public set style(value: CodDecorationArtistStyle | undefined) {
+    if (this._style === value) {
+      return;
+    }
     this._style = value;
     this.updateForm(value);
   }

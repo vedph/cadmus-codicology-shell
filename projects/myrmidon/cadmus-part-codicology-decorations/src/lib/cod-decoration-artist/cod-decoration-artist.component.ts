@@ -192,6 +192,7 @@ export class CodDecorationArtistComponent implements OnInit {
       styles.push(style);
     }
 
+    this.styles.setValue(styles);
     this.styles.updateValueAndValidity();
     this.styles.markAsDirty();
     this.editStyle(null);

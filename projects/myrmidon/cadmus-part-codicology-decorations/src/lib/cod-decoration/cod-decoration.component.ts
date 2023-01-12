@@ -59,6 +59,9 @@ export class CodDecorationComponent implements OnInit {
     return this._decoration;
   }
   public set decoration(value: CodDecoration | undefined) {
+    if (this._decoration === value) {
+      return;
+    }
     this._decoration = value;
     this.updateForm(value);
   }
