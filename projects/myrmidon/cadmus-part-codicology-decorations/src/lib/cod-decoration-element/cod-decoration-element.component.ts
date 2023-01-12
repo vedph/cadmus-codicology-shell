@@ -72,6 +72,9 @@ export class CodDecorationElementComponent implements OnInit {
     return this._element;
   }
   public set element(value: CodDecorationElement | undefined) {
+    if (this._element === value) {
+      return;
+    }
     this._element = value;
     this.updateForm(value);
   }

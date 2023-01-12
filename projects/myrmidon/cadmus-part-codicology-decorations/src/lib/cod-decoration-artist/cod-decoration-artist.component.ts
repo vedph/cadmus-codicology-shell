@@ -5,11 +5,11 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { take } from 'rxjs';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { AssertedId } from '@myrmidon/cadmus-refs-asserted-ids';
 import { DialogService } from '@myrmidon/ng-mat-tools';
-import { take } from 'rxjs';
 
 import {
   CodDecorationArtist,
@@ -30,6 +30,9 @@ export class CodDecorationArtistComponent implements OnInit {
     return this._artist;
   }
   public set artist(value: CodDecorationArtist | undefined) {
+    if (this._artist === value) {
+      return;
+    }
     this._artist = value;
     this.updateForm(value);
   }
@@ -202,7 +205,7 @@ export class CodDecorationArtistComponent implements OnInit {
     this._dialogService
       .confirm('Confirmation', 'Delete style?')
       .pipe(take(1))
-      .subscribe((yes) => {
+      .subscribe((yes: boolean) => {
         if (yes) {
           const items = [...this.styles.value];
           items.splice(index, 1);
