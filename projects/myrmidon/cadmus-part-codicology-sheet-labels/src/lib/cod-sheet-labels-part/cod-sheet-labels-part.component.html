@@ -277,7 +277,7 @@
                 <td *ngFor="let rc of r.columns">
                   <cadmus-cod-label-cell
                     [color]="$any(rc.id | cellTypeColor)"
-                    [cell]="$any(rc | cellAdapter: r.id)"
+                    [cell]="$any(rc | cellAdapter : r.id)"
                     (cellChange)="onCellChange($event)"
                   ></cadmus-cod-label-cell>
                 </td>
@@ -363,7 +363,9 @@
                 </td>
                 <td>{{ endleaf.location }}</td>
                 <td>
-                  {{ endleaf.material | flatLookup: matEntries:"id":"value" }}
+                  {{
+                    endleaf.material | flatLookup : matEntries : "id" : "value"
+                  }}
                 </td>
               </tr>
             </tbody>
@@ -477,6 +479,14 @@
                 ordinal number, while others correspond to N and M.
               </li>
             </ol>
+            <p>
+              Also, you can use another syntax to just set the value of an
+              arbitrarily defined set of cells. In this case, you specify any
+              number of physical locations (e.g. <code>1r</code>) or location
+              ranges (e.g. <code>1r-4v</code>), followed by <code>:=</code> and
+              a single value to assign to all the listed cells.
+            </p>
+            <p></p>
           </div>
         </mat-tab>
       </mat-tab-group>

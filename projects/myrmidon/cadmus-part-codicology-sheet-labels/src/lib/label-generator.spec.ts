@@ -1,6 +1,12 @@
-import { CodLabelActionType, LabelGenerator } from './label-generator';
+import { CodRowType } from './cod-sheet-table';
+import {
+  CodLabelAction,
+  CodLabelActionType,
+  CodLabelSetAction,
+  LabelGenerator,
+} from './label-generator';
 
-describe('LabelGenerator', () => {
+fdescribe('LabelGenerator', () => {
   // parser
   it('should parse null as null', () => {
     const action = LabelGenerator.parseAction(null);
@@ -19,7 +25,7 @@ describe('LabelGenerator', () => {
     expect(action).toBeNull();
   });
   it('should parse "1x2="', () => {
-    const action = LabelGenerator.parseAction('1x2=');
+    const action = LabelGenerator.parseAction('1x2=') as CodLabelAction;
     expect(action).toBeTruthy();
     expect(action!.n).toBe(1);
     expect(action!.v).toBeFalse();
@@ -29,7 +35,7 @@ describe('LabelGenerator', () => {
     expect(action!.type).toBe(CodLabelActionType.Custom);
   });
   it('should parse "1x2=custom"', () => {
-    const action = LabelGenerator.parseAction('1x2=custom');
+    const action = LabelGenerator.parseAction('1x2=custom') as CodLabelAction;
     expect(action).toBeTruthy();
     expect(action!.n).toBe(1);
     expect(action!.v).toBeFalse();
@@ -39,7 +45,7 @@ describe('LabelGenerator', () => {
     expect(action!.type).toBe(CodLabelActionType.Custom);
   });
   it('should parse "1rx2=custom"', () => {
-    const action = LabelGenerator.parseAction('1rx2=custom');
+    const action = LabelGenerator.parseAction('1rx2=custom') as CodLabelAction;
     expect(action).toBeTruthy();
     expect(action!.n).toBe(1);
     expect(action!.v).toBeFalse();
@@ -49,7 +55,7 @@ describe('LabelGenerator', () => {
     expect(action!.type).toBe(CodLabelActionType.Custom);
   });
   it('should parse "1vx2=custom"', () => {
-    const action = LabelGenerator.parseAction('1vx2=custom');
+    const action = LabelGenerator.parseAction('1vx2=custom') as CodLabelAction;
     expect(action).toBeTruthy();
     expect(action!.n).toBe(1);
     expect(action!.v).toBeTrue();
@@ -59,7 +65,7 @@ describe('LabelGenerator', () => {
     expect(action!.type).toBe(CodLabelActionType.Custom);
   });
   it('should parse "1r*2=custom"', () => {
-    const action = LabelGenerator.parseAction('1r*2=custom');
+    const action = LabelGenerator.parseAction('1r*2=custom') as CodLabelAction;
     expect(action).toBeTruthy();
     expect(action!.n).toBe(1);
     expect(action!.v).toBeFalse();
@@ -69,7 +75,7 @@ describe('LabelGenerator', () => {
     expect(action!.type).toBe(CodLabelActionType.Custom);
   });
   it('should parse "1r%2=custom"', () => {
-    const action = LabelGenerator.parseAction('1r%2=custom');
+    const action = LabelGenerator.parseAction('1r%2=custom') as CodLabelAction;
     expect(action).toBeTruthy();
     expect(action!.n).toBe(1);
     expect(action!.v).toBeFalse();
@@ -79,7 +85,9 @@ describe('LabelGenerator', () => {
     expect(action!.type).toBe(CodLabelActionType.Custom);
   });
   it('should parse "1r x 2 = custom"', () => {
-    const action = LabelGenerator.parseAction('1r x 2 = custom');
+    const action = LabelGenerator.parseAction(
+      '1r x 2 = custom'
+    ) as CodLabelAction;
     expect(action).toBeTruthy();
     expect(action!.n).toBe(1);
     expect(action!.v).toBeFalse();
@@ -89,7 +97,7 @@ describe('LabelGenerator', () => {
     expect(action!.type).toBe(CodLabelActionType.Custom);
   });
   it('should parse "1x2=12"', () => {
-    const action = LabelGenerator.parseAction('1x2=12');
+    const action = LabelGenerator.parseAction('1x2=12') as CodLabelAction;
     expect(action).toBeTruthy();
     expect(action!.n).toBe(1);
     expect(action!.v).toBeFalse();
@@ -99,7 +107,7 @@ describe('LabelGenerator', () => {
     expect(action!.type).toBe(CodLabelActionType.Arabic);
   });
   it('should parse "1x2=II"', () => {
-    const action = LabelGenerator.parseAction('1x2=II');
+    const action = LabelGenerator.parseAction('1x2=II') as CodLabelAction;
     expect(action).toBeTruthy();
     expect(action!.n).toBe(1);
     expect(action!.v).toBeFalse();
@@ -109,7 +117,7 @@ describe('LabelGenerator', () => {
     expect(action!.type).toBe(CodLabelActionType.UpperRoman);
   });
   it('should parse "1x2=X"', () => {
-    const action = LabelGenerator.parseAction('1x2=X');
+    const action = LabelGenerator.parseAction('1x2=X') as CodLabelAction;
     expect(action).toBeTruthy();
     expect(action!.n).toBe(1);
     expect(action!.v).toBeFalse();
@@ -119,7 +127,7 @@ describe('LabelGenerator', () => {
     expect(action!.type).toBe(CodLabelActionType.UpperRoman);
   });
   it('should parse "1x2="X" as custom"', () => {
-    const action = LabelGenerator.parseAction('1x2="X"');
+    const action = LabelGenerator.parseAction('1x2="X"') as CodLabelAction;
     expect(action).toBeTruthy();
     expect(action!.n).toBe(1);
     expect(action!.v).toBeFalse();
@@ -129,7 +137,7 @@ describe('LabelGenerator', () => {
     expect(action!.type).toBe(CodLabelActionType.Custom);
   });
   it('should parse "1x2=ii"', () => {
-    const action = LabelGenerator.parseAction('1x2=ii');
+    const action = LabelGenerator.parseAction('1x2=ii') as CodLabelAction;
     expect(action).toBeTruthy();
     expect(action!.n).toBe(1);
     expect(action!.v).toBeFalse();
@@ -139,7 +147,7 @@ describe('LabelGenerator', () => {
     expect(action!.type).toBe(CodLabelActionType.LowerRoman);
   });
   it('should parse "1x2=b"', () => {
-    const action = LabelGenerator.parseAction('1x2=b');
+    const action = LabelGenerator.parseAction('1x2=b') as CodLabelAction;
     expect(action).toBeTruthy();
     expect(action!.n).toBe(1);
     expect(action!.v).toBeFalse();
@@ -149,7 +157,7 @@ describe('LabelGenerator', () => {
     expect(action!.type).toBe(CodLabelActionType.LatLowerLetter);
   });
   it('should parse "1x2=B"', () => {
-    const action = LabelGenerator.parseAction('1x2=B');
+    const action = LabelGenerator.parseAction('1x2=B') as CodLabelAction;
     expect(action).toBeTruthy();
     expect(action!.n).toBe(1);
     expect(action!.v).toBeFalse();
@@ -159,7 +167,7 @@ describe('LabelGenerator', () => {
     expect(action!.type).toBe(CodLabelActionType.LatUpperLetter);
   });
   it('should parse "1x2=Β"', () => {
-    const action = LabelGenerator.parseAction('1x2=Β');
+    const action = LabelGenerator.parseAction('1x2=Β') as CodLabelAction;
     expect(action).toBeTruthy();
     expect(action!.n).toBe(1);
     expect(action!.v).toBeFalse();
@@ -169,7 +177,7 @@ describe('LabelGenerator', () => {
     expect(action!.type).toBe(CodLabelActionType.GrcUpperLetter);
   });
   it('should parse "1x2=β"', () => {
-    const action = LabelGenerator.parseAction('1x2=β');
+    const action = LabelGenerator.parseAction('1x2=β') as CodLabelAction;
     expect(action).toBeTruthy();
     expect(action!.n).toBe(1);
     expect(action!.v).toBeFalse();
@@ -179,7 +187,7 @@ describe('LabelGenerator', () => {
     expect(action!.type).toBe(CodLabelActionType.GrcLowerLetter);
   });
   it('should parse "1x2=q1/4"', () => {
-    const action = LabelGenerator.parseAction('1x2=q1/4');
+    const action = LabelGenerator.parseAction('1x2=q1/4') as CodLabelAction;
     expect(action).toBeTruthy();
     expect(action!.n).toBe(1);
     expect(action!.v).toBeFalse();
@@ -190,15 +198,40 @@ describe('LabelGenerator', () => {
   });
 
   // generator
-  it('should generate 3 from 1rx3=1', () => {
-    const cells = LabelGenerator.generateFrom('n', '1x3=1');
+  it('should generate 6 from 1rx3=10', () => {
+    const cells = LabelGenerator.generateFrom('n', '1rx3=10');
     expect(cells).toBeTruthy();
-    expect(cells.length).toBe(3);
-    for (let i = 0; i < 3; i++) {
-      expect(cells[i].rowId).toBe(`${i + 1}r`);
-      expect(cells[i].id).toBe('n');
-      expect(cells[i].value).toBe(`${i + 1}`);
-    }
+    expect(cells.length).toBe(6);
+
+    let cell = cells[0];
+    expect(cell.rowId).toBe('1r');
+    expect(cell.id).toBe('n');
+    expect(cell.value).toBe('10r');
+
+    cell = cells[1];
+    expect(cell.rowId).toBe('1v');
+    expect(cell.id).toBe('n');
+    expect(cell.value).toBe('10v');
+
+    cell = cells[2];
+    expect(cell.rowId).toBe('2r');
+    expect(cell.id).toBe('n');
+    expect(cell.value).toBe('11r');
+
+    cell = cells[3];
+    expect(cell.rowId).toBe('2v');
+    expect(cell.id).toBe('n');
+    expect(cell.value).toBe('11v');
+
+    cell = cells[4];
+    expect(cell.rowId).toBe('3r');
+    expect(cell.id).toBe('n');
+    expect(cell.value).toBe('12r');
+
+    cell = cells[5];
+    expect(cell.rowId).toBe('3v');
+    expect(cell.id).toBe('n');
+    expect(cell.value).toBe('12v');
   });
 
   it('should generate 3 from 1r%3=1', () => {
@@ -222,25 +255,30 @@ describe('LabelGenerator', () => {
     expect(cell.value).toBe('3');
   });
 
-  it('should generate 3 from 1vx3=X', () => {
-    const cells = LabelGenerator.generateFrom('n', '1vx3=X');
+  it('should generate 4 from 1vx2=X', () => {
+    const cells = LabelGenerator.generateFrom('n', '1vx2=X');
     expect(cells).toBeTruthy();
-    expect(cells.length).toBe(3);
+    expect(cells.length).toBe(4);
 
     let cell = cells[0];
     expect(cell.rowId).toBe('1v');
     expect(cell.id).toBe('n');
-    expect(cell.value).toBe('X');
+    expect(cell.value).toBe('Xv');
 
     cell = cells[1];
-    expect(cell.rowId).toBe('2v');
+    expect(cell.rowId).toBe('2r');
     expect(cell.id).toBe('n');
-    expect(cell.value).toBe('XI');
+    expect(cell.value).toBe('XIr');
 
     cell = cells[2];
-    expect(cell.rowId).toBe('3v');
+    expect(cell.rowId).toBe('2v');
     expect(cell.id).toBe('n');
-    expect(cell.value).toBe('XII');
+    expect(cell.value).toBe('XIv');
+
+    cell = cells[3];
+    expect(cell.rowId).toBe('3r');
+    expect(cell.id).toBe('n');
+    expect(cell.value).toBe('XIIr');
   });
 
   it('should generate 16 from 1x2=q1/4', () => {
@@ -321,5 +359,117 @@ describe('LabelGenerator', () => {
     expect(cell.rowId).toBe('8v');
     expect(cell.id).toBe('q');
     expect(cell.value).toBe('2.4/4');
+  });
+
+  // set-action
+  it('should parse 1r:=x', () => {
+    const action = LabelGenerator.parseSetAction('1r:=x') as CodLabelSetAction;
+    expect(action).toBeTruthy();
+    expect(action.pages.length).toBe(1);
+    expect(action!.value).toBe('x');
+    // 1r
+    expect(action.pages[0].type).toBe(CodRowType.Body);
+    expect(action.pages[0].n).toBe(1);
+    expect(action.pages[0].v).toBeFalse();
+  });
+
+  it('should parse 1v:=x', () => {
+    const action = LabelGenerator.parseSetAction('1v:=x') as CodLabelSetAction;
+    expect(action).toBeTruthy();
+    expect(action.pages.length).toBe(1);
+    expect(action!.value).toBe('x');
+    // 1r
+    expect(action.pages[0].type).toBe(CodRowType.Body);
+    expect(action.pages[0].n).toBe(1);
+    expect(action.pages[0].v).toBeTrue();
+  });
+
+  it('should parse (1r):=x', () => {
+    const action = LabelGenerator.parseSetAction(
+      '(1r):=x'
+    ) as CodLabelSetAction;
+    expect(action).toBeTruthy();
+    expect(action.pages.length).toBe(1);
+    expect(action!.value).toBe('x');
+    // (1r)
+    expect(action.pages[0].type).toBe(CodRowType.EndleafFront);
+    expect(action.pages[0].n).toBe(1);
+    expect(action.pages[0].v).toBeFalse();
+  });
+
+  it('should parse (/1r):=x', () => {
+    const action = LabelGenerator.parseSetAction(
+      '(/1r):=x'
+    ) as CodLabelSetAction;
+    expect(action).toBeTruthy();
+    expect(action.pages.length).toBe(1);
+    expect(action!.value).toBe('x');
+    // (/1r)
+    expect(action.pages[0].type).toBe(CodRowType.EndleafBack);
+    expect(action.pages[0].n).toBe(1);
+    expect(action.pages[0].v).toBeFalse();
+  });
+
+  it('should parse 1r 3v:=x', () => {
+    const action = LabelGenerator.parseSetAction(
+      '1r 3v:=x'
+    ) as CodLabelSetAction;
+    expect(action).toBeTruthy();
+    expect(action.pages.length).toBe(2);
+    expect(action!.value).toBe('x');
+    // 1r
+    expect(action.pages[0].type).toBe(CodRowType.Body);
+    expect(action.pages[0].n).toBe(1);
+    expect(action.pages[0].v).toBeFalse();
+    // 3v
+    expect(action.pages[1].type).toBe(CodRowType.Body);
+    expect(action.pages[1].n).toBe(3);
+    expect(action.pages[1].v).toBeTrue();
+  });
+
+  it('should parse (1r) 2r (/3v):=x', () => {
+    const action = LabelGenerator.parseSetAction(
+      '(1r) 2r (/3v):=x'
+    ) as CodLabelSetAction;
+    expect(action).toBeTruthy();
+    expect(action.pages.length).toBe(3);
+    expect(action!.value).toBe('x');
+    // (1r)
+    expect(action.pages[0].type).toBe(CodRowType.EndleafFront);
+    expect(action.pages[0].n).toBe(1);
+    expect(action.pages[0].v).toBeFalse();
+    // 2r
+    expect(action.pages[1].type).toBe(CodRowType.Body);
+    expect(action.pages[1].n).toBe(2);
+    expect(action.pages[1].v).toBeFalse();
+    // (/3v)
+    expect(action.pages[2].type).toBe(CodRowType.EndleafBack);
+    expect(action.pages[2].n).toBe(3);
+    expect(action.pages[2].v).toBeTrue();
+  });
+
+  it('should parse 1r-2v:=x', () => {
+    const action = LabelGenerator.parseSetAction(
+      '1r-2v:=x'
+    ) as CodLabelSetAction;
+    expect(action).toBeTruthy();
+    expect(action.pages.length).toBe(4);
+    expect(action!.value).toBe('x');
+    // 1r
+    expect(action.pages[0].type).toBe(CodRowType.Body);
+    expect(action.pages[0].n).toBe(1);
+    expect(action.pages[0].v).toBeFalse();
+    // 1v
+    expect(action.pages[1].type).toBe(CodRowType.Body);
+    expect(action.pages[1].n).toBe(1);
+    expect(action.pages[1].v).toBeTrue();
+    // 2r
+    expect(action.pages[2].type).toBe(CodRowType.Body);
+    expect(action.pages[2].n).toBe(2);
+    expect(action.pages[2].v).toBeFalse();
+    // 2v
+    expect(action.pages[3].type).toBe(CodRowType.Body);
+    expect(action.pages[3].n).toBe(2);
+    expect(action.pages[3].v).toBeTrue();
   });
 });

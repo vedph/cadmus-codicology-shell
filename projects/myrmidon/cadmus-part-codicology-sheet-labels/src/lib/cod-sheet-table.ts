@@ -1,5 +1,6 @@
 import { deepCopy } from '@myrmidon/ng-tools';
 import { BehaviorSubject, Observable } from 'rxjs';
+
 import { CodColumn, CodRow } from './cod-sheet-labels-part';
 import { CodLabelCell } from './label-generator';
 
@@ -94,6 +95,15 @@ export class CodSheetTable {
    */
   public getColumnIds(): string[] {
     return [...this._cols$.value];
+  }
+
+  /**
+   * Gets the index of the specified column ID.
+   * @param id The column ID.
+   * @returns The column index or -1 if not found.
+   */
+  public getColumnIndex(id: string): number {
+    return this._cols$.value.findIndex((s) => s === id);
   }
 
   /**
@@ -569,5 +579,31 @@ export class CodSheetTable {
 
     // update rows
     this._rows$.next(deepCopy(rows));
+  }
+
+  /**
+   * Set the value of all the matching pages in the specified column.
+   * If a target page does not exist, the requested value set will not happen.
+   * @param columnIndex The target column index.
+   * @param pages The target pages.
+   * @param value The value to set.
+   */
+  public setPageValue(
+    columnIndex: number,
+    pages: CodRowPage[],
+    value: string | undefined | null
+  ): void {
+    const rows = deepCopy([...this._rows$.value]) as CodRowViewModel[];
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      const id = this.parseRowId(row.id);
+      const page = pages.find(
+        (p) => p.type === id?.type && p.n === id.n && p.v === id.v
+      );
+      if (page) {
+        row.columns[columnIndex].value = value || undefined;
+      }
+    }
+    this._rows$.next(rows);
   }
 }

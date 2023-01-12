@@ -3,6 +3,7 @@
 - [Cadmus Codicology Shell](#cadmus-codicology-shell)
   - [Shell Architecture](#shell-architecture)
   - [History](#history)
+    - [3.0.6](#306)
     - [3.0.5](#305)
     - [3.0.4](#304)
     - [3.0.3](#303)
@@ -39,7 +40,7 @@ Quick Docker image build:
 
 1. `npm run build-lib`; if you are going to use the libraries, publish them via `publish.bat`;
 2. remember to update version in `env.js`, then `ng build`;
-3. `docker build . -t vedph2020/cadmus-codicology-shell:3.0.5 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
+3. `docker build . -t vedph2020/cadmus-codicology-shell:3.0.6 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
 
 ## Shell Architecture
 
@@ -48,6 +49,10 @@ Quick Docker image build:
 
 ## History
 
+### 3.0.6
+
+- 2023-01-12:
+  - sheet labels: new formula for setting values of an arbitrary cells set.
 - 2023-01-11:
   - layout figure: added explode feature.
   - sheet labels: changed add formula behavior (label generator) so that r/v suffixes are added (e.g. `1*3=10` = `10r`, `10v`, `11r`).

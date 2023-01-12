@@ -133,7 +133,7 @@ export class CodSheetLabelsPartComponent
     this.opColumn = formBuilder.control(null, Validators.required);
     this.opAction = formBuilder.control(null, [
       Validators.required,
-      Validators.pattern(LabelGenerator.PATTERN),
+      Validators.pattern(LabelGenerator.ANY_PATTERN),
     ]);
     this.opForm = formBuilder.group({
       opColumn: this.opColumn,
@@ -317,11 +317,23 @@ export class CodSheetLabelsPartComponent
     if (this.opForm.invalid) {
       return;
     }
-    const cells = LabelGenerator.generateFrom(
-      this.opColumn.value!,
-      this.opAction.value!
-    );
-    this._table.addCells(cells);
+    if (this.opAction.value?.includes(':=')) {
+      const action = LabelGenerator.parseSetAction(this.opAction.value);
+      if (!action) {
+        return;
+      }
+      this._table.setPageValue(
+        this._table.getColumnIndex(this.opColumn.value!),
+        action.pages,
+        action.value
+      );
+    } else {
+      const cells = LabelGenerator.generateFrom(
+        this.opColumn.value!,
+        this.opAction.value!
+      );
+      this._table.addCells(cells);
+    }
   }
 
   public onTypeAdd(): void {
