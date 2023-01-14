@@ -75,6 +75,7 @@ export class CodDecorationElementComponent implements OnInit {
     if (this._element === value) {
       return;
     }
+    console.log('setting element');
     this._element = value;
     this.updateForm(value);
   }
@@ -372,14 +373,13 @@ export class CodDecorationElementComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.onTabIndexChanged(0);
-
-    this.adjustUI();
+    // this.adjustUI();
 
     this.type.valueChanges
       .pipe(distinctUntilChanged(), debounceTime(300))
-      .subscribe(() => {
-        if (!this._updatingForm) {
+      .subscribe((value) => {
+        if (!this._adjustingUI && !this._updatingForm) {
+          console.log('type value changed: ' + value);
           this.adjustUI();
         }
       });
@@ -457,15 +457,59 @@ export class CodDecorationElementComponent implements OnInit {
     console.log('adjustUI exit');
   }
 
-  public onTabIndexChanged(index: number): void {
-    // HACK
-    // https://github.com/atularen/ngx-monaco-editor/issues/19
-    // https://stackoverflow.com/questions/37412950/ngx-monaco-editor-unable-to-set-layout-size-when-container-changes-using-tab
-    if (index === 2) {
-      setTimeout(() => {
-        this.dscEditor?._editor?.layout();
-      }, 150);
-    }
+  // public onTabIndexChanged(index: number): void {
+  // https://github.com/atularen/ngx-monaco-editor/issues/19
+  // https://stackoverflow.com/questions/37412950/ngx-monaco-editor-unable-to-set-layout-size-when-container-changes-using-tab
+  // if (index === 2) {
+  //   setTimeout(() => {
+  //     this.dscEditor?._editor?.layout();
+  //   }, 150);
+  // }
+  // }
+
+  private updateTypeDependencies(element: CodDecorationElement): void {
+    console.log('updateTypeDependencies enter');
+    this.key.setValue(element.key || null);
+    this.parentKey.setValue(element.parentKey || null);
+    this.instanceCount.setValue(element.instanceCount || 0);
+
+    this.ranges.setValue(element.ranges || []);
+    this.initialRanges = element.ranges;
+
+    this.flags.setValue(element.flags || []);
+    this.initialFlags = element.flags;
+
+    // typologies
+    this.subject.setValue(element.subject || null);
+
+    this.colors.setValue(element.colors || []);
+    this.initialColors = element.colors || [];
+
+    this.typologies.setValue(element.typologies || []);
+    this.initialTypologies = element.typologies || [];
+
+    this.gildings.setValue(element.gildings || []);
+    this.initialGildings = element.gildings || [];
+
+    this.techniques.setValue(element.techniques || []);
+    this.initialTechniques = element.techniques || [];
+
+    this.tools.setValue(element.tools || []);
+    this.initialTools = element.tools || [];
+
+    this.positions.setValue(element.positions || []);
+    this.initialPositions = element.positions || [];
+
+    this.lineHeight.setValue(element.lineHeight || 0);
+    this.textRelation.setValue(element.textRelation || null);
+    // description
+    this.description.setValue(element.description || null);
+    this.initialImages = element.images || [];
+    this.note.setValue(element.note || null);
+
+    this.form.markAsPristine();
+    this._updatingForm = false;
+    console.log('updateTypeDependencies exit');
   }
 
   private updateForm(element: CodDecorationElement | undefined): void {
@@ -478,55 +522,18 @@ export class CodDecorationElementComponent implements OnInit {
       return;
     }
     // general
-    this.type.setValue(element.type);
-    // let the UI adjust itself before setting type-dependent controls
-    this.adjustUI();
+    this.type.setValue(element.type, { emitEvent: false });
+    setTimeout(() => {
+      // let the UI adjust itself before setting type-dependent controls
+      console.log('adjust UI from updateForm');
+      this.adjustUI();
+      // set type-dependent controls
+      setTimeout(() => {
+        this.updateTypeDependencies(element);
+      });
+    });
 
     // set other controls
-    // HACK
-    setTimeout(() => {
-      this.key.setValue(element.key || null);
-      this.parentKey.setValue(element.parentKey || null);
-      this.instanceCount.setValue(element.instanceCount || 0);
-
-      this.ranges.setValue(element.ranges || []);
-      this.initialRanges = element.ranges;
-
-      this.flags.setValue(element.flags || []);
-      this.initialFlags = element.flags;
-
-      // typologies
-      this.subject.setValue(element.subject || null);
-
-      this.colors.setValue(element.colors || []);
-      this.initialColors = this.colors.value;
-
-      this.typologies.setValue(element.typologies || []);
-      this.initialTypologies = this.typologies.value;
-
-      this.gildings.setValue(element.gildings || []);
-      this.initialGildings = this.gildings.value;
-
-      this.techniques.setValue(element.techniques || []);
-      this.initialTechniques = this.techniques.value;
-
-      this.tools.setValue(element.tools || []);
-      this.initialTools = this.tools.value;
-
-      this.positions.setValue(element.positions || []);
-      this.initialPositions = this.positions.value;
-
-      this.lineHeight.setValue(element.lineHeight || 0);
-      this.textRelation.setValue(element.textRelation || null);
-      // description
-      this.description.setValue(element.description || null);
-      this.initialImages = element.images || [];
-      this.note.setValue(element.note || null);
-
-      this.form.markAsPristine();
-      this._updatingForm = false;
-      console.log('updateForm tm exit');
-    }, 0);
     console.log('updateForm exit');
   }
 

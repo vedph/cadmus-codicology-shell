@@ -2,7 +2,7 @@
   <div class="type-head">
     {{ type.value | flatLookup : decElemTypeEntries : "id" : "value" }}
   </div>
-  <mat-tab-group (selectedIndexChange)="onTabIndexChanged($event)">
+  <mat-tab-group>
     <!-- GENERAL -->
     <mat-tab label="general">
       <!-- type (bound) -->
@@ -255,6 +255,5 @@
     >
       <mat-icon>check_circle</mat-icon> element
     </button>
-    <span style="margin-left: 8px">element</span>
   </div>
 </form>

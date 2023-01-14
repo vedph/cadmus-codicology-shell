@@ -3,6 +3,7 @@
 - [Cadmus Codicology Shell](#cadmus-codicology-shell)
   - [Shell Architecture](#shell-architecture)
   - [History](#history)
+    - [3.0.7](#307)
     - [3.0.6](#306)
     - [3.0.5](#305)
     - [3.0.4](#304)
@@ -49,6 +50,9 @@ Quick Docker image build:
 
 ## History
 
+### 3.0.7
+
+- 2023-01-14: fix to decration element editor (do not emit on `type` value change).
 - 2023-01-12: fix to decoration element editor, also moving it to an expander from a nested tab (`@myrmidon/cadmus-part-codicology-decorations`).
 
 ### 3.0.6
