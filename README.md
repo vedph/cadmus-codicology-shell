@@ -50,6 +50,8 @@ Quick Docker image build:
 
 ## History
 
+- 2023-01-20: updated packages.
+
 ### 3.0.7
 
 - 2023-01-14: fix to decration element editor (do not emit on `type` value change).
