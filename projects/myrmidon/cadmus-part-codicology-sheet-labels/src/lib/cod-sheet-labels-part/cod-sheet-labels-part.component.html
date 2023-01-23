@@ -112,9 +112,11 @@
                   <mat-label>type</mat-label>
                   <mat-select [formControl]="addType">
                     <mat-optgroup label="rows">
+                      <mat-option value="row-0">front cover</mat-option>
                       <mat-option value="row-1">front endleaf</mat-option>
                       <mat-option value="row-2">body</mat-option>
                       <mat-option value="row-3">back endleaf</mat-option>
+                      <mat-option value="row-4">back cover</mat-option>
                     </mat-optgroup>
                     <mat-optgroup label="columns">
                       <mat-option value="col-q" [disabled]="qPresent"
@@ -155,8 +157,15 @@
                   >
                 </mat-form-field>
 
-                <!-- addCount -->
-                <mat-form-field *ngIf="!adderColumn" style="width: 6em">
+                <!-- addCount (not for covers) -->
+                <mat-form-field
+                  *ngIf="
+                    !adderColumn &&
+                    addType.value !== 'row-0' &&
+                    addType.value !== 'row-4'
+                  "
+                  style="width: 6em"
+                >
                   <mat-label>count</mat-label>
                   <input
                     matInput

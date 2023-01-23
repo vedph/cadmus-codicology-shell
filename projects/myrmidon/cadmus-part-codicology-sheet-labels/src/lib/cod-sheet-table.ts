@@ -8,9 +8,11 @@ import { CodLabelCell } from './label-generator';
  * Type of table row.
  */
 export enum CodRowType {
-  EndleafFront = 0,
+  CoverFront = 0,
+  EndleafFront,
   Body,
   EndleafBack,
+  CoverBack,
 }
 
 /**
@@ -43,11 +45,16 @@ export type CodColumnType = 'q' | 'n' | 'c' | 's' | 'r';
  * The table is edited so that we ensure that all the rows always have
  * the same columns, and their order follows the rules for both rows and
  * columns.
- * Rows are sorted first by type: front endleaf, body, back endleaf; and
- * then by their sheet number and recto/verso flag (1r, 1v, 2r, 2v...).
+ * Rows are sorted first by type: front conver, front endleaf, body,
+ * back endleaf, back cover; and then by their sheet number and
+ * recto/verso flag (1r, 1v, 2r, 2v...).
  * Endleaves IDs follow the same pattern, but are wrapped in "()" (front)
  * or "(/)" (back). Each row has an array of columns, which is kept
  * in synch across all the rows.
+ * Front/back covers are modeled as a special case of endleaves, where
+ * the only meaningful location values are system and suffix. There is
+ * no number, as by definition covers are single. Front cover always
+ * comes first; back cover always comes last.
  * Columns are sorted first by type: qncsr; and then by their suffix,
  * which optionally follows the type letter plus a dot. So, "q" is the
  * default (and unique) quire column; "n" is the default numbering;
@@ -75,9 +82,9 @@ export class CodSheetTable {
 
   /**
    * The rows in the table. Rows are sorted first by their type,
-   * then by their number. Type order is front-endleaf, body,
-   * back-endleaf. Each row has an ID built of a number and a r/v
-   * flag.
+   * then by their number. Type order is front-cover, front-endleaf,
+   * body, back-endleaf, back-cover. Each row has an ID built of a
+   * number (=0 for covers) and a r/v flag (false for covers).
    */
   public get rows$(): Observable<CodRowViewModel[]> {
     return this._rows$.asObservable();
@@ -243,6 +250,10 @@ export class CodSheetTable {
   private buildRowId(type: CodRowType, n: number, v: boolean) {
     const rv = v ? 'v' : 'r';
     switch (type) {
+      case CodRowType.CoverFront:
+        return '[';
+      case CodRowType.CoverBack:
+        return '[/';
       case CodRowType.EndleafFront:
         return `(${n}${rv})`;
       case CodRowType.EndleafBack:
@@ -270,6 +281,14 @@ export class CodSheetTable {
    */
   public appendRows(type: CodRowType, count: number): void {
     const rows = [...this._rows$.value];
+
+    // corner case: covers are single
+    if (type === CodRowType.CoverFront || type === CodRowType.CoverBack) {
+      if (rows.some((r) => r.type === type)) {
+        return;
+      }
+      count = 1;
+    }
 
     // locate last row of same type
     let lastRowIndex = rows.length - 1;
@@ -339,16 +358,26 @@ export class CodSheetTable {
   }
 
   private parseRowId(rowId: string): CodRowPage | null {
-    const m = /(\()?(\/)?([0-9]+)([rv])/.exec(rowId);
+    const m = /([[\(])?(\/)?([0-9]+)([rv])/.exec(rowId);
     if (!m) {
       return null;
     }
+    // type:
+    let type: CodRowType;
+    // is there ( or [?
+    if (m[1]) {
+      if (m[1] === '(') {
+        // (/ or (
+        type = m[2] ? CodRowType.EndleafBack : CodRowType.EndleafFront;
+      } else {
+        // [/ or [
+        type = m[2] ? CodRowType.CoverBack : CodRowType.CoverFront;
+      }
+    } else {
+      type = CodRowType.Body;
+    }
     return {
-      type: m[2]
-        ? CodRowType.EndleafBack
-        : m[1]
-        ? CodRowType.EndleafFront
-        : CodRowType.Body,
+      type: type,
       n: +m[3],
       v: m[4] === 'v',
     };
@@ -369,6 +398,14 @@ export class CodSheetTable {
   }
 
   private incRowPage(page: CodRowPage): void {
+    // nope for covers
+    if (
+      page.type === CodRowType.CoverFront ||
+      page.type === CodRowType.CoverBack
+    ) {
+      return;
+    }
+
     if (page.v) {
       page.n++;
       page.v = false;

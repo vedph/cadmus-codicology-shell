@@ -342,19 +342,29 @@ export class CodSheetLabelsPartComponent
     }
     if (this.addType.value.startsWith('row-')) {
       let type: CodRowType;
+      // count by 2 as operators work with sheets rather than pages
+      let count = 2 * (this.addCount.value || 1);
+
       switch (this.addType.value) {
+        case 'row-0':
+          type = CodRowType.CoverFront;
+          count = 1;
+          break;
         case 'row-1':
           type = CodRowType.EndleafFront;
           break;
         case 'row-3':
           type = CodRowType.EndleafBack;
           break;
+        case 'row-4':
+          type = CodRowType.CoverBack;
+          count = 1;
+          break;
         default:
           type = CodRowType.Body;
           break;
       }
-      // count by 2 as operators work with sheets rather than pages
-      this._table.appendRows(type, 2 * (this.addCount.value || 1));
+      this._table.appendRows(type, count);
     } else {
       const id =
         this.addType.value.charAt(4) +
