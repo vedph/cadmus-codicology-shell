@@ -50,7 +50,9 @@ Quick Docker image build:
 
 ## History
 
-- 2023-01-23: updated packages (cover in `CodLocation`).
+- 2023-01-23:
+  - updated packages (cover in `CodLocation`).
+  - added covers in sheet labels (library still to be published, version number already increased).
 - 2023-01-20: updated packages.
 
 ### 3.0.7
