@@ -51,6 +51,8 @@ Quick Docker image build:
 
 ## History
 
+- 2023-01-23: r/v for covers in sheet labels.
+
 ### 3.0.8
 
 - 2023-01-23:

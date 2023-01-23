@@ -52,8 +52,8 @@ export type CodColumnType = 'q' | 'n' | 'c' | 's' | 'r';
  * or "(/)" (back). Each row has an array of columns, which is kept
  * in synch across all the rows.
  * Front/back covers are modeled as a special case of endleaves, where
- * the only meaningful location values are system and suffix. There is
- * no number, as by definition covers are single. Front cover always
+ * the only meaningful location values are system, r/v and suffix. There
+ * is no number, as by definition covers are single. Front cover always
  * comes first; back cover always comes last.
  * Columns are sorted first by type: qncsr; and then by their suffix,
  * which optionally follows the type letter plus a dot. So, "q" is the
@@ -251,9 +251,9 @@ export class CodSheetTable {
     const rv = v ? 'v' : 'r';
     switch (type) {
       case CodRowType.CoverFront:
-        return '[';
+        return '[' + rv;
       case CodRowType.CoverBack:
-        return '[/';
+        return '[/' + rv;
       case CodRowType.EndleafFront:
         return `(${n}${rv})`;
       case CodRowType.EndleafBack:
@@ -287,7 +287,22 @@ export class CodSheetTable {
       if (rows.some((r) => r.type === type)) {
         return;
       }
-      count = 1;
+      let index = type === CodRowType.CoverFront ? 0 : rows.length;
+      const page: CodRowPage = {
+        type: type,
+        n: 0,
+        v: false,
+      };
+      for (let i = 0; i < 2; i++) {
+        rows.splice(index++, 0, {
+          id: this.buildRowId(type, page.n, page.v),
+          columns: this.getNewColumns(),
+          ...page,
+        });
+        this.incRowPage(page);
+      }
+      this._rows$.next(deepCopy(rows));
+      return;
     }
 
     // locate last row of same type
@@ -398,11 +413,14 @@ export class CodSheetTable {
   }
 
   private incRowPage(page: CodRowPage): void {
-    // nope for covers
+    // only r/v for covers
     if (
       page.type === CodRowType.CoverFront ||
       page.type === CodRowType.CoverBack
     ) {
+      if (!page.v) {
+        page.v = true;
+      }
       return;
     }
 
