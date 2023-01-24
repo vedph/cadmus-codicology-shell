@@ -3,6 +3,7 @@
 - [Cadmus Codicology Shell](#cadmus-codicology-shell)
   - [Shell Architecture](#shell-architecture)
   - [History](#history)
+    - [3.0.9](#309)
     - [3.0.8](#308)
     - [3.0.7](#307)
     - [3.0.6](#306)
@@ -42,7 +43,7 @@ Quick Docker image build:
 
 1. `npm run build-lib`; if you are going to use the libraries, publish them via `publish.bat`;
 2. remember to update version in `env.js`, then `ng build`;
-3. `docker build . -t vedph2020/cadmus-codicology-shell:3.0.8 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
+3. `docker build . -t vedph2020/cadmus-codicology-shell:3.0.9 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
 
 ## Shell Architecture
 
@@ -51,6 +52,9 @@ Quick Docker image build:
 
 ## History
 
+### 3.0.9
+
+- 2023-01-24: fixed button label in edit editor.
 - 2023-01-23: r/v for covers in sheet labels.
 
 ### 3.0.8

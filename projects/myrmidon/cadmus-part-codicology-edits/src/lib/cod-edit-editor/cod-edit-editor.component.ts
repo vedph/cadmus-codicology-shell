@@ -29,6 +29,9 @@ export class CodEditEditorComponent implements OnInit {
     return this._edit;
   }
   public set edit(value: CodEdit | undefined) {
+    if (this._edit === value) {
+      return;
+    }
     this._edit = value;
     this.updateForm(value);
   }
