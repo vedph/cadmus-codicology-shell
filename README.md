@@ -52,6 +52,8 @@ Quick Docker image build:
 
 ## History
 
+- 2023-01-24: updated packages.
+
 ### 3.0.9
 
 - 2023-01-24: fixed button label in edit editor.
@@ -66,7 +68,7 @@ Quick Docker image build:
 
 ### 3.0.7
 
-- 2023-01-14: fix to decration element editor (do not emit on `type` value change).
+- 2023-01-14: fix to decoration element editor (do not emit on `type` value change).
 - 2023-01-12: fix to decoration element editor, also moving it to an expander from a nested tab (`@myrmidon/cadmus-part-codicology-decorations`).
 
 ### 3.0.6
