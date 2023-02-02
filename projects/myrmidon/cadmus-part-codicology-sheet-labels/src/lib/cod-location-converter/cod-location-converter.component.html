@@ -36,7 +36,7 @@
 
     <div class="form-row" *ngIf="system.value">
       <!-- label -->
-      <mat-form-field style="width: 4em">
+      <mat-form-field style="width: 5em">
         <mat-label>label</mat-label>
         <input matInput [formControl]="label" />
       </mat-form-field>
@@ -44,10 +44,11 @@
       <mat-icon>sync_alt</mat-icon>
 
       <!-- location -->
-      <mat-form-field style="width: 4em">
+      <mat-form-field style="width: 5em">
         <mat-label>location</mat-label>
         <input matInput [formControl]="location" />
       </mat-form-field>
     </div>
+    <span *ngIf="!system.value" color="silver">(no systems)</span>
   </div>
 </form>
