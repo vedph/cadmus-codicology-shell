@@ -77,7 +77,6 @@ export class CodDecorationArtistComponent implements OnInit {
   public note: FormControl<string | null>;
   public form: FormGroup;
 
-  public initialIds?: AssertedId[];
   public editedStyle?: CodDecorationArtistStyle;
 
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
@@ -125,7 +124,7 @@ export class CodDecorationArtistComponent implements OnInit {
     this.eid.setValue(artist.eid || null);
     this.type.setValue(artist.type);
     this.name.setValue(artist.name);
-    this.initialIds = artist.ids || [];
+    this.ids.setValue(artist.ids || []);
     this.styles.setValue(artist.styles || []);
     // element keys are edited as text separated by space
     this.elementKeys.setValue(

@@ -77,8 +77,6 @@ export class CodWatermarkEditorComponent implements OnInit {
 
   public initialSampleRange?: CodLocationRange;
   public initialRanges?: CodLocationRange[];
-  public initialIds?: AssertedId[];
-  public initialSize?: PhysicalSize;
   public initialChronotope?: AssertedChronotope;
 
   constructor(formBuilder: FormBuilder) {
@@ -125,8 +123,8 @@ export class CodWatermarkEditorComponent implements OnInit {
     this.name.setValue(model.name);
     this.initialSampleRange = model.sampleRange;
     this.initialRanges = model.ranges;
-    this.initialIds = model.ids;
-    this.initialSize = model.size;
+    this.ids.setValue(model.ids || []);
+    this.size.setValue(model.size || null);
     this.hasSize.setValue(model.size ? true : false);
     this.initialChronotope = model.chronotope;
     this.hasChronotope.setValue(model.chronotope ? true : false);
@@ -148,7 +146,7 @@ export class CodWatermarkEditorComponent implements OnInit {
   }
 
   public onIdsChange(ids: AssertedId[] | null) {
-    this.ids.setValue(ids || []);
+    this.ids.setValue(ids || [], { emitEvent: false });
     this.ids.updateValueAndValidity();
     this.ids.markAsDirty();
   }

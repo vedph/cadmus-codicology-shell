@@ -29,7 +29,7 @@ export class CodLocationConverter {
       const row = rows[y];
       for (let x = 0; x < row.columns.length; x++) {
         const col = row.columns[x];
-        if (!col.id.startsWith('n.')) {
+        if (!col.id.startsWith('n.') && col.id !== 'n') {
           continue;
         }
         if (!this._entries[col.id]) {
