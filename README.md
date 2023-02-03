@@ -53,6 +53,8 @@ Quick Docker image build:
 
 ## History
 
+- 2023-02-03: updated bricks packages (updating decorations and watermarks).
+
 ### 3.0.10
 
 - 2023-02-03:
