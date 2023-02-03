@@ -27,6 +27,9 @@ export class CodHandDescriptionComponent implements OnInit {
     return this._description;
   }
   public set description(value: CodHandDescription | undefined) {
+    if (this._description === value) {
+      return;
+    }
     this._description = value;
     this.updateForm(value);
   }
@@ -261,6 +264,7 @@ export class CodHandDescriptionComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this.descriptionChange.emit(this.getModel());
+    this._description = this.getModel();
+    this.descriptionChange.emit(this._description);
   }
 }

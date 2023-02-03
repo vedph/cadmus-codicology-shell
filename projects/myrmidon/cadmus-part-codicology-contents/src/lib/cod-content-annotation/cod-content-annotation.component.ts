@@ -23,6 +23,9 @@ export class CodContentAnnotationComponent implements OnInit {
     return this._annotation;
   }
   public set annotation(value: CodContentAnnotation | undefined) {
+    if (this._annotation === value) {
+      return;
+    }
     this._annotation = value;
     this.updateForm(value);
   }
@@ -95,7 +98,7 @@ export class CodContentAnnotationComponent implements OnInit {
     this.form.markAsPristine();
   }
 
-  private getModel(): CodContentAnnotation | null {
+  private getModel(): CodContentAnnotation {
     return {
       type: this.type.value?.trim() || '',
       range: this.range.value!,
@@ -119,10 +122,7 @@ export class CodContentAnnotationComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const model = this.getModel();
-    if (!model) {
-      return;
-    }
-    this.annotationChange.emit(model);
+    this._annotation = this.getModel();
+    this.annotationChange.emit(this._annotation);
   }
 }

@@ -24,6 +24,9 @@ export class CodPalimpsestEditorComponent implements OnInit {
     return this._palimpsest;
   }
   public set palimpsest(value: CodPalimpsest | undefined) {
+    if (this._palimpsest === value) {
+      return;
+    }
     this._palimpsest = value;
     this.updateForm(value);
   }
@@ -99,7 +102,7 @@ export class CodPalimpsestEditorComponent implements OnInit {
     this.chronotope.markAsDirty();
   }
 
-  private getModel(): CodPalimpsest | null {
+  private getModel(): CodPalimpsest {
     return {
       range: this.range.value!,
       chronotope: this.chronotope.value!,
@@ -115,10 +118,7 @@ export class CodPalimpsestEditorComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const model = this.getModel();
-    if (!model) {
-      return;
-    }
-    this.palimpsestChange.emit(model);
+    this._palimpsest = this.getModel();
+    this.palimpsestChange.emit(this._palimpsest);
   }
 }

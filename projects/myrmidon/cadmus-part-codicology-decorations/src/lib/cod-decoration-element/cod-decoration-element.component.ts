@@ -651,7 +651,7 @@ export class CodDecorationElementComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const element = this.getElement();
-    this.elementChange.emit(element);
+    this._element = this.getElement();
+    this.elementChange.emit(this._element);
   }
 }

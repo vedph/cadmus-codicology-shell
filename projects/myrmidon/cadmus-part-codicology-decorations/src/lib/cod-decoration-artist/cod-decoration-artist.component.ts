@@ -250,6 +250,7 @@ export class CodDecorationArtistComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this.artistChange.emit(this.getArtist());
+    this._artist = this.getArtist();
+    this.artistChange.emit(this._artist);
   }
 }

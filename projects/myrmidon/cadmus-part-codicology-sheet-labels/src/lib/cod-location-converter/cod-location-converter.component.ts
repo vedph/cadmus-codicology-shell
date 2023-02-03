@@ -54,6 +54,9 @@ export class CodLocationConverterComponent implements OnInit {
     return this._item;
   }
   public set item(value: Item | undefined | null) {
+    if (this._item === value) {
+      return;
+    }
     this._item = value;
   }
 
@@ -65,6 +68,9 @@ export class CodLocationConverterComponent implements OnInit {
     return this._facetId;
   }
   public set facetId(value: string | undefined) {
+    if (this._facetId === value) {
+      return;
+    }
     this._facetId = value;
     this.baseFilter = value ? { facetId: value } : undefined;
   }

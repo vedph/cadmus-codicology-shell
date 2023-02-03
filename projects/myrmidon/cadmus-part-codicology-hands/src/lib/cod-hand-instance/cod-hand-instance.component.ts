@@ -29,6 +29,9 @@ export class CodHandInstanceComponent implements OnInit {
     return this._instance;
   }
   public set instance(value: CodHandInstance | undefined) {
+    if (this._instance === value) {
+      return;
+    }
     this._instance = value;
     this.updateForm(value);
   }
@@ -249,6 +252,7 @@ export class CodHandInstanceComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this.instanceChange.emit(this.getModel());
+    this._instance = this.getModel();
+    this.instanceChange.emit(this._instance);
   }
 }

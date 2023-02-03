@@ -24,6 +24,9 @@ export class CodHandSignComponent implements OnInit {
     return this._sign;
   }
   public set sign(value: CodHandSign | undefined) {
+    if (this._sign === value) {
+      return;
+    }
     this._sign = value;
     this.updateForm(value);
   }
@@ -114,7 +117,7 @@ export class CodHandSignComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const model = this.getSign();
-    this.signChange.emit(model);
+    this._sign = this.getSign();
+    this.signChange.emit(this._sign);
   }
 }

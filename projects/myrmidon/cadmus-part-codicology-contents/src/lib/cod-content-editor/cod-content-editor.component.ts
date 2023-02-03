@@ -30,6 +30,9 @@ export class CodContentEditorComponent implements OnInit {
     return this._content;
   }
   public set content(value: CodContent | undefined) {
+    if (this._content === value) {
+      return;
+    }
     this._content = value;
     this.updateForm(value);
   }
@@ -151,7 +154,7 @@ export class CodContentEditorComponent implements OnInit {
     this.form.markAsPristine();
   }
 
-  private getModel(): CodContent | null {
+  private getModel(): CodContent {
     return {
       eid: this.eid.value?.trim(),
       author: this.author.value?.trim(),
@@ -264,10 +267,7 @@ export class CodContentEditorComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const model = this.getModel();
-    if (!model) {
-      return;
-    }
-    this.contentChange.emit(model);
+    this._content = this.getModel();
+    this.contentChange.emit(this._content);
   }
 }

@@ -125,6 +125,7 @@ export class CodDecorationArtistStyleComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this.styleChange.emit(this.getStyle());
+    this._style = this.getStyle();
+    this.styleChange.emit(this._style);
   }
 }

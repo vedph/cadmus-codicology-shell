@@ -417,6 +417,7 @@ export class CodLayoutEditorComponent implements OnInit, OnDestroy {
     if (this.form.invalid) {
       return;
     }
-    this.layoutChange.emit(this.getModel());
+    this._layout = this.getModel();
+    this.layoutChange.emit(this._layout);
   }
 }

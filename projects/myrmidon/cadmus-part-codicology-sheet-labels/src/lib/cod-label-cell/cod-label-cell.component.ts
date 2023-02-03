@@ -29,6 +29,9 @@ export class CodLabelCellComponent implements OnInit {
     return this._cell;
   }
   public set cell(value: CodLabelCell | undefined) {
+    if (this._cell === value) {
+      return;
+    }
     this._cell = value;
     this.updateForm(value);
   }

@@ -24,6 +24,9 @@ export class CodEndleafComponent implements OnInit {
     return this._endleaf;
   }
   public set endleaf(value: CodEndleaf | undefined) {
+    if (this._endleaf === value) {
+      return;
+    }
     this._endleaf = value;
     this.updateForm(value);
   }
@@ -119,6 +122,7 @@ export class CodEndleafComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this.endleafChange.emit(this.getModel());
+    this._endleaf = this.getModel();
+    this.endleafChange.emit(this._endleaf);
   }
 }

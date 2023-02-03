@@ -40,6 +40,9 @@ export class TextOrEntrySelectorComponent implements OnInit {
     return this._id;
   }
   public set id(value: string | undefined) {
+    if (this._id === value) {
+      return;
+    }
     this._id = value;
     this.idCtl.setValue(value || null);
     this.idCtl.markAsPristine();
@@ -54,6 +57,9 @@ export class TextOrEntrySelectorComponent implements OnInit {
     return this._validators;
   }
   public set validators(value: ValidatorFn[] | undefined) {
+    if (this._validators === value) {
+      return;
+    }
     this._validators = value;
     this.idCtl.setValidators(value || []);
   }
@@ -66,6 +72,9 @@ export class TextOrEntrySelectorComponent implements OnInit {
     return this._free;
   }
   public set free(value: boolean) {
+    if (this._free === value) {
+      return;
+    }
     this._free = value;
     this.idCtl.reset();
   }

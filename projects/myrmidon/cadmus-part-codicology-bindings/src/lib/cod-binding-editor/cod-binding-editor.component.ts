@@ -24,6 +24,9 @@ export class CodBindingEditorComponent implements OnInit {
     return this._binding;
   }
   public set binding(value: CodBinding | undefined) {
+    if (this._binding === value) {
+      return;
+    }
     this._binding = value;
     this.updateForm(value);
   }
@@ -126,7 +129,7 @@ export class CodBindingEditorComponent implements OnInit {
     this.form.markAsPristine();
   }
 
-  private getModel(): CodBinding | null {
+  private getModel(): CodBinding {
     return {
       tag: this.tag.value?.trim(),
       coverMaterial: this.coverMaterial.value?.trim() || '',
@@ -155,10 +158,7 @@ export class CodBindingEditorComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const model = this.getModel();
-    if (!model) {
-      return;
-    }
-    this.bindingChange.emit(model);
+    this._binding = this.getModel();
+    this.bindingChange.emit(this._binding);
   }
 }

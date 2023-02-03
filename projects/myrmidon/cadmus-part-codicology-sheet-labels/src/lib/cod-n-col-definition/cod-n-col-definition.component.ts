@@ -26,6 +26,9 @@ export class CodNColDefinitionComponent implements OnInit {
     return this._definition;
   }
   public set definition(value: CodNColDefinition | undefined) {
+    if (this._definition === value) {
+      return;
+    }
     this._definition = value;
     this.updateForm(value);
   }
@@ -177,6 +180,7 @@ export class CodNColDefinitionComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this.definitionChange.emit(this.getModel());
+    this._definition = this.getModel();
+    this.definitionChange.emit(this._definition);
   }
 }

@@ -27,6 +27,9 @@ export class CodWatermarkEditorComponent implements OnInit {
     return this._watermark;
   }
   public set watermark(value: CodWatermark | undefined) {
+    if (this._watermark === value) {
+      return;
+    }
     this._watermark = value;
     this.updateForm(value);
   }
@@ -109,9 +112,6 @@ export class CodWatermarkEditorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this._watermark) {
-      this.updateForm(this._watermark);
-    }
   }
 
   private updateForm(model: CodWatermark | undefined): void {
@@ -185,6 +185,7 @@ export class CodWatermarkEditorComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this.watermarkChange.emit(this.getModel());
+    this._watermark = this.getModel();
+    this.watermarkChange.emit(this._watermark);
   }
 }

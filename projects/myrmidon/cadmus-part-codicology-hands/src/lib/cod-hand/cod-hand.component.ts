@@ -32,6 +32,9 @@ export class CodHandComponent implements OnInit {
     return this._hand;
   }
   public set hand(value: CodHand | undefined) {
+    if (this._hand === value) {
+      return;
+    }
     this._hand = value;
     this.updateForm(value);
   }
@@ -416,6 +419,7 @@ export class CodHandComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this.handChange.emit(this.getHand());
+    this._hand = this.getHand();
+    this.handChange.emit(this._hand);
   }
 }

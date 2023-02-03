@@ -21,6 +21,9 @@ export class CodShelfmarkEditorComponent implements OnInit {
     return this._shelfmark;
   }
   public set shelfmark(value: CodShelfmark | undefined) {
+    if (this._shelfmark === value) {
+      return;
+    }
     this._shelfmark = value;
     this.updateForm(value);
   }
@@ -89,7 +92,7 @@ export class CodShelfmarkEditorComponent implements OnInit {
     this.form.markAsPristine();
   }
 
-  private getModel(): CodShelfmark | null {
+  private getModel(): CodShelfmark {
     return {
       tag: this.tag.value?.trim(),
       city: this.city.value?.trim() || '',
@@ -107,10 +110,7 @@ export class CodShelfmarkEditorComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const model = this.getModel();
-    if (!model) {
-      return;
-    }
-    this.shelfmarkChange.emit(model);
+    this._shelfmark = this.getModel();
+    this.shelfmarkChange.emit(this._shelfmark);
   }
 }

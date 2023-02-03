@@ -25,6 +25,9 @@ export class CodUnitEditorComponent implements OnInit {
     return this._unit;
   }
   public set unit(value: CodUnit | undefined) {
+    if (this._unit === value) {
+      return;
+    }
     this._unit = value;
     this.updateForm(value);
   }
@@ -170,6 +173,7 @@ export class CodUnitEditorComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this.unitChange.emit(this.getModel());
+    this._unit = this.getModel();
+    this.unitChange.emit(this._unit);
   }
 }

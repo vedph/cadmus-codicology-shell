@@ -173,7 +173,7 @@ export class CodEditEditorComponent implements OnInit {
     this.form.markAsPristine();
   }
 
-  private getModel(): CodEdit | null {
+  private getModel(): CodEdit {
     return {
       eid: this.eid.value?.trim(),
       type: this.type.value?.trim() || '',
@@ -231,10 +231,7 @@ export class CodEditEditorComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const model = this.getModel();
-    if (!model) {
-      return;
-    }
-    this.editChange.emit(model);
+    this._edit = this.getModel();
+    this.editChange.emit(this._edit);
   }
 }

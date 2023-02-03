@@ -24,6 +24,9 @@ export class CodHandSubscriptionComponent implements OnInit {
     return this._subscription;
   }
   public set subscription(value: CodHandSubscription | undefined) {
+    if (this._subscription === value) {
+      return;
+    }
     this._subscription = value;
     this.updateForm(value);
   }
@@ -110,6 +113,7 @@ export class CodHandSubscriptionComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this.subscriptionChange.emit(this.getSubscription());
+    this._subscription = this.getSubscription();
+    this.subscriptionChange.emit(this._subscription);
   }
 }
