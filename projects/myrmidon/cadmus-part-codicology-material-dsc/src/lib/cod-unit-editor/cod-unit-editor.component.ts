@@ -68,17 +68,18 @@ export class CodUnitEditorComponent implements OnInit {
   public material: FormControl<string | null>;
   public format: FormControl<string | null>;
   public state: FormControl<string | null>;
-  public range: FormControl<CodLocationRange | null>;
+  public ranges: FormControl<CodLocationRange[]>;
   public chronotopes: FormControl<AssertedChronotope[]>;
   public note: FormControl<string | null>;
   public form: FormGroup;
 
-  public initialRange?: CodLocationRange;
+  public initialRanges: CodLocationRange[];
   public initialChronotopes?: AssertedChronotope[];
 
   constructor(formBuilder: FormBuilder) {
     this.unitChange = new EventEmitter<CodUnit>();
     this.editorClose = new EventEmitter<any>();
+    this.initialRanges = [];
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.tag = formBuilder.control(null, Validators.maxLength(50));
@@ -95,7 +96,10 @@ export class CodUnitEditorComponent implements OnInit {
       Validators.required,
       Validators.maxLength(50),
     ]);
-    this.range = formBuilder.control(null, Validators.required);
+    this.ranges = formBuilder.control([], {
+      validators: Validators.required,
+      nonNullable: true,
+    });
     this.chronotopes = formBuilder.control([], {
       validators: NgToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
@@ -108,7 +112,7 @@ export class CodUnitEditorComponent implements OnInit {
       material: this.material,
       format: this.format,
       state: this.state,
-      range: this.range,
+      ranges: this.ranges,
       chronotopes: this.chronotopes,
       note: this.note,
     });
@@ -132,7 +136,7 @@ export class CodUnitEditorComponent implements OnInit {
     this.material.setValue(unit.material);
     this.format.setValue(unit.format);
     this.state.setValue(unit.state);
-    this.initialRange = unit.range;
+    this.initialRanges = unit.ranges || [];
     this.initialChronotopes = unit.chronotopes;
     this.note.setValue(unit.note || null);
 
@@ -140,12 +144,14 @@ export class CodUnitEditorComponent implements OnInit {
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
-    this.range.setValue(ranges?.length ? ranges[0] : null);
-    this.range.markAsDirty();
+    this.ranges.setValue(ranges || []);
+    this.ranges.updateValueAndValidity();
+    this.ranges.markAsDirty();
   }
 
   public onChronotopesChange(chronotopes: AssertedChronotope[]): void {
     this.chronotopes.setValue(chronotopes);
+    this.chronotopes.updateValueAndValidity();
     this.chronotopes.markAsDirty();
   }
 
@@ -157,7 +163,7 @@ export class CodUnitEditorComponent implements OnInit {
       material: this.material.value?.trim() || '',
       format: this.format.value?.trim() || '',
       state: this.state.value?.trim() || '',
-      range: this.range.value!,
+      ranges: this.ranges.value,
       chronotopes: this.chronotopes.value?.length
         ? this.chronotopes.value
         : undefined,

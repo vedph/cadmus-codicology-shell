@@ -11,7 +11,7 @@ export interface CodUnit {
   material: string;
   format: string;
   state: string;
-  range: CodLocationRange;
+  ranges: CodLocationRange[];
   chronotopes?: AssertedChronotope[];
   noGregory?: boolean;
   note?: string;
@@ -116,75 +116,82 @@ export const COD_MATERIAL_DSC_PART_SCHEMA = {
                 type: 'string',
               },
               range: {
-                type: 'object',
-                required: ['start', 'end'],
-                properties: {
-                  start: {
-                    type: 'object',
-                    required: ['n'],
-                    properties: {
-                      endleaf: {
-                        type: 'integer',
-                      },
-                      s: {
-                        type: 'string',
-                      },
-                      n: {
-                        type: 'integer',
-                      },
-                      rmn: {
-                        type: 'boolean',
-                      },
-                      sfx: {
-                        type: 'string',
-                      },
-                      v: {
-                        type: 'boolean',
-                      },
-                      c: {
-                        type: 'integer',
-                      },
-                      l: {
-                        type: 'integer',
-                      },
-                      word: {
-                        type: 'string',
+                type: 'array',
+                items: {
+                  anyOf: [
+                    {
+                      type: 'object',
+                      required: ['start', 'end'],
+                      properties: {
+                        start: {
+                          type: 'object',
+                          required: ['n'],
+                          properties: {
+                            endleaf: {
+                              type: 'integer',
+                            },
+                            s: {
+                              type: 'string',
+                            },
+                            n: {
+                              type: 'integer',
+                            },
+                            rmn: {
+                              type: 'boolean',
+                            },
+                            sfx: {
+                              type: 'string',
+                            },
+                            v: {
+                              type: 'boolean',
+                            },
+                            c: {
+                              type: 'integer',
+                            },
+                            l: {
+                              type: 'integer',
+                            },
+                            word: {
+                              type: 'string',
+                            },
+                          },
+                        },
+                        end: {
+                          type: 'object',
+                          required: ['n'],
+                          properties: {
+                            endleaf: {
+                              type: 'integer',
+                            },
+                            s: {
+                              type: 'string',
+                            },
+                            n: {
+                              type: 'integer',
+                            },
+                            rmn: {
+                              type: 'boolean',
+                            },
+                            sfx: {
+                              type: 'string',
+                            },
+                            v: {
+                              type: 'boolean',
+                            },
+                            c: {
+                              type: 'integer',
+                            },
+                            l: {
+                              type: 'integer',
+                            },
+                            word: {
+                              type: 'string',
+                            },
+                          },
+                        },
                       },
                     },
-                  },
-                  end: {
-                    type: 'object',
-                    required: ['n'],
-                    properties: {
-                      endleaf: {
-                        type: 'integer',
-                      },
-                      s: {
-                        type: 'string',
-                      },
-                      n: {
-                        type: 'integer',
-                      },
-                      rmn: {
-                        type: 'boolean',
-                      },
-                      sfx: {
-                        type: 'string',
-                      },
-                      v: {
-                        type: 'boolean',
-                      },
-                      c: {
-                        type: 'integer',
-                      },
-                      l: {
-                        type: 'integer',
-                      },
-                      word: {
-                        type: 'string',
-                      },
-                    },
-                  },
+                  ],
                 },
               },
               chronotopes: {
@@ -626,6 +633,6 @@ export const COD_MATERIAL_DSC_PART_SCHEMA = {
           },
         ],
       },
-    }
+    },
   },
 };

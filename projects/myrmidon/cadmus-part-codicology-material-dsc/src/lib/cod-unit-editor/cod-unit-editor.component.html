@@ -134,25 +134,27 @@
     </mat-form-field>
   </div>
   <div>
-    <!-- range -->
+    <!-- ranges -->
     <cadmus-cod-location
-      label="range"
+      label="range(s)"
       [required]="true"
-      [location]="initialRange ? [initialRange] : []"
+      [location]="initialRanges"
       (locationChange)="onLocationChange($event)"
     ></cadmus-cod-location>
   </div>
   <div>
     <!-- chronotopes -->
-    <h3>chronotopes</h3>
-    <cadmus-asserted-chronotope-set
-      [tagEntries]="ctTagEntries"
-      [assTagEntries]="assTagEntries"
-      [refTagEntries]="refTagEntries"
-      [refTypeEntries]="refTypeEntries"
-      [chronotopes]="initialChronotopes"
-      (chronotopesChange)="onChronotopesChange($event)"
-    ></cadmus-asserted-chronotope-set>
+    <fieldset style="margin: 8px 0">
+      <legend>chronotopes</legend>
+      <cadmus-asserted-chronotope-set
+        [tagEntries]="ctTagEntries"
+        [assTagEntries]="assTagEntries"
+        [refTagEntries]="refTagEntries"
+        [refTypeEntries]="refTypeEntries"
+        [chronotopes]="initialChronotopes"
+        (chronotopesChange)="onChronotopesChange($event)"
+      ></cadmus-asserted-chronotope-set>
+    </fieldset>
   </div>
   <div>
     <!-- note -->

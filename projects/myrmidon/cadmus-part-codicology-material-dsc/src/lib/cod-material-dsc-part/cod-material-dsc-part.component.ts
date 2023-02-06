@@ -177,7 +177,7 @@ export class CodMaterialDscPartComponent
       material: this.materialEntries?.length ? this.materialEntries[0].id : '',
       format: this.formatEntries?.length ? this.formatEntries[0].id : '',
       state: this.stateEntries?.length ? this.stateEntries[0].id : '',
-      range: { start: { n: 0 }, end: { n: 0 } },
+      ranges: [],
     });
   }
 
