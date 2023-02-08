@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { NgToolsValidators } from '@myrmidon/ng-tools';
 
 import { CodContentAnnotation } from '../cod-contents-part';
 
@@ -40,13 +41,11 @@ export class CodContentAnnotationComponent implements OnInit {
   public editorClose: EventEmitter<any>;
 
   public type: FormControl<string | null>;
-  public range: FormControl<CodLocationRange | null>;
+  public ranges: FormControl<CodLocationRange[]>;
   public incipit: FormControl<string | null>;
   public explicit: FormControl<string | null>;
   public text: FormControl<string | null>;
   public form: FormGroup;
-
-  public initialRange?: CodLocationRange;
 
   constructor(formBuilder: FormBuilder) {
     this.annotationChange = new EventEmitter<CodContentAnnotation>();
@@ -56,7 +55,10 @@ export class CodContentAnnotationComponent implements OnInit {
       Validators.required,
       Validators.maxLength(50),
     ]);
-    this.range = formBuilder.control(null, Validators.required);
+    this.ranges = formBuilder.control([], {
+      validators: NgToolsValidators.strictMinLengthValidator(1),
+      nonNullable: true,
+    });
     this.incipit = formBuilder.control(null, [
       Validators.required,
       Validators.maxLength(500),
@@ -71,7 +73,7 @@ export class CodContentAnnotationComponent implements OnInit {
     ]);
     this.form = formBuilder.group({
       type: this.type,
-      range: this.range,
+      ranges: this.ranges,
       incipit: this.incipit,
       explicit: this.explicit,
       text: this.text,
@@ -91,7 +93,7 @@ export class CodContentAnnotationComponent implements OnInit {
     }
 
     this.type.setValue(model.type);
-    this.initialRange = model.range;
+    this.ranges.setValue([model.range]);
     this.incipit.setValue(model.incipit);
     this.explicit.setValue(model.explicit);
     this.text.setValue(model.text);
@@ -101,7 +103,7 @@ export class CodContentAnnotationComponent implements OnInit {
   private getModel(): CodContentAnnotation {
     return {
       type: this.type.value?.trim() || '',
-      range: this.range.value!,
+      range: this.ranges.value.length ? this.ranges.value[0] : (null as any),
       incipit: this.incipit.value?.trim() || '',
       explicit: this.explicit.value?.trim() || '',
       text: this.text.value?.trim() || '',
@@ -109,9 +111,9 @@ export class CodContentAnnotationComponent implements OnInit {
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
-    this.range.setValue(ranges?.length ? ranges[0] : null);
-    this.range.updateValueAndValidity();
-    this.range.markAsDirty();
+    this.ranges.setValue(ranges || []);
+    this.ranges.updateValueAndValidity();
+    this.ranges.markAsDirty();
   }
 
   public cancel(): void {

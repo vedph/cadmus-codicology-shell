@@ -32,7 +32,7 @@
       style="flex: 0 0 auto"
       label="range"
       [required]="true"
-      [location]="initialRange ? [initialRange] : []"
+      [location]="ranges.value"
       (locationChange)="onLocationChange($event)"
     ></cadmus-cod-location>
   </div>

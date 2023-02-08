@@ -46,8 +46,6 @@ export class CodHandSignComponent implements OnInit {
   public description: FormControl<string | null>;
   public form: FormGroup;
 
-  public initialRanges?: CodLocationRange[];
-
   constructor(formBuilder: FormBuilder) {
     this.signChange = new EventEmitter<CodHandSign>();
     this.editorClose = new EventEmitter<any>();
@@ -84,9 +82,11 @@ export class CodHandSignComponent implements OnInit {
 
     this.eid.setValue(sign.eid || null);
     this.type.setValue(sign.type);
-    this.initialRanges = sign.sampleLocation
-      ? [{ start: sign.sampleLocation, end: sign.sampleLocation }]
-      : [];
+    this.sampleRanges.setValue(
+      sign.sampleLocation
+        ? [{ start: sign.sampleLocation, end: sign.sampleLocation }]
+        : []
+    );
     this.description.setValue(sign.description || null);
 
     this.form.markAsPristine();

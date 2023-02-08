@@ -8,6 +8,7 @@ import {
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
+import { NgToolsValidators } from '@myrmidon/ng-tools';
 
 import { CodPalimpsest } from '../cod-material-dsc-part';
 
@@ -49,23 +50,23 @@ export class CodPalimpsestEditorComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public range: FormControl<CodLocationRange | null>;
+  public ranges: FormControl<CodLocationRange[]>;
   public chronotope: FormControl<AssertedChronotope | null>;
   public note: FormControl<string | null>;
   public form: FormGroup;
-
-  public initialRange?: CodLocationRange;
-  public initialChronotope?: AssertedChronotope;
 
   constructor(formBuilder: FormBuilder) {
     this.palimpsestChange = new EventEmitter<CodPalimpsest>();
     this.editorClose = new EventEmitter<any>();
     // form
-    this.range = formBuilder.control(null, Validators.required);
+    this.ranges = formBuilder.control([], {
+      validators: NgToolsValidators.strictMinLengthValidator(1),
+      nonNullable: true,
+    });
     this.chronotope = formBuilder.control(null);
     this.note = formBuilder.control(null, Validators.maxLength(1000));
     this.form = formBuilder.group({
-      range: this.range,
+      ranges: this.ranges,
       chronotope: this.chronotope,
       note: this.note,
     });
@@ -83,17 +84,16 @@ export class CodPalimpsestEditorComponent implements OnInit {
       return;
     }
 
-    this.initialRange = palimpsest.range;
-    this.initialChronotope = palimpsest.chronotope;
+    this.ranges.setValue([palimpsest.range]);
+    this.chronotope.setValue(palimpsest.chronotope || null);
     this.note.setValue(palimpsest.note || null);
-
     this.form.markAsPristine();
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
-    this.range.setValue(ranges?.length ? ranges[0] : null);
-    this.range.updateValueAndValidity();
-    this.range.markAsDirty();
+    this.ranges.setValue(ranges || []);
+    this.ranges.updateValueAndValidity();
+    this.ranges.markAsDirty();
   }
 
   public onChronotopeChange(chronotope: AssertedChronotope | null): void {
@@ -104,7 +104,7 @@ export class CodPalimpsestEditorComponent implements OnInit {
 
   private getModel(): CodPalimpsest {
     return {
-      range: this.range.value!,
+      range: this.ranges.value[0],
       chronotope: this.chronotope.value!,
       note: this.note.value?.trim(),
     };

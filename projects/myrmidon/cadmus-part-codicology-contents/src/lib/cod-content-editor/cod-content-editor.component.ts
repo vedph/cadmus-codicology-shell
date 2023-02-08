@@ -79,7 +79,6 @@ export class CodContentEditorComponent implements OnInit {
 
   public stateFlags: Flag[];
   public initialStates?: string[];
-  public initialRanges: CodLocationRange[];
   public editedAnnotation?: CodContentAnnotation;
 
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
@@ -122,7 +121,6 @@ export class CodContentEditorComponent implements OnInit {
       states: this.states,
       annotations: this.annotations,
     });
-    this.initialRanges = [];
   }
 
   ngOnInit(): void {
@@ -139,7 +137,7 @@ export class CodContentEditorComponent implements OnInit {
 
     this.eid.setValue(content.eid || null);
     this.author.setValue(content.author || null);
-    this.initialRanges = content.ranges || [];
+    this.ranges.setValue(content.ranges || []);
     this.initialStates = content.states || [];
     this.tag.setValue(content.tag || null);
     this.title.setValue(content.title);

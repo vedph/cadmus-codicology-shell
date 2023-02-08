@@ -78,7 +78,6 @@ export class CodNColDefinitionComponent implements OnInit {
   public form: FormGroup;
 
   public initialColors: string[];
-  public initialDate?: HistoricalDateModel;
   public clrFlags: Flag[];
 
   constructor(formBuilder: FormBuilder) {
@@ -140,9 +139,7 @@ export class CodNColDefinitionComponent implements OnInit {
     this.initialColors = model.colors || [];
     this.hasDate.setValue(model.date ? true : false);
     this.date.setValue(model.date || null);
-    this.initialDate = model.date;
     this.note.setValue(model.note || null);
-
     this.form.markAsPristine();
   }
 

@@ -4,7 +4,7 @@
     <cadmus-cod-location
       label="range"
       [required]="true"
-      [location]="initialRange ? [initialRange] : []"
+      [location]="ranges.value"
       (locationChange)="onLocationChange($event)"
     ></cadmus-cod-location>
   </div>
@@ -17,7 +17,7 @@
         [assTagEntries]="assTagEntries"
         [refTagEntries]="refTagEntries"
         [refTypeEntries]="refTypeEntries"
-        [chronotope]="initialChronotope"
+        [chronotope]="chronotope.value || undefined"
         (chronotopeChange)="onChronotopeChange($event)"
       ></cadmus-refs-asserted-chronotope>
     </fieldset>

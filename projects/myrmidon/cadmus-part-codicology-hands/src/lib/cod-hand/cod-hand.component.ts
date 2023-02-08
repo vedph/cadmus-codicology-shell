@@ -97,7 +97,6 @@ export class CodHandComponent implements OnInit {
   public editedSubIndex: number;
   public editedSub?: CodHandSubscription;
 
-  public initialReferences: DocReference[];
   public dscKeys: string[];
 
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
@@ -106,7 +105,6 @@ export class CodHandComponent implements OnInit {
     this.editedSubIndex = -1;
     this.handChange = new EventEmitter<CodHand>();
     this.editorClose = new EventEmitter<any>();
-    this.initialReferences = [];
     this.dscKeys = [];
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
@@ -161,7 +159,7 @@ export class CodHandComponent implements OnInit {
     this.descriptions.setValue(hand.descriptions || []);
     this.instances.setValue(hand.instances || []);
     this.subscriptions.setValue(hand.subscriptions || []);
-    this.initialReferences = hand.references || [];
+    this.references.setValue(hand.references || []);
     this.updateDscKeys(this.descriptions.value);
     this.form.markAsPristine();
   }

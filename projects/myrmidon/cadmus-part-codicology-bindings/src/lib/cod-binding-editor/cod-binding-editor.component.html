@@ -103,7 +103,7 @@
       [dimTagEntries]="szDimTagEntries"
       [unitEntries]="szUnitEntries"
       [hBeforeW]="true"
-      [size]="initialSize"
+      [size]="size.value"
       (sizeChange)="onSizeChange($event)"
     ></cadmus-mat-physical-size>
   </fieldset>
@@ -132,7 +132,7 @@
       [assTagEntries]="assTagEntries"
       [refTagEntries]="refTagEntries"
       [refTypeEntries]="refTypeEntries"
-      [chronotope]="initialChronotope"
+      [chronotope]="chronotope.value || undefined"
       (chronotopeChange)="onChronotopeChange($event)"
     ></cadmus-refs-asserted-chronotope>
   </div>

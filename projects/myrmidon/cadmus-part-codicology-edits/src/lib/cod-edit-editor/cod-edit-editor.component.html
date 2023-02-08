@@ -61,7 +61,7 @@
       label="ranges"
       style="flex: 0 0 auto"
       [required]="true"
-      [location]="initialRanges || null"
+      [location]="ranges.value"
       (locationChange)="onLocationChange($event)"
     ></cadmus-cod-location>
   </div>
@@ -103,7 +103,7 @@
     <!-- date -->
     <cadmus-refs-historical-date
       style="flex: 0 0 auto"
-      [date]="initialDate"
+      [date]="date.value || undefined"
       (dateChange)="onDateChange($event)"
     ></cadmus-refs-historical-date>
   </div>
@@ -149,7 +149,7 @@
   <cadmus-refs-doc-references
     [tagEntries]="refTagEntries"
     [typeEntries]="refTypeEntries"
-    [references]="initialReferences || []"
+    [references]="references.value"
     (referencesChange)="onReferencesChange($event)"
   ></cadmus-refs-doc-references>
 

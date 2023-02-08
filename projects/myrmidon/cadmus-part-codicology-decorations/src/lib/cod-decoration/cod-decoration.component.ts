@@ -154,8 +154,6 @@ export class CodDecorationComponent implements OnInit {
   public elements: FormControl<CodDecorationElement[]>;
   public form: FormGroup;
 
-  public initialChronotopes: AssertedChronotope[];
-  public initialReferences: DocReference[];
   public initialFlags: string[];
   public availFlags: Flag[];
 
@@ -180,8 +178,6 @@ export class CodDecorationComponent implements OnInit {
     this.editedArtistIndex = -1;
     this.decorationChange = new EventEmitter<CodDecoration>();
     this.editorClose = new EventEmitter<any>();
-    this.initialChronotopes = [];
-    this.initialReferences = [];
     this.initialFlags = [];
     this.availFlags = [];
     // form
@@ -216,15 +212,13 @@ export class CodDecorationComponent implements OnInit {
 
   private updateForm(decoration: CodDecoration | undefined): void {
     if (!decoration) {
-      this.initialChronotopes = [];
-      this.initialReferences = [];
       this.initialFlags = [];
       this.form.reset();
       return;
     }
 
-    this.initialChronotopes = decoration.chronotopes || [];
-    this.initialReferences = decoration.references || [];
+    this.chronotopes.setValue(decoration.chronotopes || []);
+    this.references.setValue(decoration.references || []);
     this.initialFlags = decoration.flags || [];
 
     this.eid.setValue(decoration.eid || null);

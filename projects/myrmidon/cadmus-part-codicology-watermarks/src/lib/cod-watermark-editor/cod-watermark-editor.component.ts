@@ -11,6 +11,7 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { PhysicalSize } from '@myrmidon/cadmus-mat-physical-size';
 import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
 import { AssertedId } from '@myrmidon/cadmus-refs-asserted-ids';
+import { NgToolsValidators } from '@myrmidon/ng-tools';
 
 import { CodWatermark } from '../cod-watermarks-part';
 
@@ -68,7 +69,7 @@ export class CodWatermarkEditorComponent implements OnInit {
   public editorClose: EventEmitter<any>;
 
   public name: FormControl<string | null>;
-  public sampleRange: FormControl<CodLocationRange | null>;
+  public sampleRanges: FormControl<CodLocationRange[]>;
   public ranges: FormControl<CodLocationRange[]>;
   public description: FormControl<string | null>;
   public ids: FormControl<AssertedId[]>;
@@ -78,10 +79,6 @@ export class CodWatermarkEditorComponent implements OnInit {
   public chronotope: FormControl<AssertedChronotope | null>;
   public form: FormGroup;
 
-  public initialSampleRange?: CodLocationRange;
-  public initialRanges?: CodLocationRange[];
-  public initialChronotope?: AssertedChronotope;
-
   constructor(formBuilder: FormBuilder) {
     this.watermarkChange = new EventEmitter<CodWatermark>();
     this.editorClose = new EventEmitter<any>();
@@ -90,7 +87,10 @@ export class CodWatermarkEditorComponent implements OnInit {
       Validators.required,
       Validators.maxLength(50),
     ]);
-    this.sampleRange = formBuilder.control(null, Validators.required);
+    this.sampleRanges = formBuilder.control([], {
+      validators: NgToolsValidators.strictMinLengthValidator(1),
+      nonNullable: true,
+    });
     this.ranges = formBuilder.control([], { nonNullable: true });
     this.description = formBuilder.control(null, Validators.maxLength(5000));
     this.ids = formBuilder.control([], { nonNullable: true });
@@ -100,7 +100,7 @@ export class CodWatermarkEditorComponent implements OnInit {
     this.chronotope = formBuilder.control(null);
     this.form = formBuilder.group({
       name: this.name,
-      sampleRange: this.sampleRange,
+      sampleRanges: this.sampleRanges,
       ranges: this.ranges,
       description: this.description,
       ids: this.ids,
@@ -111,8 +111,7 @@ export class CodWatermarkEditorComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   private updateForm(model: CodWatermark | undefined): void {
     if (!model) {
@@ -121,22 +120,21 @@ export class CodWatermarkEditorComponent implements OnInit {
     }
 
     this.name.setValue(model.name);
-    this.initialSampleRange = model.sampleRange;
-    this.initialRanges = model.ranges;
+    this.sampleRanges.setValue([model.sampleRange]);
+    this.ranges.setValue(model.ranges || []);
     this.ids.setValue(model.ids || []);
     this.size.setValue(model.size || null);
     this.hasSize.setValue(model.size ? true : false);
-    this.initialChronotope = model.chronotope;
+    this.chronotope.setValue(model.chronotope || null);
     this.hasChronotope.setValue(model.chronotope ? true : false);
     this.description.setValue(model.description || null);
-
     this.form.markAsPristine();
   }
 
   public onSampleRangesChange(ranges: CodLocationRange[] | null) {
-    this.sampleRange.setValue(ranges ? ranges[0] : null);
-    this.sampleRange.updateValueAndValidity();
-    this.sampleRange.markAsDirty();
+    this.sampleRanges.setValue(ranges || []);
+    this.sampleRanges.updateValueAndValidity();
+    this.sampleRanges.markAsDirty();
   }
 
   public onRangesChange(ranges: CodLocationRange[] | null) {
@@ -166,7 +164,7 @@ export class CodWatermarkEditorComponent implements OnInit {
   private getModel(): CodWatermark {
     return {
       name: this.name.value?.trim() || '',
-      sampleRange: this.sampleRange.value!,
+      sampleRange: this.sampleRanges.value[0],
       ranges: this.ranges.value?.length ? this.ranges.value : undefined,
       ids: this.ids.value?.length ? this.ids.value : undefined,
       size: this.hasSize.value ? this.size.value || undefined : undefined,

@@ -138,7 +138,7 @@
     <cadmus-cod-location
       label="range(s)"
       [required]="true"
-      [location]="initialRanges"
+      [location]="ranges.value"
       (locationChange)="onLocationChange($event)"
     ></cadmus-cod-location>
   </div>
@@ -151,7 +151,7 @@
         [assTagEntries]="assTagEntries"
         [refTagEntries]="refTagEntries"
         [refTypeEntries]="refTypeEntries"
-        [chronotopes]="initialChronotopes"
+        [chronotopes]="chronotopes.value"
         (chronotopesChange)="onChronotopesChange($event)"
       ></cadmus-asserted-chronotope-set>
     </fieldset>

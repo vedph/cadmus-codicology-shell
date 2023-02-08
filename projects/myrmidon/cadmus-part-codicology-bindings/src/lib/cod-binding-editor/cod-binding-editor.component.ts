@@ -76,9 +76,6 @@ export class CodBindingEditorComponent implements OnInit {
   public description: FormControl<string | null>;
   public form: FormGroup;
 
-  public initialSize?: PhysicalSize;
-  public initialChronotope?: AssertedChronotope;
-
   constructor(formBuilder: FormBuilder) {
     this.bindingChange = new EventEmitter<CodBinding>();
     this.editorClose = new EventEmitter<any>();
@@ -123,9 +120,9 @@ export class CodBindingEditorComponent implements OnInit {
     this.coverMaterial.setValue(model.coverMaterial);
     this.boardMaterial.setValue(model.boardMaterial);
     this.description.setValue(model.description || null);
-    this.initialSize = model.size;
+    this.size.setValue(model.size || null);
     this.hasSize.setValue(model.size ? true : false);
-    this.initialChronotope = model.chronotope;
+    this.chronotope.setValue(model.chronotope || null);
     this.form.markAsPristine();
   }
 

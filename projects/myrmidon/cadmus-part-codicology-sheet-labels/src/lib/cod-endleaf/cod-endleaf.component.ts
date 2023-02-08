@@ -60,8 +60,6 @@ export class CodEndleafComponent implements OnInit {
   public chronotope: FormControl<AssertedChronotope | null>;
   public form: FormGroup;
 
-  public initialChronotope?: AssertedChronotope;
-
   constructor(formBuilder: FormBuilder) {
     this.endleafChange = new EventEmitter<CodEndleaf>();
     this.editorClose = new EventEmitter<any>();
@@ -97,12 +95,13 @@ export class CodEndleafComponent implements OnInit {
 
     this.location.setValue(model.location);
     this.material.setValue(model.material);
-    this.initialChronotope = model.chronotope;
+    this.chronotope.setValue(model.chronotope || null);
     this.form.markAsPristine();
   }
 
   public onChronotopeChange(chronotope: AssertedChronotope | undefined): void {
     this.chronotope.setValue(chronotope || null);
+    this.chronotope.updateValueAndValidity();
     this.chronotope.markAsDirty();
   }
 

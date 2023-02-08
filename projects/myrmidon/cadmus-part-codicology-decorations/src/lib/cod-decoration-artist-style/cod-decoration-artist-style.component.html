@@ -24,7 +24,7 @@
       [assTagEntries]="assTagEntries"
       [refTagEntries]="refTagEntries"
       [refTypeEntries]="refTypeEntries"
-      [chronotope]="initialChronotope"
+      [chronotope]="chronotope.value || undefined"
       (chronotopeChange)="onChronotopeChange($event)"
     ></cadmus-refs-asserted-chronotope>
   </div>
@@ -37,7 +37,7 @@
       [assTagEntries]="assTagEntries"
       [refTagEntries]="refTagEntries"
       [refTypeEntries]="refTypeEntries"
-      [assertion]="initialAssertion"
+      [assertion]="assertion.value"
       (assertionChange)="onAssertionChange($event)"
     ></cadmus-refs-assertion>
   </div>

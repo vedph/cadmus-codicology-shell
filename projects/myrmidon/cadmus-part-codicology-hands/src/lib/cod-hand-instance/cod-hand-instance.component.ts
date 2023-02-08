@@ -102,12 +102,6 @@ export class CodHandInstanceComponent implements OnInit {
   public colorFlags: Flag[];
   public initialColors: string[];
 
-  public initialRanges: CodLocationRange[];
-
-  public initialChronotope?: AssertedChronotope;
-
-  public initialImages: CodImage[];
-
   constructor(formBuilder: FormBuilder) {
     this.instanceChange = new EventEmitter<CodHandInstance>();
     this.editorClose = new EventEmitter<any>();
@@ -115,8 +109,6 @@ export class CodHandInstanceComponent implements OnInit {
     this.initialTypologies = [];
     this.colorFlags = [];
     this.initialColors = [];
-    this.initialRanges = [];
-    this.initialImages = [];
     // form
     this.script = formBuilder.control(null, [
       Validators.required,
@@ -158,9 +150,6 @@ export class CodHandInstanceComponent implements OnInit {
       this.form.reset();
       this.initialTypologies = [];
       this.initialColors = [];
-      this.initialRanges = [];
-      this.initialChronotope = undefined;
-      this.initialImages = [];
       return;
     }
 
@@ -175,15 +164,8 @@ export class CodHandInstanceComponent implements OnInit {
     this.initialColors = model.colors || [];
 
     this.ranges.setValue(model.ranges);
-    this.initialRanges = model.ranges;
-
     this.chronotope.setValue(model.chronotope || null);
-    // using {} forces binding to work,
-    // else we would re-set undefined without triggering form update
-    this.initialChronotope = model.chronotope || {};
-
     this.images.setValue(model.images || []);
-    this.initialImages = model.images || [];
 
     this.form.markAsPristine();
   }

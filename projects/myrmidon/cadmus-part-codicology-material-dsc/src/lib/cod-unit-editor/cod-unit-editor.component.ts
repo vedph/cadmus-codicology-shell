@@ -73,13 +73,9 @@ export class CodUnitEditorComponent implements OnInit {
   public note: FormControl<string | null>;
   public form: FormGroup;
 
-  public initialRanges: CodLocationRange[];
-  public initialChronotopes?: AssertedChronotope[];
-
   constructor(formBuilder: FormBuilder) {
     this.unitChange = new EventEmitter<CodUnit>();
     this.editorClose = new EventEmitter<any>();
-    this.initialRanges = [];
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.tag = formBuilder.control(null, Validators.maxLength(50));
@@ -136,10 +132,9 @@ export class CodUnitEditorComponent implements OnInit {
     this.material.setValue(unit.material);
     this.format.setValue(unit.format);
     this.state.setValue(unit.state);
-    this.initialRanges = unit.ranges || [];
-    this.initialChronotopes = unit.chronotopes;
+    this.ranges.setValue(unit.ranges || []);
+    this.chronotopes.setValue(unit.chronotopes || []);
     this.note.setValue(unit.note || null);
-
     this.form.markAsPristine();
   }
 

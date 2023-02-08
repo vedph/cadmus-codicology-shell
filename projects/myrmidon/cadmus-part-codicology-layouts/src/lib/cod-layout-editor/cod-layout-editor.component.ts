@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -6,7 +13,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { CodLocation, CodLocationRange } from '@myrmidon/cadmus-cod-location';
+import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import {
   CodLayoutRectSet,
   CodLayoutService,
@@ -73,7 +80,7 @@ export class CodLayoutEditorComponent implements OnInit, OnDestroy {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public sample: FormControl<CodLocation | null>;
+  public sampleRanges: FormControl<CodLocationRange[]>;
   public ranges: FormControl<CodLocationRange[]>;
   public dimensions: FormArray;
   public ruling: FormControl<string | null>;
@@ -92,20 +99,17 @@ export class CodLayoutEditorComponent implements OnInit, OnDestroy {
   public figHeight = FIG_HEIGHT;
   public figHasGap: FormControl<boolean>;
 
-  public initialSample?: CodLocationRange;
-  public initialRanges: CodLocationRange[];
-  public initialCounts: DecoratedCount[];
-
   constructor(
     private _formBuilder: FormBuilder,
     private _codLayoutService: CodLayoutService
   ) {
     this.layoutChange = new EventEmitter<CodLayout>();
     this.editorClose = new EventEmitter<any>();
-    this.initialRanges = [];
-    this.initialCounts = [];
     // form
-    this.sample = _formBuilder.control(null, Validators.required);
+    this.sampleRanges = _formBuilder.control([], {
+      validators: NgToolsValidators.strictMinLengthValidator(1),
+      nonNullable: true,
+    });
     this.ranges = _formBuilder.control([], {
       validators: NgToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
@@ -119,7 +123,7 @@ export class CodLayoutEditorComponent implements OnInit, OnDestroy {
     this.tag = _formBuilder.control(null, Validators.maxLength(50));
     this.note = _formBuilder.control(null, Validators.maxLength(1000));
     this.form = _formBuilder.group({
-      sample: this.sample,
+      sampleRanges: this.sampleRanges,
       ranges: this.ranges,
       dimensions: this.dimensions,
       ruling: this.ruling,
@@ -160,19 +164,16 @@ export class CodLayoutEditorComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.initialSample = layout.sample
-      ? {
-          start: layout.sample,
-          end: layout.sample,
-        }
-      : undefined;
-    this.initialRanges = layout.ranges;
+    this.sampleRanges.setValue(
+      layout.sample ? [{ start: layout.sample, end: layout.sample }] : []
+    );
+    this.ranges.setValue(layout.ranges);
     this.ruling.setValue(layout.rulingTechnique || null);
     this.derolez.setValue(layout.derolez || null);
     this.pricking.setValue(layout.pricking || null);
     this.columnCount.setValue(layout.columnCount);
     this.counts.setValue(layout.counts || []);
-    this.initialCounts = layout.counts || [];
+    this.counts.setValue(layout.counts || []);
     this.tag.setValue(layout.tag || null);
     this.note.setValue(layout.note || null);
 
@@ -319,7 +320,7 @@ export class CodLayoutEditorComponent implements OnInit, OnDestroy {
 
   private getModel(): CodLayout {
     return {
-      sample: this.sample.value!,
+      sample: this.sampleRanges.value[0].start,
       ranges: this.ranges.value || [],
       dimensions: this.getDimensions(),
       rulingTechnique: this.ruling.value?.trim(),
@@ -333,9 +334,9 @@ export class CodLayoutEditorComponent implements OnInit, OnDestroy {
   }
 
   public onSampleLocationChange(ranges: CodLocationRange[] | null): void {
-    this.sample.setValue(ranges?.length ? ranges[0].start : null);
-    this.sample.updateValueAndValidity();
-    this.sample.markAsDirty();
+    this.sampleRanges.setValue(ranges || []);
+    this.sampleRanges.updateValueAndValidity();
+    this.sampleRanges.markAsDirty();
   }
 
   public onRangeLocationChange(ranges: CodLocationRange[] | null): void {

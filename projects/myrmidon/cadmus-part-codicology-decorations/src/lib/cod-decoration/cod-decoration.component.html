@@ -65,7 +65,7 @@
       [assTagEntries]="assTagEntries"
       [refTagEntries]="refTagEntries"
       [refTypeEntries]="refTypeEntries"
-      [chronotopes]="initialChronotopes"
+      [chronotopes]="chronotopes.value"
       (chronotopesChange)="onChronotopesChange($event)"
     ></cadmus-asserted-chronotope-set>
   </mat-expansion-panel>
@@ -83,7 +83,7 @@
     <cadmus-refs-doc-references
       [tagEntries]="refTagEntries"
       [typeEntries]="refTypeEntries"
-      [references]="initialReferences"
+      [references]="references.value"
       (referencesChange)="onReferencesChange($event)"
     ></cadmus-refs-doc-references>
   </mat-expansion-panel>

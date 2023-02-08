@@ -57,7 +57,7 @@
     <!-- ranges -->
     <cadmus-cod-location
       label="range"
-      [location]="initialRanges"
+      [location]="ranges.value"
       [required]="true"
       (locationChange)="onLocationChange($event)"
     ></cadmus-cod-location>
@@ -91,7 +91,7 @@
       [assTagEntries]="assTagEntries"
       [refTagEntries]="refTagEntries"
       [refTypeEntries]="refTypeEntries"
-      [chronotope]="initialChronotope"
+      [chronotope]="chronotope.value || undefined"
       (chronotopeChange)="onChronotopeChange($event)"
     ></cadmus-refs-asserted-chronotope>
   </fieldset>
@@ -101,7 +101,7 @@
     <legend>images</legend>
     <cadmus-cod-images
       [typeEntries]="imgTypeEntries"
-      [images]="initialImages"
+      [images]="images.value"
       (imagesChange)="onImagesChange($event)"
     ></cadmus-cod-images>
   </fieldset>

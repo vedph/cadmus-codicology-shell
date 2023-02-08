@@ -41,7 +41,7 @@
     <!-- sampleRanges -->
     <cadmus-cod-location
       label="sample loc."
-      [location]="initialRanges || null"
+      [location]="sampleRanges.value"
       (locationChange)="onLocationChange($event)"
     ></cadmus-cod-location>
   </div>

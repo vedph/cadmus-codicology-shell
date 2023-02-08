@@ -19,14 +19,14 @@
       label="sample"
       [single]="true"
       [required]="true"
-      [location]="initialSampleRange ? [initialSampleRange] : []"
+      [location]="sampleRanges.value"
       (locationChange)="onSampleRangesChange($event)"
     ></cadmus-cod-location>
 
     <!-- ranges -->
     <cadmus-cod-location
       label="ranges"
-      [location]="initialRanges || []"
+      [location]="ranges.value"
       (locationChange)="onRangesChange($event)"
     ></cadmus-cod-location>
   </div>
@@ -81,7 +81,7 @@
         [assTagEntries]="assTagEntries"
         [refTagEntries]="refTagEntries"
         [refTypeEntries]="refTypeEntries"
-        [chronotope]="initialChronotope"
+        [chronotope]="chronotope.value || undefined"
         (chronotopeChange)="onChronotopeChange($event)"
       ></cadmus-refs-asserted-chronotope>
     </fieldset>

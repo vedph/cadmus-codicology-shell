@@ -102,13 +102,10 @@ export class CodEditEditorComponent implements OnInit {
   public references: FormControl<DocReference[]>;
   public form: FormGroup;
 
-  public initialRanges?: CodLocationRange[];
-  public initialDate?: HistoricalDateModel;
   public availColors?: Flag[];
   public initialColorIds?: string[];
   public availTechs?: Flag[];
   public initialTechIds?: string[];
-  public initialReferences?: DocReference[];
 
   constructor(formBuilder: FormBuilder) {
     this.editChange = new EventEmitter<CodEdit>();
@@ -162,13 +159,13 @@ export class CodEditEditorComponent implements OnInit {
     this.type.setValue(model.type);
     this.tag.setValue(model.tag || null);
     this.initialTechIds = model.techniques || [];
-    this.initialRanges = model.ranges || [];
+    this.ranges.setValue(model.ranges || []);
     this.language.setValue(model.language || null);
-    this.initialDate = model.date;
+    this.date.setValue(model.date || null);
     this.initialColorIds = model.colors || [];
     this.description.setValue(model.description || null);
     this.text.setValue(model.text || null);
-    this.initialReferences = model.references || [];
+    this.references.setValue(model.references || []);
 
     this.form.markAsPristine();
   }

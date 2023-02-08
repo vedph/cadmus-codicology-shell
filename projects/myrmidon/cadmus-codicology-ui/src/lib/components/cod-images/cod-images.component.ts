@@ -38,6 +38,9 @@ export class CodImagesComponent implements OnInit, OnDestroy {
     return this._images;
   }
   public set images(value: CodImage[] | undefined | null) {
+    if (this._images === value) {
+      return;
+    }
     this._images = value;
     this.updateForm(value);
   }
@@ -184,6 +187,7 @@ export class CodImagesComponent implements OnInit, OnDestroy {
   }
 
   private emitImagesChange(): void {
-    this.imagesChange.emit(this.getImages());
+    this._images = this.getImages();
+    this.imagesChange.emit(this._images);
   }
 }

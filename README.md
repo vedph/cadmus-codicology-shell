@@ -3,6 +3,7 @@
 - [Cadmus Codicology Shell](#cadmus-codicology-shell)
   - [Shell Architecture](#shell-architecture)
   - [History](#history)
+    - [3.0.12](#3012)
     - [3.0.11](#3011)
     - [3.0.10](#3010)
     - [3.0.9](#309)
@@ -44,8 +45,8 @@ Per-library documentation:
 Quick Docker image build:
 
 1. `npm run build-lib`; if you are going to use the libraries, publish them via `publish.bat`;
-2. remember to update version in `env.js`, then `ng build`;
-3. `docker build . -t vedph2020/cadmus-codicology-shell:3.0.11 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
+2. remember to update version in `env.js`, then `ng build --configuration production`;
+3. `docker build . -t vedph2020/cadmus-codicology-shell:3.0.12 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
 
 ## Shell Architecture
 
@@ -54,7 +55,11 @@ Quick Docker image build:
 
 ## History
 
-- 2023-02-08: ranges instead of single range for hand's subscription.
+### 3.0.12
+
+- 2023-02-08:
+  - ranges instead of single range for hand's subscription.
+  - removed all the no more required `initial...` property bindings (essentially referred to bricks: references, chronotope, size, cod.location): bindings (binding editor), contents (content annotation, content editor), decorations (decoration, artist style, element), edits (edit), hands (hand, hand instance, hand sign), layouts (layout), material-dsc (palimpsest, unit), sheet labels (endleaf, N-col definition), watermarks (watermark).
 - 2023-02-07: updated packages.
 - 2023-02-03: updated packages.
 

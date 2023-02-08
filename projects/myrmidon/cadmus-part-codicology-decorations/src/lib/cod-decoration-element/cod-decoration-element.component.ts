@@ -111,8 +111,6 @@ export class CodDecorationElementComponent implements OnInit {
   public note: FormControl<string | null>;
   public form: FormGroup;
 
-  public initialRanges: CodLocationRange[];
-  public initialImages: CodImage[];
   // flags
   public initialFlags: string[];
   public initialTypologies: string[];
@@ -246,8 +244,6 @@ export class CodDecorationElementComponent implements OnInit {
     this.elementChange = new EventEmitter<CodDecorationElement>();
     this.editorClose = new EventEmitter<any>();
 
-    this.initialRanges = [];
-    this.initialImages = [];
     // flags
     this.initialFlags = [];
     this.initialTypologies = [];
@@ -473,8 +469,7 @@ export class CodDecorationElementComponent implements OnInit {
     this.parentKey.setValue(element.parentKey || null);
     this.instanceCount.setValue(element.instanceCount || 0);
 
-    this.ranges.setValue(element.ranges || []);
-    this.initialRanges = element.ranges;
+    this.ranges.setValue(element.ranges);
 
     this.flags.setValue(element.flags || []);
     this.initialFlags = element.flags;
@@ -504,7 +499,7 @@ export class CodDecorationElementComponent implements OnInit {
     this.textRelation.setValue(element.textRelation || null);
     // description
     this.description.setValue(element.description || null);
-    this.initialImages = element.images || [];
+    this.images.setValue(element.images || []);
     this.note.setValue(element.note || null);
 
     this.form.markAsPristine();
@@ -637,11 +632,6 @@ export class CodDecorationElementComponent implements OnInit {
     this.positions.updateValueAndValidity();
     this.positions.markAsDirty();
   }
-
-  // public typeIdToString(id: string): string {
-  //   const entry = this.decElemTypeEntries?.find((e) => e.id === id);
-  //   return entry ? entry.value : id;
-  // }
 
   public cancel(): void {
     this.editorClose.emit();

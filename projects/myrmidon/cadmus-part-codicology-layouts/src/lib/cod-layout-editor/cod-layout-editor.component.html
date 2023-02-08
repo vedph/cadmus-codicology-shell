@@ -29,7 +29,7 @@
         label="sample"
         [single]="true"
         [required]="true"
-        [location]="initialSample ? [initialSample] : []"
+        [location]="sampleRanges.value"
         (locationChange)="onSampleLocationChange($event)"
       ></cadmus-cod-location>
 
@@ -37,7 +37,7 @@
       <cadmus-cod-location
         label="range(s)"
         [required]="true"
-        [location]="initialRanges"
+        [location]="ranges.value"
         (locationChange)="onRangeLocationChange($event)"
       ></cadmus-cod-location>
     </div>
@@ -320,7 +320,7 @@
       <cadmus-refs-decorated-counts
         [idEntries]="cntIdEntries"
         [tagEntries]="cntTagEntries"
-        [counts]="initialCounts"
+        [counts]="counts.value"
         (countsChange)="onCountsChange($event)"
       ></cadmus-refs-decorated-counts>
     </fieldset>

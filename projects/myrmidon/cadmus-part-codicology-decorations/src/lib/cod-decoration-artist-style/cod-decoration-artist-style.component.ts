@@ -58,9 +58,6 @@ export class CodDecorationArtistStyleComponent implements OnInit {
   public assertion: FormControl<Assertion | null>;
   public form: FormGroup;
 
-  public initialChronotope?: AssertedChronotope;
-  public initialAssertion?: Assertion;
-
   constructor(formBuilder: FormBuilder) {
     this.styleChange = new EventEmitter<CodDecorationArtistStyle>();
     this.editorClose = new EventEmitter<any>();
@@ -92,8 +89,8 @@ export class CodDecorationArtistStyleComponent implements OnInit {
     this.name.setValue(style.name);
     this.hasChronotope.setValue(style.chronotope ? true : false);
     this.hasAssertion.setValue(style.assertion ? true : false);
-    this.initialChronotope = style.chronotope;
-    this.initialAssertion = style.assertion;
+    this.chronotope.setValue(style.chronotope || null);
+    this.assertion.setValue(style.assertion || null);
     this.form.markAsPristine();
   }
 
