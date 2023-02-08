@@ -46,8 +46,6 @@ export class CodHandSubscriptionComponent implements OnInit {
   public note: FormControl<string | null>;
   public form: FormGroup;
 
-  public initialRanges?: CodLocationRange[];
-
   constructor(formBuilder: FormBuilder) {
     this.subscriptionChange = new EventEmitter<CodHandSubscription>();
     this.editorClose = new EventEmitter<any>();
@@ -82,7 +80,7 @@ export class CodHandSubscriptionComponent implements OnInit {
       return;
     }
 
-    this.initialRanges = subscription.range ? [subscription.range] : [];
+    this.ranges.setValue(subscription.ranges || []);
     this.language.setValue(subscription.language);
     this.text.setValue(subscription.text || null);
     this.note.setValue(subscription.note || null);
@@ -98,7 +96,7 @@ export class CodHandSubscriptionComponent implements OnInit {
 
   private getSubscription(): CodHandSubscription {
     return {
-      range: this.ranges.value?.length ? this.ranges.value[0] : undefined as any,
+      ranges: this.ranges.value || [],
       language: this.language.value?.trim() || '',
       text: this.text.value?.trim(),
       note: this.note.value?.trim(),

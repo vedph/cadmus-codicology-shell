@@ -54,6 +54,7 @@ Quick Docker image build:
 
 ## History
 
+- 2023-02-08: ranges instead of single range for hand's subscription.
 - 2023-02-07: updated packages.
 - 2023-02-03: updated packages.
 

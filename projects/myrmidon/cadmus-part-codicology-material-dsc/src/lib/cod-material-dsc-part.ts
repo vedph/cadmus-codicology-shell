@@ -115,7 +115,7 @@ export const COD_MATERIAL_DSC_PART_SCHEMA = {
               state: {
                 type: 'string',
               },
-              range: {
+              ranges: {
                 type: 'array',
                 items: {
                   anyOf: [

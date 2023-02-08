@@ -288,7 +288,7 @@
               <mat-icon>remove_circle</mat-icon>
             </button>
           </td>
-          <td>{{ subscription.range | codLocationRange }}</td>
+          <td>{{ subscription.ranges | codLocationRange }}</td>
           <td>
             {{
               subscription.language | flatLookup: subLangEntries:"id":"value"

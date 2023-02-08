@@ -2,8 +2,8 @@
   <div class="form-row">
     <!-- range -->
     <cadmus-cod-location
-      label="range"
-      [location]="initialRanges || []"
+      label="range(s)"
+      [location]="ranges.value"
       (locationChange)="onLocationChange($event)"
     ></cadmus-cod-location>
 

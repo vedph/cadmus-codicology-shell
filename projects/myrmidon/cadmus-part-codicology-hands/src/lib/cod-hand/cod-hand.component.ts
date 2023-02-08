@@ -332,7 +332,7 @@ export class CodHandComponent implements OnInit {
   //#region subscriptions
   public addSubscription(): void {
     this.editSubscription({
-      range: { start: { n: 0 }, end: { n: 0 } },
+      ranges: [],
       language: this.subLangEntries?.length ? this.subLangEntries[0].id : '',
     });
   }
