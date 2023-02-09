@@ -131,7 +131,7 @@
     <!-- date -->
     <cadmus-refs-historical-date
       *ngIf="hasDate?.value"
-      [date]="date.value || undefined"
+      [date]="date.value"
       (dateChange)="onDateChange($event)"
     ></cadmus-refs-historical-date>
   </div>

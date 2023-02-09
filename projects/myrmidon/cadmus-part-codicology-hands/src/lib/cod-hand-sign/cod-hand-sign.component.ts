@@ -16,7 +16,7 @@ import { CodHandSign } from '../cod-hands-part';
   templateUrl: './cod-hand-sign.component.html',
   styleUrls: ['./cod-hand-sign.component.css'],
 })
-export class CodHandSignComponent implements OnInit {
+export class CodHandSignComponent {
   private _sign: CodHandSign | undefined;
 
   @Input()
@@ -68,12 +68,6 @@ export class CodHandSignComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    if (this._sign) {
-      this.updateForm(this._sign);
-    }
-  }
-
   private updateForm(sign: CodHandSign | undefined): void {
     if (!sign) {
       this.form.reset();
@@ -104,7 +98,7 @@ export class CodHandSignComponent implements OnInit {
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
-    this.sampleRanges.setValue(ranges || null);
+    this.sampleRanges.setValue(ranges || []);
     this.sampleRanges.updateValueAndValidity();
     this.sampleRanges.markAsDirty();
   }

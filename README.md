@@ -55,6 +55,8 @@ Quick Docker image build:
 
 ## History
 
+- 2023-02-09: completed property bindings refactoring.
+
 ### 3.0.12
 
 - 2023-02-08:
