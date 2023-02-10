@@ -3,6 +3,7 @@
 - [Cadmus Codicology Shell](#cadmus-codicology-shell)
   - [Shell Architecture](#shell-architecture)
   - [History](#history)
+    - [3.0.13](#3013)
     - [3.0.12](#3012)
     - [3.0.11](#3011)
     - [3.0.10](#3010)
@@ -46,7 +47,7 @@ Quick Docker image build:
 
 1. `npm run build-lib`; if you are going to use the libraries, publish them via `publish.bat`;
 2. remember to update version in `env.js`, then `ng build --configuration production`;
-3. `docker build . -t vedph2020/cadmus-codicology-shell:3.0.12 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
+3. `docker build . -t vedph2020/cadmus-codicology-shell:3.0.13 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
 
 ## Shell Architecture
 
@@ -55,6 +56,9 @@ Quick Docker image build:
 
 ## History
 
+### 3.0.13
+
+- 2023-02-10: refactored flags related editors.
 - 2023-02-09: completed property bindings refactoring.
 
 ### 3.0.12

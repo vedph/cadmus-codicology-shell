@@ -8,9 +8,17 @@ import {
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { HistoricalDateModel } from '@myrmidon/cadmus-refs-historical-date';
-import { Flag } from '@myrmidon/cadmus-ui-flags-picker';
+import { Flag, FlagsPickerAdapter } from '@myrmidon/cadmus-ui-flags-picker';
+import { Observable } from 'rxjs';
 
 import { CodNColDefinition } from '../cod-sheet-labels-part';
+
+function entryToFlag(entry: ThesaurusEntry): Flag {
+  return {
+    id: entry.id,
+    label: entry.value,
+  };
+}
 
 @Component({
   selector: 'cadmus-cod-n-col-definition',
@@ -18,6 +26,7 @@ import { CodNColDefinition } from '../cod-sheet-labels-part';
   styleUrls: ['./cod-n-col-definition.component.css'],
 })
 export class CodNColDefinitionComponent implements OnInit {
+  private readonly _flagAdapter: FlagsPickerAdapter;
   private _definition: CodNColDefinition | undefined;
   private _clrEntries: ThesaurusEntry[] | undefined;
 
@@ -49,15 +58,11 @@ export class CodNColDefinitionComponent implements OnInit {
     return this._clrEntries;
   }
   public set clrEntries(value: ThesaurusEntry[] | undefined) {
-    this._clrEntries = value;
-    this.clrFlags = value?.length
-      ? value.map((e) => {
-          return {
-            id: e.id,
-            label: e.value,
-          } as Flag;
-        })
-      : [];
+    if (this._clrEntries === value) {
+      return;
+    }
+    this._clrEntries = value || [];
+    this._flagAdapter.setSlotFlags('colors', this._clrEntries.map(entryToFlag));
   }
 
   @Output()
@@ -71,20 +76,21 @@ export class CodNColDefinitionComponent implements OnInit {
   public system: FormControl<string | null>;
   public technique: FormControl<string | null>;
   public position: FormControl<string | null>;
-  public colors: FormControl<string[]>;
+  public colors: FormControl<Flag[]>;
   public hasDate: FormControl<boolean>;
   public date: FormControl<HistoricalDateModel | null>;
   public note: FormControl<string | null>;
   public form: FormGroup;
 
-  public initialColors: string[];
-  public clrFlags: Flag[];
+  // flags
+  public colorFlags$: Observable<Flag[]>;
 
   constructor(formBuilder: FormBuilder) {
     this.definitionChange = new EventEmitter<CodNColDefinition>();
     this.editorClose = new EventEmitter<any>();
-    this.initialColors = [];
-    this.clrFlags = [];
+    // flags
+    this._flagAdapter = new FlagsPickerAdapter();
+    this.colorFlags$ = this._flagAdapter.selectFlags('colors');
     // form
     this.id = '';
     this.rank = formBuilder.control(0, { nonNullable: true });
@@ -136,7 +142,7 @@ export class CodNColDefinitionComponent implements OnInit {
     this.system.setValue(model.system);
     this.technique.setValue(model.technique);
     this.position.setValue(model.position);
-    this.initialColors = model.colors || [];
+    this._flagAdapter.setSlotChecks('colors', model.colors || []);
     this.hasDate.setValue(model.date ? true : false);
     this.date.setValue(model.date || null);
     this.note.setValue(model.note || null);
@@ -151,14 +157,17 @@ export class CodNColDefinitionComponent implements OnInit {
       system: this.system.value?.trim() || '',
       technique: this.technique.value?.trim() || '',
       position: this.position.value?.trim() || '',
-      colors: this.colors.value?.length ? this.colors.value : undefined,
+      colors: this.colors.value?.length
+        ? this.colors.value.filter((f) => f.checked).map((f) => f.id)
+        : undefined,
       date: this.hasDate.value ? this.date.value || undefined : undefined,
       note: this.note.value?.trim(),
     };
   }
 
-  public onSelectedIdsChange(ids: string[]): void {
-    this.colors.setValue(ids);
+  public onColorFlagsChange(flags: Flag[]): void {
+    this._flagAdapter.setSlotFlags('colors', flags, true);
+    this.colors.setValue(flags);
     this.colors.updateValueAndValidity();
     this.colors.markAsDirty();
   }

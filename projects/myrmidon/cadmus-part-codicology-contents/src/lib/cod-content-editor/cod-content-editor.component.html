@@ -144,9 +144,8 @@
   <div>
     <!-- states -->
     <cadmus-ui-flags-picker
-      [flags]="stateFlags"
-      [selectedIds]="initialStates"
-      (selectedIdsChange)="onStateIdsChange($event)"
+      [flags]="stateFlags$ | async"
+      (flagsChange)="onStateFlagsChange($event)"
     ></cadmus-ui-flags-picker>
   </div>
   <!-- annotations -->

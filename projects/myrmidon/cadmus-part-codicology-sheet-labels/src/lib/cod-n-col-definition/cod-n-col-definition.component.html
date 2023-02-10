@@ -120,9 +120,8 @@
   <fieldset>
     <legend>colors</legend>
     <cadmus-ui-flags-picker
-      [flags]="clrFlags"
-      [selectedIds]="initialColors"
-      (selectedIdsChange)="onSelectedIdsChange($event)"
+      [flags]="colorFlags$ | async"
+      (flagsChange)="onColorFlagsChange($event)"
     ></cadmus-ui-flags-picker>
   </fieldset>
 

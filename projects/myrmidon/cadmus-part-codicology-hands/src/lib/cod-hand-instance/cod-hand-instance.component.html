@@ -67,9 +67,8 @@
   <fieldset>
     <legend>typologies</legend>
     <cadmus-ui-flags-picker
-      [flags]="typeFlags"
-      [selectedIds]="initialTypologies"
-      (selectedIdsChange)="onTypologiesChange($event)"
+      [flags]="typologyFlags$ | async"
+      (flagsChange)="onTypologyFlagsChange($event)"
     ></cadmus-ui-flags-picker>
   </fieldset>
 
@@ -77,9 +76,8 @@
   <fieldset>
     <legend>colors</legend>
     <cadmus-ui-flags-picker
-      [flags]="colorFlags"
-      [selectedIds]="initialColors"
-      (selectedIdsChange)="onColorsChange($event)"
+      [flags]="colorFlags$ | async"
+      (flagsChange)="onColorFlagsChange($event)"
     ></cadmus-ui-flags-picker>
   </fieldset>
 

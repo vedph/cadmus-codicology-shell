@@ -71,9 +71,8 @@
     <fieldset>
       <legend>techniques</legend>
       <cadmus-ui-flags-picker
-        [flags]="availTechs"
-        [selectedIds]="initialTechIds"
-        (selectedIdsChange)="onTechIdsChange($event)"
+        [flags]="techniqueFlags$ | async"
+        (flagsChange)="onTechniqueFlagsChange($event)"
       ></cadmus-ui-flags-picker>
     </fieldset>
   </div>
@@ -112,9 +111,8 @@
   <fieldset>
     <legend>colors</legend>
     <cadmus-ui-flags-picker
-      [flags]="availColors"
-      [selectedIds]="initialColorIds"
-      (selectedIdsChange)="onColorIdsChange($event)"
+      [flags]="colorFlags$ | async"
+      (flagsChange)="onColorFlagsChange($event)"
     ></cadmus-ui-flags-picker>
   </fieldset>
 

@@ -9,10 +9,18 @@ import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { CodImage } from '@myrmidon/cadmus-codicology-ui';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
-import { Flag } from '@myrmidon/cadmus-ui-flags-picker';
+import { Flag, FlagsPickerAdapter } from '@myrmidon/cadmus-ui-flags-picker';
 import { NgToolsValidators } from '@myrmidon/ng-tools';
+import { Observable } from 'rxjs';
 
 import { CodHandInstance } from '../cod-hands-part';
+
+function entryToFlag(entry: ThesaurusEntry): Flag {
+  return {
+    id: entry.id,
+    label: entry.value,
+  };
+}
 
 @Component({
   selector: 'cadmus-cod-hand-instance',
@@ -20,8 +28,9 @@ import { CodHandInstance } from '../cod-hands-part';
   styleUrls: ['./cod-hand-instance.component.css'],
 })
 export class CodHandInstanceComponent implements OnInit {
+  private readonly _flagAdapter: FlagsPickerAdapter;
   private _instance: CodHandInstance | undefined;
-  private _typeEntries: ThesaurusEntry[] | undefined;
+  private _typologyEntries: ThesaurusEntry[] | undefined;
   private _colorEntries: ThesaurusEntry[] | undefined;
 
   @Input()
@@ -49,11 +58,17 @@ export class CodHandInstanceComponent implements OnInit {
   // cod-hand-typologies
   @Input()
   public get typeEntries(): ThesaurusEntry[] | undefined {
-    return this._typeEntries;
+    return this._typologyEntries;
   }
   public set typeEntries(value: ThesaurusEntry[] | undefined) {
-    this._typeEntries = value;
-    this.typeFlags = this.getAvailableFlags(this.typeEntries);
+    if (this._typologyEntries === value) {
+      return;
+    }
+    this._typologyEntries = value || [];
+    this._flagAdapter.setSlotFlags(
+      'typologies',
+      this._typologyEntries.map(entryToFlag)
+    );
   }
   // cod-hand-colors
   @Input()
@@ -61,8 +76,14 @@ export class CodHandInstanceComponent implements OnInit {
     return this._colorEntries;
   }
   public set colorEntries(value: ThesaurusEntry[] | undefined) {
-    this._colorEntries = value;
-    this.colorFlags = this.getAvailableFlags(this.colorEntries);
+    if (this._colorEntries === value) {
+      return;
+    }
+    this._colorEntries = value || [];
+    this._flagAdapter.setSlotFlags(
+      'colors',
+      this._colorEntries.map(entryToFlag)
+    );
   }
 
   // chronotope-tags
@@ -87,8 +108,8 @@ export class CodHandInstanceComponent implements OnInit {
   public editorClose: EventEmitter<any>;
 
   public script: FormControl<string | null>;
-  public typologies: FormControl<string[]>;
-  public colors: FormControl<string[]>;
+  public typologies: FormControl<Flag[]>;
+  public colors: FormControl<Flag[]>;
   public ranges: FormControl<CodLocationRange[]>;
   public rank: FormControl<number>;
   public dscKey: FormControl<string | null>;
@@ -96,19 +117,17 @@ export class CodHandInstanceComponent implements OnInit {
   public images: FormControl<CodImage[]>;
   public form: FormGroup;
 
-  public typeFlags: Flag[];
-  public initialTypologies: string[];
-
-  public colorFlags: Flag[];
-  public initialColors: string[];
+  // flags
+  public typologyFlags$: Observable<Flag[]>;
+  public colorFlags$: Observable<Flag[]>;
 
   constructor(formBuilder: FormBuilder) {
     this.instanceChange = new EventEmitter<CodHandInstance>();
     this.editorClose = new EventEmitter<any>();
-    this.typeFlags = [];
-    this.initialTypologies = [];
-    this.colorFlags = [];
-    this.initialColors = [];
+    // flags
+    this._flagAdapter = new FlagsPickerAdapter();
+    this.typologyFlags$ = this._flagAdapter.selectFlags('typologies');
+    this.colorFlags$ = this._flagAdapter.selectFlags('colors');
     // form
     this.script = formBuilder.control(null, [
       Validators.required,
@@ -148,25 +167,17 @@ export class CodHandInstanceComponent implements OnInit {
   private updateForm(model: CodHandInstance | undefined): void {
     if (!model) {
       this.form.reset();
-      this.initialTypologies = [];
-      this.initialColors = [];
       return;
     }
 
     this.script.setValue(model.script);
     this.rank.setValue(model.rank || 0);
     this.dscKey.setValue(model.descriptionKey || null);
-
-    this.typologies.setValue(model.typologies);
-    this.initialTypologies = model.typologies;
-
-    this.colors.setValue(model.colors || []);
-    this.initialColors = model.colors || [];
-
+    this._flagAdapter.setSlotChecks('typologies', model.typologies);
+    this._flagAdapter.setSlotChecks('colors', model.colors || []);
     this.ranges.setValue(model.ranges);
     this.chronotope.setValue(model.chronotope || null);
     this.images.setValue(model.images || []);
-
     this.form.markAsPristine();
   }
 
@@ -188,22 +199,30 @@ export class CodHandInstanceComponent implements OnInit {
       script: this.script.value?.trim() || '',
       rank: this.rank.value ? +this.rank.value : 0,
       descriptionKey: this.dscKey.value || undefined,
-      typologies: this.typologies.value || [],
-      colors: this.colors.value?.length ? this.colors.value : undefined,
+      typologies:
+        this.typologies.value.filter((f) => f.checked).map((f) => f.id) || [],
+      colors: this.colors.value?.length
+        ? this.colors.value
+            .filter((f) => f.checked)
+            .filter((f) => f.checked)
+            .map((f) => f.id)
+        : undefined,
       ranges: this.ranges.value || [],
       chronotope: this.chronotope.value || undefined,
       images: this.images.value?.length ? this.images.value : undefined,
     };
   }
 
-  public onTypologiesChange(ids: string[]): void {
-    this.typologies.setValue(ids);
+  public onTypologyFlagsChange(flags: Flag[]): void {
+    this._flagAdapter.setSlotFlags('typologies', flags, true);
+    this.typologies.setValue(flags);
     this.typologies.updateValueAndValidity();
     this.typologies.markAsDirty();
   }
 
-  public onColorsChange(ids: string[]): void {
-    this.colors.setValue(ids);
+  public onColorFlagsChange(flags: Flag[]): void {
+    this._flagAdapter.setSlotFlags('colors', flags, true);
+    this.colors.setValue(flags);
     this.colors.updateValueAndValidity();
     this.colors.markAsDirty();
   }

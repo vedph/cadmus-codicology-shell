@@ -5,15 +5,22 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { take } from 'rxjs';
+import { Observable, take } from 'rxjs';
 
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { Flag } from '@myrmidon/cadmus-ui-flags-picker';
+import { Flag, FlagsPickerAdapter } from '@myrmidon/cadmus-ui-flags-picker';
 import { DialogService } from '@myrmidon/ng-mat-tools';
 import { NgToolsValidators } from '@myrmidon/ng-tools';
 
 import { CodContent, CodContentAnnotation } from '../cod-contents-part';
+
+function entryToFlag(entry: ThesaurusEntry): Flag {
+  return {
+    id: entry.id,
+    label: entry.value,
+  };
+}
 
 @Component({
   selector: 'cadmus-cod-content-editor',
@@ -21,6 +28,7 @@ import { CodContent, CodContentAnnotation } from '../cod-contents-part';
   styleUrls: ['./cod-content-editor.component.css'],
 })
 export class CodContentEditorComponent implements OnInit {
+  private readonly _flagAdapter: FlagsPickerAdapter;
   private _content: CodContent | undefined;
   private _editedAnnotationIndex: number;
   private _stateEntries: ThesaurusEntry[] | undefined;
@@ -43,12 +51,14 @@ export class CodContentEditorComponent implements OnInit {
     return this._stateEntries;
   }
   public set stateEntries(value: ThesaurusEntry[] | undefined) {
-    this._stateEntries = value;
-    this.stateFlags = value
-      ? value.map((e) => {
-          return { id: e.id, label: e.value } as Flag;
-        })
-      : [];
+    if (this._stateEntries === value) {
+      return;
+    }
+    this._stateEntries = value || [];
+    this._flagAdapter.setSlotFlags(
+      'states',
+      this._stateEntries.map(entryToFlag)
+    );
   }
   // cod-content-tags
   @Input()
@@ -73,19 +83,24 @@ export class CodContentEditorComponent implements OnInit {
   public note: FormControl<string | null>;
   public incipit: FormControl<string | null>;
   public explicit: FormControl<string | null>;
-  public states: FormControl<string[]>;
+  public states: FormControl<Flag[]>;
   public annotations: FormControl<CodContentAnnotation[] | null>;
   public form: FormGroup;
 
-  public stateFlags: Flag[];
-  public initialStates?: string[];
   public editedAnnotation?: CodContentAnnotation;
+
+  // flags
+  public stateFlags$: Observable<Flag[]>;
 
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
     this.contentChange = new EventEmitter<CodContent>();
     this.editorClose = new EventEmitter<any>();
-    this.stateFlags = [];
     this._editedAnnotationIndex = -1;
+
+    // flags
+    this._flagAdapter = new FlagsPickerAdapter();
+    this.stateFlags$ = this._flagAdapter.selectFlags('states');
+
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.author = formBuilder.control(null, Validators.maxLength(50));
@@ -138,7 +153,7 @@ export class CodContentEditorComponent implements OnInit {
     this.eid.setValue(content.eid || null);
     this.author.setValue(content.author || null);
     this.ranges.setValue(content.ranges || []);
-    this.initialStates = content.states || [];
+    this._flagAdapter.setSlotChecks('states', content.states);
     this.tag.setValue(content.tag || null);
     this.title.setValue(content.title);
     this.location.setValue(content.location || null);
@@ -157,7 +172,7 @@ export class CodContentEditorComponent implements OnInit {
       eid: this.eid.value?.trim(),
       author: this.author.value?.trim(),
       ranges: this.ranges.value || [],
-      states: this.states.value || [],
+      states: this.states.value.filter((f) => f.checked).map((f) => f.id) || [],
       title: this.title.value?.trim() || '',
       location: this.location.value?.trim(),
       claimedAuthor: this.claimedAuthor.value?.trim(),
@@ -179,8 +194,9 @@ export class CodContentEditorComponent implements OnInit {
     this.ranges.markAsDirty();
   }
 
-  public onStateIdsChange(ids: string[]): void {
-    this.states.setValue(ids);
+  public onStateFlagsChange(flags: Flag[]): void {
+    this._flagAdapter.setSlotFlags('states', flags, true);
+    this.states.setValue(flags);
     this.states.markAsDirty();
     this.states.updateValueAndValidity();
   }

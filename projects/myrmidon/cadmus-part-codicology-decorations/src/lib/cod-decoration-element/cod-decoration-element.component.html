@@ -5,47 +5,50 @@
   <mat-tab-group>
     <!-- GENERAL -->
     <mat-tab label="general">
-      <!-- type (bound) -->
-      <mat-form-field
-        *ngIf="decElemTypeEntries?.length"
-        style="width: 14em"
-        appearance="outline"
-      >
-        <mat-label>type</mat-label>
-        <mat-select [formControl]="type">
-          <mat-option *ngFor="let e of decElemTypeEntries" [value]="e.id">{{
-            e.value
-          }}</mat-option>
-        </mat-select>
-        <mat-error
-          *ngIf="$any(type).errors?.required && (type.dirty || type.touched)"
-          >type required</mat-error
+      <div class="form-row" style="margin-top: 8px">
+        <!-- type (bound) -->
+        <mat-form-field
+          *ngIf="decElemTypeEntries?.length"
+          style="width: 14em"
+          appearance="outline"
         >
-      </mat-form-field>
-      &nbsp;
-      <!-- instanceCount -->
-      <mat-form-field style="width: 6em">
-        <mat-label>count</mat-label>
-        <input matInput [formControl]="instanceCount" type="number" min="0" />
-      </mat-form-field>
+          <mat-label>type</mat-label>
+          <mat-select [formControl]="type">
+            <mat-option *ngFor="let e of decElemTypeEntries" [value]="e.id">{{
+              e.value
+            }}</mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="$any(type).errors?.required && (type.dirty || type.touched)"
+            >type required</mat-error
+          >
+        </mat-form-field>
+        &nbsp;
+        <!-- instanceCount -->
+        <mat-form-field style="width: 6em">
+          <mat-label>count</mat-label>
+          <input matInput [formControl]="instanceCount" type="number" min="0" />
+        </mat-form-field>
 
-      <!-- ranges -->
-      <cadmus-cod-location
-        label="ranges"
-        [required]="true"
-        [location]="ranges.value"
-        (locationChange)="onLocationChange($event)"
-      ></cadmus-cod-location>
+        <!-- ranges -->
+        <cadmus-cod-location
+          label="ranges"
+          [required]="true"
+          [location]="ranges.value"
+          (locationChange)="onLocationChange($event)"
+        ></cadmus-cod-location>
+      </div>
 
       <!-- flags -->
-      <fieldset *ngIf="availFlags?.length">
-        <legend>features</legend>
-        <cadmus-ui-flags-picker
-          [flags]="availFlags"
-          [selectedIds]="initialFlags"
-          (selectedIdsChange)="onFlagsChange($event)"
-        ></cadmus-ui-flags-picker>
-      </fieldset>
+      <div *ngIf="flags$ | async as flags">
+        <fieldset *ngIf="flags.length">
+          <legend>features</legend>
+          <cadmus-ui-flags-picker
+            [flags]="flags"
+            (flagsChange)="onFlagsChange($event)"
+          ></cadmus-ui-flags-picker>
+        </fieldset>
+      </div>
 
       <br />
       <div>
@@ -104,14 +107,15 @@
         </mat-form-field>
       </div>
       <!-- typologies -->
-      <fieldset [hidden]="!availTypologies.length || hidden?.typologies">
-        <legend>typologies</legend>
-        <cadmus-ui-flags-picker
-          [flags]="availTypologies"
-          [selectedIds]="initialTypologies"
-          (selectedIdsChange)="onTypologiesChange($event)"
-        ></cadmus-ui-flags-picker>
-      </fieldset>
+      <div *ngIf="typologyFlags$ | async as flags">
+        <fieldset [hidden]="!flags.length || hidden?.typologies">
+          <legend>typologies</legend>
+          <cadmus-ui-flags-picker
+            [flags]="flags"
+            (flagsChange)="onTypologyFlagsChange($event)"
+          ></cadmus-ui-flags-picker>
+        </fieldset>
+      </div>
 
       <!-- subject -->
       <div [hidden]="hidden?.subject">
@@ -129,72 +133,69 @@
       </div>
 
       <!-- colors -->
-      <fieldset [hidden]="!availColors.length || hidden?.colors">
-        <legend>colors</legend>
-        <cadmus-ui-flags-picker
-          [flags]="availColors"
-          [selectedIds]="initialColors"
-          (selectedIdsChange)="onColorsChange($event)"
-        ></cadmus-ui-flags-picker>
-      </fieldset>
+      <div *ngIf="colorFlags$ | async as flags">
+        <fieldset [hidden]="!flags.length || hidden?.colors">
+          <legend>colors</legend>
+          <cadmus-ui-flags-picker
+            [flags]="flags"
+            (flagsChange)="onColorFlagsChange($event)"
+          ></cadmus-ui-flags-picker>
+        </fieldset>
+      </div>
 
       <!-- gildings -->
-      <fieldset
-        [hidden]="
-          (!availGildings.length && !elemGildingFree) || hidden?.gildings
-        "
-      >
-        <legend>gildings</legend>
-        <cadmus-ui-flags-picker
-          [flags]="availGildings"
-          [allowUserFlags]="elemGildingFree || false"
-          [selectedIds]="initialGildings"
-          (selectedIdsChange)="onGildingsChange($event)"
-        ></cadmus-ui-flags-picker>
-      </fieldset>
+      <div *ngIf="gildingFlags$ | async as flags">
+        <fieldset
+          [hidden]="(!flags.length && !elemGildingFree) || hidden?.gildings"
+        >
+          <legend>gildings</legend>
+          <cadmus-ui-flags-picker
+            [flags]="flags"
+            [allowUserFlags]="elemGildingFree || false"
+            (flagsChange)="onGildingFlagsChange($event)"
+          ></cadmus-ui-flags-picker>
+        </fieldset>
+      </div>
 
       <!-- techniques -->
-      <fieldset
-        [hidden]="
-          (!availTechniques.length && !elemTechniqueFree) || hidden?.techniques
-        "
-      >
-        <legend>techniques</legend>
-        <cadmus-ui-flags-picker
-          [flags]="availTechniques"
-          [allowUserFlags]="elemTechniqueFree || false"
-          [selectedIds]="initialTechniques"
-          (selectedIdsChange)="onTechniquesChange($event)"
-        ></cadmus-ui-flags-picker>
-      </fieldset>
+      <div *ngIf="techniqueFlags$ | async as flags">
+        <fieldset
+          [hidden]="(!flags.length && !elemTechniqueFree) || hidden?.techniques"
+        >
+          <legend>techniques</legend>
+          <cadmus-ui-flags-picker
+            [flags]="flags"
+            [allowUserFlags]="elemTechniqueFree || false"
+            (flagsChange)="onTechniqueFlagsChange($event)"
+          ></cadmus-ui-flags-picker>
+        </fieldset>
+      </div>
 
       <!-- tools -->
-      <fieldset
-        [hidden]="(!availTools.length && !elemToolFree) || hidden?.tools"
-      >
-        <legend>tools</legend>
-        <cadmus-ui-flags-picker
-          [flags]="availTools"
-          [allowUserFlags]="elemToolFree || false"
-          [selectedIds]="initialTools"
-          (selectedIdsChange)="onToolsChange($event)"
-        ></cadmus-ui-flags-picker>
-      </fieldset>
+      <div *ngIf="toolFlags$ | async as flags">
+        <fieldset [hidden]="(!flags.length && !elemToolFree) || hidden?.tools">
+          <legend>tools</legend>
+          <cadmus-ui-flags-picker
+            [flags]="flags"
+            [allowUserFlags]="elemToolFree || false"
+            (flagsChange)="onToolFlagsChange($event)"
+          ></cadmus-ui-flags-picker>
+        </fieldset>
+      </div>
 
       <!-- positions -->
-      <fieldset
-        [hidden]="
-          (!availPositions.length && !elemPositionFree) || hidden?.positions
-        "
-      >
-        <legend>positions</legend>
-        <cadmus-ui-flags-picker
-          [flags]="availPositions"
-          [allowUserFlags]="elemPositionFree || false"
-          [selectedIds]="initialPositions"
-          (selectedIdsChange)="onPositionsChange($event)"
-        ></cadmus-ui-flags-picker>
-      </fieldset>
+      <div *ngIf="positionFlags$ | async as flags">
+        <fieldset
+          [hidden]="(!flags.length && !elemPositionFree) || hidden?.positions"
+        >
+          <legend>positions</legend>
+          <cadmus-ui-flags-picker
+            [flags]="flags"
+            [allowUserFlags]="elemPositionFree || false"
+            (flagsChange)="onPositionFlagsChange($event)"
+          ></cadmus-ui-flags-picker>
+        </fieldset>
+      </div>
     </mat-tab>
 
     <!-- DESCRIPTION -->

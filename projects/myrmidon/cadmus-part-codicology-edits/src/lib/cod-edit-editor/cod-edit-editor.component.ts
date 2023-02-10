@@ -9,10 +9,18 @@ import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
 import { HistoricalDateModel } from '@myrmidon/cadmus-refs-historical-date';
-import { Flag } from '@myrmidon/cadmus-ui-flags-picker';
+import { Flag, FlagsPickerAdapter } from '@myrmidon/cadmus-ui-flags-picker';
 import { NgToolsValidators } from '@myrmidon/ng-tools';
+import { Observable } from 'rxjs';
 
 import { CodEdit } from '../cod-edits-part';
+
+function entryToFlag(entry: ThesaurusEntry): Flag {
+  return {
+    id: entry.id,
+    label: entry.value,
+  };
+}
 
 @Component({
   selector: 'cadmus-cod-edit-editor',
@@ -20,6 +28,7 @@ import { CodEdit } from '../cod-edits-part';
   styleUrls: ['./cod-edit-editor.component.css'],
 })
 export class CodEditEditorComponent implements OnInit {
+  private readonly _flagAdapter: FlagsPickerAdapter;
   private _edit: CodEdit | undefined;
   private _colorEntries: ThesaurusEntry[] | undefined;
   private _techEntries: ThesaurusEntry[] | undefined;
@@ -42,15 +51,14 @@ export class CodEditEditorComponent implements OnInit {
     return this._colorEntries;
   }
   public set colorEntries(value: ThesaurusEntry[] | undefined) {
-    this._colorEntries = value;
-    this.availColors = value?.length
-      ? value.map((e) => {
-          return {
-            id: e.id,
-            label: e.value,
-          } as Flag;
-        })
-      : [];
+    if (this._colorEntries === value) {
+      return;
+    }
+    this._colorEntries = value || [];
+    this._flagAdapter.setSlotFlags(
+      'colors',
+      this._colorEntries.map(entryToFlag)
+    );
   }
   // cod-edit-techniques
   @Input()
@@ -58,15 +66,14 @@ export class CodEditEditorComponent implements OnInit {
     return this._techEntries;
   }
   public set techEntries(value: ThesaurusEntry[] | undefined) {
-    this._techEntries = value;
-    this.availTechs = value?.length
-      ? value.map((e) => {
-          return {
-            id: e.id,
-            label: e.value,
-          } as Flag;
-        })
-      : [];
+    if (this._techEntries === value) {
+      return;
+    }
+    this._techEntries = value || [];
+    this._flagAdapter.setSlotFlags(
+      'colors',
+      this._techEntries.map(entryToFlag)
+    );
   }
   // cod-edit-types
   @Input()
@@ -92,24 +99,27 @@ export class CodEditEditorComponent implements OnInit {
   public eid: FormControl<string | null>;
   public type: FormControl<string | null>;
   public tag: FormControl<string | null>;
-  public techniques: FormControl<string[]>;
+  public techniques: FormControl<Flag[]>;
   public ranges: FormControl<CodLocationRange[]>;
   public language: FormControl<string | null>;
   public date: FormControl<HistoricalDateModel | null>;
-  public colors: FormControl<string[]>;
+  public colors: FormControl<Flag[]>;
   public description: FormControl<string | null>;
   public text: FormControl<string | null>;
   public references: FormControl<DocReference[]>;
   public form: FormGroup;
 
-  public availColors?: Flag[];
-  public initialColorIds?: string[];
-  public availTechs?: Flag[];
-  public initialTechIds?: string[];
+  // flags
+  public colorFlags$: Observable<Flag[]>;
+  public techniqueFlags$: Observable<Flag[]>;
 
   constructor(formBuilder: FormBuilder) {
     this.editChange = new EventEmitter<CodEdit>();
     this.editorClose = new EventEmitter<any>();
+    // flags
+    this._flagAdapter = new FlagsPickerAdapter();
+    this.colorFlags$ = this._flagAdapter.selectFlags('colors');
+    this.techniqueFlags$ = this._flagAdapter.selectFlags('techniques');
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.type = formBuilder.control(null, [
@@ -158,15 +168,14 @@ export class CodEditEditorComponent implements OnInit {
     this.eid.setValue(model.eid || null);
     this.type.setValue(model.type);
     this.tag.setValue(model.tag || null);
-    this.initialTechIds = model.techniques || [];
+    this._flagAdapter.setSlotChecks('techniques', model.techniques || []);
     this.ranges.setValue(model.ranges || []);
     this.language.setValue(model.language || null);
     this.date.setValue(model.date || null);
-    this.initialColorIds = model.colors || [];
+    this._flagAdapter.setSlotChecks('colors', model.colors || []);
     this.description.setValue(model.description || null);
     this.text.setValue(model.text || null);
     this.references.setValue(model.references || []);
-
     this.form.markAsPristine();
   }
 
@@ -176,12 +185,14 @@ export class CodEditEditorComponent implements OnInit {
       type: this.type.value?.trim() || '',
       tag: this.tag.value?.trim(),
       techniques: this.techniques.value?.length
-        ? this.techniques.value
+        ? this.techniques.value.filter((f) => f.checked).map((f) => f.id)
         : undefined,
       ranges: this.ranges.value,
       language: this.language.value?.trim(),
       date: this.date.value || undefined,
-      colors: this.colors.value?.length ? this.colors.value : undefined,
+      colors: this.colors.value?.length
+        ? this.colors.value.filter((f) => f.checked).map((f) => f.id)
+        : undefined,
       description: this.description.value?.trim(),
       text: this.text.value?.trim(),
       references: this.references.value?.length
@@ -196,14 +207,16 @@ export class CodEditEditorComponent implements OnInit {
     this.ranges.markAsDirty();
   }
 
-  public onColorIdsChange(ids: string[]): void {
-    this.colors.setValue(ids);
+  public onColorFlagsChange(flags: Flag[]): void {
+    this._flagAdapter.setSlotFlags('colors', flags, true);
+    this.colors.setValue(flags);
     this.colors.updateValueAndValidity();
     this.colors.markAsDirty();
   }
 
-  public onTechIdsChange(ids: string[]): void {
-    this.techniques.setValue(ids);
+  public onTechniqueFlagsChange(flags: Flag[]): void {
+    this._flagAdapter.setSlotFlags('techniques', flags, true);
+    this.techniques.setValue(flags);
     this.techniques.updateValueAndValidity();
     this.techniques.markAsDirty();
   }

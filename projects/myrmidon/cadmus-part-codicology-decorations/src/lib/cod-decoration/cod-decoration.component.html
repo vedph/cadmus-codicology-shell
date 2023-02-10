@@ -33,9 +33,8 @@
   <fieldset>
     <legend>features</legend>
     <cadmus-ui-flags-picker
-      [flags]="availFlags"
-      [selectedIds]="initialFlags"
-      (selectedIdsChange)="onSelectedIdsChange($event)"
+      [flags]="decFlags$ | async"
+      (flagsChange)="onFlagsChange($event)"
     ></cadmus-ui-flags-picker>
   </fieldset>
 
