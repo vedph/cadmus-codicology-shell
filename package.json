@@ -60,7 +60,7 @@
     "@myrmidon/cadmus-thesaurus-list": "^2.0.3",
     "@myrmidon/cadmus-thesaurus-ui": "^2.0.4",
     "@myrmidon/cadmus-ui": "^4.0.6",
-    "@myrmidon/cadmus-ui-flags-picker": "1.0.6",
+    "@myrmidon/cadmus-ui-flags-picker": "1.0.7",
     "@myrmidon/cadmus-ui-note-set": "^1.0.1",
     "@myrmidon/cadmus-ui-pg": "^2.0.0",
     "@myrmidon/ng-mat-tools": "1.0.0",

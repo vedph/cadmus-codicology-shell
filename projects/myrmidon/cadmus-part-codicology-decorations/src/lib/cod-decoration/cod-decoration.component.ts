@@ -260,9 +260,7 @@ export class CodDecorationComponent implements OnInit {
     return {
       eid: this.eid.value?.trim(),
       name: this.name.value?.trim() || '',
-      flags: this.flags.value?.length
-        ? this.flags.value.filter((f) => f.checked).map((f) => f.id)
-        : undefined,
+      flags: this._flagAdapter.getOptionalCheckedFlagIds('flags'),
       chronotopes: this.chronotopes.value?.length
         ? this.chronotopes.value
         : undefined,

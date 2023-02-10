@@ -172,7 +172,7 @@ export class CodContentEditorComponent implements OnInit {
       eid: this.eid.value?.trim(),
       author: this.author.value?.trim(),
       ranges: this.ranges.value || [],
-      states: this.states.value.filter((f) => f.checked).map((f) => f.id) || [],
+      states: this._flagAdapter.getCheckedFlagIds('states'),
       title: this.title.value?.trim() || '',
       location: this.location.value?.trim(),
       claimedAuthor: this.claimedAuthor.value?.trim(),

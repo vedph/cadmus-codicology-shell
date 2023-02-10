@@ -199,14 +199,8 @@ export class CodHandInstanceComponent implements OnInit {
       script: this.script.value?.trim() || '',
       rank: this.rank.value ? +this.rank.value : 0,
       descriptionKey: this.dscKey.value || undefined,
-      typologies:
-        this.typologies.value.filter((f) => f.checked).map((f) => f.id) || [],
-      colors: this.colors.value?.length
-        ? this.colors.value
-            .filter((f) => f.checked)
-            .filter((f) => f.checked)
-            .map((f) => f.id)
-        : undefined,
+      typologies: this._flagAdapter.getCheckedFlagIds('typologies'),
+      colors: this._flagAdapter.getOptionalCheckedFlagIds('colors'),
       ranges: this.ranges.value || [],
       chronotope: this.chronotope.value || undefined,
       images: this.images.value?.length ? this.images.value : undefined,

@@ -30,8 +30,8 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
 export class CodEditEditorComponent implements OnInit {
   private readonly _flagAdapter: FlagsPickerAdapter;
   private _edit: CodEdit | undefined;
-  private _colorEntries: ThesaurusEntry[] | undefined;
-  private _techEntries: ThesaurusEntry[] | undefined;
+  private _colorEntries: ThesaurusEntry[];
+  private _techEntries: ThesaurusEntry[];
 
   @Input()
   public get edit(): CodEdit | undefined {
@@ -71,7 +71,7 @@ export class CodEditEditorComponent implements OnInit {
     }
     this._techEntries = value || [];
     this._flagAdapter.setSlotFlags(
-      'colors',
+      'techniques',
       this._techEntries.map(entryToFlag)
     );
   }
@@ -117,6 +117,8 @@ export class CodEditEditorComponent implements OnInit {
     this.editChange = new EventEmitter<CodEdit>();
     this.editorClose = new EventEmitter<any>();
     // flags
+    this._colorEntries = [];
+    this._techEntries = [];
     this._flagAdapter = new FlagsPickerAdapter();
     this.colorFlags$ = this._flagAdapter.selectFlags('colors');
     this.techniqueFlags$ = this._flagAdapter.selectFlags('techniques');
@@ -184,15 +186,11 @@ export class CodEditEditorComponent implements OnInit {
       eid: this.eid.value?.trim(),
       type: this.type.value?.trim() || '',
       tag: this.tag.value?.trim(),
-      techniques: this.techniques.value?.length
-        ? this.techniques.value.filter((f) => f.checked).map((f) => f.id)
-        : undefined,
+      techniques: this._flagAdapter.getOptionalCheckedFlagIds('techniques'),
       ranges: this.ranges.value,
       language: this.language.value?.trim(),
       date: this.date.value || undefined,
-      colors: this.colors.value?.length
-        ? this.colors.value.filter((f) => f.checked).map((f) => f.id)
-        : undefined,
+      colors: this._flagAdapter.getOptionalCheckedFlagIds('colors'),
       description: this.description.value?.trim(),
       text: this.text.value?.trim(),
       references: this.references.value?.length

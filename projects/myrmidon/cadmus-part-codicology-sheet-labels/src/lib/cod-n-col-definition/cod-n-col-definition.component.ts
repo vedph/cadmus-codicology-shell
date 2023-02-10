@@ -157,9 +157,7 @@ export class CodNColDefinitionComponent implements OnInit {
       system: this.system.value?.trim() || '',
       technique: this.technique.value?.trim() || '',
       position: this.position.value?.trim() || '',
-      colors: this.colors.value?.length
-        ? this.colors.value.filter((f) => f.checked).map((f) => f.id)
-        : undefined,
+      colors: this._flagAdapter.getOptionalCheckedFlagIds('colors'),
       date: this.hasDate.value ? this.date.value || undefined : undefined,
       note: this.note.value?.trim(),
     };

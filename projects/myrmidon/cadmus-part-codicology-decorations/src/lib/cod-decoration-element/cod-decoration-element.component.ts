@@ -538,25 +538,13 @@ export class CodDecorationElementComponent implements OnInit {
       flags: this.flags.value.filter((f) => f.checked).map((f) => f.id) || [],
       ranges: this.ranges.value || [],
       instanceCount: this.instanceCount.value || 0,
-      typologies: this.typologies.value?.length
-        ? this.typologies.value.filter((f) => f.checked).map((f) => f.id) || []
-        : undefined,
+      typologies: this._flagAdapter.getOptionalCheckedFlagIds('typologies'),
       subject: this.subject.value?.trim(),
-      colors: this.colors.value?.length
-        ? this.colors.value.filter((f) => f.checked).map((f) => f.id) || []
-        : undefined,
-      gildings: this.gildings.value?.length
-        ? this.gildings.value.filter((f) => f.checked).map((f) => f.id) || []
-        : undefined,
-      techniques: this.techniques.value?.length
-        ? this.techniques.value.filter((f) => f.checked).map((f) => f.id) || []
-        : undefined,
-      tools: this.tools.value?.length
-        ? this.tools.value.filter((f) => f.checked).map((f) => f.id) || []
-        : undefined,
-      positions: this.positions.value?.length
-        ? this.positions.value.filter((f) => f.checked).map((f) => f.id) || []
-        : undefined,
+      colors: this._flagAdapter.getOptionalCheckedFlagIds('colors'),
+      gildings: this._flagAdapter.getOptionalCheckedFlagIds('gildings'),
+      techniques: this._flagAdapter.getOptionalCheckedFlagIds('techniques'),
+      tools: this._flagAdapter.getOptionalCheckedFlagIds('tools'),
+      positions: this._flagAdapter.getOptionalCheckedFlagIds('positions'),
       lineHeight: this.lineHeight.value,
       textRelation: this.textRelation.value?.trim(),
       description: this.description.value?.trim(),
