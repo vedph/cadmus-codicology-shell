@@ -57,6 +57,9 @@ Quick Docker image build:
 
 ## History
 
+- 2023-02-11: fixes to hand instance editor.
+- 2023-02-10: fixes to decorations.
+
 ### 3.0.14
 
 - 2023-02-10: updated flags related editors.

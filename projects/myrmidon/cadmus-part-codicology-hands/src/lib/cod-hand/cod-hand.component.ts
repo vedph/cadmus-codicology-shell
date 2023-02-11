@@ -135,9 +135,9 @@ export class CodHandComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this._hand) {
-      this.updateForm(this._hand);
-    }
+    // if (this._hand) {
+    //   this.updateForm(this._hand);
+    // }
 
     // whenever descriptions change, update their keys list
     this.descriptions.valueChanges

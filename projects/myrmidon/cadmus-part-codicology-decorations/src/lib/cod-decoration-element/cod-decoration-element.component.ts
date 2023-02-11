@@ -147,10 +147,6 @@ export class CodDecorationElementComponent implements OnInit {
       return;
     }
     this._elemFlagEntries = value || [];
-    // this._flagAdapter.setSlotFlags(
-    //   'flags',
-    //   this._elemFlagEntries.map(entryToFlag)
-    // );
   }
 
   // cod-decoration-element-colors
@@ -163,10 +159,6 @@ export class CodDecorationElementComponent implements OnInit {
       return;
     }
     this._elemColorEntries = value || [];
-    // this._flagAdapter.setSlotFlags(
-    //   'colors',
-    //   this._elemColorEntries.map(entryToFlag)
-    // );
   }
 
   // cod-decoration-element-gildings
@@ -179,10 +171,6 @@ export class CodDecorationElementComponent implements OnInit {
       return;
     }
     this._elemGildingEntries = value || [];
-    // this._flagAdapter.setSlotFlags(
-    //   'gildings',
-    //   this._elemGildingEntries.map(entryToFlag)
-    // );
   }
 
   // cod-decoration-element-techniques
@@ -195,10 +183,6 @@ export class CodDecorationElementComponent implements OnInit {
       return;
     }
     this._elemTechEntries = value || [];
-    // this._flagAdapter.setSlotFlags(
-    //   'techniques',
-    //   this._elemTechEntries.map(entryToFlag)
-    // );
   }
 
   // cod-decoration-element-positions
@@ -211,10 +195,6 @@ export class CodDecorationElementComponent implements OnInit {
       return;
     }
     this._elemPosEntries = value || [];
-    // this._flagAdapter.setSlotFlags(
-    //   'positions',
-    //   this._elemPosEntries.map(entryToFlag)
-    // );
   }
 
   // cod-decoration-element-tools
@@ -227,10 +207,6 @@ export class CodDecorationElementComponent implements OnInit {
       return;
     }
     this._elemToolEntries = value || [];
-    // this._flagAdapter.setSlotFlags(
-    //   'tools',
-    //   this._elemToolEntries.map(entryToFlag)
-    // );
   }
 
   // cod-decoration-element-typologies
@@ -243,10 +219,6 @@ export class CodDecorationElementComponent implements OnInit {
       return;
     }
     this._elemTypolEntries = value || [];
-    // this._flagAdapter.setSlotFlags(
-    //   'typologies',
-    //   this._elemTypolEntries.map(entryToFlag)
-    // );
   }
 
   // cod-image-types
@@ -427,38 +399,37 @@ export class CodDecorationElementComponent implements OnInit {
       ) || []
     );
 
-    // filter entries and set free for single-selections
+    // filter entries and set free for single-entry groups with "any.-"
+    let entries = this.getFilteredEntries(
+      this._elemGildingEntries,
+      this.type.value
+    );
+    this.elemGildingFree = this.isFreeSet(entries);
     this._flagAdapter.setSlotFlags(
       'gildings',
-      this.getFilteredEntries(this._elemGildingEntries, this.type.value)?.map(
-        entryToFlag
-      ) || []
+      this.elemGildingFree ? [] : entries?.map(entryToFlag) || []
     );
-    this.elemGildingFree = this.isFreeSet(this.elemGildingEntries);
 
+    entries = this.getFilteredEntries(this._elemTechEntries, this.type.value);
+    this.elemTechniqueFree = this.isFreeSet(entries);
     this._flagAdapter.setSlotFlags(
       'techniques',
-      this.getFilteredEntries(this._elemTechEntries, this.type.value)?.map(
-        entryToFlag
-      ) || []
+      this.elemTechniqueFree ? [] : entries?.map(entryToFlag) || []
     );
-    this.elemTechniqueFree = this.isFreeSet(this.elemTechniqueEntries);
 
+    entries = this.getFilteredEntries(this._elemPosEntries, this.type.value);
+    this.elemPositionFree = this.isFreeSet(entries);
     this._flagAdapter.setSlotFlags(
       'positions',
-      this.getFilteredEntries(this._elemPosEntries, this.type.value)?.map(
-        entryToFlag
-      ) || []
+      this.elemPositionFree ? [] : entries?.map(entryToFlag) || []
     );
-    this.elemPositionFree = this.isFreeSet(this.elemPositionEntries);
 
+    entries = this.getFilteredEntries(this._elemToolEntries, this.type.value);
+    this.elemToolFree = this.isFreeSet(entries);
     this._flagAdapter.setSlotFlags(
       'tools',
-      this.getFilteredEntries(this._elemToolEntries, this.type.value)?.map(
-        entryToFlag
-      ) || []
+      this.elemToolFree ? [] : entries?.map(entryToFlag) || []
     );
-    this.elemToolFree = this.isFreeSet(this.elemToolEntries);
 
     this._flagAdapter.setSlotFlags(
       'typologies',
@@ -486,12 +457,12 @@ export class CodDecorationElementComponent implements OnInit {
     // typologies
     this.subject.setValue(element.subject || null);
 
-    this._flagAdapter.setSlotChecks('colors', element.colors || []);
-    this._flagAdapter.setSlotChecks('typologies', element.typologies || []);
-    this._flagAdapter.setSlotChecks('gildings', element.gildings || []);
-    this._flagAdapter.setSlotChecks('techniques', element.techniques || []);
-    this._flagAdapter.setSlotChecks('tools', element.tools || []);
-    this._flagAdapter.setSlotChecks('positions', element.positions || []);
+    this._flagAdapter.setSlotChecks('colors', element.colors || [], true);
+    this._flagAdapter.setSlotChecks('typologies', element.typologies || [], true);
+    this._flagAdapter.setSlotChecks('gildings', element.gildings || [], true);
+    this._flagAdapter.setSlotChecks('techniques', element.techniques || [], true);
+    this._flagAdapter.setSlotChecks('tools', element.tools || [], true);
+    this._flagAdapter.setSlotChecks('positions', element.positions || [], true);
 
     this.lineHeight.setValue(element.lineHeight || 0);
     this.textRelation.setValue(element.textRelation || null);

@@ -96,10 +96,14 @@ export class CodDecorationArtistStyleComponent implements OnInit {
 
   public onChronotopeChange(chronotope: AssertedChronotope | undefined): void {
     this.chronotope.setValue(chronotope || null);
+    this.chronotope.updateValueAndValidity();
+    this.chronotope.markAsDirty();
   }
 
   public onAssertionChange(assertion: Assertion | undefined): void {
     this.assertion.setValue(assertion || null);
+    this.assertion.updateValueAndValidity();
+    this.assertion.markAsDirty();
   }
 
   private getStyle(): CodDecorationArtistStyle {

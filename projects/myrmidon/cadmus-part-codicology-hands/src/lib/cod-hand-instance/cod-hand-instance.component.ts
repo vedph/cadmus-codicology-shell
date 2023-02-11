@@ -159,9 +159,9 @@ export class CodHandInstanceComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this._instance) {
-      this.updateForm(this._instance);
-    }
+    // if (this._instance) {
+    //   this.updateForm(this._instance);
+    // }
   }
 
   private updateForm(model: CodHandInstance | undefined): void {
@@ -173,25 +173,16 @@ export class CodHandInstanceComponent implements OnInit {
     this.script.setValue(model.script);
     this.rank.setValue(model.rank || 0);
     this.dscKey.setValue(model.descriptionKey || null);
-    this._flagAdapter.setSlotChecks('typologies', model.typologies);
+    // update the typologies control while setting typologies,
+    // because it is involved in form's validation
+    this.typologies.setValue(
+      this._flagAdapter.setSlotChecks('typologies', model.typologies)
+    );
     this._flagAdapter.setSlotChecks('colors', model.colors || []);
     this.ranges.setValue(model.ranges);
     this.chronotope.setValue(model.chronotope || null);
     this.images.setValue(model.images || []);
     this.form.markAsPristine();
-  }
-
-  private getAvailableFlags(entries: ThesaurusEntry[] | undefined): Flag[] {
-    return entries?.length
-      ? entries
-          .filter((e) => e.value?.length)
-          .map((e) => {
-            return {
-              id: e.id,
-              label: e.value,
-            } as Flag;
-          })
-      : [];
   }
 
   private getModel(): CodHandInstance {
