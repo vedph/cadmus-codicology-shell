@@ -385,18 +385,22 @@ export class CodDecorationElementComponent implements OnInit {
     this.textRelation.reset();
 
     // filter entries for multiple-selections
-    this._flagAdapter.setSlotFlags(
-      'flags',
-      this.getFilteredEntries(this._elemFlagEntries, this.type.value)?.map(
-        entryToFlag
-      ) || []
+    this.flags.setValue(
+      this._flagAdapter.setSlotFlags(
+        'flags',
+        this.getFilteredEntries(this._elemFlagEntries, this.type.value)?.map(
+          entryToFlag
+        ) || []
+      )
     );
 
-    this._flagAdapter.setSlotFlags(
-      'colors',
-      this.getFilteredEntries(this._elemColorEntries, this.type.value)?.map(
-        entryToFlag
-      ) || []
+    this.colors.setValue(
+      this._flagAdapter.setSlotFlags(
+        'colors',
+        this.getFilteredEntries(this._elemColorEntries, this.type.value)?.map(
+          entryToFlag
+        ) || []
+      )
     );
 
     // filter entries and set free for single-entry groups with "any.-"
@@ -405,37 +409,47 @@ export class CodDecorationElementComponent implements OnInit {
       this.type.value
     );
     this.elemGildingFree = this.isFreeSet(entries);
-    this._flagAdapter.setSlotFlags(
-      'gildings',
-      this.elemGildingFree ? [] : entries?.map(entryToFlag) || []
+    this.gildings.setValue(
+      this._flagAdapter.setSlotFlags(
+        'gildings',
+        this.elemGildingFree ? [] : entries?.map(entryToFlag) || []
+      )
     );
 
     entries = this.getFilteredEntries(this._elemTechEntries, this.type.value);
     this.elemTechniqueFree = this.isFreeSet(entries);
-    this._flagAdapter.setSlotFlags(
-      'techniques',
-      this.elemTechniqueFree ? [] : entries?.map(entryToFlag) || []
+    this.techniques.setValue(
+      this._flagAdapter.setSlotFlags(
+        'techniques',
+        this.elemTechniqueFree ? [] : entries?.map(entryToFlag) || []
+      )
     );
 
     entries = this.getFilteredEntries(this._elemPosEntries, this.type.value);
     this.elemPositionFree = this.isFreeSet(entries);
-    this._flagAdapter.setSlotFlags(
-      'positions',
-      this.elemPositionFree ? [] : entries?.map(entryToFlag) || []
+    this.positions.setValue(
+      this._flagAdapter.setSlotFlags(
+        'positions',
+        this.elemPositionFree ? [] : entries?.map(entryToFlag) || []
+      )
     );
 
     entries = this.getFilteredEntries(this._elemToolEntries, this.type.value);
     this.elemToolFree = this.isFreeSet(entries);
-    this._flagAdapter.setSlotFlags(
-      'tools',
-      this.elemToolFree ? [] : entries?.map(entryToFlag) || []
+    this.tools.setValue(
+      this._flagAdapter.setSlotFlags(
+        'tools',
+        this.elemToolFree ? [] : entries?.map(entryToFlag) || []
+      )
     );
 
-    this._flagAdapter.setSlotFlags(
-      'typologies',
-      this.getFilteredEntries(this._elemTypolEntries, this.type.value)?.map(
-        entryToFlag
-      ) || []
+    this.typologies.setValue(
+      this._flagAdapter.setSlotFlags(
+        'typologies',
+        this.getFilteredEntries(this._elemTypolEntries, this.type.value)?.map(
+          entryToFlag
+        ) || []
+      )
     );
 
     // visibility
@@ -458,9 +472,17 @@ export class CodDecorationElementComponent implements OnInit {
     this.subject.setValue(element.subject || null);
 
     this._flagAdapter.setSlotChecks('colors', element.colors || [], true);
-    this._flagAdapter.setSlotChecks('typologies', element.typologies || [], true);
+    this._flagAdapter.setSlotChecks(
+      'typologies',
+      element.typologies || [],
+      true
+    );
     this._flagAdapter.setSlotChecks('gildings', element.gildings || [], true);
-    this._flagAdapter.setSlotChecks('techniques', element.techniques || [], true);
+    this._flagAdapter.setSlotChecks(
+      'techniques',
+      element.techniques || [],
+      true
+    );
     this._flagAdapter.setSlotChecks('tools', element.tools || [], true);
     this._flagAdapter.setSlotChecks('positions', element.positions || [], true);
 
@@ -506,7 +528,7 @@ export class CodDecorationElementComponent implements OnInit {
       key: this.key.value?.trim(),
       parentKey: this.parentKey.value?.trim(),
       type: this.type.value?.trim() || '',
-      flags: this.flags.value.filter((f) => f.checked).map((f) => f.id) || [],
+      flags: this._flagAdapter.getCheckedFlagIds('flags'),
       ranges: this.ranges.value || [],
       instanceCount: this.instanceCount.value || 0,
       typologies: this._flagAdapter.getOptionalCheckedFlagIds('typologies'),

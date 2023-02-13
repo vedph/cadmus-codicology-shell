@@ -89,7 +89,7 @@ export class CodDecorationComponent implements OnInit {
     }
     this._decFlagEntries = value || [];
     this._flagAdapter.setSlotFlags(
-      'decoration',
+      'flags',
       this._decFlagEntries.map(entryToFlag)
     );
   }
@@ -187,7 +187,7 @@ export class CodDecorationComponent implements OnInit {
     this.editorClose = new EventEmitter<any>();
     // flags
     this._flagAdapter = new FlagsPickerAdapter();
-    this.decFlags$ = this._flagAdapter.selectFlags('decoration');
+    this.decFlags$ = this._flagAdapter.selectFlags('flags');
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.name = formBuilder.control(null, [
@@ -212,11 +212,7 @@ export class CodDecorationComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    if (this._decoration) {
-      this.updateForm(this._decoration);
-    }
-  }
+  ngOnInit(): void {}
 
   private updateForm(decoration: CodDecoration | undefined): void {
     if (!decoration) {
@@ -226,7 +222,9 @@ export class CodDecorationComponent implements OnInit {
 
     this.chronotopes.setValue(decoration.chronotopes || []);
     this.references.setValue(decoration.references || []);
-    this._flagAdapter.setSlotChecks('decoration', decoration.flags || []);
+    this.flags.setValue(
+      this._flagAdapter.setSlotChecks('flags', decoration.flags || [])
+    );
     this.eid.setValue(decoration.eid || null);
     this.name.setValue(decoration.name);
     this.note.setValue(decoration.note || null);
