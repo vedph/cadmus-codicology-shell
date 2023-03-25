@@ -4,6 +4,9 @@ fieldset {
   border-radius: 6px;
   padding: 6px 12px;
 }
+legend {
+  color: silver;
+}
 .form-row {
   display: flex;
   gap: 8px;
@@ -20,4 +23,7 @@ fieldset {
 }
 .toolbar-row * {
   flex: 0 0 auto;
+}
+.error {
+  color: red;
 }

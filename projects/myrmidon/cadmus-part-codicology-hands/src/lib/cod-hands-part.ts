@@ -41,7 +41,7 @@ export interface CodHandDescription {
  * An instance of a hand.
  */
 export interface CodHandInstance {
-  script: string;
+  scripts: string[];
   typologies: string[];
   colors?: string[];
   ranges: CodLocationRange[];
@@ -146,10 +146,17 @@ export const COD_HANDS_PART_SCHEMA = {
                   anyOf: [
                     {
                       type: 'object',
-                      required: ['script', 'typologies', 'ranges'],
+                      required: ['scripts', 'typologies', 'ranges'],
                       properties: {
-                        script: {
-                          type: 'string',
+                        scripts: {
+                          type: 'array',
+                          items: {
+                            anyOf: [
+                              {
+                                type: 'string',
+                              },
+                            ],
+                          },
                         },
                         typologies: {
                           type: 'array',

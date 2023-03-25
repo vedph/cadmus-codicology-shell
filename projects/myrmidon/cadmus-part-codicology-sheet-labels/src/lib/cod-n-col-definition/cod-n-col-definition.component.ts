@@ -73,6 +73,7 @@ export class CodNColDefinitionComponent implements OnInit {
   public id: string;
   public rank: FormControl<number>;
   public isPagination: FormControl<boolean>;
+  public isByScribe: FormControl<boolean>;
   public system: FormControl<string | null>;
   public technique: FormControl<string | null>;
   public position: FormControl<string | null>;
@@ -95,6 +96,7 @@ export class CodNColDefinitionComponent implements OnInit {
     this.id = '';
     this.rank = formBuilder.control(0, { nonNullable: true });
     this.isPagination = formBuilder.control(false, { nonNullable: true });
+    this.isByScribe = formBuilder.control(false, { nonNullable: true });
     this.system = formBuilder.control(null, [
       Validators.required,
       Validators.maxLength(50),
@@ -114,6 +116,7 @@ export class CodNColDefinitionComponent implements OnInit {
     this.form = formBuilder.group({
       rank: this.rank,
       isPagination: this.isPagination,
+      isByScribe: this.isByScribe,
       system: this.system,
       technique: this.technique,
       position: this.position,
@@ -125,9 +128,9 @@ export class CodNColDefinitionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this._definition) {
-      this.updateForm(this._definition);
-    }
+    // if (this._definition) {
+    //   this.updateForm(this._definition);
+    // }
   }
 
   private updateForm(model: CodNColDefinition | undefined): void {
@@ -139,6 +142,7 @@ export class CodNColDefinitionComponent implements OnInit {
     this.id = model.id;
     this.rank.setValue(model.rank || 0);
     this.isPagination.setValue(model.isPagination || false);
+    this.isByScribe.setValue(model.isByScribe || false);
     this.system.setValue(model.system);
     this.technique.setValue(model.technique);
     this.position.setValue(model.position);
@@ -153,7 +157,8 @@ export class CodNColDefinitionComponent implements OnInit {
     return {
       id: this.id,
       rank: +this.rank.value || 0,
-      isPagination: this.isPagination.value ? true : false,
+      isPagination: this.isPagination.value ? true : undefined,
+      isByScribe: this.isByScribe.value ? true : undefined,
       system: this.system.value?.trim() || '',
       technique: this.technique.value?.trim() || '',
       position: this.position.value?.trim() || '',

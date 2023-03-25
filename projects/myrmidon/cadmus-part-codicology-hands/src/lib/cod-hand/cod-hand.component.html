@@ -187,7 +187,9 @@
             </button>
           </td>
           <td>
-            {{ instance.script | flatLookup: scriptEntries:"id":"value" }}
+            {{
+              instance.scripts[0] | flatLookup : scriptEntries : "id" : "value"
+            }}
           </td>
           <td>{{ instance.ranges | codLocationRange }}</td>
         </tr>
@@ -291,7 +293,8 @@
           <td>{{ subscription.ranges | codLocationRange }}</td>
           <td>
             {{
-              subscription.language | flatLookup: subLangEntries:"id":"value"
+              subscription.language
+                | flatLookup : subLangEntries : "id" : "value"
             }}
           </td>
         </tr>

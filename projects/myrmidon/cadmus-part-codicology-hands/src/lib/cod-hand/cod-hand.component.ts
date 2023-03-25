@@ -256,7 +256,7 @@ export class CodHandComponent implements OnInit {
   //#region instances
   public addInstance(): void {
     this.editInstance({
-      script: this.scriptEntries?.length ? this.scriptEntries[0].id : '',
+      scripts: this.scriptEntries?.length ? [this.scriptEntries[0].id] : [],
       typologies: [],
       ranges: [],
     });

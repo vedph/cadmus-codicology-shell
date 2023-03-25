@@ -27,6 +27,7 @@ export interface CodColDefinition {
 
 export interface CodNColDefinition extends CodColDefinition {
   isPagination?: boolean;
+  isByScribe?: boolean;
   system: string;
   technique: string;
   position: string;
@@ -363,6 +364,9 @@ export const COD_SHEET_LABELS_PART_SCHEMA = {
               },
               isPagination: {
                 type: 'boolean',
+              },
+              isByScribe: {
+                type: 'boolean'
               },
               system: {
                 type: 'string',

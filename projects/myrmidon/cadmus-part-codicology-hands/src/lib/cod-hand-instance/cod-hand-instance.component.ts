@@ -5,13 +5,14 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { Observable } from 'rxjs';
+
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { CodImage } from '@myrmidon/cadmus-codicology-ui';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
 import { Flag, FlagsPickerAdapter } from '@myrmidon/cadmus-ui-flags-picker';
 import { NgToolsValidators } from '@myrmidon/ng-tools';
-import { Observable } from 'rxjs';
 
 import { CodHandInstance } from '../cod-hands-part';
 
@@ -52,7 +53,7 @@ export class CodHandInstanceComponent implements OnInit {
   @Input()
   public dscKeys: string[] | undefined;
 
-  // cod-hand-scripts
+  // cod-hand-scripts (required)
   @Input()
   public scriptEntries: ThesaurusEntry[] | undefined;
   // cod-hand-typologies
@@ -107,7 +108,8 @@ export class CodHandInstanceComponent implements OnInit {
   @Output()
   public editorClose: EventEmitter<any>;
 
-  public script: FormControl<string | null>;
+  public script: FormControl<ThesaurusEntry | null>;
+  public scripts: FormControl<ThesaurusEntry[]>;
   public typologies: FormControl<Flag[]>;
   public colors: FormControl<Flag[]>;
   public ranges: FormControl<CodLocationRange[]>;
@@ -129,10 +131,11 @@ export class CodHandInstanceComponent implements OnInit {
     this.typologyFlags$ = this._flagAdapter.selectFlags('typologies');
     this.colorFlags$ = this._flagAdapter.selectFlags('colors');
     // form
-    this.script = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
+    this.script = formBuilder.control(null);
+    this.scripts = formBuilder.control([], {
+      validators: NgToolsValidators.strictMinLengthValidator(1),
+      nonNullable: true,
+    });
     this.rank = formBuilder.control(0, { nonNullable: true });
     this.dscKey = formBuilder.control(null);
     this.typologies = formBuilder.control([], {
@@ -147,7 +150,7 @@ export class CodHandInstanceComponent implements OnInit {
     this.chronotope = formBuilder.control(null);
     this.images = formBuilder.control([], { nonNullable: true });
     this.form = formBuilder.group({
-      script: this.script,
+      scripts: this.scripts,
       rank: this.rank,
       dscKey: this.dscKey,
       typologies: this.typologies,
@@ -158,11 +161,7 @@ export class CodHandInstanceComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    // if (this._instance) {
-    //   this.updateForm(this._instance);
-    // }
-  }
+  ngOnInit(): void {}
 
   private updateForm(model: CodHandInstance | undefined): void {
     if (!model) {
@@ -170,7 +169,15 @@ export class CodHandInstanceComponent implements OnInit {
       return;
     }
 
-    this.script.setValue(model.script);
+    this.scripts.setValue(
+      model.scripts.map(
+        (id) =>
+          this.scriptEntries?.find((e) => e.id === id) ?? {
+            id: id,
+            value: id,
+          }
+      )
+    );
     this.rank.setValue(model.rank || 0);
     this.dscKey.setValue(model.descriptionKey || null);
     // update the typologies control while setting typologies,
@@ -187,7 +194,7 @@ export class CodHandInstanceComponent implements OnInit {
 
   private getModel(): CodHandInstance {
     return {
-      script: this.script.value?.trim() || '',
+      scripts: this.scripts.value.map((e) => e.id),
       rank: this.rank.value ? +this.rank.value : 0,
       descriptionKey: this.dscKey.value || undefined,
       typologies: this._flagAdapter.getCheckedFlagIds('typologies'),
@@ -228,6 +235,53 @@ export class CodHandInstanceComponent implements OnInit {
     this.images.setValue(images || []);
     this.images.updateValueAndValidity();
     this.images.markAsDirty();
+  }
+
+  public addScript(): void {
+    const entry = this.script.value;
+    if (!entry) {
+      return;
+    }
+    if (this.scripts.value.some((e) => e.id === entry.id)) {
+      return;
+    }
+    this.scripts.setValue([...this.scripts.value, entry]);
+    this.scripts.updateValueAndValidity();
+    this.scripts.markAsDirty();
+  }
+
+  public deleteScript(index: number): void {
+    const scripts = [...this.scripts.value];
+    scripts.splice(index, 1);
+    this.scripts.setValue(scripts);
+    this.scripts.updateValueAndValidity();
+    this.scripts.markAsDirty();
+  }
+
+  public moveScriptUp(index: number): void {
+    if (index < 1) {
+      return;
+    }
+    const scripts = [...this.scripts.value];
+    const e = scripts[index];
+    scripts[index] = scripts[index - 1];
+    scripts[index - 1] = e;
+    this.scripts.setValue(scripts);
+    this.scripts.updateValueAndValidity();
+    this.scripts.markAsDirty();
+  }
+
+  public moveScriptDown(index: number): void {
+    if (index + 1 >= this.scripts.value.length) {
+      return;
+    }
+    const scripts = [...this.scripts.value];
+    const e = scripts[index];
+    scripts[index] = scripts[index + 1];
+    scripts[index + 1] = e;
+    this.scripts.setValue(scripts);
+    this.scripts.updateValueAndValidity();
+    this.scripts.markAsDirty();
   }
 
   public cancel(): void {

@@ -23,7 +23,7 @@ import {
  * Thesauri: cod-hand-sign-types, cod-hand-scripts, cod-hand-typologies,
  * cod-hand-colors, chronotope-tags, assertion-tags, doc-reference-types,
  * doc-reference-tags, cod-image-types, cod-hand-subscription-languages
- * (all optional).
+ * (all optional except cod-hand-scripts).
  */
 @Component({
   selector: 'cadmus-cod-hands-part',
