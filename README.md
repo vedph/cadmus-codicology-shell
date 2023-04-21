@@ -59,6 +59,8 @@ Per-library documentation:
 
 ## History
 
+- 2023-04-21: updated Angular and packages.
+
 ### 3.1.0
 
 - 2023-03-25:
