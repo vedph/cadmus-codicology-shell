@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-layouts",
-  "version": "2.0.8",
+  "version": "3.0.0",
   "description": "Cadmus codicology - layouts.",
   "keywords": [
     "Cadmus"
@@ -14,10 +14,10 @@
     "name": "Daniele Fusi"
   },
   "peerDependencies": {
-    "@angular/common": "^15.0.0",
-    "@angular/core": "^15.0.0"
+    "@angular/common": "^16.0.0",
+    "@angular/core": "^16.0.0"
   },
   "dependencies": {
-    "tslib": "^2.4.0"
+    "tslib": "^2.5.0"
   }
 }
