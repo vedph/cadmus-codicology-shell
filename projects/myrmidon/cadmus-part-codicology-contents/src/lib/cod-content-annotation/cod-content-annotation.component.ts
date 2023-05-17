@@ -45,6 +45,7 @@ export class CodContentAnnotationComponent implements OnInit {
   public incipit: FormControl<string | null>;
   public explicit: FormControl<string | null>;
   public text: FormControl<string | null>;
+  public note: FormControl<string | null>;
   public form: FormGroup;
 
   constructor(formBuilder: FormBuilder) {
@@ -63,19 +64,15 @@ export class CodContentAnnotationComponent implements OnInit {
       Validators.required,
       Validators.maxLength(500),
     ]);
-    this.explicit = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(500),
-    ]);
-    this.text = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(1000),
-    ]);
+    this.explicit = formBuilder.control(null, Validators.maxLength(500));
+    this.text = formBuilder.control(null, Validators.maxLength(1000));
+    this.note = formBuilder.control(null, Validators.maxLength(5000));
     this.form = formBuilder.group({
       type: this.type,
       ranges: this.ranges,
       incipit: this.incipit,
       explicit: this.explicit,
+      note: this.note,
       text: this.text,
     });
   }
@@ -95,8 +92,9 @@ export class CodContentAnnotationComponent implements OnInit {
     this.type.setValue(model.type);
     this.ranges.setValue([model.range]);
     this.incipit.setValue(model.incipit);
-    this.explicit.setValue(model.explicit);
-    this.text.setValue(model.text);
+    this.explicit.setValue(model.explicit || null);
+    this.text.setValue(model.text || null);
+    this.note.setValue(model.note || null);
     this.form.markAsPristine();
   }
 
@@ -107,6 +105,7 @@ export class CodContentAnnotationComponent implements OnInit {
       incipit: this.incipit.value?.trim() || '',
       explicit: this.explicit.value?.trim() || '',
       text: this.text.value?.trim() || '',
+      note: this.note.value?.trim() || undefined,
     };
   }
 

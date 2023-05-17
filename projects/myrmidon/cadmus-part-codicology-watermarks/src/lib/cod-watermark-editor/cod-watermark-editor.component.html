@@ -72,18 +72,16 @@
     </fieldset>
   </div>
   <div>
-    <mat-checkbox [formControl]="hasChronotope">has chronotope</mat-checkbox>
-    <fieldset *ngIf="hasChronotope?.value">
-      <legend>chronotope</legend>
-      <cadmus-refs-asserted-chronotope
-        *ngIf="hasChronotope?.value"
+    <fieldset>
+      <legend>chronotopes</legend>
+      <cadmus-asserted-chronotope-set
+        [chronotopes]="chronotopes.value"
         [tagEntries]="ctTagEntries"
         [assTagEntries]="assTagEntries"
         [refTagEntries]="refTagEntries"
         [refTypeEntries]="refTypeEntries"
-        [chronotope]="chronotope.value"
-        (chronotopeChange)="onChronotopeChange($event)"
-      ></cadmus-refs-asserted-chronotope>
+        (chronotopesChange)="onChronotopesChange($event)"
+      ></cadmus-asserted-chronotope-set>
     </fieldset>
   </div>
 

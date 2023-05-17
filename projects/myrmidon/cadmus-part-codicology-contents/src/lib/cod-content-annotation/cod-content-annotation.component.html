@@ -64,13 +64,6 @@
       <input matInput [formControl]="explicit" />
       <mat-error
         *ngIf="
-          $any(explicit).errors?.required &&
-          (explicit.dirty || explicit.touched)
-        "
-        >explicit required</mat-error
-      >
-      <mat-error
-        *ngIf="
           $any(explicit).errors?.maxLength &&
           (explicit.dirty || explicit.touched)
         "
@@ -85,12 +78,20 @@
       <mat-label>text</mat-label>
       <textarea matInput rows="3" [formControl]="text"></textarea>
       <mat-error
-        *ngIf="$any(text).errors?.required && (text.dirty || text.touched)"
-        >text required</mat-error
-      >
-      <mat-error
         *ngIf="$any(text).errors?.maxLength && (text.dirty || text.touched)"
         >text too long</mat-error
+      >
+    </mat-form-field>
+  </div>
+
+  <!-- note -->
+  <div>
+    <mat-form-field class="long-text">
+      <mat-label>note</mat-label>
+      <textarea matInput rows="3" [formControl]="note"></textarea>
+      <mat-error
+        *ngIf="$any(note).errors?.maxLength && (note.dirty || note.touched)"
+        >note too long</mat-error
       >
     </mat-form-field>
   </div>

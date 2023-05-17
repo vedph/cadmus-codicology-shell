@@ -5,13 +5,14 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { Observable } from 'rxjs';
+
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
 import { HistoricalDateModel } from '@myrmidon/cadmus-refs-historical-date';
 import { Flag, FlagsPickerAdapter } from '@myrmidon/cadmus-ui-flags-picker';
 import { NgToolsValidators } from '@myrmidon/ng-tools';
-import { Observable } from 'rxjs';
 
 import { CodEdit } from '../cod-edits-part';
 
@@ -102,6 +103,7 @@ export class CodEditEditorComponent implements OnInit {
   public techniques: FormControl<Flag[]>;
   public ranges: FormControl<CodLocationRange[]>;
   public language: FormControl<string | null>;
+  public hasDate: FormControl<boolean>;
   public date: FormControl<HistoricalDateModel | null>;
   public colors: FormControl<Flag[]>;
   public description: FormControl<string | null>;
@@ -136,6 +138,7 @@ export class CodEditEditorComponent implements OnInit {
     });
     this.language = formBuilder.control(null, Validators.maxLength(50));
     this.colors = formBuilder.control([], { nonNullable: true });
+    this.hasDate = formBuilder.control(false, { nonNullable: true });
     this.date = formBuilder.control(null);
     this.description = formBuilder.control(null, Validators.maxLength(1000));
     this.text = formBuilder.control(null, Validators.maxLength(1000));
@@ -147,6 +150,7 @@ export class CodEditEditorComponent implements OnInit {
       techniques: this.techniques,
       ranges: this.ranges,
       language: this.language,
+      hasDate: this.hasDate,
       date: this.date,
       colors: this.colors,
       description: this.description,
@@ -173,6 +177,7 @@ export class CodEditEditorComponent implements OnInit {
     this._flagAdapter.setSlotChecks('techniques', model.techniques || []);
     this.ranges.setValue(model.ranges || []);
     this.language.setValue(model.language || null);
+    this.hasDate.setValue(model.date ? true : false);
     this.date.setValue(model.date || null);
     this._flagAdapter.setSlotChecks('colors', model.colors || []);
     this.description.setValue(model.description || null);
@@ -189,7 +194,7 @@ export class CodEditEditorComponent implements OnInit {
       techniques: this._flagAdapter.getOptionalCheckedFlagIds('techniques'),
       ranges: this.ranges.value,
       language: this.language.value?.trim(),
-      date: this.date.value || undefined,
+      date: this.hasDate.value ? this.date.value || undefined : undefined,
       colors: this._flagAdapter.getOptionalCheckedFlagIds('colors'),
       description: this.description.value?.trim(),
       text: this.text.value?.trim(),

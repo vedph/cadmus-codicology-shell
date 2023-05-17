@@ -5,8 +5,9 @@ export interface CodContentAnnotation {
   type: string;
   range: CodLocationRange;
   incipit: string;
-  explicit: string;
-  text: string;
+  explicit?: string;
+  text?: string;
+  note?: string;
 }
 
 export interface CodContent {
@@ -102,7 +103,7 @@ export const COD_CONTENTS_PART_SCHEMA = {
                 type: 'string',
               },
               author: {
-                type: 'string'
+                type: 'string',
               },
               ranges: {
                 type: 'array',
@@ -223,13 +224,7 @@ export const COD_CONTENTS_PART_SCHEMA = {
                   anyOf: [
                     {
                       type: 'object',
-                      required: [
-                        'type',
-                        'range',
-                        'incipit',
-                        'explicit',
-                        'text',
-                      ],
+                      required: ['type', 'range', 'incipit'],
                       properties: {
                         type: {
                           type: 'string',
@@ -313,6 +308,9 @@ export const COD_CONTENTS_PART_SCHEMA = {
                           type: 'string',
                         },
                         text: {
+                          type: 'string',
+                        },
+                        note: {
                           type: 'string',
                         },
                       },

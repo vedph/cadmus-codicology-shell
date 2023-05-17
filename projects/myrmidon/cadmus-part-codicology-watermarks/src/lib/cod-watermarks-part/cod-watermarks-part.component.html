@@ -25,8 +25,7 @@
                 <th></th>
                 <th>name</th>
                 <th>sample</th>
-                <th>place</th>
-                <th>date</th>
+                <th>ct</th>
               </tr>
             </thead>
             <tbody>
@@ -78,8 +77,7 @@
                 </td>
                 <td>{{ entry.name }}</td>
                 <td>{{ entry.sampleRange | codLocationRange }}</td>
-                <td>{{ entry.chronotope?.place?.value }}</td>
-                <td>{{ entry.chronotope?.date | historicalDate }}</td>
+                <td>{{ entry.chronotopes?.length || 0 }}</td>
               </tr>
             </tbody>
           </table>

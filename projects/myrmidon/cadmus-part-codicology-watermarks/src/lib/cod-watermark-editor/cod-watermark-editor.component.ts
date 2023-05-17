@@ -75,8 +75,7 @@ export class CodWatermarkEditorComponent implements OnInit {
   public ids: FormControl<AssertedId[]>;
   public hasSize: FormControl<boolean>;
   public size: FormControl<PhysicalSize | null>;
-  public hasChronotope: FormControl<boolean>;
-  public chronotope: FormControl<AssertedChronotope | null>;
+  public chronotopes: FormControl<AssertedChronotope[]>;
   public form: FormGroup;
 
   constructor(formBuilder: FormBuilder) {
@@ -96,8 +95,7 @@ export class CodWatermarkEditorComponent implements OnInit {
     this.ids = formBuilder.control([], { nonNullable: true });
     this.hasSize = formBuilder.control(false, { nonNullable: true });
     this.size = formBuilder.control(null);
-    this.hasChronotope = formBuilder.control(false, { nonNullable: true });
-    this.chronotope = formBuilder.control(null);
+    this.chronotopes = formBuilder.control([], { nonNullable: true });
     this.form = formBuilder.group({
       name: this.name,
       sampleRanges: this.sampleRanges,
@@ -106,8 +104,7 @@ export class CodWatermarkEditorComponent implements OnInit {
       ids: this.ids,
       hasSize: this.hasSize,
       size: this.size,
-      hasChronotope: this.hasChronotope,
-      chronotope: this.chronotope,
+      chronotopes: this.chronotopes,
     });
   }
 
@@ -125,8 +122,7 @@ export class CodWatermarkEditorComponent implements OnInit {
     this.ids.setValue(model.ids || []);
     this.size.setValue(model.size || null);
     this.hasSize.setValue(model.size ? true : false);
-    this.chronotope.setValue(model.chronotope || null);
-    this.hasChronotope.setValue(model.chronotope ? true : false);
+    this.chronotopes.setValue(model.chronotopes || []);
     this.description.setValue(model.description || null);
     this.form.markAsPristine();
   }
@@ -155,10 +151,10 @@ export class CodWatermarkEditorComponent implements OnInit {
     this.size.markAsDirty();
   }
 
-  public onChronotopeChange(chronotope: AssertedChronotope | null): void {
-    this.chronotope.setValue(chronotope);
-    this.chronotope.updateValueAndValidity();
-    this.chronotope.markAsDirty();
+  public onChronotopesChange(chronotopes: AssertedChronotope[]): void {
+    this.chronotopes.setValue(chronotopes);
+    this.chronotopes.updateValueAndValidity();
+    this.chronotopes.markAsDirty();
   }
 
   private getModel(): CodWatermark {
@@ -168,8 +164,8 @@ export class CodWatermarkEditorComponent implements OnInit {
       ranges: this.ranges.value?.length ? this.ranges.value : undefined,
       ids: this.ids.value?.length ? this.ids.value : undefined,
       size: this.hasSize.value ? this.size.value || undefined : undefined,
-      chronotope: this.hasChronotope.value
-        ? this.chronotope.value || undefined
+      chronotopes: this.chronotopes.value.length
+        ? this.chronotopes.value
         : undefined,
       description: this.description.value?.trim(),
     };

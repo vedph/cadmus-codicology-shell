@@ -59,6 +59,10 @@ Per-library documentation:
 
 ## History
 
+- 2023-05-17:
+  - CodWatermark: changed chronotope in chronotopes.
+  - CodContentAnnotation: added note; explicit and text not required.
+  - CodEdit: added has-date control so that users are allowed to omit date.
 - 2023-05-11: updated to Angular 16.
 - 2023-04-21: updated Angular and packages.
 
