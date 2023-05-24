@@ -29,7 +29,7 @@ import {
  * cod-decoration-element-typologies, cod-image-types,
  * cod-decoration-artist-types, cod-decoration-artist-style-names,
  * chronotope-tags, assertion-tags, doc-reference-types, doc-reference-tags,
- * external-id-tags, external-id-scopes.
+ * external-id-tags, external-id-scopes, pin-link-settings.
  */
 @Component({
   selector: 'cadmus-cod-decorations-part',
@@ -84,6 +84,14 @@ export class CodDecorationsPartComponent
   // external-id-scopes
   public idScopeEntries: ThesaurusEntry[] | undefined;
 
+  // pin links settings
+  // by-type: true/false
+  public pinByTypeMode?: boolean;
+  // switch-mode: true/false
+  public canSwitchMode?: boolean;
+  // edit-target: true/false
+  public canEditTarget?: boolean;
+
   public decorations: FormControl<CodDecoration[]>;
 
   constructor(
@@ -109,6 +117,25 @@ export class CodDecorationsPartComponent
     return formBuilder.group({
       decorations: this.decorations,
     });
+  }
+
+  /**
+   * Load settings from thesaurus entries.
+   *
+   * @param entries The thesaurus entries if any.
+   */
+  private loadSettings(entries?: ThesaurusEntry[]): void {
+    if (!entries?.length) {
+      this.pinByTypeMode = undefined;
+      this.canSwitchMode = undefined;
+      this.canEditTarget = undefined;
+    }
+    this.pinByTypeMode =
+      entries?.find((e) => e.id === 'by-type')?.value === 'true';
+    this.canSwitchMode =
+      entries?.find((e) => e.id === 'switch-mode')?.value === 'true';
+    this.canEditTarget =
+      entries?.find((e) => e.id === 'edit-target')?.value === 'true';
   }
 
   private updateThesauri(thesauri: ThesauriSet): void {
@@ -244,6 +271,8 @@ export class CodDecorationsPartComponent
     } else {
       this.idScopeEntries = undefined;
     }
+
+    this.loadSettings(thesauri['pin-link-settings']?.entries);
   }
 
   private updateForm(part?: CodDecorationsPart | null): void {
@@ -279,7 +308,7 @@ export class CodDecorationsPartComponent
     });
   }
 
-  public editDecoration(decoration : CodDecoration | null, index = -1): void {
+  public editDecoration(decoration: CodDecoration | null, index = -1): void {
     if (!decoration) {
       this._editedIndex = -1;
       this.tabIndex = 0;

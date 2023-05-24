@@ -10,7 +10,7 @@ import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { PhysicalSize } from '@myrmidon/cadmus-mat-physical-size';
 import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
-import { AssertedId } from '@myrmidon/cadmus-refs-asserted-ids';
+import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
 import { NgToolsValidators } from '@myrmidon/ng-tools';
 
 import { CodWatermark } from '../cod-watermarks-part';
@@ -63,6 +63,17 @@ export class CodWatermarkEditorComponent implements OnInit {
   @Input()
   public szUnitEntries: ThesaurusEntry[] | undefined;
 
+  // pin link settings
+  // by-type: true/false
+  @Input()
+  public pinByTypeMode?: boolean;
+  // switch-mode: true/false
+  @Input()
+  public canSwitchMode?: boolean;
+  // edit-target: true/false
+  @Input()
+  public canEditTarget?: boolean;
+
   @Output()
   public watermarkChange: EventEmitter<CodWatermark>;
   @Output()
@@ -72,7 +83,7 @@ export class CodWatermarkEditorComponent implements OnInit {
   public sampleRanges: FormControl<CodLocationRange[]>;
   public ranges: FormControl<CodLocationRange[]>;
   public description: FormControl<string | null>;
-  public ids: FormControl<AssertedId[]>;
+  public ids: FormControl<AssertedCompositeId[]>;
   public hasSize: FormControl<boolean>;
   public size: FormControl<PhysicalSize | null>;
   public chronotopes: FormControl<AssertedChronotope[]>;
@@ -139,7 +150,7 @@ export class CodWatermarkEditorComponent implements OnInit {
     this.ranges.markAsDirty();
   }
 
-  public onIdsChange(ids: AssertedId[] | null) {
+  public onIdsChange(ids: AssertedCompositeId[]) {
     this.ids.setValue(ids || [], { emitEvent: false });
     this.ids.updateValueAndValidity();
     this.ids.markAsDirty();

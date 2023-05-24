@@ -3,6 +3,7 @@
 - [Cadmus Codicology Shell](#cadmus-codicology-shell)
   - [Shell Architecture](#shell-architecture)
   - [History](#history)
+    - [4.0.0](#400)
     - [3.2.0](#320)
     - [3.1.0](#310)
     - [3.0.15](#3015)
@@ -51,7 +52,7 @@ Per-library documentation:
 
 1. `npm run build-lib`; if you are going to use the libraries, publish them via `publish.bat`;
 2. remember to update version in `env.js`, then `ng build --configuration production`;
-3. `docker build . -t vedph2020/cadmus-codicology-shell:3.2.0 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
+3. `docker build . -t vedph2020/cadmus-codicology-shell:4.0.0 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
 
 ## Shell Architecture
 
@@ -59,6 +60,12 @@ Per-library documentation:
 - a pages library `cadmus-part-codicology-pg` imports all these libraries and provides routing: `ng g library @myrmidon/cadmus-part-codicology-pg --prefix cadmus`.
 
 ## History
+
+### 4.0.0
+
+- 2023-05-24: breaking changes in two parts:
+  - watermarks, `ids` property: replaced type `AssertedId[]` with `AssertedCompositeId[]`.
+  - decorations, `artist.ids` property: replaced type `AssertedId[]` with `AssertedCompositeId[]`.
 
 ### 3.2.0
 

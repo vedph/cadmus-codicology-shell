@@ -53,15 +53,18 @@
   </div>
   <div>
     <!-- ids -->
-    <cadmus-refs-asserted-ids
-      [idTagEntries]="idTagEntries"
+    <cadmus-refs-asserted-composite-ids
       [idScopeEntries]="idScopeEntries"
+      [idTagEntries]="idTagEntries"
       [assTagEntries]="assTagEntries"
-      [refTagEntries]="refTagEntries"
       [refTypeEntries]="refTypeEntries"
+      [refTagEntries]="refTagEntries"
+      [pinByTypeMode]="pinByTypeMode"
+      [canSwitchMode]="canSwitchMode"
+      [canEditTarget]="canEditTarget"
       [ids]="ids.value"
       (idsChange)="onIdsChange($event)"
-    ></cadmus-refs-asserted-ids>
+    ></cadmus-refs-asserted-composite-ids>
   </div>
   <div>
     <!-- elementKeys -->
@@ -85,12 +88,7 @@
   <!-- styles -->
   <fieldset>
     <legend>styles</legend>
-    <button
-      mat-flat-button
-      type="button"
-      color="primary"
-      (click)="addStyle()"
-    >
+    <button mat-flat-button type="button" color="primary" (click)="addStyle()">
       <mat-icon>add_circle</mat-icon> style
     </button>
     <table>

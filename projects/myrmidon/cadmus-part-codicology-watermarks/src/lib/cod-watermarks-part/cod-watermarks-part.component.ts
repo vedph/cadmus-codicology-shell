@@ -24,7 +24,7 @@ import {
  * Thesauri: asserted-id-tags, asserted-id-scopes,
  * chronotope-tags, assertion-tags, doc-reference-types,
  * doc-reference-tags, physical-size-tags, physical-size-dim-tags,
- * physical-size-units (all optional).
+ * physical-size-units, pin-link-settings (all optional).
  */
 @Component({
   selector: 'cadmus-cod-watermarks-part',
@@ -59,6 +59,14 @@ export class CodWatermarksPartComponent
   // physical-size-units
   public szUnitEntries: ThesaurusEntry[] | undefined;
 
+  // pin links settings
+  // by-type: true/false
+  public pinByTypeMode?: boolean;
+  // switch-mode: true/false
+  public canSwitchMode?: boolean;
+  // edit-target: true/false
+  public canEditTarget?: boolean;
+
   public watermarks: FormControl<CodWatermark[]>;
 
   constructor(
@@ -84,6 +92,25 @@ export class CodWatermarksPartComponent
     return formBuilder.group({
       watermarks: this.watermarks,
     });
+  }
+
+  /**
+   * Load settings from thesaurus entries.
+   *
+   * @param entries The thesaurus entries if any.
+   */
+  private loadSettings(entries?: ThesaurusEntry[]): void {
+    if (!entries?.length) {
+      this.pinByTypeMode = undefined;
+      this.canSwitchMode = undefined;
+      this.canEditTarget = undefined;
+    }
+    this.pinByTypeMode =
+      entries?.find((e) => e.id === 'by-type')?.value === 'true';
+    this.canSwitchMode =
+      entries?.find((e) => e.id === 'switch-mode')?.value === 'true';
+    this.canEditTarget =
+      entries?.find((e) => e.id === 'edit-target')?.value === 'true';
   }
 
   private updateThesauri(thesauri: ThesauriSet): void {
@@ -141,6 +168,7 @@ export class CodWatermarksPartComponent
     } else {
       this.szUnitEntries = undefined;
     }
+    this.loadSettings(thesauri['pin-link-settings']?.entries);
   }
 
   private updateForm(part?: CodWatermarksPart | null): void {

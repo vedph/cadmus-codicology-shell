@@ -52,6 +52,7 @@ export class CodDecorationsPartFeatureComponent
       'doc-reference-tags',
       'external-id-tags',
       'external-id-scopes',
+      'pin-link-settings'
     ];
   }
 }

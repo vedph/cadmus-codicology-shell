@@ -43,6 +43,7 @@ export class CodWatermarksPartFeatureComponent
       'physical-size-tags',
       'physical-size-dim-tags',
       'physical-size-units',
+      'pin-link-settings'
     ];
   }
 }

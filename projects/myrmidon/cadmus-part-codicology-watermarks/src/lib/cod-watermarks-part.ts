@@ -2,7 +2,7 @@ import { Part } from '@myrmidon/cadmus-core';
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { PhysicalSize } from '@myrmidon/cadmus-mat-physical-size';
 import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
-import { AssertedId } from '@myrmidon/cadmus-refs-asserted-ids';
+import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
 
 /**
  * A watermark.
@@ -11,7 +11,7 @@ export interface CodWatermark {
   name: string;
   sampleRange: CodLocationRange;
   ranges?: CodLocationRange[];
-  ids?: AssertedId[];
+  ids?: AssertedCompositeId[];
   size?: PhysicalSize;
   chronotopes?: AssertedChronotope[];
   description?: string;
@@ -239,36 +239,64 @@ export const COD_WATERMARKS_PART_SCHEMA = {
     ids: {
       type: 'array',
       items: {
-        anyOf: [
-          {
+        type: 'object',
+        default: {},
+        required: ['target'],
+        properties: {
+          target: {
             type: 'object',
-            required: ['value', 'scope'],
+            required: ['gid', 'label'],
             properties: {
-              tag: {
+              gid: {
+                type: 'string',
+              },
+              label: {
+                type: 'string',
+              },
+              itemId: {
+                type: 'string',
+              },
+              partId: {
+                type: 'string',
+              },
+              partTypeId: {
+                type: 'string',
+              },
+              roleId: {
+                type: 'string',
+              },
+              name: {
                 type: 'string',
               },
               value: {
                 type: 'string',
               },
-              scope: {
+            },
+          },
+          scope: {
+            type: 'string',
+          },
+          tag: {
+            type: 'string',
+          },
+          assertion: {
+            type: 'object',
+            required: ['rank'],
+            properties: {
+              tag: {
                 type: 'string',
               },
-              assertion: {
-                type: 'object',
-                required: ['rank'],
-                properties: {
-                  tag: {
-                    type: 'string',
-                  },
-                  rank: {
-                    type: 'integer',
-                  },
-                  note: {
-                    type: 'string',
-                  },
-                  references: {
-                    type: 'array',
-                    items: {
+              rank: {
+                type: 'integer',
+              },
+              note: {
+                type: 'string',
+              },
+              references: {
+                type: 'array',
+                items: {
+                  anyOf: [
+                    {
                       type: 'object',
                       required: ['citation'],
                       properties: {
@@ -286,12 +314,12 @@ export const COD_WATERMARKS_PART_SCHEMA = {
                         },
                       },
                     },
-                  },
+                  ],
                 },
               },
             },
           },
-        ],
+        },
       },
     },
     size: {

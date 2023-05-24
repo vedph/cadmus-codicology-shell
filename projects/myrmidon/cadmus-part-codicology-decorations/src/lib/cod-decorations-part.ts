@@ -5,7 +5,7 @@ import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
 import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
 import { Assertion } from '@myrmidon/cadmus-refs-assertion';
 import { CodImage } from '@myrmidon/cadmus-codicology-ui';
-import { AssertedId } from '@myrmidon/cadmus-refs-asserted-ids';
+import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
 
 /**
  * A conventional style in a decoration's artist.
@@ -23,7 +23,7 @@ export interface CodDecorationArtist {
   eid?: string;
   type: string;
   name: string;
-  ids?: AssertedId[];
+  ids?: AssertedCompositeId[];
   styles?: CodDecorationArtistStyle[];
   elementKeys?: string[];
   note?: string;
@@ -350,63 +350,87 @@ export const COD_DECORATIONS_PART_SCHEMA = {
                         ids: {
                           type: 'array',
                           items: {
-                            anyOf: [
-                              {
+                            type: 'object',
+                            default: {},
+                            required: ['target'],
+                            properties: {
+                              target: {
                                 type: 'object',
-                                required: ['value'],
+                                required: ['gid', 'label'],
                                 properties: {
+                                  gid: {
+                                    type: 'string',
+                                  },
+                                  label: {
+                                    type: 'string',
+                                  },
+                                  itemId: {
+                                    type: 'string',
+                                  },
+                                  partId: {
+                                    type: 'string',
+                                  },
+                                  partTypeId: {
+                                    type: 'string',
+                                  },
+                                  roleId: {
+                                    type: 'string',
+                                  },
+                                  name: {
+                                    type: 'string',
+                                  },
                                   value: {
                                     type: 'string',
                                   },
-                                  scope: {
-                                    type: 'string',
-                                  },
+                                },
+                              },
+                              scope: {
+                                type: 'string',
+                              },
+                              tag: {
+                                type: 'string',
+                              },
+                              assertion: {
+                                type: 'object',
+                                required: ['rank'],
+                                properties: {
                                   tag: {
                                     type: 'string',
                                   },
-                                  assertion: {
-                                    type: 'object',
-                                    required: ['rank'],
-                                    properties: {
-                                      tag: {
-                                        type: 'string',
-                                      },
-                                      rank: {
-                                        type: 'integer',
-                                      },
-                                      note: {
-                                        type: 'string',
-                                      },
-                                      references: {
-                                        type: 'array',
-                                        items: {
-                                          anyOf: [
-                                            {
-                                              type: 'object',
-                                              required: ['citation'],
-                                              properties: {
-                                                type: {
-                                                  type: 'string',
-                                                },
-                                                tag: {
-                                                  type: 'string',
-                                                },
-                                                citation: {
-                                                  type: 'string',
-                                                },
-                                                note: {
-                                                  type: 'string',
-                                                },
-                                              },
+                                  rank: {
+                                    type: 'integer',
+                                  },
+                                  note: {
+                                    type: 'string',
+                                  },
+                                  references: {
+                                    type: 'array',
+                                    items: {
+                                      anyOf: [
+                                        {
+                                          type: 'object',
+                                          required: ['citation'],
+                                          properties: {
+                                            type: {
+                                              type: 'string',
                                             },
-                                          ],
+                                            tag: {
+                                              type: 'string',
+                                            },
+                                            citation: {
+                                              type: 'string',
+                                            },
+                                            note: {
+                                              type: 'string',
+                                            },
+                                          },
                                         },
-                                      },
+                                      ],
                                     },
                                   },
                                 },
                               },
-                            ],
+                            },
                           },
                         },
                         styles: {
@@ -640,8 +664,8 @@ export const COD_DECORATIONS_PART_SCHEMA = {
                           },
                         },
                         note: {
-                          type: 'string'
-                        }
+                          type: 'string',
+                        },
                       },
                     },
                   ],

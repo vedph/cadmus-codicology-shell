@@ -145,6 +145,16 @@ export class CodDecorationComponent implements OnInit {
   // external-id-scopes
   @Input()
   public idScopeEntries: ThesaurusEntry[] | undefined;
+  // pin link settings
+  // by-type: true/false
+  @Input()
+  public pinByTypeMode?: boolean;
+  // switch-mode: true/false
+  @Input()
+  public canSwitchMode?: boolean;
+  // edit-target: true/false
+  @Input()
+  public canEditTarget?: boolean;
 
   @Output()
   public decorationChange: EventEmitter<CodDecoration>;

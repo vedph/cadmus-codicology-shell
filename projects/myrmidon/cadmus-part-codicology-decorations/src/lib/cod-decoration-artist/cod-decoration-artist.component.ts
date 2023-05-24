@@ -8,7 +8,7 @@ import {
 import { take } from 'rxjs';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { AssertedId } from '@myrmidon/cadmus-refs-asserted-ids';
+import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
 import { DialogService } from '@myrmidon/ng-mat-tools';
 
 import {
@@ -62,6 +62,17 @@ export class CodDecorationArtistComponent implements OnInit {
   @Input()
   public idScopeEntries: ThesaurusEntry[] | undefined;
 
+  // pin link settings
+  // by-type: true/false
+  @Input()
+  public pinByTypeMode?: boolean;
+  // switch-mode: true/false
+  @Input()
+  public canSwitchMode?: boolean;
+  // edit-target: true/false
+  @Input()
+  public canEditTarget?: boolean;
+
   @Output()
   public artistChange: EventEmitter<CodDecorationArtist>;
 
@@ -71,7 +82,7 @@ export class CodDecorationArtistComponent implements OnInit {
   public eid: FormControl<string | null>;
   public type: FormControl<string | null>;
   public name: FormControl<string | null>;
-  public ids: FormControl<AssertedId[]>;
+  public ids: FormControl<AssertedCompositeId[]>;
   public styles: FormControl<CodDecorationArtistStyle[]>;
   public elementKeys: FormControl<string | null>;
   public note: FormControl<string | null>;
@@ -162,7 +173,7 @@ export class CodDecorationArtistComponent implements OnInit {
     };
   }
 
-  public onIdsChange(ids: AssertedId[]): void {
+  public onIdsChange(ids: AssertedCompositeId[]): void {
     this.ids.setValue(ids);
     this.ids.updateValueAndValidity();
     this.ids.markAsDirty();
