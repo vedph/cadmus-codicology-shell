@@ -62,6 +62,8 @@ Per-library documentation:
 
 ## History
 
+- 2023-06-22: default unit=`mm` for watermarks and bindings.
+
 ### 5.0.0
 
 - 2023-06-17:
