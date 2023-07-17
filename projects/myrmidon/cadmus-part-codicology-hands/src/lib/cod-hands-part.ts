@@ -2,6 +2,7 @@ import { CodLocation, CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { CodImage } from '@myrmidon/cadmus-codicology-ui';
 import { Part } from '@myrmidon/cadmus-core';
 import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
+import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
 import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
 
 /**
@@ -61,6 +62,7 @@ export interface CodHand {
   descriptions: CodHandDescription[];
   subscriptions?: CodHandSubscription[];
   references?: DocReference[];
+  ids?: AssertedCompositeId[];
 }
 
 /**
@@ -303,6 +305,92 @@ export const COD_HANDS_PART_SCHEMA = {
                                             },
                                           },
                                         ],
+                                      },
+                                    },
+                                    ids: {
+                                      type: 'array',
+                                      items: {
+                                        type: 'object',
+                                        default: {},
+                                        required: ['target'],
+                                        properties: {
+                                          target: {
+                                            type: 'object',
+                                            required: ['gid', 'label'],
+                                            properties: {
+                                              gid: {
+                                                type: 'string',
+                                              },
+                                              label: {
+                                                type: 'string',
+                                              },
+                                              itemId: {
+                                                type: 'string',
+                                              },
+                                              partId: {
+                                                type: 'string',
+                                              },
+                                              partTypeId: {
+                                                type: 'string',
+                                              },
+                                              roleId: {
+                                                type: 'string',
+                                              },
+                                              name: {
+                                                type: 'string',
+                                              },
+                                              value: {
+                                                type: 'string',
+                                              },
+                                            },
+                                          },
+                                          scope: {
+                                            type: 'string',
+                                          },
+                                          tag: {
+                                            type: 'string',
+                                          },
+                                          assertion: {
+                                            type: 'object',
+                                            required: ['rank'],
+                                            properties: {
+                                              tag: {
+                                                type: 'string',
+                                              },
+                                              rank: {
+                                                type: 'integer',
+                                              },
+                                              note: {
+                                                type: 'string',
+                                              },
+                                              references: {
+                                                type: 'array',
+                                                items: {
+                                                  anyOf: [
+                                                    {
+                                                      type: 'object',
+                                                      required: ['citation'],
+                                                      properties: {
+                                                        type: {
+                                                          type: 'string',
+                                                        },
+                                                        tag: {
+                                                          type: 'string',
+                                                        },
+                                                        citation: {
+                                                          type: 'string',
+                                                        },
+                                                        note: {
+                                                          type: 'string',
+                                                        },
+                                                      },
+                                                    },
+                                                  ],
+                                                },
+                                              },
+                                            },
+                                          },
+                                        },
                                       },
                                     },
                                   },

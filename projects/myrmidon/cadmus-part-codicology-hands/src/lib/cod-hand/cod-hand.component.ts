@@ -18,6 +18,7 @@ import {
   CodHandInstance,
   CodHandSubscription,
 } from '../cod-hands-part';
+import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
 
 @Component({
   selector: 'cadmus-cod-hand',
@@ -69,6 +70,12 @@ export class CodHandComponent implements OnInit {
   // cod-image-types
   @Input()
   public imgTypeEntries: ThesaurusEntry[] | undefined;
+  // external-id-tags
+  @Input()
+  public idTagEntries: ThesaurusEntry[] | undefined;
+  // external-id-scopes
+  @Input()
+  public idScopeEntries: ThesaurusEntry[] | undefined;
 
   // thesauri from subscription:
   // cod-hand-subscription-languages
@@ -82,6 +89,7 @@ export class CodHandComponent implements OnInit {
 
   public eid: FormControl<string | null>;
   public name: FormControl<string | null>;
+  public ids: FormControl<AssertedCompositeId[]>;
   public descriptions: FormControl<CodHandDescription[]>;
   public instances: FormControl<CodHandInstance[]>;
   public subscriptions: FormControl<CodHandSubscription[]>;
@@ -109,6 +117,7 @@ export class CodHandComponent implements OnInit {
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.name = formBuilder.control(null, Validators.maxLength(50));
+    this.ids = formBuilder.control([], { nonNullable: true });
     this.descriptions = formBuilder.control([], { nonNullable: true });
     this.instances = formBuilder.control([], {
       validators: NgToolsValidators.strictMinLengthValidator(1),
@@ -119,6 +128,7 @@ export class CodHandComponent implements OnInit {
     this.form = formBuilder.group({
       eid: this.eid,
       name: this.name,
+      ids: this.ids,
       descriptions: this.descriptions,
       instances: this.instances,
       subscriptions: this.subscriptions,
@@ -156,6 +166,7 @@ export class CodHandComponent implements OnInit {
 
     this.eid.setValue(hand.eid || null);
     this.name.setValue(hand.name || null);
+    this.ids.setValue(hand.ids || []);
     this.descriptions.setValue(hand.descriptions || []);
     this.instances.setValue(hand.instances || []);
     this.subscriptions.setValue(hand.subscriptions || []);
@@ -168,6 +179,7 @@ export class CodHandComponent implements OnInit {
     return {
       eid: this.eid.value?.trim(),
       name: this.name.value?.trim(),
+      ids: this.ids.value?.length ? this.ids.value : undefined,
       descriptions: this.descriptions.value,
       instances: this.instances.value || [],
       subscriptions: this.subscriptions.value?.length
@@ -177,6 +189,12 @@ export class CodHandComponent implements OnInit {
         ? this.references.value
         : undefined,
     };
+  }
+
+  public onIdsChange(ids: AssertedCompositeId[]): void {
+    this.ids.setValue(ids);
+    this.ids.updateValueAndValidity();
+    this.ids.markAsDirty();
   }
 
   //#region descriptions

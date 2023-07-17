@@ -1,7 +1,7 @@
 <form [formGroup]="form" (submit)="save()">
-  <div style="display: flex; gap: 8px; align-items: center">
+  <div class="form-row">
     <!-- eid -->
-    <mat-form-field style="flex: 0 0 auto">
+    <mat-form-field>
       <mat-label>EID</mat-label>
       <input matInput [formControl]="eid" />
       <mat-error
@@ -11,7 +11,7 @@
     </mat-form-field>
 
     <!-- name -->
-    <mat-form-field style="flex: 0 0 auto">
+    <mat-form-field>
       <mat-label>name</mat-label>
       <input matInput [formControl]="name" />
       <mat-error
@@ -20,6 +20,20 @@
       >
     </mat-form-field>
   </div>
+
+  <fieldset>
+    <legend>identifications</legend>
+    <cadmus-refs-asserted-composite-ids
+      [idScopeEntries]="idScopeEntries"
+      [idTagEntries]="idTagEntries"
+      [assTagEntries]="assTagEntries"
+      [refTypeEntries]="refTypeEntries"
+      [refTagEntries]="refTagEntries"
+      [internalDefault]="true"
+      [ids]="ids.value"
+      (idsChange)="onIdsChange($event)"
+    ></cadmus-refs-asserted-composite-ids>
+  </fieldset>
 
   <!-- descriptions -->
   <mat-expansion-panel>

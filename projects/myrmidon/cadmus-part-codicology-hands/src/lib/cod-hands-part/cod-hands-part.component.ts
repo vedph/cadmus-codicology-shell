@@ -22,7 +22,8 @@ import {
  * CodHandsPart editor component.
  * Thesauri: cod-hand-sign-types, cod-hand-scripts, cod-hand-typologies,
  * cod-hand-colors, chronotope-tags, assertion-tags, doc-reference-types,
- * doc-reference-tags, cod-image-types, cod-hand-subscription-languages
+ * doc-reference-tags, cod-image-types, cod-hand-subscription-languages,
+ * external-id-tags, external-id-scopes
  * (all optional except cod-hand-scripts).
  */
 @Component({
@@ -59,6 +60,11 @@ export class CodHandsPartComponent
   public refTagEntries: ThesaurusEntry[] | undefined;
   // cod-image-types
   public imgTypeEntries: ThesaurusEntry[] | undefined;
+  // external-id-tags
+  public idTagEntries: ThesaurusEntry[] | undefined;
+  // external-id-scopes
+  public idScopeEntries: ThesaurusEntry[] | undefined;
+
   // thesauri from subscription:
   // cod-hand-subscription-languages
   public subLangEntries: ThesaurusEntry[] | undefined;
@@ -150,6 +156,14 @@ export class CodHandsPartComponent
       this.subLangEntries = thesauri[key].entries;
     } else {
       this.subLangEntries = undefined;
+    }
+    key = 'external-id-tags';
+    if (this.hasThesaurus(key)) {
+      this.idTagEntries = thesauri[key].entries;
+    }
+    key = 'external-id-scopes';
+    if (this.hasThesaurus(key)) {
+      this.idScopeEntries = thesauri[key].entries;
     }
   }
 

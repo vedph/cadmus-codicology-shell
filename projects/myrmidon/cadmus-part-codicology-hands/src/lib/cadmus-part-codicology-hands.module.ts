@@ -16,6 +16,7 @@ import { NgToolsModule } from '@myrmidon/ng-tools';
 import { CadmusCodLocationModule } from '@myrmidon/cadmus-cod-location';
 import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
 import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
+import { CadmusRefsAssertedIdsModule } from '@myrmidon/cadmus-refs-asserted-ids';
 import { CadmusRefsDocReferencesModule } from '@myrmidon/cadmus-refs-doc-references';
 import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
@@ -66,6 +67,7 @@ import { CodHandsPartFeatureComponent } from './cod-hands-part-feature/cod-hands
     CadmusCodLocationModule,
     CadmusMatPhysicalSizeModule,
     CadmusRefsAssertedChronotopeModule,
+    CadmusRefsAssertedIdsModule,
     CadmusRefsDocReferencesModule,
     CadmusRefsHistoricalDateModule,
     CadmusCodicologyUiModule,

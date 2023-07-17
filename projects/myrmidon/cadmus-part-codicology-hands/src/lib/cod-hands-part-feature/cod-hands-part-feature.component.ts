@@ -44,6 +44,8 @@ export class CodHandsPartFeatureComponent
       'doc-reference-tags',
       'cod-image-types',
       'cod-hand-subscription-languages',
+      'external-id-tags',
+      'external-id-scopes',
     ];
   }
 }
