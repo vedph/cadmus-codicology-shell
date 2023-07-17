@@ -62,6 +62,9 @@ Per-library documentation:
 
 ## History
 
+- 2023-07-17:
+  - updated packages.
+  - set internal link as default for decoration artist ID.
 - 2023-06-22:
   - default unit=`mm` for watermarks and bindings.
   - fixed preset script in new hand instance.
