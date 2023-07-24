@@ -66,6 +66,20 @@
   </div>
 
   <div>
+    <!-- authorIds -->
+    <cadmus-refs-asserted-composite-ids
+      [idScopeEntries]="idScopeEntries"
+      [idTagEntries]="idTagEntries"
+      [assTagEntries]="assTagEntries"
+      [refTypeEntries]="refTypeEntries"
+      [refTagEntries]="refTagEntries"
+      [internalDefault]="true"
+      [ids]="authorIds.value"
+      (idsChange)="onAuthorIdsChange($event)"
+    ></cadmus-refs-asserted-composite-ids>
+  </div>
+
+  <div>
     <!-- techniques -->
     <fieldset>
       <legend>techniques</legend>

@@ -23,7 +23,8 @@ import {
  * CodEditsPart editor component.
  * Thesauri: cod-edit-colors, cod-edit-techniques, cod-edit-types,
  * cod-edit-tags, cod-edit-languages, doc-reference-types,
- * doc-reference-tags.
+ * doc-reference-tags, assertion-tags, external-id-tags,
+ * external-id-scopes.
  */
 @Component({
   selector: 'cadmus-cod-edits-part',
@@ -53,6 +54,12 @@ export class CodEditsPartComponent
   public refTypeEntries: ThesaurusEntry[] | undefined;
   // doc-reference-tags
   public refTagEntries: ThesaurusEntry[] | undefined;
+  // assertion-tags
+  public assTagEntries: ThesaurusEntry[] | undefined;
+  // external-id-tags
+  public idTagEntries: ThesaurusEntry[] | undefined;
+  // external-id-scopes
+  public idScopeEntries: ThesaurusEntry[] | undefined;
 
   public edits: FormControl<CodEdit[]>;
 
@@ -123,6 +130,24 @@ export class CodEditsPartComponent
       this.refTagEntries = thesauri[key].entries;
     } else {
       this.refTagEntries = undefined;
+    }
+    key = 'assertion-tags';
+    if (this.hasThesaurus(key)) {
+      this.assTagEntries = thesauri[key].entries;
+    } else {
+      this.assTagEntries = undefined;
+    }
+    key = 'external-id-tags';
+    if (this.hasThesaurus(key)) {
+      this.idTagEntries = thesauri[key].entries;
+    } else {
+      this.idTagEntries = undefined;
+    }
+    key = 'external-id-scopes';
+    if (this.hasThesaurus(key)) {
+      this.idScopeEntries = thesauri[key].entries;
+    } else {
+      this.idScopeEntries = undefined;
     }
   }
 

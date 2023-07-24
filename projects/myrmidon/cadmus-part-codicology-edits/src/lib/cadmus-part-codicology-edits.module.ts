@@ -12,6 +12,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { NgToolsModule } from '@myrmidon/ng-tools';
 import { CadmusCodLocationModule } from '@myrmidon/cadmus-cod-location';
+import { CadmusRefsAssertedIdsModule } from '@myrmidon/cadmus-refs-asserted-ids';
 import { CadmusRefsDocReferencesModule } from '@myrmidon/cadmus-refs-doc-references';
 import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
@@ -48,6 +49,7 @@ import { CodEditsPartFeatureComponent } from './cod-edits-part-feature/cod-edits
     CadmusUiModule,
     CadmusUiPgModule,
     CadmusCodLocationModule,
+    CadmusRefsAssertedIdsModule,
     CadmusRefsDocReferencesModule,
     CadmusRefsHistoricalDateModule,
     CadmusUiFlagsPickerModule,

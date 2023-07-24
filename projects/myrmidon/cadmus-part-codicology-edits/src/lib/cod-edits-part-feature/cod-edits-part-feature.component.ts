@@ -41,6 +41,9 @@ export class CodEditsPartFeatureComponent
       'cod-edit-languages',
       'doc-reference-types',
       'doc-reference-tags',
+      'assertion-tags',
+      'external-id-tags',
+      'external-id-scopes',
     ];
   }
 }

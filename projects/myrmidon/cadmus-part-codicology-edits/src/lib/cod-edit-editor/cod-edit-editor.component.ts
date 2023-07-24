@@ -15,6 +15,7 @@ import { Flag, FlagsPickerAdapter } from '@myrmidon/cadmus-ui-flags-picker';
 import { NgToolsValidators } from '@myrmidon/ng-tools';
 
 import { CodEdit } from '../cod-edits-part';
+import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
 
 function entryToFlag(entry: ThesaurusEntry): Flag {
   return {
@@ -91,6 +92,15 @@ export class CodEditEditorComponent implements OnInit {
   // doc-reference-tags
   @Input()
   public refTagEntries: ThesaurusEntry[] | undefined;
+  // assertion-tags
+  @Input()
+  public assTagEntries: ThesaurusEntry[] | undefined;
+  // external-id-tags
+  @Input()
+  public idTagEntries: ThesaurusEntry[] | undefined;
+  // external-id-scopes
+  @Input()
+  public idScopeEntries: ThesaurusEntry[] | undefined;
 
   @Output()
   public editChange: EventEmitter<CodEdit>;
@@ -100,6 +110,7 @@ export class CodEditEditorComponent implements OnInit {
   public eid: FormControl<string | null>;
   public type: FormControl<string | null>;
   public tag: FormControl<string | null>;
+  public authorIds: FormControl<AssertedCompositeId[]>;
   public techniques: FormControl<Flag[]>;
   public ranges: FormControl<CodLocationRange[]>;
   public language: FormControl<string | null>;
@@ -131,6 +142,7 @@ export class CodEditEditorComponent implements OnInit {
       Validators.maxLength(50),
     ]);
     this.tag = formBuilder.control(null, Validators.maxLength(50));
+    this.authorIds = formBuilder.control([], { nonNullable: true });
     this.techniques = formBuilder.control([], { nonNullable: true });
     this.ranges = formBuilder.control([], {
       validators: NgToolsValidators.strictMinLengthValidator(1),
@@ -147,6 +159,7 @@ export class CodEditEditorComponent implements OnInit {
       eid: this.eid,
       type: this.type,
       tag: this.tag,
+      authorIds: this.authorIds,
       techniques: this.techniques,
       ranges: this.ranges,
       language: this.language,
@@ -174,6 +187,7 @@ export class CodEditEditorComponent implements OnInit {
     this.eid.setValue(model.eid || null);
     this.type.setValue(model.type);
     this.tag.setValue(model.tag || null);
+    this.authorIds.setValue(model.authorIds || []);
     this._flagAdapter.setSlotChecks('techniques', model.techniques || []);
     this.ranges.setValue(model.ranges || []);
     this.language.setValue(model.language || null);
@@ -191,6 +205,9 @@ export class CodEditEditorComponent implements OnInit {
       eid: this.eid.value?.trim(),
       type: this.type.value?.trim() || '',
       tag: this.tag.value?.trim(),
+      authorIds: this.authorIds.value?.length
+        ? this.authorIds.value
+        : undefined,
       techniques: this._flagAdapter.getOptionalCheckedFlagIds('techniques'),
       ranges: this.ranges.value,
       language: this.language.value?.trim(),
@@ -202,6 +219,12 @@ export class CodEditEditorComponent implements OnInit {
         ? this.references.value
         : undefined,
     };
+  }
+
+  public onAuthorIdsChange(ids: AssertedCompositeId[]): void {
+    this.authorIds.setValue(ids);
+    this.authorIds.updateValueAndValidity();
+    this.authorIds.markAsDirty();
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {

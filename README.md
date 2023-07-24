@@ -62,6 +62,9 @@ Per-library documentation:
 
 ## History
 
+- 2023-07-24:
+  - added `authorIds` to `CodEdit`.
+  - updated Angular.
 - 2023-07-17:
   - updated packages.
   - set internal link as default for decoration artist ID.
