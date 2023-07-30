@@ -37,6 +37,11 @@ export class CodContentsPartFeatureComponent
       'cod-content-states',
       'cod-content-tags',
       'cod-content-annotation-types',
+      'assertion-tags',
+      'doc-reference-types',
+      'doc-reference-tags',
+      'external-id-tags',
+      'external-id-scopes',
     ];
   }
 }

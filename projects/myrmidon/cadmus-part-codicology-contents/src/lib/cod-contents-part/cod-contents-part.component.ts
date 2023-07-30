@@ -22,7 +22,8 @@ import {
 /**
  * CodContentsPart editor component.
  * Thesauri: cod-content-states, cod-content-tags, cod-content-annotation-types
- * (all optional).
+ * assertion-tags, doc-reference-types, doc-reference-tags, external-id-tags,
+ * external-id-scopes (all optional).
  */
 @Component({
   selector: 'cadmus-cod-contents-part',
@@ -44,6 +45,16 @@ export class CodContentsPartComponent
   public tagEntries: ThesaurusEntry[] | undefined;
   // cod-content-annotation-types
   public annTypeEntries: ThesaurusEntry[] | undefined;
+  // assertion-tags
+  public assTagEntries: ThesaurusEntry[] | undefined;
+  // doc-reference-types
+  public refTypeEntries: ThesaurusEntry[] | undefined;
+  // doc-reference-tags
+  public refTagEntries: ThesaurusEntry[] | undefined;
+  // external-id-tags
+  public idTagEntries: ThesaurusEntry[] | undefined;
+  // external-id-scopes
+  public idScopeEntries: ThesaurusEntry[] | undefined;
 
   public contents: FormControl<CodContent[]>;
 
@@ -90,6 +101,36 @@ export class CodContentsPartComponent
       this.annTypeEntries = thesauri[key].entries;
     } else {
       this.annTypeEntries = undefined;
+    }
+    key = 'assertion-tags';
+    if (this.hasThesaurus(key)) {
+      this.assTagEntries = thesauri[key].entries;
+    } else {
+      this.assTagEntries = undefined;
+    }
+    key = 'doc-reference-types';
+    if (this.hasThesaurus(key)) {
+      this.refTypeEntries = thesauri[key].entries;
+    } else {
+      this.refTypeEntries = undefined;
+    }
+    key = 'doc-reference-tags';
+    if (this.hasThesaurus(key)) {
+      this.refTagEntries = thesauri[key].entries;
+    } else {
+      this.refTagEntries = undefined;
+    }
+    key = 'external-id-tags';
+    if (this.hasThesaurus(key)) {
+      this.idTagEntries = thesauri[key].entries;
+    } else {
+      this.idTagEntries = undefined;
+    }
+    key = 'external-id-scopes';
+    if (this.hasThesaurus(key)) {
+      this.idScopeEntries = thesauri[key].entries;
+    } else {
+      this.idScopeEntries = undefined;
     }
   }
 

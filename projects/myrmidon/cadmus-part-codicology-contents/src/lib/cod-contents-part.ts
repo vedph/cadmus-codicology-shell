@@ -1,5 +1,6 @@
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { Part } from '@myrmidon/cadmus-core';
+import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
 
 export interface CodContentAnnotation {
   type: string;
@@ -12,10 +13,11 @@ export interface CodContentAnnotation {
 
 export interface CodContent {
   eid?: string;
-  author?: string;
   ranges: CodLocationRange[];
   states: string[];
-  title: string;
+  workId?: AssertedCompositeId;
+  author?: string;
+  title?: string;
   location?: string;
   claimedAuthor?: string;
   claimedTitle?: string;
@@ -104,6 +106,89 @@ export const COD_CONTENTS_PART_SCHEMA = {
               },
               author: {
                 type: 'string',
+              },
+              workId: {
+                type: 'object',
+                default: {},
+                required: ['target'],
+                properties: {
+                  target: {
+                    type: 'object',
+                    required: ['gid', 'label'],
+                    properties: {
+                      gid: {
+                        type: 'string',
+                      },
+                      label: {
+                        type: 'string',
+                      },
+                      itemId: {
+                        type: 'string',
+                      },
+                      partId: {
+                        type: 'string',
+                      },
+                      partTypeId: {
+                        type: 'string',
+                      },
+                      roleId: {
+                        type: 'string',
+                      },
+                      name: {
+                        type: 'string',
+                      },
+                      value: {
+                        type: 'string',
+                      },
+                    },
+                  },
+                  scope: {
+                    type: 'string',
+                  },
+                  tag: {
+                    type: 'string',
+                  },
+                  assertion: {
+                    type: 'object',
+                    required: ['rank'],
+                    properties: {
+                      tag: {
+                        type: 'string',
+                      },
+                      rank: {
+                        type: 'integer',
+                      },
+                      note: {
+                        type: 'string',
+                      },
+                      references: {
+                        type: 'array',
+                        items: {
+                          anyOf: [
+                            {
+                              type: 'object',
+                              required: ['citation'],
+                              properties: {
+                                type: {
+                                  type: 'string',
+                                },
+                                tag: {
+                                  type: 'string',
+                                },
+                                citation: {
+                                  type: 'string',
+                                },
+                                note: {
+                                  type: 'string',
+                                },
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    },
+                  },
+                },
               },
               ranges: {
                 type: 'array',

@@ -36,6 +36,21 @@
     </mat-form-field>
   </div>
   <div>
+    <!-- id -->
+    <fieldset>
+      <legend>work ID</legend>
+      <cadmus-refs-asserted-composite-id
+        [idTagEntries]="idTagEntries"
+        [assTagEntries]="assTagEntries"
+        [refTagEntries]="refTagEntries"
+        [idScopeEntries]="idScopeEntries"
+        [refTypeEntries]="refTypeEntries"
+        [id]="workId.value"
+        (idChange)="onIdChange($event)"
+      ></cadmus-refs-asserted-composite-id>
+    </fieldset>
+  </div>
+  <div>
     <!-- author -->
     <mat-form-field>
       <mat-label>author</mat-label>
@@ -217,7 +232,9 @@
               <mat-icon>remove_circle</mat-icon>
             </button>
           </td>
-          <td>{{ entry.type | flatLookup: annTypeEntries:"id":"value" }}</td>
+          <td>
+            {{ entry.type | flatLookup : annTypeEntries : "id" : "value" }}
+          </td>
           <td>{{ entry.range | codLocationRange }}</td>
           <td>
             {{ entry.text | ellipsis }}

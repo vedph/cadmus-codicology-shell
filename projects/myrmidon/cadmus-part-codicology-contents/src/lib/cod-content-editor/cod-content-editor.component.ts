@@ -14,6 +14,7 @@ import { DialogService } from '@myrmidon/ng-mat-tools';
 import { NgToolsValidators } from '@myrmidon/ng-tools';
 
 import { CodContent, CodContentAnnotation } from '../cod-contents-part';
+import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
 
 function entryToFlag(entry: ThesaurusEntry): Flag {
   return {
@@ -66,6 +67,21 @@ export class CodContentEditorComponent implements OnInit {
   // cod-content-annotation-types
   @Input()
   public annTypeEntries: ThesaurusEntry[] | undefined;
+  // assertion-tags
+  @Input()
+  public assTagEntries: ThesaurusEntry[] | undefined;
+  // doc-reference-types
+  @Input()
+  public refTypeEntries: ThesaurusEntry[] | undefined;
+  // doc-reference-tags
+  @Input()
+  public refTagEntries: ThesaurusEntry[] | undefined;
+  // external-id-tags
+  @Input()
+  public idTagEntries: ThesaurusEntry[] | undefined;
+  // external-id-scopes
+  @Input()
+  public idScopeEntries: ThesaurusEntry[] | undefined;
 
   @Output()
   public contentChange: EventEmitter<CodContent>;
@@ -73,6 +89,7 @@ export class CodContentEditorComponent implements OnInit {
   public editorClose: EventEmitter<any>;
 
   public eid: FormControl<string | null>;
+  public workId: FormControl<AssertedCompositeId | null>;
   public author: FormControl<string | null>;
   public ranges: FormControl<CodLocationRange[]>;
   public tag: FormControl<string | null>;
@@ -103,16 +120,14 @@ export class CodContentEditorComponent implements OnInit {
 
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
+    this.workId = formBuilder.control(null);
     this.author = formBuilder.control(null, Validators.maxLength(50));
     this.ranges = formBuilder.control([], {
       validators: NgToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
     this.tag = formBuilder.control(null, Validators.maxLength(50));
-    this.title = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(200),
-    ]);
+    this.title = formBuilder.control(null, Validators.maxLength(200));
     this.location = formBuilder.control(null, Validators.maxLength(50));
     this.claimedAuthor = formBuilder.control(null, Validators.maxLength(50));
     this.claimedTitle = formBuilder.control(null, Validators.maxLength(200));
@@ -123,6 +138,7 @@ export class CodContentEditorComponent implements OnInit {
     this.annotations = formBuilder.control([], { nonNullable: true });
     this.form = formBuilder.group({
       eid: this.eid,
+      workId: this.workId,
       author: this.author,
       ranges: this.ranges,
       tag: this.tag,
@@ -151,11 +167,12 @@ export class CodContentEditorComponent implements OnInit {
     }
 
     this.eid.setValue(content.eid || null);
+    this.workId.setValue(content.workId || null);
     this.author.setValue(content.author || null);
     this.ranges.setValue(content.ranges || []);
     this._flagAdapter.setSlotChecks('states', content.states);
     this.tag.setValue(content.tag || null);
-    this.title.setValue(content.title);
+    this.title.setValue(content.title || null);
     this.location.setValue(content.location || null);
     this.claimedAuthor.setValue(content.claimedAuthor || null);
     this.claimedTitle.setValue(content.claimedTitle || null);
@@ -170,6 +187,7 @@ export class CodContentEditorComponent implements OnInit {
   private getModel(): CodContent {
     return {
       eid: this.eid.value?.trim(),
+      workId: this.workId.value || undefined,
       author: this.author.value?.trim(),
       ranges: this.ranges.value || [],
       states: this._flagAdapter.getCheckedFlagIds('states'),
@@ -199,6 +217,12 @@ export class CodContentEditorComponent implements OnInit {
     this.states.setValue(flags);
     this.states.markAsDirty();
     this.states.updateValueAndValidity();
+  }
+
+  public onIdChange(id: AssertedCompositeId): void {
+    this.workId.setValue(id);
+    this.workId.markAsDirty();
+    this.workId.updateValueAndValidity();
   }
 
   //#region Annotations
