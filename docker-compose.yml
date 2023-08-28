@@ -32,7 +32,7 @@ services:
       # - /var/db/pgsql:/var/lib/postgresql/data
 
   cadmus-codicology-api:
-    image: vedph2020/cadmus-codicology-api:4.0.0
+    image: vedph2020/cadmus-codicology-api:4.0.1
     container_name: cadmus-codicology-api
     ports:
       # https://stackoverflow.com/questions/48669548/why-does-aspnet-core-start-on-port-80-from-within-docker
