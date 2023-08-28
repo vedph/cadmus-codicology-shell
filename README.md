@@ -62,6 +62,7 @@ Per-library documentation:
 
 ## History
 
+- 2023-08-28: updated Angular and packages.
 - 2023-07-30: added `workId` to `CodContent` (`@myrmidon/cadmus-part-codicology-contents` 3.1.1).
 - 2023-07-24:
   - added `authorIds` to `CodEdit`.
