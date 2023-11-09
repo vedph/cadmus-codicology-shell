@@ -63,6 +63,8 @@ Per-library documentation:
 
 ## History
 
+- 2023-11-09: ⚠️ upgraded to Angular 17.
+
 ### 5.1.0
 
 - 2023-08-28: updated Angular and packages.
