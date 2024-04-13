@@ -13,14 +13,20 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 // myrmidon
 import { NgToolsModule } from '@myrmidon/ng-tools';
+// bricks
+import {
+  PhysicalSizeComponent,
+  PhysicalSizePipe,
+} from '@myrmidon/cadmus-mat-physical-size';
+import { AssertedChronotopeComponent } from '@myrmidon/cadmus-refs-asserted-chronotope';
+import {
+  HistoricalDateComponent,
+  HistoricalDatePipe,
+} from '@myrmidon/cadmus-refs-historical-date';
 // cadmus
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
-// bricks
-import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
-import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
-import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
 // locals
 import { CodBindingsPartComponent } from './cod-bindings-part/cod-bindings-part.component';
 import { CodBindingEditorComponent } from './cod-binding-editor/cod-binding-editor.component';
@@ -30,7 +36,7 @@ import { CodBindingsPartFeatureComponent } from './cod-bindings-part-feature/cod
   declarations: [
     CodBindingsPartComponent,
     CodBindingEditorComponent,
-    CodBindingsPartFeatureComponent
+    CodBindingsPartFeatureComponent,
   ],
   imports: [
     CommonModule,
@@ -51,14 +57,16 @@ import { CodBindingsPartFeatureComponent } from './cod-bindings-part-feature/cod
     CadmusStateModule,
     CadmusUiModule,
     CadmusUiPgModule,
-    CadmusMatPhysicalSizeModule,
-    CadmusRefsAssertedChronotopeModule,
-    CadmusRefsHistoricalDateModule,
+    PhysicalSizeComponent,
+    PhysicalSizePipe,
+    AssertedChronotopeComponent,
+    HistoricalDateComponent,
+    HistoricalDatePipe,
   ],
   exports: [
     CodBindingsPartComponent,
     CodBindingEditorComponent,
-    CodBindingsPartFeatureComponent
+    CodBindingsPartFeatureComponent,
   ],
 })
 export class CadmusPartCodicologyBindingsModule {}

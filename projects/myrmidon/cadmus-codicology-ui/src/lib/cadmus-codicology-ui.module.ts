@@ -11,11 +11,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { MarkdownModule } from 'ngx-markdown';
+import { NgeMarkdownModule } from '@cisstech/nge/markdown';
 
 import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
+import { RefLookupComponent } from '@myrmidon/cadmus-refs-lookup';
+
 import { CadmusApiModule } from '@myrmidon/cadmus-api';
-import { CadmusRefsLookupModule } from '@myrmidon/cadmus-refs-lookup';
 
 import { CodImagesComponent } from './components/cod-images/cod-images.component';
 import { CodLayoutFigureComponent } from './components/cod-layout-figure/cod-layout-figure.component';
@@ -36,11 +37,11 @@ import { CodLayoutFigureComponent } from './components/cod-layout-figure/cod-lay
     MatTabsModule,
     MatTooltipModule,
     // vendors
-    MarkdownModule,
+    NgeMarkdownModule,
     // general
     NgMatToolsModule,
     CadmusApiModule,
-    CadmusRefsLookupModule,
+    RefLookupComponent
   ],
   exports: [CodImagesComponent, CodLayoutFigureComponent],
 })

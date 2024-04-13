@@ -39,10 +39,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 
-// ngx-monaco
-import { MonacoEditorModule } from 'ngx-monaco-editor';
-// ngx-markdown
-import { MarkdownModule } from 'ngx-markdown';
+// vendor
+import { NgeMonacoModule } from '@cisstech/nge/monaco';
+import { NgeMarkdownModule } from '@cisstech/nge/markdown';
 
 // myrmidon
 import { EnvServiceProvider, NgToolsModule } from '@myrmidon/ng-tools';
@@ -54,9 +53,9 @@ import {
 import { AuthJwtAdminModule } from '@myrmidon/auth-jwt-admin';
 
 // cadmus bricks
-import { CadmusRefsDocReferencesModule } from '@myrmidon/cadmus-refs-doc-references';
-import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
-import { CadmusRefsAssertedIdsModule } from '@myrmidon/cadmus-refs-asserted-ids';
+import { DocReferencesComponent } from '@myrmidon/cadmus-refs-doc-references';
+import { HistoricalDateComponent, HistoricalDatePipe } from '@myrmidon/cadmus-refs-historical-date';
+import { AssertedIdsComponent } from '@myrmidon/cadmus-refs-asserted-ids';
 
 // cadmus
 import { CadmusApiModule } from '@myrmidon/cadmus-api';
@@ -87,7 +86,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { PART_EDITOR_KEYS } from './part-editor-keys';
 import { INDEX_LOOKUP_DEFINITIONS } from './index-lookup-definitions';
 import { ITEM_BROWSER_KEYS } from './item-browser-keys';
-import { CadmusUiNoteSetModule } from '@myrmidon/cadmus-ui-note-set';
+import { NoteSetComponent } from '@myrmidon/cadmus-ui-note-set';
 
 @NgModule({
   declarations: [
@@ -141,18 +140,19 @@ import { CadmusUiNoteSetModule } from '@myrmidon/cadmus-ui-note-set';
     MatToolbarModule,
     MatTreeModule,
     // vendors
-    MonacoEditorModule.forRoot(),
-    MarkdownModule.forRoot(),
+    NgeMonacoModule.forRoot({}),
+    NgeMarkdownModule,
     // myrmidon
     NgToolsModule,
     NgMatToolsModule,
     AuthJwtLoginModule,
     AuthJwtAdminModule,
     // cadmus bricks
-    CadmusRefsDocReferencesModule,
-    CadmusRefsHistoricalDateModule,
-    CadmusRefsAssertedIdsModule,
-    CadmusUiNoteSetModule,
+    DocReferencesComponent,
+    HistoricalDateComponent,
+    HistoricalDatePipe,
+    AssertedIdsComponent,
+    NoteSetComponent,
     // cadmus
     CadmusApiModule,
     CadmusCoreModule,

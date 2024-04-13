@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-sheet-labels",
-  "version": "4.0.0",
+  "version": "6.0.0",
   "description": "Cadmus codicology - sheet labels.",
   "keywords": [
     "Cadmus"
@@ -15,7 +15,19 @@
   },
   "peerDependencies": {
     "@angular/common": "^17.0.0",
-    "@angular/core": "^17.0.0"
+    "@angular/core": "^17.0.0",
+    "@myrmidon/ng-tools": "^3.0.0",
+    "@myrmidon/ng-mat-tools": "^3.0.0",
+    "@myrmidon/auth-jwt-login": "^3.0.0",
+    "@myrmidon/cadmus-mat-physical-size": "^5.0.0",
+    "@myrmidon/cadmus-refs-asserted-chronotope": "^5.0.0",
+    "@myrmidon/cadmus-refs-historical-date": "^5.0.0",
+    "@myrmidon/cadmus-ui-flags-picker": "^5.0.0",
+    "@myrmidon/cadmus-refs-lookup": "^5.0.0",
+    "@myrmidon/cadmus-state": "^8.0.0",
+    "@myrmidon/cadmus-ui": "^8.0.0",
+    "@myrmidon/cadmus-ui-pg": "^8.0.0",
+    "@myrmidon/cadmus-codicology-ui": "^6.0.0"
   },
   "dependencies": {
     "tslib": "^2.5.0"

@@ -2,6 +2,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   ViewChild,
@@ -53,7 +54,12 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   templateUrl: './cod-decoration-element.component.html',
   styleUrls: ['./cod-decoration-element.component.css'],
 })
-export class CodDecorationElementComponent implements OnInit {
+export class CodDecorationElementComponent implements OnInit, OnDestroy {
+  // monaco
+  private readonly _disposables: monaco.IDisposable[] = [];
+  private _editorModel?: monaco.editor.ITextModel;
+  private _editor?: monaco.editor.IStandaloneCodeEditor;
+
   private readonly _flagAdapter: FlagsPickerAdapter;
   private _element: CodDecorationElement | undefined;
   private _elemFlagEntries: ThesaurusEntry[];
@@ -67,13 +73,6 @@ export class CodDecorationElementComponent implements OnInit {
   private _adjustingUI?: boolean;
 
   @ViewChild('dsceditor', { static: false }) dscEditor: any;
-  public editorOptions = {
-    theme: 'vs-light',
-    language: 'markdown',
-    wordWrap: 'on',
-    // https://github.com/atularen/ngx-monaco-editor/issues/19
-    automaticLayout: true,
-  };
 
   @Input()
   public get element(): CodDecorationElement | undefined {
@@ -358,9 +357,7 @@ export class CodDecorationElementComponent implements OnInit {
     console.log('hidden: ' + JSON.stringify(this.hidden));
   }
 
-  ngOnInit(): void {
-    // this.adjustUI();
-
+  public ngOnInit(): void {
     this.type.valueChanges
       .pipe(distinctUntilChanged(), debounceTime(300))
       .subscribe((value) => {
@@ -369,6 +366,32 @@ export class CodDecorationElementComponent implements OnInit {
           this.adjustUI();
         }
       });
+  }
+
+  public ngOnDestroy() {
+    this._disposables.forEach((d) => d.dispose());
+  }
+
+  public onCreateEditor(editor: monaco.editor.IEditor) {
+    editor.updateOptions({
+      minimap: {
+        side: 'right',
+      },
+      wordWrap: 'on',
+      automaticLayout: true,
+    });
+    this._editorModel =
+      this._editorModel || monaco.editor.createModel('', 'markdown');
+    editor.setModel(this._editorModel);
+    this._editor = editor as monaco.editor.IStandaloneCodeEditor;
+
+    this._disposables.push(
+      this._editorModel.onDidChangeContent((e) => {
+        this.description.setValue(this._editorModel!.getValue());
+        this.description.markAsDirty();
+        this.description.updateValueAndValidity();
+      })
+    );
   }
 
   private adjustUI(): void {
@@ -490,6 +513,7 @@ export class CodDecorationElementComponent implements OnInit {
     this.textRelation.setValue(element.textRelation || null);
     // description
     this.description.setValue(element.description || null);
+    this._editorModel?.setValue(element.description || '');
     this.images.setValue(element.images || []);
     this.note.setValue(element.note || null);
 

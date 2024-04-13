@@ -12,21 +12,34 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { MonacoEditorModule } from 'ngx-monaco-editor';
+// vendor
+import { NgeMonacoModule } from '@cisstech/nge/monaco';
 
+// myrmidon
 import { NgToolsModule } from '@myrmidon/ng-tools';
 import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
-import { CadmusCodicologyUiModule } from '@myrmidon/cadmus-codicology-ui';
-import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
-import { CadmusRefsAssertionModule } from '@myrmidon/cadmus-refs-assertion';
-import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
-import { CadmusRefsDocReferencesModule } from '@myrmidon/cadmus-refs-doc-references';
-import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
+
+// bricks
+import { AssertionComponent } from '@myrmidon/cadmus-refs-assertion';
+import {
+  PhysicalSizeComponent,
+  PhysicalSizePipe,
+} from '@myrmidon/cadmus-mat-physical-size';
+import { AssertedChronotopeComponent, AssertedChronotopeSetComponent } from '@myrmidon/cadmus-refs-asserted-chronotope';
+import {
+  AssertedCompositeIdComponent,
+  AssertedCompositeIdsComponent,
+} from '@myrmidon/cadmus-refs-asserted-ids';
+import { DocReferencesComponent } from '@myrmidon/cadmus-refs-doc-references';
+import { HistoricalDateComponent } from '@myrmidon/cadmus-refs-historical-date';
+import { CodLocationComponent, CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
+import { FlagsPickerComponent } from '@myrmidon/cadmus-ui-flags-picker';
+
+// cadmus
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
-import { CadmusCodLocationModule } from '@myrmidon/cadmus-cod-location';
-import { CadmusUiFlagsPickerModule } from '@myrmidon/cadmus-ui-flags-picker';
+import { CadmusCodicologyUiModule } from '@myrmidon/cadmus-codicology-ui';
 
 import { CodDecorationElementComponent } from './cod-decoration-element/cod-decoration-element.component';
 import { TextOrEntrySelectorComponent } from './text-or-entry-selector/text-or-entry-selector.component';
@@ -35,7 +48,6 @@ import { CodDecorationArtistComponent } from './cod-decoration-artist/cod-decora
 import { CodDecorationComponent } from './cod-decoration/cod-decoration.component';
 import { CodDecorationsPartComponent } from './cod-decorations-part/cod-decorations-part.component';
 import { CodDecorationsPartFeatureComponent } from './cod-decorations-part-feature/cod-decorations-part-feature.component';
-import { CadmusRefsAssertedIdsModule } from '@myrmidon/cadmus-refs-asserted-ids';
 
 @NgModule({
   declarations: [
@@ -61,23 +73,28 @@ import { CadmusRefsAssertedIdsModule } from '@myrmidon/cadmus-refs-asserted-ids'
     MatSelectModule,
     MatTabsModule,
     MatTooltipModule,
-    // monaco
-    MonacoEditorModule,
-    // general
+    // vendor
+    NgeMonacoModule,
+    // myrmidon
     NgToolsModule,
     NgMatToolsModule,
+    // bricks
+    PhysicalSizeComponent,
+    PhysicalSizePipe,
+    AssertedChronotopeComponent,
+    AssertedChronotopeSetComponent,
+    AssertedCompositeIdComponent,
+    AssertedCompositeIdsComponent,
+    AssertionComponent,
+    DocReferencesComponent,
+    HistoricalDateComponent,
+    FlagsPickerComponent,
+    CodLocationComponent,
+    CodLocationRangePipe,
     // cadmus
     CadmusStateModule,
     CadmusUiModule,
     CadmusUiPgModule,
-    CadmusMatPhysicalSizeModule,
-    CadmusRefsAssertedChronotopeModule,
-    CadmusRefsAssertedIdsModule,
-    CadmusRefsAssertionModule,
-    CadmusRefsDocReferencesModule,
-    CadmusRefsHistoricalDateModule,
-    CadmusUiFlagsPickerModule,
-    CadmusCodLocationModule,
     CadmusCodicologyUiModule,
   ],
   exports: [

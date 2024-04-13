@@ -1,44 +1,5 @@
 # Cadmus Codicology Shell
 
-- [Cadmus Codicology Shell](#cadmus-codicology-shell)
-  - [Shell Architecture](#shell-architecture)
-  - [History](#history)
-    - [5.1.0](#510)
-    - [5.0.0](#500)
-    - [4.0.0](#400)
-    - [3.2.0](#320)
-    - [3.1.0](#310)
-    - [3.0.15](#3015)
-    - [3.0.14](#3014)
-    - [3.0.13](#3013)
-    - [3.0.12](#3012)
-    - [3.0.11](#3011)
-    - [3.0.10](#3010)
-    - [3.0.9](#309)
-    - [3.0.8](#308)
-    - [3.0.7](#307)
-    - [3.0.6](#306)
-    - [3.0.5](#305)
-    - [3.0.4](#304)
-    - [3.0.3](#303)
-    - [3.0.2](#302)
-    - [3.0.1](#301)
-    - [3.0.0](#300)
-    - [2.0.5](#205)
-    - [2.0.4](#204)
-    - [2.0.3](#203)
-    - [2.0.2](#202)
-    - [2.0.1](#201)
-    - [2.0.0](#200)
-    - [1.0.7](#107)
-    - [1.0.6](#106)
-    - [1.0.5](#105)
-    - [1.0.4](#104)
-    - [1.0.3](#103)
-    - [1.0.2](#102)
-    - [1.0.1](#101)
-    - [1.0.0](#100)
-
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.1.3.
 
 The project is used as an incubator shell for developing and testing frontend Cadmus codicological components:
@@ -63,6 +24,9 @@ Per-library documentation:
 
 ## History
 
+- 2024-04-13:
+  - updated Angular.
+  - ⚠️ migrated to [bricks V2](https://github.com/vedph/cadmus-bricks-shell-v2), major **version** of all libraries bumped to 6.
 - 2023-11-18: updated Angular.
 - 2023-11-09: ⚠️ upgraded to Angular 17.
 

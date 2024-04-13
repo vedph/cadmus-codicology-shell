@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-layouts",
-  "version": "4.0.0",
+  "version": "6.0.0",
   "description": "Cadmus codicology - layouts.",
   "keywords": [
     "Cadmus"
@@ -15,7 +15,17 @@
   },
   "peerDependencies": {
     "@angular/common": "^17.0.0",
-    "@angular/core": "^17.0.0"
+    "@angular/core": "^17.0.0",
+    "@myrmidon/ng-tools": "^3.0.0",
+    "@myrmidon/cadmus-cod-location": "^5.0.0",
+    "@myrmidon/cadmus-mat-physical-size": "^5.0.0",
+    "@myrmidon/cadmus-refs-asserted-chronotope": "^5.0.0",
+    "@myrmidon/cadmus-refs-decorated-counts": "^5.0.0",
+    "@myrmidon/cadmus-refs-historical-date": "^5.0.0",
+    "@myrmidon/cadmus-state": "^8.0.0",
+    "@myrmidon/cadmus-ui": "^8.0.0",
+    "@myrmidon/cadmus-ui-pg": "^8.0.0",
+    "@myrmidon/cadmus-codicology-ui": "^6.0.0"
   },
   "dependencies": {
     "tslib": "^2.5.0"

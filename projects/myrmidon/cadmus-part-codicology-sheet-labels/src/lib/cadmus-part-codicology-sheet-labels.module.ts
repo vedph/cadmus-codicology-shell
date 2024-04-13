@@ -15,18 +15,23 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+// myrmidon
 import { NgToolsModule } from '@myrmidon/ng-tools';
 import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
 import { AuthJwtLoginModule } from '@myrmidon/auth-jwt-login';
-import { CadmusCodicologyUiModule } from '@myrmidon/cadmus-codicology-ui';
-import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
-import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
-import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
-import { CadmusUiFlagsPickerModule } from '@myrmidon/cadmus-ui-flags-picker';
-import { CadmusRefsLookupModule } from '@myrmidon/cadmus-refs-lookup';
+
+// bricks
+import { PhysicalSizeComponent } from '@myrmidon/cadmus-mat-physical-size';
+import { AssertedChronotopeComponent } from '@myrmidon/cadmus-refs-asserted-chronotope';
+import { HistoricalDateComponent } from '@myrmidon/cadmus-refs-historical-date';
+import { FlagsPickerComponent } from '@myrmidon/cadmus-ui-flags-picker';
+import { RefLookupComponent } from '@myrmidon/cadmus-refs-lookup';
+
+// cadmus
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
+import { CadmusCodicologyUiModule } from '@myrmidon/cadmus-codicology-ui';
 
 import { CodNColDefinitionComponent } from './cod-n-col-definition/cod-n-col-definition.component';
 import { CodCColDefinitionComponent } from './cod-c-col-definition/cod-c-col-definition.component';
@@ -78,12 +83,12 @@ import { CodLocationConverterComponent } from './cod-location-converter/cod-loca
     CadmusStateModule,
     CadmusUiModule,
     CadmusUiPgModule,
-    CadmusMatPhysicalSizeModule,
-    CadmusRefsAssertedChronotopeModule,
-    CadmusRefsHistoricalDateModule,
-    CadmusUiFlagsPickerModule,
+    PhysicalSizeComponent,
+    AssertedChronotopeComponent,
+    HistoricalDateComponent,
+    FlagsPickerComponent,
+    RefLookupComponent,
     CadmusCodicologyUiModule,
-    CadmusRefsLookupModule
   ],
   exports: [
     CodCColDefinitionComponent,

@@ -12,15 +12,28 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+// myrmidon
 import { NgToolsModule } from '@myrmidon/ng-tools';
+
+// bricks
+import {
+  CodLocationComponent,
+  CodLocationPipe,
+  CodLocationRangePipe,
+} from '@myrmidon/cadmus-cod-location';
+import {
+  AssertedChronotopeComponent,
+  AssertedChronotopeSetComponent,
+} from '@myrmidon/cadmus-refs-asserted-chronotope';
+import {
+  HistoricalDateComponent,
+  HistoricalDatePipe,
+} from '@myrmidon/cadmus-refs-historical-date';
+
 // cadmus
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
-// bricks
-import { CadmusCodLocationModule } from '@myrmidon/cadmus-cod-location';
-import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
-import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
 
 import { CodMaterialDscPartComponent } from './cod-material-dsc-part/cod-material-dsc-part.component';
 import { CodUnitEditorComponent } from './cod-unit-editor/cod-unit-editor.component';
@@ -53,9 +66,13 @@ import { CodMaterialDscPartFeatureComponent } from './cod-material-dsc-part-feat
     CadmusStateModule,
     CadmusUiModule,
     CadmusUiPgModule,
-    CadmusRefsAssertedChronotopeModule,
-    CadmusRefsHistoricalDateModule,
-    CadmusCodLocationModule,
+    AssertedChronotopeComponent,
+    AssertedChronotopeSetComponent,
+    HistoricalDateComponent,
+    HistoricalDatePipe,
+    CodLocationComponent,
+    CodLocationPipe,
+    CodLocationRangePipe,
   ],
   exports: [
     CodMaterialDscPartComponent,

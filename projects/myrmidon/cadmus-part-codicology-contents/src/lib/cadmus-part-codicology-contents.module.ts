@@ -12,13 +12,22 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
+// myrmidon
 import { NgToolsModule } from '@myrmidon/ng-tools';
-import { CadmusCodLocationModule } from '@myrmidon/cadmus-cod-location';
-import { CadmusRefsAssertedIdsModule } from '@myrmidon/cadmus-refs-asserted-ids';
+import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
+
+// bricks
+import {
+  CodLocationComponent,
+  CodLocationPipe,
+  CodLocationRangePipe,
+} from '@myrmidon/cadmus-cod-location';
+import { AssertedCompositeIdComponent, AssertedCompositeIdsComponent, AssertedIdsComponent } from '@myrmidon/cadmus-refs-asserted-ids';
+import { FlagsPickerComponent } from '@myrmidon/cadmus-ui-flags-picker';
+
+// cadmus
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
-import { CadmusUiFlagsPickerModule } from '@myrmidon/cadmus-ui-flags-picker';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
 
 import { CodContentEditorComponent } from './cod-content-editor/cod-content-editor.component';
@@ -50,18 +59,22 @@ import { CodContentAnnotationComponent } from './cod-content-annotation/cod-cont
     // Cadmus
     NgToolsModule,
     NgMatToolsModule,
-    CadmusRefsAssertedIdsModule,
+    AssertedIdsComponent,
+    AssertedCompositeIdComponent,
+    AssertedCompositeIdsComponent,
     CadmusStateModule,
     CadmusUiModule,
     CadmusUiPgModule,
-    CadmusCodLocationModule,
-    CadmusUiFlagsPickerModule,
+    CodLocationComponent,
+    CodLocationPipe,
+    CodLocationRangePipe,
+    FlagsPickerComponent,
   ],
   exports: [
     CodContentEditorComponent,
     CodContentsPartComponent,
     CodContentsPartFeatureComponent,
-    CodContentAnnotationComponent
+    CodContentAnnotationComponent,
   ],
 })
 export class CadmusPartCodicologyContentsModule {}

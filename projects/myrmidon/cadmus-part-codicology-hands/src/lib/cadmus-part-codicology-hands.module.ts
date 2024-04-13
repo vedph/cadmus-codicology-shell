@@ -12,19 +12,31 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+// myrmidon
 import { NgToolsModule } from '@myrmidon/ng-tools';
-import { CadmusCodLocationModule } from '@myrmidon/cadmus-cod-location';
-import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
-import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
-import { CadmusRefsAssertedIdsModule } from '@myrmidon/cadmus-refs-asserted-ids';
-import { CadmusRefsDocReferencesModule } from '@myrmidon/cadmus-refs-doc-references';
-import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
+
+// bricks
+import {
+  CodLocationComponent,
+  CodLocationPipe,
+  CodLocationRangePipe,
+} from '@myrmidon/cadmus-cod-location';
+import { PhysicalSizeComponent } from '@myrmidon/cadmus-mat-physical-size';
+import { AssertedChronotopeComponent } from '@myrmidon/cadmus-refs-asserted-chronotope';
+import {
+  AssertedCompositeIdComponent,
+  AssertedCompositeIdsComponent,
+} from '@myrmidon/cadmus-refs-asserted-ids';
+import { DocReferencesComponent } from '@myrmidon/cadmus-refs-doc-references';
+import { HistoricalDateComponent } from '@myrmidon/cadmus-refs-historical-date';
+import { FlagsPickerComponent } from '@myrmidon/cadmus-ui-flags-picker';
+import { NoteSetComponent } from '@myrmidon/cadmus-ui-note-set';
+
+// cadmus
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
 import { CadmusCodicologyUiModule } from '@myrmidon/cadmus-codicology-ui';
-import { CadmusUiFlagsPickerModule } from '@myrmidon/cadmus-ui-flags-picker';
-import { CadmusUiNoteSetModule } from '@myrmidon/cadmus-ui-note-set';
 
 import { CodHandSubscriptionComponent } from './cod-hand-subscription/cod-hand-subscription.component';
 import { CodHandSignComponent } from './cod-hand-sign/cod-hand-sign.component';
@@ -58,20 +70,25 @@ import { CodHandsPartFeatureComponent } from './cod-hands-part-feature/cod-hands
     MatSelectModule,
     MatTabsModule,
     MatTooltipModule,
-    // Cadmus
+    // myrmidon
     NgToolsModule,
-    CadmusUiNoteSetModule,
+    // bricks
+    NoteSetComponent,
+    CodLocationComponent,
+    CodLocationPipe,
+    CodLocationRangePipe,
+    PhysicalSizeComponent,
+    AssertedChronotopeComponent,
+    AssertedCompositeIdComponent,
+    AssertedCompositeIdsComponent,
+    DocReferencesComponent,
+    HistoricalDateComponent,
+    FlagsPickerComponent,
+    // cadmus
     CadmusStateModule,
     CadmusUiModule,
     CadmusUiPgModule,
-    CadmusCodLocationModule,
-    CadmusMatPhysicalSizeModule,
-    CadmusRefsAssertedChronotopeModule,
-    CadmusRefsAssertedIdsModule,
-    CadmusRefsDocReferencesModule,
-    CadmusRefsHistoricalDateModule,
     CadmusCodicologyUiModule,
-    CadmusUiFlagsPickerModule
   ],
   exports: [
     CodHandSubscriptionComponent,
@@ -80,7 +97,7 @@ import { CodHandsPartFeatureComponent } from './cod-hands-part-feature/cod-hands
     CodHandInstanceComponent,
     CodHandComponent,
     CodHandsPartComponent,
-    CodHandsPartFeatureComponent
+    CodHandsPartFeatureComponent,
   ],
 })
 export class CadmusPartCodicologyHandsModule {}

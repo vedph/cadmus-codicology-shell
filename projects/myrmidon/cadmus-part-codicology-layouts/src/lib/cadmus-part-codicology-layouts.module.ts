@@ -12,12 +12,21 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+// myrmidon
 import { NgToolsModule } from '@myrmidon/ng-tools';
-import { CadmusCodLocationModule } from '@myrmidon/cadmus-cod-location';
-import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
-import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
-import { CadmusRefsDecoratedCountsModule } from '@myrmidon/cadmus-refs-decorated-counts';
-import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
+
+// bricks
+import {
+  CodLocationComponent,
+  CodLocationPipe,
+  CodLocationRangePipe,
+} from '@myrmidon/cadmus-cod-location';
+import { PhysicalSizeComponent } from '@myrmidon/cadmus-mat-physical-size';
+import { AssertedChronotopeComponent } from '@myrmidon/cadmus-refs-asserted-chronotope';
+import { DecoratedCountsComponent } from '@myrmidon/cadmus-refs-decorated-counts';
+import { HistoricalDateComponent } from '@myrmidon/cadmus-refs-historical-date';
+
+// cadmus
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
@@ -54,11 +63,13 @@ import { CodLayoutsPartFeatureComponent } from './cod-layouts-part-feature/cod-l
     CadmusStateModule,
     CadmusUiModule,
     CadmusUiPgModule,
-    CadmusMatPhysicalSizeModule,
-    CadmusRefsAssertedChronotopeModule,
-    CadmusRefsDecoratedCountsModule,
-    CadmusRefsHistoricalDateModule,
-    CadmusCodLocationModule,
+    PhysicalSizeComponent,
+    AssertedChronotopeComponent,
+    DecoratedCountsComponent,
+    HistoricalDateComponent,
+    CodLocationComponent,
+    CodLocationPipe,
+    CodLocationRangePipe,
   ],
   exports: [
     CodLayoutEditorComponent,

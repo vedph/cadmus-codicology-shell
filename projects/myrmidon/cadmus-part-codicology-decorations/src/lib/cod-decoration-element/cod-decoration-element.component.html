@@ -201,11 +201,11 @@
     <!-- DESCRIPTION -->
     <mat-tab label="description">
       <div>
-        <ngx-monaco-editor
+        <nge-monaco-editor
           #dsceditor
-          [options]="editorOptions"
-          [formControl]="description"
-        ></ngx-monaco-editor>
+          style="--editor-height: 400px"
+          (ready)="onCreateEditor($event)"
+        />
         <mat-error
           *ngIf="
             $any(description).errors?.maxLength &&

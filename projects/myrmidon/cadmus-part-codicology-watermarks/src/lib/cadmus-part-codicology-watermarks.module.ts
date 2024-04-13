@@ -11,16 +11,27 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+// bricks
+import {
+  CodLocationComponent,
+  CodLocationPipe,
+  CodLocationRangePipe,
+} from '@myrmidon/cadmus-cod-location';
+import { PhysicalSizeComponent } from '@myrmidon/cadmus-mat-physical-size';
+import {
+  AssertedChronotopeComponent,
+  AssertedChronotopeSetComponent,
+} from '@myrmidon/cadmus-refs-asserted-chronotope';
+import {
+  AssertedCompositeIdComponent,
+  AssertedCompositeIdsComponent,
+} from '@myrmidon/cadmus-refs-asserted-ids';
+import { HistoricalDateComponent } from '@myrmidon/cadmus-refs-historical-date';
+
 // cadmus
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
-// bricks
-import { CadmusCodLocationModule } from '@myrmidon/cadmus-cod-location';
-import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
-import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
-import { CadmusRefsAssertedIdsModule } from '@myrmidon/cadmus-refs-asserted-ids';
-import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
 
 import { CodWatermarksPartComponent } from './cod-watermarks-part/cod-watermarks-part.component';
 import { CodWatermarkEditorComponent } from './cod-watermark-editor/cod-watermark-editor.component';
@@ -49,11 +60,15 @@ import { CodWatermarksPartFeatureComponent } from './cod-watermarks-part-feature
     CadmusStateModule,
     CadmusUiModule,
     CadmusUiPgModule,
-    CadmusCodLocationModule,
-    CadmusMatPhysicalSizeModule,
-    CadmusRefsAssertedChronotopeModule,
-    CadmusRefsAssertedIdsModule,
-    CadmusRefsHistoricalDateModule,
+    CodLocationComponent,
+    CodLocationPipe,
+    CodLocationRangePipe,
+    PhysicalSizeComponent,
+    AssertedChronotopeComponent,
+    AssertedChronotopeSetComponent,
+    AssertedCompositeIdComponent,
+    AssertedCompositeIdsComponent,
+    HistoricalDateComponent,
   ],
   exports: [
     CodWatermarksPartComponent,

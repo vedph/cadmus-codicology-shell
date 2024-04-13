@@ -10,14 +10,22 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+// myrmidon
 import { NgToolsModule } from '@myrmidon/ng-tools';
-import { CadmusCodLocationModule } from '@myrmidon/cadmus-cod-location';
-import { CadmusRefsAssertedIdsModule } from '@myrmidon/cadmus-refs-asserted-ids';
-import { CadmusRefsDocReferencesModule } from '@myrmidon/cadmus-refs-doc-references';
-import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
+
+// bricks
+import { CodLocationComponent, CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
+import {
+  AssertedCompositeIdComponent,
+  AssertedCompositeIdsComponent,
+} from '@myrmidon/cadmus-refs-asserted-ids';
+import { DocReferencesComponent } from '@myrmidon/cadmus-refs-doc-references';
+import { HistoricalDateComponent } from '@myrmidon/cadmus-refs-historical-date';
+import { FlagsPickerComponent } from '@myrmidon/cadmus-ui-flags-picker';
+
+// cadmus
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
-import { CadmusUiFlagsPickerModule } from '@myrmidon/cadmus-ui-flags-picker';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
 
 import { CodEditEditorComponent } from './cod-edit-editor/cod-edit-editor.component';
@@ -43,16 +51,20 @@ import { CodEditsPartFeatureComponent } from './cod-edits-part-feature/cod-edits
     MatSelectModule,
     MatTabsModule,
     MatTooltipModule,
-    // Cadmus
+    // myrmidon
     NgToolsModule,
+    // bricks
+    CodLocationComponent,
+    CodLocationRangePipe,
+    AssertedCompositeIdComponent,
+    AssertedCompositeIdsComponent,
+    DocReferencesComponent,
+    HistoricalDateComponent,
+    FlagsPickerComponent,
+    // cadmus
     CadmusStateModule,
     CadmusUiModule,
     CadmusUiPgModule,
-    CadmusCodLocationModule,
-    CadmusRefsAssertedIdsModule,
-    CadmusRefsDocReferencesModule,
-    CadmusRefsHistoricalDateModule,
-    CadmusUiFlagsPickerModule,
   ],
   exports: [
     CodEditEditorComponent,
