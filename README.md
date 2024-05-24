@@ -24,6 +24,9 @@ Per-library documentation:
 
 ## History
 
+### 6.1.0
+
+- 2024-05-24: ⚠️ upgraded to Angular 18. All libraries versions bumped to 6.1.0.
 - 2024-04-13:
   - updated Angular.
   - ⚠️ migrated to [bricks V2](https://github.com/vedph/cadmus-bricks-shell-v2), major **version** of all libraries bumped to 6.

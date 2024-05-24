@@ -3,7 +3,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withInterceptors,
+  withJsonpSupport,
+} from '@angular/common/http';
 
 // material
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -47,14 +51,17 @@ import { NgeMarkdownModule } from '@cisstech/nge/markdown';
 import { EnvServiceProvider, NgToolsModule } from '@myrmidon/ng-tools';
 import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
 import {
-  AuthJwtInterceptor,
   AuthJwtLoginModule,
+  authJwtInterceptor,
 } from '@myrmidon/auth-jwt-login';
 import { AuthJwtAdminModule } from '@myrmidon/auth-jwt-admin';
 
 // cadmus bricks
 import { DocReferencesComponent } from '@myrmidon/cadmus-refs-doc-references';
-import { HistoricalDateComponent, HistoricalDatePipe } from '@myrmidon/cadmus-refs-historical-date';
+import {
+  HistoricalDateComponent,
+  HistoricalDatePipe,
+} from '@myrmidon/cadmus-refs-historical-date';
 import { AssertedIdsComponent } from '@myrmidon/cadmus-refs-asserted-ids';
 
 // cadmus
@@ -97,13 +104,13 @@ import { NoteSetComponent } from '@myrmidon/cadmus-ui-note-set';
     RegisterUserPageComponent,
     ResetPasswordComponent,
   ],
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule,
     // routing
     AppRoutingModule,
     // material
@@ -172,6 +179,10 @@ import { NoteSetComponent } from '@myrmidon/cadmus-ui-note-set';
     CadmusPartCodicologySheetLabelsModule,
   ],
   providers: [
+    provideHttpClient(
+      withInterceptors([authJwtInterceptor]),
+      withJsonpSupport()
+    ),
     // environment service
     EnvServiceProvider,
     // parts and fragments type IDs to editor group keys mappings
@@ -194,18 +205,11 @@ import { NoteSetComponent } from '@myrmidon/cadmus-ui-note-set';
     },
     // HTTP interceptor
     // https://medium.com/@ryanchenkie_40935/angular-authentication-using-the-http-client-and-http-interceptors-2f9d1540eb8
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthJwtInterceptor,
-      multi: true,
-    },
-    // LCID
     // {
-    //   provide: LOCALE_ID,
-    //   deps: [WindowRefService],
-    //   useFactory: languageFactory,
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: AuthJwtInterceptor,
+    //   multi: true,
     // },
   ],
-  bootstrap: [AppComponent],
 })
 export class AppModule {}
