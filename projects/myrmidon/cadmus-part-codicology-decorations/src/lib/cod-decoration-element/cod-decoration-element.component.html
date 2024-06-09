@@ -245,11 +245,12 @@
       matTooltip="Discard element changes"
       (click)="cancel()"
     >
-      <mat-icon>clear</mat-icon>
+      <mat-icon class="mat-warn">clear</mat-icon>
     </button>
     <button
       type="submit"
       color="primary"
+      class="mat-primary"
       mat-flat-button
       matTooltip="Accept element changes"
       [disabled]="form.invalid || form.pristine"

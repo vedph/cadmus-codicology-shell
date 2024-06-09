@@ -44,7 +44,7 @@
                   [disabled]="!opColumn.value"
                   (click)="onEditColumnDefinition()"
                 >
-                  <mat-icon>fact_check</mat-icon>
+                  <mat-icon class="mat-primary">fact_check</mat-icon>
                 </button>
                 <button
                   type="button"
@@ -54,7 +54,7 @@
                   [disabled]="!opColumn.value"
                   (click)="onDeleteColumn()"
                 >
-                  <mat-icon>delete</mat-icon>
+                  <mat-icon class="mat-warn">delete</mat-icon>
                 </button>
 
                 <!-- opAction -->
@@ -88,7 +88,7 @@
                   [disabled]="opForm.invalid"
                   matTooltip="Execute this action"
                 >
-                  <mat-icon>play_circle</mat-icon>
+                  <mat-icon class="mat-primary">play_circle</mat-icon>
                 </button>
 
                 <mat-checkbox
@@ -182,7 +182,7 @@
                   [disabled]="addForm.invalid"
                   matTooltip="Add the selected table element"
                 >
-                  <mat-icon>add_circle</mat-icon>
+                  <mat-icon class="mat-primary">add_circle</mat-icon>
                 </button>
 
                 <!-- trimming -->
@@ -193,7 +193,7 @@
                   matTooltip="Trim table rows"
                   (click)="onTrimRows()"
                 >
-                  <mat-icon>delete_sweep</mat-icon>
+                  <mat-icon class="mat-warn">delete_sweep</mat-icon>
                 </button>
                 <button
                   type="button"
@@ -202,7 +202,7 @@
                   matTooltip="Trim table rows and columns"
                   (click)="onTrimRowCols()"
                 >
-                  <mat-icon>delete_forever</mat-icon>
+                  <mat-icon class="mat-warn">delete_forever</mat-icon>
                 </button>
               </form>
             </fieldset>
@@ -302,6 +302,7 @@
               type="button"
               mat-flat-button
               color="primary"
+              class="mat-primary"
               (click)="addEndleaf()"
             >
               <mat-icon>add_circle</mat-icon> endleaf
@@ -332,7 +333,7 @@
                     matTooltip="Edit this endleaf"
                     (click)="editEndleaf(endleaf, i)"
                   >
-                    <mat-icon>edit</mat-icon>
+                    <mat-icon class="mat-primary">edit</mat-icon>
                   </button>
                   <button
                     type="button"
@@ -367,7 +368,7 @@
                     matTooltip="Delete this endleaf"
                     (click)="deleteEndleaf(i)"
                   >
-                    <mat-icon>remove_circle</mat-icon>
+                    <mat-icon class="mat-warn">remove_circle</mat-icon>
                   </button>
                 </td>
                 <td>{{ endleaf.location }}</td>

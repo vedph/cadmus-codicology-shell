@@ -15,6 +15,7 @@
               type="button"
               mat-flat-button
               color="primary"
+              class="mat-primary"
               (click)="addUnit()"
             >
               <mat-icon>add_circle</mat-icon> unit
@@ -46,7 +47,7 @@
                     matTooltip="Edit this unit"
                     (click)="editUnit(unit, i)"
                   >
-                    <mat-icon>edit</mat-icon>
+                    <mat-icon class="mat-primary">edit</mat-icon>
                   </button>
                   <button
                     type="button"
@@ -73,7 +74,7 @@
                     matTooltip="Delete this unit"
                     (click)="deleteUnit(i)"
                   >
-                    <mat-icon>remove_circle</mat-icon>
+                    <mat-icon class="mat-warn">remove_circle</mat-icon>
                   </button>
                 </td>
                 <td>{{ unit.ranges | codLocationRange }}</td>
@@ -95,6 +96,7 @@
                 type="button"
                 mat-flat-button
                 color="primary"
+                class="mat-primary"
                 (click)="addPalimpsest()"
               >
                 <mat-icon>add_circle</mat-icon> palimpsest
@@ -126,7 +128,7 @@
                       matTooltip="Edit this palimpsest"
                       (click)="editPalimpsest(entry, i)"
                     >
-                      <mat-icon>edit</mat-icon>
+                      <mat-icon class="mat-primary">edit</mat-icon>
                     </button>
                     <button
                       type="button"
@@ -153,7 +155,7 @@
                       matTooltip="Delete this palimpsest"
                       (click)="deletePalimpsest(i)"
                     >
-                      <mat-icon>remove_circle</mat-icon>
+                      <mat-icon class="mat-warn">remove_circle</mat-icon>
                     </button>
                   </td>
                   <td>{{ entry.range | codLocationRange }}</td>

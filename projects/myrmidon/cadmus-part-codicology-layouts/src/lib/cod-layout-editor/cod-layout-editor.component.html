@@ -146,7 +146,7 @@
             [disabled]="formulaForm.invalid"
             color="primary"
           >
-            <mat-icon>check_circle</mat-icon>
+            <mat-icon class="mat-primary">check_circle</mat-icon>
           </button>
           <button
             matTooltip="Update formula"
@@ -157,7 +157,7 @@
             [disabled]="!dimensions.value?.length"
             (click)="updateFormula()"
           >
-            <mat-icon>login</mat-icon>
+            <mat-icon class="mat-warn">login</mat-icon>
           </button>
           <mat-error
             *ngIf="
@@ -180,6 +180,7 @@
             type="button"
             mat-flat-button
             color="primary"
+            class="mat-primary"
             (click)="addDimension()"
           >
             <mat-icon>add_circle</mat-icon> dimension
@@ -204,7 +205,7 @@
               color="warn"
               (click)="removeDimension(i)"
             >
-              <mat-icon>remove_circle</mat-icon>
+              <mat-icon class="mat-warn">remove_circle</mat-icon>
             </button>
             <button
               [disabled]="first"
@@ -346,7 +347,7 @@
         matTooltip="Discard changes"
         (click)="cancel()"
       >
-        <mat-icon>clear</mat-icon>
+        <mat-icon class="mat-warn">clear</mat-icon>
       </button>
       <button
         type="submit"
@@ -355,7 +356,7 @@
         matTooltip="Accept changes"
         [disabled]="form.invalid || form.pristine"
       >
-        <mat-icon>check_circle</mat-icon>
+        <mat-icon class="mat-primary">check_circle</mat-icon>
       </button>
     </div>
   </form>

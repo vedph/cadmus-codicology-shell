@@ -89,7 +89,13 @@
   <!-- styles -->
   <fieldset>
     <legend>styles</legend>
-    <button mat-flat-button type="button" color="primary" (click)="addStyle()">
+    <button
+      mat-flat-button
+      type="button"
+      color="primary"
+      class="mat-primary"
+      (click)="addStyle()"
+    >
       <mat-icon>add_circle</mat-icon> style
     </button>
     <table>
@@ -116,7 +122,7 @@
               color="primary"
               (click)="editStyle(s, i)"
             >
-              <mat-icon>edit</mat-icon>
+              <mat-icon class="mat-primary">edit</mat-icon>
             </button>
             <button
               mat-icon-button
@@ -125,7 +131,7 @@
               color="warn"
               (click)="removeStyle(i)"
             >
-              <mat-icon>remove_circle</mat-icon>
+              <mat-icon class="mat-warn">remove_circle</mat-icon>
             </button>
             <button
               [disabled]="first"
@@ -175,7 +181,7 @@
       matTooltip="Discard changes"
       (click)="cancel()"
     >
-      <mat-icon>clear</mat-icon>
+      <mat-icon class="mat-warn">clear</mat-icon>
     </button>
     <button
       type="submit"
@@ -184,7 +190,7 @@
       matTooltip="Accept changes"
       [disabled]="form.invalid || form.pristine"
     >
-      <mat-icon>check_circle</mat-icon>
+      <mat-icon class="mat-primary">check_circle</mat-icon>
     </button>
   </div>
 </form>

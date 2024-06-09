@@ -48,6 +48,7 @@
         type="button"
         mat-flat-button
         color="primary"
+        class="mat-primary"
         (click)="addDescription()"
       >
         <mat-icon>add_circle</mat-icon> description
@@ -78,7 +79,7 @@
               matTooltip="Edit this description"
               (click)="editDescription(description, i)"
             >
-              <mat-icon>edit</mat-icon>
+              <mat-icon class="mat-primary">edit</mat-icon>
             </button>
             <button
               type="button"
@@ -105,7 +106,7 @@
               matTooltip="Delete this description"
               (click)="deleteDescription(i)"
             >
-              <mat-icon>remove_circle</mat-icon>
+              <mat-icon class="mat-warn">remove_circle</mat-icon>
             </button>
           </td>
           <td>{{ description.key }}</td>
@@ -140,6 +141,7 @@
         type="button"
         mat-flat-button
         color="primary"
+        class="mat-primary"
         (click)="addInstance()"
       >
         <mat-icon>add_circle</mat-icon> instance
@@ -170,7 +172,7 @@
               matTooltip="Edit this instance"
               (click)="editInstance(instance, i)"
             >
-              <mat-icon>edit</mat-icon>
+              <mat-icon class="mat-primary">edit</mat-icon>
             </button>
             <button
               type="button"
@@ -197,7 +199,7 @@
               matTooltip="Delete this instance"
               (click)="deleteInstance(i)"
             >
-              <mat-icon>remove_circle</mat-icon>
+              <mat-icon class="mat-warn">remove_circle</mat-icon>
             </button>
           </td>
           <td>
@@ -244,6 +246,7 @@
         type="button"
         mat-flat-button
         color="primary"
+        class="mat-primary"
         (click)="addSubscription()"
       >
         <mat-icon>add_circle</mat-icon> subscription
@@ -274,7 +277,7 @@
               matTooltip="Edit this subscription"
               (click)="editSubscription(subscription, i)"
             >
-              <mat-icon>edit</mat-icon>
+              <mat-icon class="mat-primary">edit</mat-icon>
             </button>
             <button
               type="button"
@@ -301,7 +304,7 @@
               matTooltip="Delete this subscription"
               (click)="deleteSubscription(i)"
             >
-              <mat-icon>remove_circle</mat-icon>
+              <mat-icon class="mat-warn">remove_circle</mat-icon>
             </button>
           </td>
           <td>{{ subscription.ranges | codLocationRange }}</td>
@@ -354,7 +357,7 @@
       matTooltip="Discard changes"
       (click)="cancel()"
     >
-      <mat-icon>clear</mat-icon>
+      <mat-icon class="mat-warn">clear</mat-icon>
     </button>
     <button
       type="submit"
@@ -363,7 +366,7 @@
       matTooltip="Accept changes"
       [disabled]="form.invalid || form.pristine"
     >
-      <mat-icon>check_circle</mat-icon>
+      <mat-icon class="mat-primary">check_circle</mat-icon>
     </button>
     <span style="margin-left: 8px">hand</span>
   </div>

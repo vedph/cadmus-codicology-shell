@@ -36,6 +36,7 @@
         type="button"
         mat-flat-button
         color="primary"
+        class="mat-primary"
         (click)="addSign()"
       >
         <mat-icon>add_circle</mat-icon> sign
@@ -67,7 +68,7 @@
               matTooltip="Edit this sign"
               (click)="editSign(sign, i)"
             >
-              <mat-icon>edit</mat-icon>
+              <mat-icon class="mat-primary">edit</mat-icon>
             </button>
             <button
               type="button"
@@ -94,7 +95,7 @@
               matTooltip="Delete this sign"
               (click)="deleteSign(i)"
             >
-              <mat-icon>remove_circle</mat-icon>
+              <mat-icon class="mat-warn">remove_circle</mat-icon>
             </button>
           </td>
           <td>{{ sign.eid }}</td>
@@ -127,7 +128,7 @@
       matTooltip="Discard changes"
       (click)="cancel()"
     >
-      <mat-icon>clear</mat-icon>
+      <mat-icon class="mat-warn">clear</mat-icon>
     </button>
     <button
       type="submit"
@@ -136,7 +137,7 @@
       matTooltip="Accept changes"
       [disabled]="form.invalid || form.pristine"
     >
-      <mat-icon>check_circle</mat-icon>
+      <mat-icon class="mat-primary">check_circle</mat-icon>
     </button>
     <span>description</span>
   </div>
