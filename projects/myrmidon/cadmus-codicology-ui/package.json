@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-codicology-ui",
-  "version": "6.1.0",
+  "version": "6.1.1",
   "description": "Cadmus codicology - general UI components.",
   "keywords": [
     "Cadmus"
@@ -18,7 +18,7 @@
     "@angular/core": "^18.0.0",
     "@cisstech/nge": "^17.7.1",
     "@myrmidon/ng-mat-tools": "^3.1.0",
-    "@myrmidon/cadmus-refs-lookup": "^5.1.1",
+    "@myrmidon/cadmus-refs-lookup": "^5.1.2",
     "@myrmidon/cadmus-api": "^8.1.0"
   },
   "dependencies": {

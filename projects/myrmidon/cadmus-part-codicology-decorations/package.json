@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-decorations",
-  "version": "6.1.0",
+  "version": "6.1.1",
   "description": "Cadmus codicology - decorations.",
   "keywords": [
     "Cadmus"
@@ -19,18 +19,18 @@
     "@cisstech/nge": "^17.7.1",
     "@myrmidon/ng-tools": "^3.1.1",
     "@myrmidon/ng-mat-tools": "^3.1.0",
-    "@myrmidon/cadmus-refs-assertion": "^5.1.0",
+    "@myrmidon/cadmus-refs-assertion": "^5.1.1",
     "@myrmidon/cadmus-mat-physical-size": "^5.1.0",
-    "@myrmidon/cadmus-refs-asserted-chronotope": "^5.1.1",
-    "@myrmidon/cadmus-refs-asserted-ids": "^5.1.1",
-    "@myrmidon/cadmus-refs-doc-references": "^5.1.0",
-    "@myrmidon/cadmus-refs-historical-date": "^5.1.1",
+    "@myrmidon/cadmus-refs-asserted-chronotope": "^5.1.2",
+    "@myrmidon/cadmus-refs-asserted-ids": "^5.1.4",
+    "@myrmidon/cadmus-refs-doc-references": "^5.1.1",
+    "@myrmidon/cadmus-refs-historical-date": "^5.1.2",
     "@myrmidon/cadmus-cod-location": "^5.1.0",
-    "@myrmidon/cadmus-ui-flags-picker": "^5.1.0",
-    "@myrmidon/cadmus-codicology-ui": "^6.0.0",
+    "@myrmidon/cadmus-ui-flags-picker": "^5.1.1",
+    "@myrmidon/cadmus-codicology-ui": "^6.1.0",
     "@myrmidon/cadmus-state": "^8.1.0",
-    "@myrmidon/cadmus-ui": "^8.1.0",
-    "@myrmidon/cadmus-ui-pg": "^8.1.0"
+    "@myrmidon/cadmus-ui": "^8.1.2",
+    "@myrmidon/cadmus-ui-pg": "^8.1.1"
   },
   "dependencies": {
     "tslib": "^2.5.0"
