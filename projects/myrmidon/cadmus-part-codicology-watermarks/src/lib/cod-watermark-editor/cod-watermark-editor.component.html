@@ -4,14 +4,11 @@
     <mat-form-field>
       <mat-label>name</mat-label>
       <input matInput [formControl]="name" />
-      <mat-error
-        *ngIf="$any(name).errors?.required && (name.dirty || name.touched)"
-        >name required</mat-error
-      >
-      <mat-error
-        *ngIf="$any(name).errors?.maxLength && (name.dirty || name.touched)"
-        >name too long</mat-error
-      >
+      @if ($any(name).errors?.required && (name.dirty || name.touched)) {
+      <mat-error>name required</mat-error>
+      } @if ($any(name).errors?.maxLength && (name.dirty || name.touched)) {
+      <mat-error>name too long</mat-error>
+      }
     </mat-form-field>
 
     <!-- sampleRange -->
@@ -35,13 +32,10 @@
     <mat-form-field class="long-text">
       <mat-label>description</mat-label>
       <textarea matInput rows="2" [formControl]="description"></textarea>
-      <mat-error
-        *ngIf="
-          $any(description).errors?.maxLength &&
-          (description.dirty || description.touched)
-        "
-        >description too long</mat-error
-      >
+      @if ( $any(description).errors?.maxLength && (description.dirty ||
+      description.touched) ) {
+      <mat-error>description too long</mat-error>
+      }
     </mat-form-field>
   </div>
   <fieldset>
@@ -62,7 +56,8 @@
   <br />
   <div>
     <mat-checkbox [formControl]="hasSize">has size</mat-checkbox>
-    <fieldset *ngIf="hasSize?.value">
+    @if (hasSize?.value) {
+    <fieldset>
       <legend>size</legend>
       <cadmus-mat-physical-size
         [tagEntries]="szTagEntries"
@@ -76,6 +71,7 @@
         (sizeChange)="onSizeChange($event)"
       ></cadmus-mat-physical-size>
     </fieldset>
+    }
   </div>
   <div>
     <fieldset>

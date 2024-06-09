@@ -1,102 +1,91 @@
 <form [formGroup]="form" (submit)="save()">
   <div>
     <!-- tag (bound) -->
-    <mat-form-field *ngIf="tagEntries?.length" style="width: 8em">
+    @if (tagEntries?.length) {
+    <mat-form-field style="width: 8em">
       <mat-label>tag</mat-label>
       <mat-select [formControl]="tag">
-        <mat-option *ngFor="let e of tagEntries" [value]="e.id">{{
-          e.value
-        }}</mat-option>
+        @for (e of tagEntries; track e.id) {
+        <mat-option [value]="e.id">{{ e.value }}</mat-option>
+        }
       </mat-select>
     </mat-form-field>
+    }
     <!-- tag (free) -->
-    <mat-form-field *ngIf="!tagEntries?.length">
+    @if (!tagEntries?.length) {
+    <mat-form-field>
       <mat-label>tag</mat-label>
       <input matInput [formControl]="tag" />
-      <mat-error
-        *ngIf="$any(tag).errors?.maxLength && (tag.dirty || tag.touched)"
-        >tag too long</mat-error
-      >
+      @if ($any(tag).errors?.maxLength && (tag.dirty || tag.touched)) {
+      <mat-error>tag too long</mat-error>
+      }
     </mat-form-field>
-    &nbsp;
+    } &nbsp;
 
     <!-- cover (bound) -->
-    <mat-form-field *ngIf="coverEntries?.length" style="width: 8em">
+    @if (coverEntries?.length) {
+    <mat-form-field style="width: 8em">
       <mat-label>cover</mat-label>
       <mat-select [formControl]="coverMaterial">
-        <mat-option *ngFor="let e of coverEntries" [value]="e.id">{{
-          e.value
-        }}</mat-option>
+        @for (e of coverEntries; track e.id) {
+        <mat-option [value]="e.id">{{ e.value }}</mat-option>
+        }
       </mat-select>
-      <mat-error
-        *ngIf="
-          $any(coverMaterial).errors?.required &&
-          (coverMaterial.dirty || coverMaterial.touched)
-        "
-        >cover material required</mat-error
-      >
+      @if ( $any(coverMaterial).errors?.required && (coverMaterial.dirty ||
+      coverMaterial.touched) ) {
+      <mat-error>cover material required</mat-error>
+      }
     </mat-form-field>
+    }
     <!-- cover (free) -->
-    <mat-form-field *ngIf="!coverEntries?.length">
+    @if (!coverEntries?.length) {
+    <mat-form-field>
       <mat-label>cover material</mat-label>
       <input matInput [formControl]="coverMaterial" />
-      <mat-error
-        *ngIf="
-          $any(coverMaterial).errors?.required &&
-          (coverMaterial.dirty || coverMaterial.touched)
-        "
-        >cover material required</mat-error
-      >
-      <mat-error
-        *ngIf="
-          $any(coverMaterial).errors?.maxLength &&
-          (coverMaterial.dirty || coverMaterial.touched)
-        "
-        >cover material too long</mat-error
-      >
+      @if ( $any(coverMaterial).errors?.required && (coverMaterial.dirty ||
+      coverMaterial.touched) ) {
+      <mat-error>cover material required</mat-error>
+      } @if ( $any(coverMaterial).errors?.maxLength && (coverMaterial.dirty ||
+      coverMaterial.touched) ) {
+      <mat-error>cover material too long</mat-error>
+      }
     </mat-form-field>
-
-    &nbsp;
+    } &nbsp;
     <!-- board (bound) -->
-    <mat-form-field *ngIf="boardEntries?.length" style="width: 8em">
+    @if (boardEntries?.length) {
+    <mat-form-field style="width: 8em">
       <mat-label>board</mat-label>
       <mat-select [formControl]="boardMaterial">
-        <mat-option *ngFor="let e of boardEntries" [value]="e.id">{{
-          e.value
-        }}</mat-option>
+        @for (e of boardEntries; track e.id) {
+        <mat-option [value]="e.id">{{ e.value }}</mat-option>
+        }
       </mat-select>
-      <mat-error
-        *ngIf="
-          $any(boardMaterial).errors?.required &&
-          (boardMaterial.dirty || boardMaterial.touched)
-        "
-        >board material required</mat-error
-      >
+      @if ( $any(boardMaterial).errors?.required && (boardMaterial.dirty ||
+      boardMaterial.touched) ) {
+      <mat-error>board material required</mat-error>
+      }
     </mat-form-field>
+    }
     <!-- board (free) -->
-    <mat-form-field *ngIf="!boardEntries?.length">
+    @if (!boardEntries?.length) {
+    <mat-form-field>
       <mat-label>board material</mat-label>
       <input matInput [formControl]="boardMaterial" />
-      <mat-error
-        *ngIf="
-          $any(boardMaterial).errors?.required &&
-          (boardMaterial.dirty || boardMaterial.touched)
-        "
-        >board material required</mat-error
-      >
-      <mat-error
-        *ngIf="
-          $any(boardMaterial).errors?.maxLength &&
-          (boardMaterial.dirty || boardMaterial.touched)
-        "
-        >board material too long</mat-error
-      >
+      @if ( $any(boardMaterial).errors?.required && (boardMaterial.dirty ||
+      boardMaterial.touched) ) {
+      <mat-error>board material required</mat-error>
+      } @if ( $any(boardMaterial).errors?.maxLength && (boardMaterial.dirty ||
+      boardMaterial.touched) ) {
+      <mat-error>board material too long</mat-error>
+      }
     </mat-form-field>
+    }
   </div>
 
   <!-- size -->
   <mat-checkbox [formControl]="hasSize">has size</mat-checkbox>
-  <fieldset *ngIf="hasSize?.value">
+  @if (hasSize?.value) {
+  <fieldset>
     <legend>size</legend>
     <cadmus-mat-physical-size
       [tagEntries]="szTagEntries"
@@ -110,6 +99,7 @@
       (sizeChange)="onSizeChange($event)"
     ></cadmus-mat-physical-size>
   </fieldset>
+  }
 
   <!-- description -->
   <br />
@@ -117,13 +107,10 @@
     <mat-form-field style="width: 100%">
       <mat-label>description</mat-label>
       <textarea rows="3" matInput [formControl]="description"></textarea>
-      <mat-error
-        *ngIf="
-          $any(description).errors?.maxLength &&
-          (description.dirty || description.touched)
-        "
-        >description too long</mat-error
-      >
+      @if ( $any(description).errors?.maxLength && (description.dirty ||
+      description.touched) ) {
+      <mat-error>description too long</mat-error>
+      }
     </mat-form-field>
   </div>
 

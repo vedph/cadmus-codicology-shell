@@ -20,7 +20,8 @@
               <mat-icon>add_circle</mat-icon> binding
             </button>
           </div>
-          <table *ngIf="entries?.value?.length">
+          @if (entries.value.length) {
+          <table>
             <thead>
               <tr>
                 <th></th>
@@ -32,14 +33,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                *ngFor="
-                  let entry of entries?.value;
-                  let i = index;
-                  let first = first;
-                  let last = last
-                "
-              >
+              @for ( entry of entries.value; track entry; let i = $index; let
+              first = $first; let last = $last) {
+              <tr>
                 <td>
                   <button
                     type="button"
@@ -95,11 +91,14 @@
                 <td>{{ entry.chronotope.date | historicalDate }}</td>
                 <td></td>
               </tr>
+              }
             </tbody>
           </table>
+          }
         </mat-tab>
 
-        <mat-tab label="binding" *ngIf="editedBinding">
+        @if (editedBinding) {
+        <mat-tab label="binding">
           <cadmus-cod-binding-editor
             [tagEntries]="tagEntries"
             [coverEntries]="coverEntries"
@@ -116,6 +115,7 @@
             (editorClose)="editBinding(null)"
           ></cadmus-cod-binding-editor>
         </mat-tab>
+        }
       </mat-tab-group>
     </mat-card-content>
     <mat-card-actions>

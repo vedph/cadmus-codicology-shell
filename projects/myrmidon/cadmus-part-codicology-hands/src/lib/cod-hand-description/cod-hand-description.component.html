@@ -4,10 +4,9 @@
     <mat-form-field>
       <mat-label>key</mat-label>
       <input matInput [formControl]="key" />
-      <mat-error
-        *ngIf="$any(key).errors?.maxLength && (key.dirty || key.touched)"
-        >key too long</mat-error
-      >
+      @if ($any(key).errors?.maxLength && (key.dirty || key.touched)) {
+      <mat-error>key too long</mat-error>
+      }
     </mat-form-field>
   </div>
   <div>
@@ -15,10 +14,9 @@
     <mat-form-field class="long-text">
       <mat-label>description</mat-label>
       <textarea matInput rows="2" [formControl]="dsc"></textarea>
-      <mat-error
-        *ngIf="$any(dsc).errors?.maxLength && (dsc.dirty || dsc.touched)"
-        >description too long</mat-error
-      >
+      @if ($any(dsc).errors?.maxLength && (dsc.dirty || dsc.touched)) {
+      <mat-error>description too long</mat-error>
+      }
     </mat-form-field>
   </div>
   <fieldset>
@@ -42,7 +40,8 @@
         <mat-icon>add_circle</mat-icon> sign
       </button>
     </div>
-    <table *ngIf="signs?.value?.length">
+    @if (signs.value.length) {
+    <table>
       <thead>
         <tr>
           <th></th>
@@ -52,14 +51,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          *ngFor="
-            let sign of signs?.value;
-            let i = index;
-            let first = first;
-            let last = last
-          "
-        >
+        @for ( sign of signs.value; track sign; let i = $index; let first =
+        $first; let last = $last) {
+        <tr>
           <td>
             <button
               type="button"
@@ -102,8 +96,10 @@
           <td>{{ sign.type }}</td>
           <td>{{ sign.sampleLocation | codLocation }}</td>
         </tr>
+        }
       </tbody>
     </table>
+    }
 
     <!-- edited sign -->
     <mat-expansion-panel [disabled]="!editedSign" [expanded]="editedSign">

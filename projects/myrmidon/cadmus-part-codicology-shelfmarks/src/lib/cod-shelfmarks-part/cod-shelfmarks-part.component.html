@@ -20,7 +20,8 @@
               <mat-icon>add_circle</mat-icon> shelfmark
             </button>
           </div>
-          <table *ngIf="shelfmarks?.value?.length">
+          @if (shelfmarks.value.length) {
+          <table>
             <thead>
               <tr>
                 <th></th>
@@ -32,14 +33,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                *ngFor="
-                  let entry of shelfmarks?.value;
-                  let i = index;
-                  let first = first;
-                  let last = last
-                "
-              >
+              @for ( entry of shelfmarks.value; track entry; let i = $index;
+              let first = $first; let last = $last) {
+              <tr>
                 <td>
                   <button
                     type="button"
@@ -84,11 +80,14 @@
                 <td>{{ entry.fund }}</td>
                 <td>{{ entry.location }}</td>
               </tr>
+              }
             </tbody>
           </table>
+          }
         </mat-tab>
 
-        <mat-tab label="shelfmark" *ngIf="editedShelfmark">
+        @if (editedShelfmark) {
+        <mat-tab label="shelfmark">
           <cadmus-cod-shelfmark-editor
             [tagEntries]="tagEntries"
             [libEntries]="libEntries"
@@ -97,6 +96,7 @@
             (editorClose)="editShelfmark(null)"
           ></cadmus-cod-shelfmark-editor>
         </mat-tab>
+        }
       </mat-tab-group>
     </mat-card-content>
     <mat-card-actions>

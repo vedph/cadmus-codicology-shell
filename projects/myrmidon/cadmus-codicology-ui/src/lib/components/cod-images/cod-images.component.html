@@ -11,14 +11,9 @@
         <mat-icon>add_circle</mat-icon> image
       </button>
     </div>
-    <div
-      *ngFor="
-        let item of imagesArr.controls;
-        let i = index;
-        let first = first;
-        let last = last
-      "
-    >
+    @for ( item of imagesArr.controls; track item; let i = $index; let first =
+    $first; let last = $last) {
+    <div>
       <!-- child form -->
       <div [formGroupName]="i">
         <!-- child actions -->
@@ -50,92 +45,69 @@
         >
           <mat-icon>arrow_downward</mat-icon>
         </button>
-
         <!-- child controls -->
         <div class="form-row">
           <!-- type (bound) -->
-          <mat-form-field *ngIf="typeEntries?.length">
+          @if (typeEntries?.length) {
+          <mat-form-field>
             <mat-label>type</mat-label>
             <mat-select formControlName="type">
-              <mat-option *ngFor="let e of typeEntries" [value]="e.id">{{
-                e.value
-              }}</mat-option>
+              @for (e of typeEntries; track e.id) {
+              <mat-option [value]="e.id">{{ e.value }}</mat-option>
+              }
             </mat-select>
-            <mat-error
-              *ngIf="
-                $any(item)['controls'].type.errors?.required &&
-                ($any(item)['controls'].type.dirty ||
-                  $any(item)['controls'].type.touched)
-              "
-              >type required</mat-error
-            >
+            @if ( $any(item)['controls'].type.errors?.required &&
+            ($any(item)['controls'].type.dirty ||
+            $any(item)['controls'].type.touched) ) {
+            <mat-error>type required</mat-error>
+            }
           </mat-form-field>
+          }
           <!-- type (free) -->
-          <mat-form-field *ngIf="!typeEntries?.length">
+          @if (!typeEntries?.length) {
+          <mat-form-field>
             <mat-label>type</mat-label>
             <input matInput formControlName="type" />
-            <mat-error
-              *ngIf="
-                $any(item)['controls'].type.errors?.required &&
-                ($any(item)['controls'].type.dirty ||
-                  $any(item)['controls'].type.touched)
-              "
-              >type required</mat-error
-            >
-            <mat-error
-              *ngIf="
-                $any(item)['controls'].type.errors?.maxLength &&
-                ($any(item)['controls'].type.dirty ||
-                  $any(item)['controls'].type.touched)
-              "
-              >type too long</mat-error
-            >
+            @if ( $any(item)['controls'].type.errors?.required &&
+            ($any(item)['controls'].type.dirty ||
+            $any(item)['controls'].type.touched) ) {
+            <mat-error>type required</mat-error>
+            } @if ( $any(item)['controls'].type.errors?.maxLength &&
+            ($any(item)['controls'].type.dirty ||
+            $any(item)['controls'].type.touched) ) {
+            <mat-error>type too long</mat-error>
+            }
           </mat-form-field>
-
+          }
           <!-- id -->
           &nbsp;
           <mat-form-field>
             <mat-label>ID</mat-label>
             <input matInput formControlName="id" />
-            <mat-error
-              *ngIf="
-                $any(item)['controls'].id.errors?.required &&
-                ($any(item)['controls'].id.dirty ||
-                  $any(item)['controls'].id.touched)
-              "
-              >ID required</mat-error
-            >
-            <mat-error
-              *ngIf="
-                $any(item)['controls'].id.errors?.maxLength &&
-                ($any(item)['controls'].id.dirty ||
-                  $any(item)['controls'].id.touched)
-              "
-              >ID too long</mat-error
-            >
+            @if ( $any(item)['controls'].id.errors?.required &&
+            ($any(item)['controls'].id.dirty ||
+            $any(item)['controls'].id.touched) ) {
+            <mat-error>ID required</mat-error>
+            } @if ( $any(item)['controls'].id.errors?.maxLength &&
+            ($any(item)['controls'].id.dirty ||
+            $any(item)['controls'].id.touched) ) {
+            <mat-error>ID too long</mat-error>
+            }
           </mat-form-field>
-
           <!-- sourceId -->
           &nbsp;
           <mat-form-field>
             <mat-label>source</mat-label>
             <input matInput formControlName="sourceId" />
-            <mat-error
-              *ngIf="
-                $any(item)['controls'].sourceId.errors?.required &&
-                ($any(item)['controls'].sourceId.dirty ||
-                  $any(item)['controls'].sourceId.touched)
-              "
-              >source required</mat-error
-            >
-            <mat-error
-              *ngIf="
-                $any(item)['controls'].sourceId.errors?.maxLength &&
-                ($any(item)['controls'].sourceId.dirty ||
-                  $any(item)['controls'].sourceId.touched)
-              "
-              >source too long</mat-error
-            >
+            @if ( $any(item)['controls'].sourceId.errors?.required &&
+            ($any(item)['controls'].sourceId.dirty ||
+            $any(item)['controls'].sourceId.touched) ) {
+            <mat-error>source required</mat-error>
+            } @if ( $any(item)['controls'].sourceId.errors?.maxLength &&
+            ($any(item)['controls'].sourceId.dirty ||
+            $any(item)['controls'].sourceId.touched) ) {
+            <mat-error>source too long</mat-error>
+            }
           </mat-form-field>
         </div>
         <div class="form-row">
@@ -143,35 +115,26 @@
           <mat-form-field style="flex: 1 0 auto">
             <mat-label>label</mat-label>
             <input matInput formControlName="label" />
-            <mat-error
-              *ngIf="
-                $any(item)['controls'].label.errors?.maxLength &&
-                ($any(item)['controls'].label.dirty ||
-                  $any(item)['controls'].label.touched)
-              "
-              >label too long</mat-error
-            >
+            @if ( $any(item)['controls'].label.errors?.maxLength &&
+            ($any(item)['controls'].label.dirty ||
+            $any(item)['controls'].label.touched) ) {
+            <mat-error>label too long</mat-error>
+            }
           </mat-form-field>
-
           <!-- copyright -->
           &nbsp;
           <mat-form-field>
             <mat-label>copyright</mat-label>
-            <input
-              matInput
-              formControlName="copyright"
-            />
-            <mat-error
-              *ngIf="
-                $any(item)['controls'].copyright.errors?.maxLength &&
-                ($any(item)['controls'].copyright.dirty ||
-                  $any(item)['controls'].copyright.touched)
-              "
-              >copyright too long</mat-error
-            >
+            <input matInput formControlName="copyright" />
+            @if ( $any(item)['controls'].copyright.errors?.maxLength &&
+            ($any(item)['controls'].copyright.dirty ||
+            $any(item)['controls'].copyright.touched) ) {
+            <mat-error>copyright too long</mat-error>
+            }
           </mat-form-field>
         </div>
       </div>
     </div>
+    }
   </div>
 </form>

@@ -20,7 +20,8 @@
               <mat-icon>add_circle</mat-icon> watermark
             </button>
           </div>
-          <table *ngIf="watermarks?.value?.length">
+          @if (watermarks.value.length) {
+          <table>
             <thead>
               <tr>
                 <th></th>
@@ -30,14 +31,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                *ngFor="
-                  let entry of watermarks?.value;
-                  let i = index;
-                  let first = first;
-                  let last = last
-                "
-              >
+              @for ( entry of watermarks.value; track entry; let i = $index;
+              let first = $first; let last = $last) {
+              <tr>
                 <td>
                   <button
                     type="button"
@@ -80,11 +76,14 @@
                 <td>{{ entry.sampleRange | codLocationRange }}</td>
                 <td>{{ entry.chronotopes?.length || 0 }}</td>
               </tr>
+              }
             </tbody>
           </table>
+          }
         </mat-tab>
 
-        <mat-tab label="watermark" *ngIf="editedWatermark">
+        @if (editedWatermark) {
+        <mat-tab label="watermark">
           <cadmus-cod-watermark-editor
             [idTagEntries]="idTagEntries"
             [idScopeEntries]="idScopeEntries"
@@ -102,6 +101,7 @@
             (editorClose)="editWatermark(null)"
           ></cadmus-cod-watermark-editor>
         </mat-tab>
+        }
       </mat-tab-group>
     </mat-card-content>
     <mat-card-actions>

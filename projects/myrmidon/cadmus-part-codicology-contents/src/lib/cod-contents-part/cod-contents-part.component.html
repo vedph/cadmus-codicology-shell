@@ -20,7 +20,8 @@
               <mat-icon>add_circle</mat-icon> content
             </button>
           </div>
-          <table *ngIf="contents?.value?.length">
+          @if (contents.value.length) {
+          <table>
             <thead>
               <tr>
                 <th></th>
@@ -30,14 +31,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                *ngFor="
-                  let entry of contents?.value;
-                  let i = index;
-                  let first = first;
-                  let last = last
-                "
-              >
+              @for ( entry of contents.value; track entry; let i = $index; let
+              first = $first; let last = $last) {
+              <tr>
                 <td class="fit-width">
                   <button
                     type="button"
@@ -80,11 +76,14 @@
                 <td>{{ entry.title }}</td>
                 <td>{{ entry.location }}</td>
               </tr>
+              }
             </tbody>
           </table>
+          }
         </mat-tab>
 
-        <mat-tab label="content" *ngIf="editedContent">
+        @if (editedContent) {
+        <mat-tab label="content">
           <cadmus-cod-content-editor
             [tagEntries]="tagEntries"
             [stateEntries]="stateEntries"
@@ -95,6 +94,7 @@
           >
           </cadmus-cod-content-editor>
         </mat-tab>
+        }
       </mat-tab-group>
     </mat-card-content>
     <mat-card-actions>

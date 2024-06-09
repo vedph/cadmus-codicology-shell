@@ -1,31 +1,31 @@
 <form [formGroup]="form" (submit)="save()">
   <div class="form-row">
     <!-- type (bound) -->
-    <mat-form-field *ngIf="typeEntries?.length">
+    @if (typeEntries?.length) {
+    <mat-form-field>
       <mat-label>type</mat-label>
       <mat-select [formControl]="type">
-        <mat-option *ngFor="let e of typeEntries" [value]="e.id">{{
-          e.value
-        }}</mat-option>
+        @for (e of typeEntries; track e.id) {
+        <mat-option [value]="e.id">{{ e.value }}</mat-option>
+        }
       </mat-select>
-      <mat-error
-        *ngIf="$any(type).errors?.required && (type.dirty || type.touched)"
-        >type required</mat-error
-      >
+      @if ($any(type).errors?.required && (type.dirty || type.touched)) {
+      <mat-error>type required</mat-error>
+      }
     </mat-form-field>
+    }
     <!-- type (free) -->
-    <mat-form-field *ngIf="!typeEntries?.length">
+    @if (!typeEntries?.length) {
+    <mat-form-field>
       <mat-label>type</mat-label>
       <input matInput [formControl]="type" />
-      <mat-error
-        *ngIf="$any(type).errors?.required && (type.dirty || type.touched)"
-        >type required</mat-error
-      >
-      <mat-error
-        *ngIf="$any(type).errors?.maxLength && (type.dirty || type.touched)"
-        >type too long</mat-error
-      >
+      @if ($any(type).errors?.required && (type.dirty || type.touched)) {
+      <mat-error>type required</mat-error>
+      } @if ($any(type).errors?.maxLength && (type.dirty || type.touched)) {
+      <mat-error>type too long</mat-error>
+      }
     </mat-form-field>
+    }
 
     <!-- range -->
     <cadmus-cod-location
@@ -42,18 +42,13 @@
     <mat-form-field class="long-text">
       <mat-label>incipit</mat-label>
       <input matInput [formControl]="incipit" />
-      <mat-error
-        *ngIf="
-          $any(incipit).errors?.required && (incipit.dirty || incipit.touched)
-        "
-        >incipit required</mat-error
-      >
-      <mat-error
-        *ngIf="
-          $any(incipit).errors?.maxLength && (incipit.dirty || incipit.touched)
-        "
-        >incipit too long</mat-error
-      >
+      @if ( $any(incipit).errors?.required && (incipit.dirty || incipit.touched)
+      ) {
+      <mat-error>incipit required</mat-error>
+      } @if ( $any(incipit).errors?.maxLength && (incipit.dirty ||
+      incipit.touched) ) {
+      <mat-error>incipit too long</mat-error>
+      }
     </mat-form-field>
   </div>
 
@@ -62,13 +57,10 @@
     <mat-form-field class="long-text">
       <mat-label>explicit</mat-label>
       <input matInput [formControl]="explicit" />
-      <mat-error
-        *ngIf="
-          $any(explicit).errors?.maxLength &&
-          (explicit.dirty || explicit.touched)
-        "
-        >explicit too long</mat-error
-      >
+      @if ( $any(explicit).errors?.maxLength && (explicit.dirty ||
+      explicit.touched) ) {
+      <mat-error>explicit too long</mat-error>
+      }
     </mat-form-field>
   </div>
 
@@ -77,10 +69,9 @@
     <mat-form-field class="long-text">
       <mat-label>text</mat-label>
       <textarea matInput rows="3" [formControl]="text"></textarea>
-      <mat-error
-        *ngIf="$any(text).errors?.maxLength && (text.dirty || text.touched)"
-        >text too long</mat-error
-      >
+      @if ($any(text).errors?.maxLength && (text.dirty || text.touched)) {
+      <mat-error>text too long</mat-error>
+      }
     </mat-form-field>
   </div>
 
@@ -89,10 +80,9 @@
     <mat-form-field class="long-text">
       <mat-label>note</mat-label>
       <textarea matInput rows="3" [formControl]="note"></textarea>
-      <mat-error
-        *ngIf="$any(note).errors?.maxLength && (note.dirty || note.touched)"
-        >note too long</mat-error
-      >
+      @if ($any(note).errors?.maxLength && (note.dirty || note.touched)) {
+      <mat-error>note too long</mat-error>
+      }
     </mat-form-field>
   </div>
 

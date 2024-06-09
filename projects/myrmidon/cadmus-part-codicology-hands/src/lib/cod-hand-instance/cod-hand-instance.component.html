@@ -5,14 +5,16 @@
       <!-- picker -->
       <legend>script(s)</legend>
       <div>
-        <mat-form-field *ngIf="scriptEntries?.length">
+        @if (scriptEntries?.length) {
+        <mat-form-field>
           <mat-label>script</mat-label>
           <mat-select [formControl]="script">
-            <mat-option *ngFor="let e of scriptEntries" [value]="e">{{
-              e.value
-            }}</mat-option>
+            @for (e of scriptEntries; track e.id) {
+            <mat-option [value]="e">{{ e.value }}</mat-option>
+            }
           </mat-select>
         </mat-form-field>
+        }
         <button
           type="button"
           mat-flat-button
@@ -28,14 +30,9 @@
       <div>
         <table>
           <tbody>
-            <tr
-              *ngFor="
-                let e of scripts.value;
-                let i = index;
-                let first = first;
-                let last = last
-              "
-            >
+            @for ( e of scripts.value; track e; let i = $index; let first =
+            $first; let last = $last) {
+            <tr>
               <td>
                 <button
                   mat-icon-button
@@ -67,10 +64,13 @@
               </td>
               <td>{{ i + 1 }}. {{ e.value }}</td>
             </tr>
+            }
           </tbody>
         </table>
       </div>
-      <span class="error" *ngIf="scripts.invalid">script(s) required</span>
+      @if (scripts.invalid) {
+      <span class="error">script(s) required</span>
+      }
     </fieldset>
 
     <!-- rank -->
@@ -80,19 +80,21 @@
     </mat-form-field>
 
     <!-- dscKey -->
-    <mat-form-field *ngIf="dscKeys?.length">
+    @if (dscKeys?.length) {
+    <mat-form-field>
       <mat-label>dsc.key</mat-label>
       <mat-select [formControl]="dscKey">
         <mat-option [value]="null">--</mat-option>
-        <mat-option *ngFor="let k of dscKeys" [value]="k">{{ k }}</mat-option>
+        @for (k of dscKeys; track k) {
+        <mat-option [value]="k">{{ k }}</mat-option>
+        }
       </mat-select>
-      <mat-error
-        *ngIf="
-          $any(dscKey).errors?.required && (dscKey.dirty || dscKey.touched)
-        "
-        >key required</mat-error
-      >
+      @if ( $any(dscKey).errors?.required && (dscKey.dirty || dscKey.touched) )
+      {
+      <mat-error>key required</mat-error>
+      }
     </mat-form-field>
+    }
 
     <!-- ranges -->
     <cadmus-cod-location

@@ -20,7 +20,8 @@
               <mat-icon>add_circle</mat-icon> edit
             </button>
           </div>
-          <table *ngIf="edits?.value?.length">
+          @if (edits.value.length) {
+          <table>
             <thead>
               <tr>
                 <th></th>
@@ -30,14 +31,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                *ngFor="
-                  let entry of edits?.value;
-                  let i = index;
-                  let first = first;
-                  let last = last
-                "
-              >
+              @for ( entry of edits.value; track entry; let i = $index; let
+              first = $first; let last = $last) {
+              <tr>
                 <td class="fit-width">
                   <button
                     type="button"
@@ -76,17 +72,22 @@
                     <mat-icon class="mat-warn">remove_circle</mat-icon>
                   </button>
                 </td>
-                <td>{{ entry.type | flatLookup: typeEntries:"id":"value" }}</td>
+                <td>
+                  {{ entry.type | flatLookup : typeEntries : "id" : "value" }}
+                </td>
                 <td>{{ entry.ranges | codLocationRange }}</td>
                 <td>
                   {{ entry.text | ellipsis }}
                 </td>
               </tr>
+              }
             </tbody>
           </table>
+          }
         </mat-tab>
 
-        <mat-tab label="edit" *ngIf="editedEdit">
+        @if (editedEdit) {
+        <mat-tab label="edit">
           <cadmus-cod-edit-editor
             [tagEntries]="tagEntries"
             [langEntries]="langEntries"
@@ -103,6 +104,7 @@
             (editorClose)="editEdit(null)"
           ></cadmus-cod-edit-editor>
         </mat-tab>
+        }
       </mat-tab-group>
     </mat-card-content>
     <mat-card-actions>

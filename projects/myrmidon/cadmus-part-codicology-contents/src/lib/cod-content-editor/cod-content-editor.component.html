@@ -4,10 +4,9 @@
     <mat-form-field>
       <mat-label>EID</mat-label>
       <input matInput [formControl]="eid" />
-      <mat-error
-        *ngIf="$any(eid).errors?.maxLength && (eid.dirty || eid.touched)"
-        >EID too long</mat-error
-      >
+      @if ($any(eid).errors?.maxLength && (eid.dirty || eid.touched)) {
+      <mat-error>EID too long</mat-error>
+      }
     </mat-form-field>
     <!-- ranges -->
     <cadmus-cod-location
@@ -17,23 +16,26 @@
       (locationChange)="onLocationChange($event)"
     ></cadmus-cod-location>
     <!-- tag (bound) -->
-    <mat-form-field *ngIf="tagEntries?.length" style="width: 8em">
+    @if (tagEntries?.length) {
+    <mat-form-field style="width: 8em">
       <mat-label>tag</mat-label>
       <mat-select [formControl]="tag">
-        <mat-option *ngFor="let e of tagEntries" [value]="e.id">{{
-          e.value
-        }}</mat-option>
+        @for (e of tagEntries; track e.id) {
+        <mat-option [value]="e.id">{{ e.value }}</mat-option>
+        }
       </mat-select>
     </mat-form-field>
+    }
     <!-- tag (free) -->
-    <mat-form-field *ngIf="!tagEntries?.length">
+    @if (!tagEntries?.length) {
+    <mat-form-field>
       <mat-label>tag</mat-label>
       <input matInput [formControl]="tag" />
-      <mat-error
-        *ngIf="$any(tag).errors?.maxLength && (tag.dirty || tag.touched)"
-        >tag too long</mat-error
-      >
+      @if ($any(tag).errors?.maxLength && (tag.dirty || tag.touched)) {
+      <mat-error>tag too long</mat-error>
+      }
     </mat-form-field>
+    }
   </div>
   <div>
     <!-- id -->
@@ -55,39 +57,31 @@
     <mat-form-field>
       <mat-label>author</mat-label>
       <input matInput [formControl]="author" />
-      <mat-error
-        *ngIf="
-          $any(author).errors?.maxLength && (author.dirty || author.touched)
-        "
-        >author too long</mat-error
-      >
+      @if ( $any(author).errors?.maxLength && (author.dirty || author.touched) )
+      {
+      <mat-error>author too long</mat-error>
+      }
     </mat-form-field>
 
     <!-- title -->
     <mat-form-field>
       <mat-label>title</mat-label>
       <input matInput [formControl]="title" />
-      <mat-error
-        *ngIf="$any(title).errors?.required && (title.dirty || title.touched)"
-        >title required</mat-error
-      >
-      <mat-error
-        *ngIf="$any(title).errors?.maxLength && (title.dirty || title.touched)"
-        >title too long</mat-error
-      >
+      @if ($any(title).errors?.required && (title.dirty || title.touched)) {
+      <mat-error>title required</mat-error>
+      } @if ($any(title).errors?.maxLength && (title.dirty || title.touched)) {
+      <mat-error>title too long</mat-error>
+      }
     </mat-form-field>
     &nbsp;
     <!-- location -->
     <mat-form-field style="width: 6em">
       <mat-label>location</mat-label>
       <input matInput [formControl]="location" />
-      <mat-error
-        *ngIf="
-          $any(location).errors?.maxLength &&
-          (location.dirty || location.touched)
-        "
-        >location too long</mat-error
-      >
+      @if ( $any(location).errors?.maxLength && (location.dirty ||
+      location.touched) ) {
+      <mat-error>location too long</mat-error>
+      }
     </mat-form-field>
   </div>
   <div>
@@ -95,13 +89,10 @@
     <mat-form-field>
       <mat-label>claimed author</mat-label>
       <input matInput [formControl]="claimedAuthor" />
-      <mat-error
-        *ngIf="
-          $any(claimedAuthor).errors?.maxLength &&
-          (claimedAuthor.dirty || claimedAuthor.touched)
-        "
-        >author too long</mat-error
-      >
+      @if ( $any(claimedAuthor).errors?.maxLength && (claimedAuthor.dirty ||
+      claimedAuthor.touched) ) {
+      <mat-error>author too long</mat-error>
+      }
     </mat-form-field>
 
     &nbsp;
@@ -109,13 +100,10 @@
     <mat-form-field>
       <mat-label>claimed title</mat-label>
       <input matInput [formControl]="claimedTitle" />
-      <mat-error
-        *ngIf="
-          $any(claimedTitle).errors?.maxLength &&
-          (claimedTitle.dirty || claimedTitle.touched)
-        "
-        >title too long</mat-error
-      >
+      @if ( $any(claimedTitle).errors?.maxLength && (claimedTitle.dirty ||
+      claimedTitle.touched) ) {
+      <mat-error>title too long</mat-error>
+      }
     </mat-form-field>
   </div>
   <div>
@@ -123,10 +111,9 @@
     <mat-form-field class="long-text">
       <mat-label>note</mat-label>
       <input matInput [formControl]="note" />
-      <mat-error
-        *ngIf="$any(note).errors?.maxLength && (note.dirty || note.touched)"
-        >note too long</mat-error
-      >
+      @if ($any(note).errors?.maxLength && (note.dirty || note.touched)) {
+      <mat-error>note too long</mat-error>
+      }
     </mat-form-field>
   </div>
   <div>
@@ -134,12 +121,10 @@
     <mat-form-field class="long-text">
       <mat-label>incipit</mat-label>
       <textarea rows="2" matInput [formControl]="incipit"></textarea>
-      <mat-error
-        *ngIf="
-          $any(incipit).errors?.maxLength && (incipit.dirty || incipit.touched)
-        "
-        >incipit too long</mat-error
-      >
+      @if ( $any(incipit).errors?.maxLength && (incipit.dirty ||
+      incipit.touched) ) {
+      <mat-error>incipit too long</mat-error>
+      }
     </mat-form-field>
   </div>
   <div>
@@ -147,13 +132,10 @@
     <mat-form-field class="long-text">
       <mat-label>explicit</mat-label>
       <textarea rows="2" matInput [formControl]="explicit"></textarea>
-      <mat-error
-        *ngIf="
-          $any(explicit).errors?.maxLength &&
-          (explicit.dirty || explicit.touched)
-        "
-        >explicit too long</mat-error
-      >
+      @if ( $any(explicit).errors?.maxLength && (explicit.dirty ||
+      explicit.touched) ) {
+      <mat-error>explicit too long</mat-error>
+      }
     </mat-form-field>
   </div>
   <div>
@@ -177,7 +159,8 @@
         <mat-icon>add_circle</mat-icon> annotation
       </button>
     </div>
-    <table *ngIf="annotations?.value?.length">
+    @if (annotations.value?.length) {
+    <table>
       <thead>
         <tr>
           <th></th>
@@ -187,14 +170,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          *ngFor="
-            let entry of annotations?.value;
-            let i = index;
-            let first = first;
-            let last = last
-          "
-        >
+        @for ( entry of annotations.value; track entry; let i = $index; let
+        first = $first; let last = $last) {
+        <tr>
           <td>
             <button
               type="button"
@@ -241,8 +219,10 @@
             {{ entry.text | ellipsis }}
           </td>
         </tr>
+        }
       </tbody>
     </table>
+    }
 
     <mat-expansion-panel
       [expanded]="editedAnnotation"

@@ -4,20 +4,18 @@
     <mat-form-field>
       <mat-label>EID</mat-label>
       <input matInput [formControl]="eid" />
-      <mat-error
-        *ngIf="$any(eid).errors?.maxLength && (eid.dirty || eid.touched)"
-        >EID too long</mat-error
-      >
+      @if ($any(eid).errors?.maxLength && (eid.dirty || eid.touched)) {
+      <mat-error>EID too long</mat-error>
+      }
     </mat-form-field>
 
     <!-- name -->
     <mat-form-field>
       <mat-label>name</mat-label>
       <input matInput [formControl]="name" />
-      <mat-error
-        *ngIf="$any(name).errors?.maxLength && (name.dirty || name.touched)"
-        >name too long</mat-error
-      >
+      @if ($any(name).errors?.maxLength && (name.dirty || name.touched)) {
+      <mat-error>name too long</mat-error>
+      }
     </mat-form-field>
   </div>
 
@@ -54,7 +52,8 @@
         <mat-icon>add_circle</mat-icon> description
       </button>
     </div>
-    <table *ngIf="descriptions?.value?.length">
+    @if (descriptions.value.length) {
+    <table>
       <thead>
         <tr>
           <th></th>
@@ -63,14 +62,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          *ngFor="
-            let description of descriptions?.value;
-            let i = index;
-            let first = first;
-            let last = last
-          "
-        >
+        @for ( description of descriptions.value; track description; let i =
+        $index; let first = $first; let last = $last) {
+        <tr>
           <td>
             <button
               type="button"
@@ -113,8 +107,10 @@
           <td>{{ description.signs?.length }}</td>
           <td></td>
         </tr>
+        }
       </tbody>
     </table>
+    }
     <mat-expansion-panel [expanded]="editedDsc" [disabled]="!editedDsc">
       <mat-expansion-panel-header
         >description #{{ editedDscIndex + 1 }}</mat-expansion-panel-header
@@ -147,7 +143,8 @@
         <mat-icon>add_circle</mat-icon> instance
       </button>
     </div>
-    <table *ngIf="instances?.value?.length">
+    @if (instances.value.length) {
+    <table>
       <thead>
         <tr>
           <th></th>
@@ -156,14 +153,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          *ngFor="
-            let instance of instances?.value;
-            let i = index;
-            let first = first;
-            let last = last
-          "
-        >
+        @for ( instance of instances.value; track instance; let i = $index; let
+        first = $first; let last = $last) {
+        <tr>
           <td>
             <button
               type="button"
@@ -209,8 +201,10 @@
           </td>
           <td>{{ instance.ranges | codLocationRange }}</td>
         </tr>
+        }
       </tbody>
     </table>
+    }
     <mat-expansion-panel [expanded]="editedIst" [disabled]="!editedIst">
       <mat-expansion-panel-header
         >instance #{{ editedIstIndex + 1 }}</mat-expansion-panel-header
@@ -252,7 +246,8 @@
         <mat-icon>add_circle</mat-icon> subscription
       </button>
     </div>
-    <table *ngIf="subscriptions?.value?.length">
+    @if (subscriptions.value.length) {
+    <table>
       <thead>
         <tr>
           <th></th>
@@ -261,14 +256,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          *ngFor="
-            let subscription of subscriptions?.value;
-            let i = index;
-            let first = first;
-            let last = last
-          "
-        >
+        @for ( subscription of subscriptions.value; track subscription; let i =
+        $index; let first = $first; let last = $last) {
+        <tr>
           <td>
             <button
               type="button"
@@ -315,8 +305,10 @@
             }}
           </td>
         </tr>
+        }
       </tbody>
     </table>
+    }
     <mat-expansion-panel [expanded]="editedSub" [disabled]="!editedSub">
       <mat-expansion-panel-header
         >subscription #{{ editedSubIndex + 1 }}</mat-expansion-panel-header

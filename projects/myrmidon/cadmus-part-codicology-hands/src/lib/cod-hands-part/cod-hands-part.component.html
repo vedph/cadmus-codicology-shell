@@ -20,7 +20,8 @@
               <mat-icon>add_circle</mat-icon> hand
             </button>
           </div>
-          <table *ngIf="hands?.value?.length">
+          @if (hands.value.length) {
+          <table>
             <thead>
               <tr>
                 <th></th>
@@ -32,14 +33,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                *ngFor="
-                  let hand of hands?.value;
-                  let i = index;
-                  let first = first;
-                  let last = last
-                "
-              >
+              @for ( hand of hands.value; track hand; let i = $index; let first
+              = $first; let last = $last) {
+              <tr>
                 <td class="fit-width">
                   <button
                     type="button"
@@ -84,11 +80,14 @@
                 <td>{{ hand.instances.length }}</td>
                 <td>{{ hand.subscriptions?.length || 0 }}</td>
               </tr>
+              }
             </tbody>
           </table>
+          }
         </mat-tab>
 
-        <mat-tab label="hand" *ngIf="editedHand">
+        @if (editedHand) {
+        <mat-tab label="hand">
           <cadmus-cod-hand
             [typeEntries]="typeEntries"
             [colorEntries]="colorEntries"
@@ -107,6 +106,7 @@
             (editorClose)="onHandClose()"
           ></cadmus-cod-hand>
         </mat-tab>
+        }
       </mat-tab-group>
     </mat-card-content>
     <mat-card-actions>

@@ -20,7 +20,8 @@
               <mat-icon>add_circle</mat-icon> decoration
             </button>
           </div>
-          <table *ngIf="decorations?.value?.length">
+          @if (decorations.value.length) {
+          <table>
             <thead>
               <tr>
                 <th></th>
@@ -30,14 +31,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                *ngFor="
-                  let entry of decorations?.value;
-                  let i = index;
-                  let first = first;
-                  let last = last
-                "
-              >
+              @for ( entry of decorations.value; track entry; let i = $index;
+              let first = $first; let last = $last) {
+              <tr>
                 <td>
                   <button
                     type="button"
@@ -80,11 +76,14 @@
                 <td>{{ entry.eid }}</td>
                 <td>{{ entry.elements?.length || 0 }}</td>
               </tr>
+              }
             </tbody>
           </table>
+          }
         </mat-tab>
 
-        <mat-tab label="decoration" *ngIf="editedDecoration">
+        @if (editedDecoration) {
+        <mat-tab label="decoration">
           <cadmus-cod-decoration
             [decFlagEntries]="decFlagEntries"
             [ctTagEntries]="ctTagEntries"
@@ -113,6 +112,7 @@
             (editorClose)="editDecoration(null)"
           ></cadmus-cod-decoration>
         </mat-tab>
+        }
       </mat-tab-group>
     </mat-card-content>
     <mat-card-actions>

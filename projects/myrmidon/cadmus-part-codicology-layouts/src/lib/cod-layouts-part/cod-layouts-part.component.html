@@ -20,7 +20,8 @@
               <mat-icon>add_circle</mat-icon> layout
             </button>
           </div>
-          <table *ngIf="entries?.value?.length">
+          @if (entries.value.length) {
+          <table>
             <thead>
               <tr>
                 <th></th>
@@ -30,14 +31,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                *ngFor="
-                  let entry of entries?.value;
-                  let i = index;
-                  let first = first;
-                  let last = last
-                "
-              >
+              @for ( entry of entries.value; track entry; let i = $index; let
+              first = $first; let last = $last) {
+              <tr>
                 <td>
                   <button
                     type="button"
@@ -80,11 +76,14 @@
                 <td>{{ entry.ranges | codLocationRange }}</td>
                 <td>{{ entry.columnCount || 0 }}</td>
               </tr>
+              }
             </tbody>
           </table>
+          }
         </mat-tab>
 
-        <mat-tab label="layout" *ngIf="editedLayout">
+        @if (editedLayout) {
+        <mat-tab label="layout">
           <cadmus-cod-layout-editor
             [tagEntries]="tagEntries"
             [rulTechEntries]="rulTechEntries"
@@ -99,6 +98,7 @@
             (editorClose)="editLayout(null)"
           ></cadmus-cod-layout-editor>
         </mat-tab>
+        }
       </mat-tab-group>
     </mat-card-content>
     <mat-card-actions>

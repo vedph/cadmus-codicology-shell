@@ -21,7 +21,8 @@
               <mat-icon>add_circle</mat-icon> unit
             </button>
           </div>
-          <table *ngIf="units?.value?.length">
+          @if (units.value.length) {
+          <table>
             <thead>
               <tr>
                 <th></th>
@@ -31,14 +32,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                *ngFor="
-                  let unit of units?.value;
-                  let i = index;
-                  let first = first;
-                  let last = last
-                "
-              >
+              @for ( unit of units.value; track unit; let i = $index; let first
+              = $first; let last = $last) {
+              <tr>
                 <td>
                   <button
                     type="button"
@@ -86,8 +82,10 @@
                 </td>
                 <td>{{ unit.chronotopes?.length || 0 }}</td>
               </tr>
+              }
             </tbody>
           </table>
+          }
 
           <mat-expansion-panel>
             <mat-expansion-panel-header>Palimpsests</mat-expansion-panel-header>
@@ -102,7 +100,8 @@
                 <mat-icon>add_circle</mat-icon> palimpsest
               </button>
             </div>
-            <table *ngIf="palimpsests?.value?.length">
+            @if (palimpsests.value.length) {
+            <table>
               <thead>
                 <tr>
                   <th></th>
@@ -112,14 +111,9 @@
                 </tr>
               </thead>
               <tbody>
-                <tr
-                  *ngFor="
-                    let entry of palimpsests?.value;
-                    let i = index;
-                    let first = first;
-                    let last = last
-                  "
-                >
+                @for ( entry of palimpsests.value; track entry; let i = $index;
+                let first = $first; let last = $last) {
+                <tr>
                   <td>
                     <button
                       type="button"
@@ -162,12 +156,15 @@
                   <td>{{ entry.chronotope?.place?.value }}</td>
                   <td>{{ entry.chronotope?.date | historicalDate }}</td>
                 </tr>
+                }
               </tbody>
             </table>
+            }
           </mat-expansion-panel>
         </mat-tab>
 
-        <mat-tab label="unit" *ngIf="editedUt">
+        @if (editedUt) {
+        <mat-tab label="unit">
           <cadmus-cod-unit-editor
             [tagEntries]="tagEntries"
             [materialEntries]="materialEntries"
@@ -182,8 +179,8 @@
             (editorClose)="editUnit(null)"
           ></cadmus-cod-unit-editor>
         </mat-tab>
-
-        <mat-tab label="palimpsest" *ngIf="editedPs">
+        } @if (editedPs) {
+        <mat-tab label="palimpsest">
           <cadmus-cod-palimpsest-editor
             [ctTagEntries]="ctTagEntries"
             [assTagEntries]="assTagEntries"
@@ -194,6 +191,7 @@
             (editorClose)="editPalimpsest(null)"
           ></cadmus-cod-palimpsest-editor>
         </mat-tab>
+        }
       </mat-tab-group>
     </mat-card-content>
     <mat-card-actions>

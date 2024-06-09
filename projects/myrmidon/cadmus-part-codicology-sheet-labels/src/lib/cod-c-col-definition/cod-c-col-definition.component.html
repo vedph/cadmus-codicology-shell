@@ -9,40 +9,34 @@
 
   <div class="form-row">
     <!-- position (bound) -->
-    <mat-form-field *ngIf="posEntries?.length" class="form-col">
+    @if (posEntries?.length) {
+    <mat-form-field class="form-col">
       <mat-label>position</mat-label>
       <mat-select [formControl]="position">
-        <mat-option *ngFor="let e of posEntries" [value]="e.id">{{
-          e.value
-        }}</mat-option>
+        @for (e of posEntries; track e.id) {
+        <mat-option [value]="e.id">{{ e.value }}</mat-option>
+        }
       </mat-select>
-      <mat-error
-        *ngIf="
-          $any(position).errors?.required &&
-          (position.dirty || position.touched)
-        "
-        >position required</mat-error
-      >
+      @if ( $any(position).errors?.required && (position.dirty ||
+      position.touched) ) {
+      <mat-error>position required</mat-error>
+      }
     </mat-form-field>
+    }
     <!-- position (free) -->
-    <mat-form-field *ngIf="!posEntries?.length" class="form-col">
+    @if (!posEntries?.length) {
+    <mat-form-field class="form-col">
       <mat-label>position</mat-label>
       <input matInput [formControl]="position" />
-      <mat-error
-        *ngIf="
-          $any(position).errors?.required &&
-          (position.dirty || position.touched)
-        "
-        >position required</mat-error
-      >
-      <mat-error
-        *ngIf="
-          $any(position).errors?.maxLength &&
-          (position.dirty || position.touched)
-        "
-        >position too long</mat-error
-      >
+      @if ( $any(position).errors?.required && (position.dirty ||
+      position.touched) ) {
+      <mat-error>position required</mat-error>
+      } @if ( $any(position).errors?.maxLength && (position.dirty ||
+      position.touched) ) {
+      <mat-error>position too long</mat-error>
+      }
     </mat-form-field>
+    }
 
     <!-- isVertical -->
     <mat-checkbox [formControl]="isVertical">vertical</mat-checkbox>
@@ -53,13 +47,10 @@
     <mat-form-field class="long-text">
       <mat-label>decoration</mat-label>
       <input matInput [formControl]="decoration" />
-      <mat-error
-        *ngIf="
-          $any(decoration).errors?.maxLength &&
-          (decoration.dirty || decoration.touched)
-        "
-        >decoration too long</mat-error
-      >
+      @if ( $any(decoration).errors?.maxLength && (decoration.dirty ||
+      decoration.touched) ) {
+      <mat-error>decoration too long</mat-error>
+      }
     </mat-form-field>
   </div>
 
@@ -68,10 +59,9 @@
     <mat-form-field class="long-text">
       <mat-label>note</mat-label>
       <input matInput [formControl]="note" />
-      <mat-error
-        *ngIf="$any(note).errors?.maxLength && (note.dirty || note.touched)"
-        >note too long</mat-error
-      >
+      @if ($any(note).errors?.maxLength && (note.dirty || note.touched)) {
+      <mat-error>note too long</mat-error>
+      }
     </mat-form-field>
   </div>
 

@@ -1,5 +1,8 @@
-<form [formGroup]="form" *ngIf="user$ | async">
-  <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+@if (user$ | async) {
+<form [formGroup]="form">
+  @if (loading) {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  }
   <!-- item -->
   <cadmus-ref-lookup
     [service]="lookupService"
@@ -14,41 +17,45 @@
       >copy</mat-slide-toggle
     >
   </div>
-
   <!-- systems -->
-  <div *ngIf="systems$ | async as systems" style="margin-top: 4px">
+  @if (systems$ | async; as systems) {
+  <div style="margin-top: 4px">
     <div>
-      <mat-form-field *ngIf="systems.length">
+      @if (systems.length) {
+      <mat-form-field>
         <mat-label>system</mat-label>
         <mat-select [formControl]="system">
-          <mat-option *ngFor="let s of systems" [value]="s">
+          @for (s of systems; track s) {
+          <mat-option [value]="s">
             {{ s }}
           </mat-option>
+          }
         </mat-select>
-        <mat-error
-          *ngIf="
-            $any(system).errors?.required && (system.dirty || system.touched)
-          "
-          >system required</mat-error
-        >
+        @if ( $any(system).errors?.required && (system.dirty || system.touched)
+        ) {
+        <mat-error>system required</mat-error>
+        }
       </mat-form-field>
+      }
     </div>
-
-    <div class="form-row" *ngIf="system.value">
+    @if (system.value) {
+    <div class="form-row">
       <!-- label -->
       <mat-form-field style="width: 5em">
         <mat-label>label</mat-label>
         <input matInput [formControl]="label" />
       </mat-form-field>
-
       <mat-icon>sync_alt</mat-icon>
-
       <!-- location -->
       <mat-form-field style="width: 5em">
         <mat-label>location</mat-label>
         <input matInput [formControl]="location" />
       </mat-form-field>
     </div>
-    <span *ngIf="!system.value" style="color:silver">(no systems)</span>
+    } @if (!system.value) {
+    <span style="color: silver">(no systems)</span>
+    }
   </div>
+  }
 </form>
+}

@@ -15,109 +15,94 @@
 
   <div class="form-row">
     <!-- system (bound) -->
-    <mat-form-field *ngIf="sysEntries?.length" class="form-col">
+    @if (sysEntries?.length) {
+    <mat-form-field class="form-col">
       <mat-label>system</mat-label>
       <mat-select [formControl]="system">
-        <mat-option *ngFor="let e of sysEntries" [value]="e.id">{{
-          e.value
-        }}</mat-option>
+        @for (e of sysEntries; track e.id) {
+        <mat-option [value]="e.id">{{ e.value }}</mat-option>
+        }
       </mat-select>
-      <mat-error
-        *ngIf="
-          $any(system).errors?.required && (system.dirty || system.touched)
-        "
-        >system required</mat-error
-      >
+      @if ( $any(system).errors?.required && (system.dirty || system.touched) )
+      {
+      <mat-error>system required</mat-error>
+      }
     </mat-form-field>
+    }
     <!-- system (free) -->
-    <mat-form-field *ngIf="!sysEntries?.length" class="form-col">
+    @if (!sysEntries?.length) {
+    <mat-form-field class="form-col">
       <mat-label>system</mat-label>
       <input matInput [formControl]="system" />
-      <mat-error
-        *ngIf="
-          $any(system).errors?.required && (system.dirty || system.touched)
-        "
-        >system required</mat-error
-      >
-      <mat-error
-        *ngIf="
-          $any(system).errors?.maxLength && (system.dirty || system.touched)
-        "
-        >system too long</mat-error
-      >
+      @if ( $any(system).errors?.required && (system.dirty || system.touched) )
+      {
+      <mat-error>system required</mat-error>
+      } @if ( $any(system).errors?.maxLength && (system.dirty || system.touched)
+      ) {
+      <mat-error>system too long</mat-error>
+      }
     </mat-form-field>
+    }
 
     <!-- technique (bound) -->
-    <mat-form-field *ngIf="techEntries?.length" class="form-col">
+    @if (techEntries?.length) {
+    <mat-form-field class="form-col">
       <mat-label>technique</mat-label>
       <mat-select [formControl]="technique">
-        <mat-option *ngFor="let e of techEntries" [value]="e.id">{{
-          e.value
-        }}</mat-option>
+        @for (e of techEntries; track e.id) {
+        <mat-option [value]="e.id">{{ e.value }}</mat-option>
+        }
       </mat-select>
-      <mat-error
-        *ngIf="
-          $any(technique).errors?.required &&
-          (technique.dirty || technique.touched)
-        "
-        >technique required</mat-error
-      >
+      @if ( $any(technique).errors?.required && (technique.dirty ||
+      technique.touched) ) {
+      <mat-error>technique required</mat-error>
+      }
     </mat-form-field>
+    }
     <!-- technique (free) -->
-    <mat-form-field *ngIf="!techEntries?.length" class="form-col">
+    @if (!techEntries?.length) {
+    <mat-form-field class="form-col">
       <mat-label>technique</mat-label>
       <input matInput [formControl]="technique" />
-      <mat-error
-        *ngIf="
-          $any(technique).errors?.required &&
-          (technique.dirty || technique.touched)
-        "
-        >technique required</mat-error
-      >
-      <mat-error
-        *ngIf="
-          $any(technique).errors?.maxLength &&
-          (technique.dirty || technique.touched)
-        "
-        >technique too long</mat-error
-      >
+      @if ( $any(technique).errors?.required && (technique.dirty ||
+      technique.touched) ) {
+      <mat-error>technique required</mat-error>
+      } @if ( $any(technique).errors?.maxLength && (technique.dirty ||
+      technique.touched) ) {
+      <mat-error>technique too long</mat-error>
+      }
     </mat-form-field>
+    }
 
     <!-- position (bound) -->
-    <mat-form-field *ngIf="posEntries?.length" class="form-col">
+    @if (posEntries?.length) {
+    <mat-form-field class="form-col">
       <mat-label>position</mat-label>
       <mat-select [formControl]="position">
-        <mat-option *ngFor="let e of posEntries" [value]="e.id">{{
-          e.value
-        }}</mat-option>
+        @for (e of posEntries; track e.id) {
+        <mat-option [value]="e.id">{{ e.value }}</mat-option>
+        }
       </mat-select>
-      <mat-error
-        *ngIf="
-          $any(position).errors?.required &&
-          (position.dirty || position.touched)
-        "
-        >position required</mat-error
-      >
+      @if ( $any(position).errors?.required && (position.dirty ||
+      position.touched) ) {
+      <mat-error>position required</mat-error>
+      }
     </mat-form-field>
+    }
     <!-- position (free) -->
-    <mat-form-field *ngIf="!posEntries?.length" class="form-col">
+    @if (!posEntries?.length) {
+    <mat-form-field class="form-col">
       <mat-label>position</mat-label>
       <input matInput [formControl]="position" />
-      <mat-error
-        *ngIf="
-          $any(position).errors?.required &&
-          (position.dirty || position.touched)
-        "
-        >position required</mat-error
-      >
-      <mat-error
-        *ngIf="
-          $any(position).errors?.maxLength &&
-          (position.dirty || position.touched)
-        "
-        >position too long</mat-error
-      >
+      @if ( $any(position).errors?.required && (position.dirty ||
+      position.touched) ) {
+      <mat-error>position required</mat-error>
+      } @if ( $any(position).errors?.maxLength && (position.dirty ||
+      position.touched) ) {
+      <mat-error>position too long</mat-error>
+      }
     </mat-form-field>
+    }
   </div>
 
   <fieldset>
@@ -131,11 +116,12 @@
   <div class="form-row">
     <mat-checkbox [formControl]="hasDate">date</mat-checkbox>
     <!-- date -->
+    @if (hasDate?.value) {
     <cadmus-refs-historical-date
-      *ngIf="hasDate?.value"
       [date]="date.value"
       (dateChange)="onDateChange($event)"
     ></cadmus-refs-historical-date>
+    }
   </div>
 
   <div>
@@ -143,10 +129,9 @@
     <mat-form-field class="long-text">
       <mat-label>note</mat-label>
       <input matInput [formControl]="note" />
-      <mat-error
-        *ngIf="$any(note).errors?.maxLength && (note.dirty || note.touched)"
-        >note too long</mat-error
-      >
+      @if ($any(note).errors?.maxLength && (note.dirty || note.touched)) {
+      <mat-error>note too long</mat-error>
+      }
     </mat-form-field>
   </div>
 

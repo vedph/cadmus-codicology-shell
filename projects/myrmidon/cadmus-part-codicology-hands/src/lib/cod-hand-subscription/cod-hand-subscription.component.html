@@ -8,51 +8,44 @@
     ></cadmus-cod-location>
 
     <!-- language (bound) -->
-    <mat-form-field *ngIf="langEntries?.length">
+    @if (langEntries?.length) {
+    <mat-form-field>
       <mat-label>language</mat-label>
       <mat-select [formControl]="language">
-        <mat-option *ngFor="let e of langEntries" [value]="e.id">{{
-          e.value
-        }}</mat-option>
+        @for (e of langEntries; track e.id) {
+        <mat-option [value]="e.id">{{ e.value }}</mat-option>
+        }
       </mat-select>
-      <mat-error
-        *ngIf="
-          $any(language).errors?.required &&
-          (language.dirty || language.touched)
-        "
-        >language required</mat-error
-      >
+      @if ( $any(language).errors?.required && (language.dirty ||
+      language.touched) ) {
+      <mat-error>language required</mat-error>
+      }
     </mat-form-field>
+    }
 
     <!-- language (free) -->
-    <mat-form-field *ngIf="!langEntries?.length">
+    @if (!langEntries?.length) {
+    <mat-form-field>
       <mat-label>language</mat-label>
       <input matInput [formControl]="language" />
-      <mat-error
-        *ngIf="
-          $any(language).errors?.required &&
-          (language.dirty || language.touched)
-        "
-        >language required</mat-error
-      >
-      <mat-error
-        *ngIf="
-          $any(language).errors?.maxLength &&
-          (language.dirty || language.touched)
-        "
-        >language too long</mat-error
-      >
+      @if ( $any(language).errors?.required && (language.dirty ||
+      language.touched) ) {
+      <mat-error>language required</mat-error>
+      } @if ( $any(language).errors?.maxLength && (language.dirty ||
+      language.touched) ) {
+      <mat-error>language too long</mat-error>
+      }
     </mat-form-field>
+    }
   </div>
   <div>
     <!-- text -->
     <mat-form-field class="long-text">
       <mat-label>text</mat-label>
       <textarea matInput [formControl]="text"></textarea>
-      <mat-error
-        *ngIf="$any(text).errors?.maxLength && (text.dirty || text.touched)"
-        >text too long</mat-error
-      >
+      @if ($any(text).errors?.maxLength && (text.dirty || text.touched)) {
+      <mat-error>text too long</mat-error>
+      }
     </mat-form-field>
   </div>
   <div>
@@ -60,10 +53,9 @@
     <mat-form-field class="long-text">
       <mat-label>note</mat-label>
       <textarea matInput [formControl]="note"></textarea>
-      <mat-error
-        *ngIf="$any(note).errors?.maxLength && (note.dirty || note.touched)"
-        >note too long</mat-error
-      >
+      @if ($any(note).errors?.maxLength && (note.dirty || note.touched)) {
+      <mat-error>note too long</mat-error>
+      }
     </mat-form-field>
   </div>
 

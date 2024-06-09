@@ -4,22 +4,19 @@
     <mat-form-field>
       <mat-label>name</mat-label>
       <input matInput [formControl]="name" />
-      <mat-error
-        *ngIf="$any(name).errors?.required && (name.dirty || name.touched)"
-        >name required</mat-error
-      >
-      <mat-error
-        *ngIf="$any(name).errors?.maxLength && (name.dirty || name.touched)"
-        >name too long</mat-error
-      >
+      @if ($any(name).errors?.required && (name.dirty || name.touched)) {
+      <mat-error>name required</mat-error>
+      } @if ($any(name).errors?.maxLength && (name.dirty || name.touched)) {
+      <mat-error>name too long</mat-error>
+      }
     </mat-form-field>
   </div>
 
   <!-- chronotope -->
   <div>
     <mat-checkbox [formControl]="hasChronotope">chronotope</mat-checkbox>
+    @if (hasChronotope?.value) {
     <cadmus-refs-asserted-chronotope
-      *ngIf="hasChronotope?.value"
       [tagEntries]="ctTagEntries"
       [assTagEntries]="assTagEntries"
       [refTagEntries]="refTagEntries"
@@ -27,19 +24,21 @@
       [chronotope]="chronotope.value"
       (chronotopeChange)="onChronotopeChange($event)"
     ></cadmus-refs-asserted-chronotope>
+    }
   </div>
 
   <!-- assertion -->
   <div>
     <mat-checkbox [formControl]="hasAssertion">assertion</mat-checkbox>
+    @if (hasAssertion?.value) {
     <cadmus-refs-assertion
-      *ngIf="hasAssertion?.value"
       [assTagEntries]="assTagEntries"
       [refTagEntries]="refTagEntries"
       [refTypeEntries]="refTypeEntries"
       [assertion]="assertion.value"
       (assertionChange)="onAssertionChange($event)"
     ></cadmus-refs-assertion>
+    }
   </div>
 
   <!-- buttons -->

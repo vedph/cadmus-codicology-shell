@@ -1,54 +1,50 @@
 <form [formGroup]="form" (submit)="save()">
   <div style="display: flex; gap: 8px; align-items: center">
     <!-- type (bound) -->
-    <mat-form-field *ngIf="artTypeEntries?.length" style="flex: 0 0 auto">
+    @if (artTypeEntries?.length) {
+    <mat-form-field style="flex: 0 0 auto">
       <mat-label>type</mat-label>
       <mat-select [formControl]="type">
-        <mat-option *ngFor="let e of artTypeEntries" [value]="e.id">{{
-          e.value
-        }}</mat-option>
+        @for (e of artTypeEntries; track e.id) {
+        <mat-option [value]="e.id">{{ e.value }}</mat-option>
+        }
       </mat-select>
-      <mat-error
-        *ngIf="$any(type).errors?.required && (type.dirty || type.touched)"
-        >type required</mat-error
-      >
+      @if ($any(type).errors?.required && (type.dirty || type.touched)) {
+      <mat-error>type required</mat-error>
+      }
     </mat-form-field>
+    }
     <!-- type (free) -->
-    <mat-form-field *ngIf="!artTypeEntries?.length" style="flex: 0 0 auto">
+    @if (!artTypeEntries?.length) {
+    <mat-form-field style="flex: 0 0 auto">
       <mat-label>type</mat-label>
       <input matInput [formControl]="type" />
-      <mat-error
-        *ngIf="$any(type).errors?.required && (type.dirty || type.touched)"
-        >type required</mat-error
-      >
-      <mat-error
-        *ngIf="$any(type).errors?.maxLength && (type.dirty || type.touched)"
-        >type too long</mat-error
-      >
+      @if ($any(type).errors?.required && (type.dirty || type.touched)) {
+      <mat-error>type required</mat-error>
+      } @if ($any(type).errors?.maxLength && (type.dirty || type.touched)) {
+      <mat-error>type too long</mat-error>
+      }
     </mat-form-field>
+    }
 
     <!-- eid -->
     <mat-form-field>
       <mat-label>EID</mat-label>
       <input matInput [formControl]="eid" />
-      <mat-error
-        *ngIf="$any(eid).errors?.maxLength && (eid.dirty || eid.touched)"
-        >EID too long</mat-error
-      >
+      @if ($any(eid).errors?.maxLength && (eid.dirty || eid.touched)) {
+      <mat-error>EID too long</mat-error>
+      }
     </mat-form-field>
 
     <!-- name -->
     <mat-form-field>
       <mat-label>name</mat-label>
       <input matInput [formControl]="name" />
-      <mat-error
-        *ngIf="$any(name).errors?.required && (name.dirty || name.touched)"
-        >name required</mat-error
-      >
-      <mat-error
-        *ngIf="$any(name).errors?.maxLength && (name.dirty || name.touched)"
-        >name too long</mat-error
-      >
+      @if ($any(name).errors?.required && (name.dirty || name.touched)) {
+      <mat-error>name required</mat-error>
+      } @if ($any(name).errors?.maxLength && (name.dirty || name.touched)) {
+      <mat-error>name too long</mat-error>
+      }
     </mat-form-field>
   </div>
   <div>
@@ -80,10 +76,9 @@
     <mat-form-field class="long-text">
       <mat-label>note</mat-label>
       <textarea matInput rows="2" [formControl]="note"></textarea>
-      <mat-error
-        *ngIf="$any(note).errors?.maxLength && (note.dirty || note.touched)"
-        >note too long</mat-error
-      >
+      @if ($any(note).errors?.maxLength && (note.dirty || note.touched)) {
+      <mat-error>note too long</mat-error>
+      }
     </mat-form-field>
   </div>
   <!-- styles -->
@@ -106,14 +101,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          *ngFor="
-            let s of styles.value || [];
-            let i = index;
-            let first = first;
-            let last = last
-          "
-        >
+        @for ( s of styles.value || []; track s; let i = $index; let first =
+        $first; let last = $last) {
+        <tr>
           <td>
             <button
               mat-icon-button
@@ -154,6 +144,7 @@
           </td>
           <td>{{ s.name }}</td>
         </tr>
+        }
       </tbody>
     </table>
     <mat-expansion-panel [expanded]="editedStyle" [disabled]="!editedStyle">

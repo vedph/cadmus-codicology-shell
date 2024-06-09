@@ -4,28 +4,22 @@
     <mat-form-field>
       <mat-label>ID</mat-label>
       <input matInput [formControl]="eid" />
-      <mat-error
-        *ngIf="$any(eid).errors?.required && (eid.dirty || eid.touched)"
-        >EID required</mat-error
-      >
-      <mat-error
-        *ngIf="$any(eid).errors?.maxLength && (eid.dirty || eid.touched)"
-        >EID too long</mat-error
-      >
+      @if ($any(eid).errors?.required && (eid.dirty || eid.touched)) {
+      <mat-error>EID required</mat-error>
+      } @if ($any(eid).errors?.maxLength && (eid.dirty || eid.touched)) {
+      <mat-error>EID too long</mat-error>
+      }
     </mat-form-field>
     &nbsp;
     <!-- name -->
     <mat-form-field>
       <mat-label>name</mat-label>
       <input matInput [formControl]="name" />
-      <mat-error
-        *ngIf="$any(name).errors?.required && (name.dirty || name.touched)"
-        >name required</mat-error
-      >
-      <mat-error
-        *ngIf="$any(name).errors?.maxLength && (name.dirty || name.touched)"
-        >name too long</mat-error
-      >
+      @if ($any(name).errors?.required && (name.dirty || name.touched)) {
+      <mat-error>name required</mat-error>
+      } @if ($any(name).errors?.maxLength && (name.dirty || name.touched)) {
+      <mat-error>name too long</mat-error>
+      }
     </mat-form-field>
   </div>
 
@@ -43,10 +37,9 @@
   <mat-form-field class="long-text">
     <mat-label>note</mat-label>
     <textarea rows="3" matInput [formControl]="note"></textarea>
-    <mat-error
-      *ngIf="$any(note).errors?.maxLength && (note.dirty || note.touched)"
-      >note too long</mat-error
-    >
+    @if ($any(note).errors?.maxLength && (note.dirty || note.touched)) {
+    <mat-error>note too long</mat-error>
+    }
   </mat-form-field>
 
   <!-- chronotopes -->
@@ -106,7 +99,8 @@
         <mat-icon>add_circle</mat-icon> artist
       </button>
     </div>
-    <table *ngIf="artists?.value?.length">
+    @if (artists?.value?.length) {
+    <table>
       <thead>
         <tr>
           <th></th>
@@ -116,14 +110,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          *ngFor="
-            let artist of artists?.value;
-            let i = index;
-            let first = first;
-            let last = last
-          "
-        >
+        @for ( artist of artists.value; track artist; let i = $index; let first
+        = $first; let last = $last) {
+        <tr>
           <td>
             <button
               type="button"
@@ -168,8 +157,10 @@
           <td>{{ artist.name }}</td>
           <td>{{ artist.eid }}</td>
         </tr>
+        }
       </tbody>
     </table>
+    }
     <mat-expansion-panel [expanded]="editedArtist" [disabled]="!editedArtist">
       <mat-expansion-panel-header>
         <mat-panel-title>artist {{ editedArtist?.name }}</mat-panel-title>
@@ -206,7 +197,8 @@
       <mat-icon>add_circle</mat-icon> element
     </button>
   </div>
-  <table *ngIf="elements?.value?.length">
+  @if (elements?.value?.length) {
+  <table>
     <thead>
       <tr>
         <th></th>
@@ -218,14 +210,9 @@
       </tr>
     </thead>
     <tbody>
-      <tr
-        *ngFor="
-          let element of elements?.value;
-          let i = index;
-          let first = first;
-          let last = last
-        "
-      >
+      @for ( element of elements.value; track element; let i = $index; let
+      first = $first; let last = $last) {
+      <tr>
         <td>
           <button
             type="button"
@@ -272,8 +259,10 @@
         <td>{{ element.subject }}</td>
         <td>{{ element.ranges | codLocationRange }}</td>
       </tr>
+      }
     </tbody>
   </table>
+  }
 
   <!-- ELEMENT -->
   <mat-expansion-panel [disabled]="!editedElement" [expanded]="editedElement">

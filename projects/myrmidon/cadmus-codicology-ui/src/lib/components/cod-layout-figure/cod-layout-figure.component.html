@@ -1,6 +1,6 @@
 <!-- [attr.width.px]="width"
-  [attr.height.px]="height" -->
-  <svg
+[attr.height.px]="height" -->
+<svg
   #fig
   width="100%"
   height="100%"
@@ -10,9 +10,10 @@
 >
   <g>
     <!-- height -->
-    <g *ngIf="visMode === 1 || visMode === 3">
+    @if (visMode === 1 || visMode === 3) {
+    <g>
+      @for (r of heightRects; track r) {
       <rect
-        *ngFor="let r of heightRects"
         [attr.x]="r.x"
         [attr.y]="r.y"
         [attr.width]="r.width"
@@ -21,12 +22,15 @@
         [attr.title]="r.name"
         stroke="#a0a0a0"
       ></rect>
+      }
     </g>
+    }
 
     <!-- width -->
-    <g *ngIf="visMode >= 2" opacity="0.7">
+    @if (visMode >= 2) {
+    <g opacity="0.7">
+      @for (r of widthRects; track r) {
       <rect
-        *ngFor="let r of widthRects"
         [attr.x]="r.x"
         [attr.y]="r.y"
         [attr.width]="r.width"
@@ -35,6 +39,8 @@
         [attr.title]="r.name"
         stroke="#a0a0a0"
       ></rect>
+      }
     </g>
+    }
   </g>
 </svg>

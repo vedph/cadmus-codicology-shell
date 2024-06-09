@@ -20,19 +20,14 @@
                 <mat-form-field style="width: 8em">
                   <mat-label>column</mat-label>
                   <mat-select [formControl]="opColumn">
-                    <mat-option
-                      *ngFor="let c of columns$ | async"
-                      [value]="c"
-                      >{{ c }}</mat-option
-                    >
+                    @for (c of columns$ | async; track c) {
+                    <mat-option [value]="c">{{ c }}</mat-option>
+                    }
                   </mat-select>
-                  <mat-error
-                    *ngIf="
-                      $any(opColumn).errors?.required &&
-                      (opColumn.dirty || opColumn.touched)
-                    "
-                    >column required</mat-error
-                  >
+                  @if ( $any(opColumn).errors?.required && (opColumn.dirty ||
+                  opColumn.touched) ) {
+                  <mat-error>column required</mat-error>
+                  }
                 </mat-form-field>
 
                 <!-- column actions -->
@@ -65,20 +60,13 @@
                     [formControl]="opAction"
                     (keyup.enter)="$any($event.target).select()"
                   />
-                  <mat-error
-                    *ngIf="
-                      $any(opAction).errors?.required &&
-                      (opAction.dirty || opAction.touched)
-                    "
-                    >action required</mat-error
-                  >
-                  <mat-error
-                    *ngIf="
-                      $any(opAction).errors?.pattern &&
-                      (opAction.dirty || opAction.touched)
-                    "
-                    >invalid action</mat-error
-                  >
+                  @if ( $any(opAction).errors?.required && (opAction.dirty ||
+                  opAction.touched) ) {
+                  <mat-error>action required</mat-error>
+                  } @if ( $any(opAction).errors?.pattern && (opAction.dirty ||
+                  opAction.touched) ) {
+                  <mat-error>invalid action</mat-error>
+                  }
                 </mat-form-field>
 
                 <button
@@ -128,44 +116,31 @@
                       <mat-option value="col-r">register</mat-option>
                     </mat-optgroup>
                   </mat-select>
-                  <mat-error
-                    *ngIf="
-                      $any(addType).errors?.required &&
-                      (addType.dirty || addType.touched)
-                    "
-                    >type required</mat-error
-                  >
+                  @if ( $any(addType).errors?.required && (addType.dirty ||
+                  addType.touched) ) {
+                  <mat-error>type required</mat-error>
+                  }
                 </mat-form-field>
 
                 <!-- addName -->
-                <mat-form-field *ngIf="adderColumn">
+                @if (adderColumn) {
+                <mat-form-field>
                   <mat-label>name</mat-label>
                   <input matInput [formControl]="addName" />
-                  <mat-error
-                    *ngIf="
-                      $any(addName).errors?.required &&
-                      (addName.dirty || addName.touched)
-                    "
-                    >name required</mat-error
-                  >
-                  <mat-error
-                    *ngIf="
-                      $any(addName).errors?.maxLength &&
-                      (addName.dirty || addName.touched)
-                    "
-                    >name too long</mat-error
-                  >
+                  @if ( $any(addName).errors?.required && (addName.dirty ||
+                  addName.touched) ) {
+                  <mat-error>name required</mat-error>
+                  } @if ( $any(addName).errors?.maxLength && (addName.dirty ||
+                  addName.touched) ) {
+                  <mat-error>name too long</mat-error>
+                  }
                 </mat-form-field>
+                }
 
                 <!-- addCount (not for covers) -->
-                <mat-form-field
-                  *ngIf="
-                    !adderColumn &&
-                    addType.value !== 'row-0' &&
-                    addType.value !== 'row-4'
-                  "
-                  style="width: 6em"
-                >
+                @if ( !adderColumn && addType.value !== 'row-0' && addType.value
+                !== 'row-4' ) {
+                <mat-form-field style="width: 6em">
                   <mat-label>count</mat-label>
                   <input
                     matInput
@@ -174,6 +149,7 @@
                     min="1"
                   />
                 </mat-form-field>
+                }
 
                 <button
                   mat-icon-button
@@ -219,7 +195,8 @@
               >column: {{ editedDefId }}</mat-expansion-panel-header
             >
             <!-- N -->
-            <div *ngIf="editedNDef">
+            @if (editedNDef) {
+            <div>
               <h3>numbering</h3>
               <cadmus-cod-n-col-definition
                 [clrEntries]="clrEntries"
@@ -231,9 +208,11 @@
                 (editorClose)="onColumnDefClose()"
               ></cadmus-cod-n-col-definition>
             </div>
+            }
 
             <!-- C -->
-            <div *ngIf="editedCDef">
+            @if (editedCDef) {
+            <div>
               <h3>catchword</h3>
               <cadmus-cod-c-col-definition
                 [posEntries]="poscEntries"
@@ -242,9 +221,11 @@
                 (editorClose)="onColumnDefClose()"
               ></cadmus-cod-c-col-definition>
             </div>
+            }
 
             <!-- S -->
-            <div *ngIf="editedSDef">
+            @if (editedSDef) {
+            <div>
               <h3>signature</h3>
               <cadmus-cod-s-col-definition
                 [posEntries]="possEntries"
@@ -254,9 +235,11 @@
                 (editorClose)="onColumnDefClose()"
               ></cadmus-cod-s-col-definition>
             </div>
+            }
 
             <!-- R -->
-            <div *ngIf="editedRDef">
+            @if (editedRDef) {
+            <div>
               <h3>register signature</h3>
               <cadmus-cod-r-col-definition
                 [posEntries]="possEntries"
@@ -265,34 +248,42 @@
                 (editorClose)="onColumnDefClose()"
               ></cadmus-cod-r-col-definition>
             </div>
+            }
           </mat-expansion-panel>
 
           <!-- table -->
-          <table *ngIf="columns$ | async as columns" class="labels">
+          @if (columns$ | async; as columns) {
+          <table class="labels">
             <thead>
               <tr>
                 <th></th>
-                <th
-                  *ngFor="let c of columns"
-                  [class.selected]="c === opColumn.value"
-                >
+                @for (c of columns; track c) {
+                <th [class.selected]="c === opColumn.value">
                   {{ c }}
                 </th>
+                }
               </tr>
             </thead>
-            <tbody *ngIf="rows$ | async as rows">
-              <tr *ngFor="let r of rows">
+            @if (rows$ | async; as rows) {
+            <tbody>
+              @for (r of rows; track r) {
+              <tr>
                 <th>{{ r.id }}</th>
-                <td *ngFor="let rc of r.columns">
+                @for (rc of r.columns; track rc) {
+                <td>
                   <cadmus-cod-label-cell
                     [color]="$any(rc.id | cellTypeColor)"
                     [cell]="$any(rc | cellAdapter : r.id)"
                     (cellChange)="onCellChange($event)"
                   ></cadmus-cod-label-cell>
                 </td>
+                }
               </tr>
+              }
             </tbody>
+            }
           </table>
+          }
         </mat-tab>
 
         <!-- ENDLEAVES -->
@@ -308,7 +299,8 @@
               <mat-icon>add_circle</mat-icon> endleaf
             </button>
           </div>
-          <table *ngIf="endleaves?.value?.length">
+          @if (endleaves.value.length) {
+          <table>
             <thead>
               <tr>
                 <th></th>
@@ -317,14 +309,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                *ngFor="
-                  let endleaf of endleaves?.value;
-                  let i = index;
-                  let first = first;
-                  let last = last
-                "
-              >
+              @for ( endleaf of endleaves.value; track endleaf; let i = $index;
+              let first = $first; let last = $last) {
+              <tr>
                 <td>
                   <button
                     type="button"
@@ -378,8 +365,10 @@
                   }}
                 </td>
               </tr>
+              }
             </tbody>
           </table>
+          }
 
           <mat-expansion-panel
             [expanded]="editedEndleaf"
@@ -403,7 +392,7 @@
         </mat-tab>
 
         <!-- HELP ng serve
-        -->
+                              -->
         <mat-tab label="help">
           <div id="help">
             <h2>Overview</h2>

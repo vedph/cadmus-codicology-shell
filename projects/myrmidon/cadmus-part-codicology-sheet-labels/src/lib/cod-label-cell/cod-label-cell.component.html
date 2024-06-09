@@ -1,14 +1,14 @@
-<div
-  *ngIf="cell"
-  class="cell"
-  [style.background-color]="color || 'transparent'"
->
+@if (cell) {
+<div class="cell" [style.background-color]="color || 'transparent'">
   <!-- display -->
-  <div *ngIf="editMode === 'none'" class="form-row-center">
+  @if (editMode === 'none') {
+  <div class="form-row-center">
     <span>{{ cell.value }}</span>
-    <span *ngIf="cell.note" [matTooltip]="cell.note">
+    @if (cell.note) {
+    <span [matTooltip]="cell.note">
       <mat-icon>description</mat-icon>
     </span>
+    }
     <button
       class="muted"
       type="button"
@@ -29,15 +29,13 @@
       <mat-icon>edit_note</mat-icon>
     </button>
   </div>
+  }
   <!-- edit -->
-  <form
-    [formGroup]="form"
-    (submit)="saveEdit()"
-    *ngIf="editMode !== 'none'"
-    class="form-row"
-  >
+  @if (editMode !== 'none') {
+  <form [formGroup]="form" (submit)="saveEdit()" class="form-row">
     <!-- value -->
-    <mat-form-field *ngIf="editMode === 'value'">
+    @if (editMode === 'value') {
+    <mat-form-field>
       <mat-label>value</mat-label>
       <input
         #valueInput
@@ -47,13 +45,14 @@
         [formControl]="value"
         (keydown.esc)="cancelEdit()"
       />
-      <mat-error
-        *ngIf="value.hasError('maxLength') && (value.dirty || value.touched)"
-        >value too long</mat-error
-      >
+      @if (value.hasError('maxLength') && (value.dirty || value.touched)) {
+      <mat-error>value too long</mat-error>
+      }
     </mat-form-field>
+    }
     <!-- note -->
-    <mat-form-field *ngIf="editMode === 'note'">
+    @if (editMode === 'note') {
+    <mat-form-field>
       <mat-label>note</mat-label>
       <input
         #noteInput
@@ -62,12 +61,11 @@
         [formControl]="note"
         (keydown.esc)="cancelEdit()"
       />
-      <mat-error
-        *ngIf="note.hasError('maxLength') && (note.dirty || note.touched)"
-        >note too long</mat-error
-      >
+      @if (note.hasError('maxLength') && (note.dirty || note.touched)) {
+      <mat-error>note too long</mat-error>
+      }
     </mat-form-field>
-
+    }
     <button
       type="button"
       mat-icon-button
@@ -87,4 +85,6 @@
       <mat-icon class="mat-primary">check_circle</mat-icon>
     </button>
   </form>
+  }
 </div>
+}

@@ -1,31 +1,29 @@
 <form [formGroup]="form">
   <!-- bound -->
-  <mat-form-field *ngIf="!free && entries?.length">
+  @if (!free && entries?.length) {
+  <mat-form-field>
     <mat-select [formControl]="idCtl" [placeholder]="label">
-      <mat-option *ngFor="let e of entries" [value]="e.id">{{
-        e.value
-      }}</mat-option>
+      @for (e of entries; track e.id) {
+      <mat-option [value]="e.id">{{ e.value }}</mat-option>
+      }
     </mat-select>
-    <mat-error
-      *ngIf="$any(idCtl).errors?.required && (idCtl.dirty || idCtl.touched)"
-      >required</mat-error
-    >
+    @if ($any(idCtl).errors?.required && (idCtl.dirty || idCtl.touched)) {
+    <mat-error>required</mat-error>
+    }
   </mat-form-field>
+  }
 
   <!-- free -->
-  <mat-form-field *ngIf="free || !entries?.length">
+  @if (free || !entries?.length) {
+  <mat-form-field>
     <input matInput [formControl]="idCtl" [placeholder]="label" />
-    <mat-error
-      *ngIf="$any(idCtl).errors?.required && (idCtl.dirty || idCtl.touched)"
-      >required</mat-error
-    >
-    <mat-error
-      *ngIf="$any(idCtl).errors?.maxLength && (idCtl.dirty || idCtl.touched)"
-      >too long</mat-error
-    >
-    <mat-error
-      *ngIf="$any(idCtl).errors?.invalidCtl && (idCtl.dirty || idCtl.touched)"
-      >invalid</mat-error
-    >
+    @if ($any(idCtl).errors?.required && (idCtl.dirty || idCtl.touched)) {
+    <mat-error>required</mat-error>
+    } @if ($any(idCtl).errors?.maxLength && (idCtl.dirty || idCtl.touched)) {
+    <mat-error>too long</mat-error>
+    } @if ($any(idCtl).errors?.invalidCtl && (idCtl.dirty || idCtl.touched)) {
+    <mat-error>invalid</mat-error>
+    }
   </mat-form-field>
+  }
 </form>
