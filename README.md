@@ -15,7 +15,7 @@ Per-library documentation:
 
 1. `npm run build-lib`; if you are going to use the libraries, publish them via `publish.bat`;
 2. remember to update version in `env.js`, then `ng build --configuration production`;
-3. `docker build . -t vedph2020/cadmus-codicology-shell:5.1.0 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
+3. `docker build . -t vedph2020/cadmus-codicology-shell:6.1.2 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
 
 ## Shell Architecture
 
@@ -23,6 +23,10 @@ Per-library documentation:
 - a pages library `cadmus-part-codicology-pg` imports all these libraries and provides routing: `ng g library @myrmidon/cadmus-part-codicology-pg --prefix cadmus`.
 
 ## History
+
+### 6.1.2
+
+- 2024-06-26: updated Angular and packages.
 
 ### 6.1.1
 

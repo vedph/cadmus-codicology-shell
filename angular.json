@@ -21,7 +21,7 @@
               "base": "dist/cadmus-codicology-shell"
             },
             "index": "src/index.html",
-            "polyfills": ["src/polyfills.ts"],
+            "polyfills": ["src/polyfills.ts", "@angular/localize/init"],
             "tsConfig": "tsconfig.app.json",
             "assets": ["src/favicon.ico", "src/assets", "src/env.js"],
             "styles": [
@@ -35,7 +35,10 @@
               "hidden": false,
               "vendor": true
             },
-            "browser": "src/main.ts"
+            "browser": "src/main.ts",
+            "allowedCommonJsDependencies": [
+              "gravatar"
+            ]
           },
           "configurations": {
             "production": {
