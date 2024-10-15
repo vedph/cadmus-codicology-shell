@@ -3,11 +3,7 @@ import { Thesaurus, ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { AppRepository } from '@myrmidon/cadmus-state';
 import { Router } from '@angular/router';
 import { take } from 'rxjs/operators';
-import {
-  AuthJwtService,
-  GravatarService,
-  User,
-} from '@myrmidon/auth-jwt-login';
+import { AuthJwtService, User } from '@myrmidon/auth-jwt-login';
 import { EnvService } from '@myrmidon/ng-tools';
 import { FormBuilder, FormControl } from '@angular/forms';
 
@@ -27,7 +23,6 @@ export class AppComponent implements OnInit {
     @Inject('itemBrowserKeys')
     private _itemBrowserKeys: { [key: string]: string },
     private _authService: AuthJwtService,
-    private _gravatarService: GravatarService,
     private _repository: AppRepository,
     private _router: Router,
     formBuilder: FormBuilder,
@@ -59,10 +54,6 @@ export class AppComponent implements OnInit {
 
   public getItemBrowserRoute(id: string): string {
     return this._itemBrowserKeys[id] || id;
-  }
-
-  public getGravatarUrl(email: string, size = 80): string | null {
-    return this._gravatarService.buildGravatarUrl(email, size);
   }
 
   public logout(): void {
