@@ -24,6 +24,8 @@ Per-library documentation:
 
 ## History
 
+- 2024-11-18: updated Angular and packages.
+
 ### 6.1.3
 
 - 2024-10-15: updated Angular and packages.
