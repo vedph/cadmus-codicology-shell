@@ -27,6 +27,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   selector: 'cadmus-cod-content-editor',
   templateUrl: './cod-content-editor.component.html',
   styleUrls: ['./cod-content-editor.component.css'],
+  standalone: false,
 })
 export class CodContentEditorComponent implements OnInit {
   private readonly _flagAdapter: FlagsPickerAdapter;

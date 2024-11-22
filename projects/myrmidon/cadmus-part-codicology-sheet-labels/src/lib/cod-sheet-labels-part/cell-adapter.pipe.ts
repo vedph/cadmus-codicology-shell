@@ -9,6 +9,7 @@ import { CodColumn } from '../cod-sheet-labels-part';
  */
 @Pipe({
   name: 'cellAdapter',
+  standalone: false,
 })
 export class CellAdapterPipe implements PipeTransform {
   transform(value: unknown, ...args: unknown[]): unknown {

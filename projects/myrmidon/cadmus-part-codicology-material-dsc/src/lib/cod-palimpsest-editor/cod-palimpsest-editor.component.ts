@@ -16,6 +16,7 @@ import { CodPalimpsest } from '../cod-material-dsc-part';
   selector: 'cadmus-cod-palimpsest-editor',
   templateUrl: './cod-palimpsest-editor.component.html',
   styleUrls: ['./cod-palimpsest-editor.component.css'],
+  standalone: false,
 })
 export class CodPalimpsestEditorComponent implements OnInit {
   private _palimpsest: CodPalimpsest | undefined;

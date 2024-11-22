@@ -29,6 +29,7 @@ import {
   selector: 'cadmus-cod-bindings-part',
   templateUrl: './cod-bindings-part.component.html',
   styleUrls: ['./cod-bindings-part.component.css'],
+  standalone: false,
 })
 export class CodBindingsPartComponent
   extends ModelEditorComponentBase<CodBindingsPart>

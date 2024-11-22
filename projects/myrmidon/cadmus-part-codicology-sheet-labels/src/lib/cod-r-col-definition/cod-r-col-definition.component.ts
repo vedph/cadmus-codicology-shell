@@ -14,6 +14,7 @@ import { CodRColDefinition } from '../cod-sheet-labels-part';
   selector: 'cadmus-cod-r-col-definition',
   templateUrl: './cod-r-col-definition.component.html',
   styleUrls: ['./cod-r-col-definition.component.css'],
+  standalone: false,
 })
 export class CodRColDefinitionComponent implements OnInit {
   private _definition: CodRColDefinition | undefined;

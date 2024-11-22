@@ -12,6 +12,7 @@ import { CodShelfmark } from '../cod-shelfmarks-part';
   selector: 'cadmus-cod-shelfmark-editor',
   templateUrl: './cod-shelfmark-editor.component.html',
   styleUrls: ['./cod-shelfmark-editor.component.css'],
+  standalone: false,
 })
 export class CodShelfmarkEditorComponent implements OnInit {
   private _shelfmark: CodShelfmark | undefined;

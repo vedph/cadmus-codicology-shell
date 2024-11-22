@@ -17,6 +17,7 @@ import { CodHandDescription, CodHandSign } from '../cod-hands-part';
   selector: 'cadmus-cod-hand-description',
   templateUrl: './cod-hand-description.component.html',
   styleUrls: ['./cod-hand-description.component.css'],
+  standalone: false,
 })
 export class CodHandDescriptionComponent implements OnInit {
   private _description: CodHandDescription | undefined;

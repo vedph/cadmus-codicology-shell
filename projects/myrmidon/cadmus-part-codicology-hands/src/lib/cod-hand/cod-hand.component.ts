@@ -24,6 +24,7 @@ import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
   selector: 'cadmus-cod-hand',
   templateUrl: './cod-hand.component.html',
   styleUrls: ['./cod-hand.component.css'],
+  standalone: false,
 })
 export class CodHandComponent implements OnInit {
   private _hand: CodHand | undefined;

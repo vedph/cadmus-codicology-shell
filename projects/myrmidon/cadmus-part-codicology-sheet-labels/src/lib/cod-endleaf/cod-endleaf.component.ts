@@ -15,6 +15,7 @@ import { CodEndleaf } from '../cod-sheet-labels-part';
   selector: 'cadmus-cod-endleaf',
   templateUrl: './cod-endleaf.component.html',
   styleUrls: ['./cod-endleaf.component.css'],
+  standalone: false,
 })
 export class CodEndleafComponent implements OnInit {
   private _endleaf: CodEndleaf | undefined;

@@ -30,6 +30,7 @@ import {
   selector: 'cadmus-cod-hands-part',
   templateUrl: './cod-hands-part.component.html',
   styleUrls: ['./cod-hands-part.component.css'],
+  standalone: false,
 })
 export class CodHandsPartComponent
   extends ModelEditorComponentBase<CodHandsPart>

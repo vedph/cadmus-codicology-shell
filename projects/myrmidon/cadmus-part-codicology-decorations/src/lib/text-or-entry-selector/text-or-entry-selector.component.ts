@@ -17,13 +17,14 @@ const FREE_PREFIX = '$';
   selector: 'cadmus-text-or-entry-selector',
   templateUrl: './text-or-entry-selector.component.html',
   styleUrls: ['./text-or-entry-selector.component.css'],
+  standalone: false,
 })
 export class TextOrEntrySelectorComponent implements OnInit {
   private _validators: ValidatorFn[] | undefined;
   private _id: string | undefined;
   private _free: boolean;
 
-  public idCtl: FormControl<string|null>;
+  public idCtl: FormControl<string | null>;
   public form: FormGroup;
 
   /**

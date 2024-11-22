@@ -9,6 +9,7 @@ import { ItemService, ThesaurusService } from '@myrmidon/cadmus-api';
   selector: 'cadmus-cod-decorations-part-feature',
   templateUrl: './cod-decorations-part-feature.component.html',
   styleUrls: ['./cod-decorations-part-feature.component.css'],
+  standalone: false,
 })
 export class CodDecorationsPartFeatureComponent
   extends EditPartFeatureBase
@@ -52,7 +53,7 @@ export class CodDecorationsPartFeatureComponent
       'doc-reference-tags',
       'external-id-tags',
       'external-id-scopes',
-      'pin-link-settings'
+      'pin-link-settings',
     ];
   }
 }

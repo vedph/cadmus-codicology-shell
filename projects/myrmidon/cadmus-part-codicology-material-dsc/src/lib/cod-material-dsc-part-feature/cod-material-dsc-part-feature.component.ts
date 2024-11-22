@@ -9,6 +9,7 @@ import { ItemService, ThesaurusService } from '@myrmidon/cadmus-api';
   selector: 'cadmus-cod-material-dsc-part-feature',
   templateUrl: './cod-material-dsc-part-feature.component.html',
   styleUrls: ['./cod-material-dsc-part-feature.component.css'],
+  standalone: false,
 })
 export class CodMaterialDscPartFeatureComponent
   extends EditPartFeatureBase

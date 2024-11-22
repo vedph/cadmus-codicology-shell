@@ -24,6 +24,9 @@ Per-library documentation:
 
 ## History
 
+### 7.0.0
+
+- 2024-11-22: ⚠️ upgraded to Angular 19.
 - 2024-11-18: updated Angular and packages.
 
 ### 6.1.3

@@ -27,6 +27,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   selector: 'cadmus-cod-location-converter',
   templateUrl: './cod-location-converter.component.html',
   styleUrls: ['./cod-location-converter.component.css'],
+  standalone: false,
 })
 export class CodLocationConverterComponent implements OnInit {
   private readonly _converter: CodLocationConverter;

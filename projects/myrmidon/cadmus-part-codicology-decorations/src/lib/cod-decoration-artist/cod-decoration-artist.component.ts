@@ -20,6 +20,7 @@ import {
   selector: 'cadmus-cod-decoration-artist',
   templateUrl: './cod-decoration-artist.component.html',
   styleUrls: ['./cod-decoration-artist.component.css'],
+  standalone: false,
 })
 export class CodDecorationArtistComponent implements OnInit {
   private _artist: CodDecorationArtist | undefined;

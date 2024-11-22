@@ -15,6 +15,7 @@ import { CodBinding } from '../cod-bindings-part';
   selector: 'cadmus-cod-binding-editor',
   templateUrl: './cod-binding-editor.component.html',
   styleUrls: ['./cod-binding-editor.component.css'],
+  standalone: false,
 })
 export class CodBindingEditorComponent implements OnInit {
   private _binding: CodBinding | undefined;

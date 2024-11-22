@@ -15,6 +15,7 @@ import { CodHandSign } from '../cod-hands-part';
   selector: 'cadmus-cod-hand-sign',
   templateUrl: './cod-hand-sign.component.html',
   styleUrls: ['./cod-hand-sign.component.css'],
+  standalone: false,
 })
 export class CodHandSignComponent {
   private _sign: CodHandSign | undefined;

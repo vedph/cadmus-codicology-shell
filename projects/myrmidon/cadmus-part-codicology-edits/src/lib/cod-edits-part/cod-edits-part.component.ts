@@ -30,6 +30,7 @@ import {
   selector: 'cadmus-cod-edits-part',
   templateUrl: './cod-edits-part.component.html',
   styleUrls: ['./cod-edits-part.component.css'],
+  standalone: false,
 })
 export class CodEditsPartComponent
   extends ModelEditorComponentBase<CodEditsPart>

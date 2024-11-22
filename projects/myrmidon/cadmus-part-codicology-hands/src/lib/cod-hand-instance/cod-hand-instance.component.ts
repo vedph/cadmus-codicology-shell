@@ -22,6 +22,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   selector: 'cadmus-cod-hand-instance',
   templateUrl: './cod-hand-instance.component.html',
   styleUrls: ['./cod-hand-instance.component.css'],
+  standalone: false,
 })
 export class CodHandInstanceComponent implements OnInit {
   private readonly _flagAdapter: FlagsPickerAdapter;

@@ -33,6 +33,7 @@ const FIG_HEIGHT = 400;
   selector: 'cadmus-cod-layout-editor',
   templateUrl: './cod-layout-editor.component.html',
   styleUrls: ['./cod-layout-editor.component.css'],
+  standalone: false,
 })
 export class CodLayoutEditorComponent implements OnInit, OnDestroy {
   private _layout: CodLayout | undefined;

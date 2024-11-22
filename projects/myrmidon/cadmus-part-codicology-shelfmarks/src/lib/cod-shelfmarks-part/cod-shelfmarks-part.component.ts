@@ -27,6 +27,7 @@ import {
   selector: 'cadmus-cod-shelfmarks-part',
   templateUrl: './cod-shelfmarks-part.component.html',
   styleUrls: ['./cod-shelfmarks-part.component.css'],
+  standalone: false,
 })
 export class CodShelfmarksPartComponent
   extends ModelEditorComponentBase<CodShelfmarksPart>

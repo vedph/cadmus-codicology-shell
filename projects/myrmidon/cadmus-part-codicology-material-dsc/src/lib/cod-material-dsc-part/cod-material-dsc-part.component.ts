@@ -30,6 +30,7 @@ import { DialogService } from '@myrmidon/ng-mat-tools';
   selector: 'cadmus-cod-material-dsc-part',
   templateUrl: './cod-material-dsc-part.component.html',
   styleUrls: ['./cod-material-dsc-part.component.css'],
+  standalone: false,
 })
 export class CodMaterialDscPartComponent
   extends ModelEditorComponentBase<CodMaterialDscPart>

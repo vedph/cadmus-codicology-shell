@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { take } from 'rxjs/operators';
 
-import { deepCopy, NgToolsValidators } from '@myrmidon/ng-tools';
+import { NgToolsValidators } from '@myrmidon/ng-tools';
 import { DialogService } from '@myrmidon/ng-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 import { EditedObject, ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
@@ -29,6 +29,7 @@ import {
   selector: 'cadmus-cod-layouts-part',
   templateUrl: './cod-layouts-part.component.html',
   styleUrls: ['./cod-layouts-part.component.css'],
+  standalone: false,
 })
 export class CodLayoutsPartComponent
   extends ModelEditorComponentBase<CodLayoutsPart>

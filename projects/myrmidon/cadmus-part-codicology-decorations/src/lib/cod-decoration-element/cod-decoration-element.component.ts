@@ -53,6 +53,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   selector: 'cadmus-cod-decoration-element',
   templateUrl: './cod-decoration-element.component.html',
   styleUrls: ['./cod-decoration-element.component.css'],
+  standalone: false,
 })
 export class CodDecorationElementComponent implements OnInit, OnDestroy {
   // monaco

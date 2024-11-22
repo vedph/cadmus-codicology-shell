@@ -9,6 +9,7 @@ import { ItemService, ThesaurusService } from '@myrmidon/cadmus-api';
   selector: 'cadmus-cod-shelfmarks-part-feature',
   templateUrl: './cod-shelfmarks-part-feature.component.html',
   styleUrls: ['./cod-shelfmarks-part-feature.component.css'],
+  standalone: false,
 })
 export class CodShelfmarksPartFeatureComponent
   extends EditPartFeatureBase

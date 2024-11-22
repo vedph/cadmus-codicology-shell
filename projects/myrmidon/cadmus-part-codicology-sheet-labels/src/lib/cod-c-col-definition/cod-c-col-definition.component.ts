@@ -14,6 +14,7 @@ import { CodCColDefinition } from '../cod-sheet-labels-part';
   selector: 'cadmus-cod-c-col-definition',
   templateUrl: './cod-c-col-definition.component.html',
   styleUrls: ['./cod-c-col-definition.component.css'],
+  standalone: false,
 })
 export class CodCColDefinitionComponent implements OnInit {
   private _definition: CodCColDefinition | undefined;

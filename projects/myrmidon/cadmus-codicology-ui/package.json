@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-codicology-ui",
-  "version": "6.1.1",
+  "version": "7.0.0",
   "description": "Cadmus codicology - general UI components.",
   "keywords": [
     "Cadmus"
@@ -14,14 +14,14 @@
     "name": "Daniele Fusi"
   },
   "peerDependencies": {
-    "@angular/common": "^18.0.0",
-    "@angular/core": "^18.0.0",
-    "@cisstech/nge": "^17.7.1",
-    "@myrmidon/ng-mat-tools": "^3.1.0",
-    "@myrmidon/cadmus-refs-lookup": "^5.1.2",
-    "@myrmidon/cadmus-api": "^8.1.0"
+    "@angular/common": "^19.0.0",
+    "@angular/core": "^19.0.0",
+    "@cisstech/nge": "^18.0.4",
+    "@myrmidon/ng-mat-tools": "^4.0.0",
+    "@myrmidon/cadmus-refs-lookup": "^6.0.0",
+    "@myrmidon/cadmus-api": "^9.0.0"
   },
   "dependencies": {
-    "tslib": "^2.5.0"
+    "tslib": "^2.3.0"
   }
 }

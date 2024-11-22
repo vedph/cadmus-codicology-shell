@@ -35,6 +35,7 @@ import {
   selector: 'cadmus-cod-decorations-part',
   templateUrl: './cod-decorations-part.component.html',
   styleUrls: ['./cod-decorations-part.component.css'],
+  standalone: false,
 })
 export class CodDecorationsPartComponent
   extends ModelEditorComponentBase<CodDecorationsPart>

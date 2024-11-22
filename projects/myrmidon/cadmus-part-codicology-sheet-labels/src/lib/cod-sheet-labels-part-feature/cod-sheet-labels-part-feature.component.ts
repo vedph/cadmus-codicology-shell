@@ -9,6 +9,7 @@ import { ItemService, ThesaurusService } from '@myrmidon/cadmus-api';
   selector: 'cadmus-cod-sheet-labels-part-feature',
   templateUrl: './cod-sheet-labels-part-feature.component.html',
   styleUrls: ['./cod-sheet-labels-part-feature.component.css'],
+  standalone: false,
 })
 export class CodSheetLabelsPartFeatureComponent
   extends EditPartFeatureBase

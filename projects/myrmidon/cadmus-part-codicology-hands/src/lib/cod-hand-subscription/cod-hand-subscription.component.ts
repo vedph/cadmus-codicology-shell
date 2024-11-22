@@ -15,6 +15,7 @@ import { CodHandSubscription } from '../cod-hands-part';
   selector: 'cadmus-cod-hand-subscription',
   templateUrl: './cod-hand-subscription.component.html',
   styleUrls: ['./cod-hand-subscription.component.css'],
+  standalone: false,
 })
 export class CodHandSubscriptionComponent implements OnInit {
   private _subscription: CodHandSubscription | undefined;

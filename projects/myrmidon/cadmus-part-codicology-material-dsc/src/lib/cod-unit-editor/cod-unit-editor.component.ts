@@ -16,6 +16,7 @@ import { CodUnit } from '../cod-material-dsc-part';
   selector: 'cadmus-cod-unit-editor',
   templateUrl: './cod-unit-editor.component.html',
   styleUrls: ['./cod-unit-editor.component.css'],
+  standalone: false,
 })
 export class CodUnitEditorComponent implements OnInit {
   private _unit: CodUnit | undefined;

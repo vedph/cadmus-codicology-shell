@@ -16,6 +16,7 @@ import { CodDecorationArtistStyle } from '../cod-decorations-part';
   selector: 'cadmus-cod-decoration-artist-style',
   templateUrl: './cod-decoration-artist-style.component.html',
   styleUrls: ['./cod-decoration-artist-style.component.css'],
+  standalone: false,
 })
 export class CodDecorationArtistStyleComponent implements OnInit {
   private _style: CodDecorationArtistStyle | undefined;

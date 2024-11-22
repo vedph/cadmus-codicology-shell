@@ -25,6 +25,7 @@ export interface CodImage {
   selector: 'cadmus-cod-images',
   templateUrl: './cod-images.component.html',
   styleUrls: ['./cod-images.component.css'],
+  standalone: false,
 })
 export class CodImagesComponent implements OnInit, OnDestroy {
   private _subs: Subscription[];

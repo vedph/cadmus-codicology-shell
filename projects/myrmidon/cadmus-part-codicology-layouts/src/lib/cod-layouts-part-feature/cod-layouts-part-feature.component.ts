@@ -9,6 +9,7 @@ import { ItemService, ThesaurusService } from '@myrmidon/cadmus-api';
   selector: 'cadmus-cod-layouts-part-feature',
   templateUrl: './cod-layouts-part-feature.component.html',
   styleUrls: ['./cod-layouts-part-feature.component.css'],
+  standalone: false,
 })
 export class CodLayoutsPartFeatureComponent
   extends EditPartFeatureBase

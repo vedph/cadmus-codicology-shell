@@ -24,6 +24,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   selector: 'cadmus-cod-n-col-definition',
   templateUrl: './cod-n-col-definition.component.html',
   styleUrls: ['./cod-n-col-definition.component.css'],
+  standalone: false,
 })
 export class CodNColDefinitionComponent implements OnInit {
   private readonly _flagAdapter: FlagsPickerAdapter;

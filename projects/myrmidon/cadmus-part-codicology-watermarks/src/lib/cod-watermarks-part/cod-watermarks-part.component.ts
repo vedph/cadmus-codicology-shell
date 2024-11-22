@@ -30,6 +30,7 @@ import {
   selector: 'cadmus-cod-watermarks-part',
   templateUrl: './cod-watermarks-part.component.html',
   styleUrls: ['./cod-watermarks-part.component.css'],
+  standalone: false,
 })
 export class CodWatermarksPartComponent
   extends ModelEditorComponentBase<CodWatermarksPart>

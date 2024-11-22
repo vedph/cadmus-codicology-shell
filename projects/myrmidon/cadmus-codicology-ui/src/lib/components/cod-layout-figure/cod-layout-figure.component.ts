@@ -28,6 +28,7 @@ interface CodLayoutFigureRect {
   selector: 'cadmus-cod-layout-figure',
   templateUrl: './cod-layout-figure.component.html',
   styleUrls: ['./cod-layout-figure.component.css'],
+  standalone: false,
 })
 export class CodLayoutFigureComponent implements OnInit, AfterViewInit {
   private _rectSet: CodLayoutRectSet | undefined;

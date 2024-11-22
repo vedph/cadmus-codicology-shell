@@ -56,6 +56,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   selector: 'cadmus-cod-decoration',
   templateUrl: './cod-decoration.component.html',
   styleUrls: ['./cod-decoration.component.css'],
+  standalone: false,
 })
 export class CodDecorationComponent implements OnInit {
   private readonly _flagAdapter: FlagsPickerAdapter;

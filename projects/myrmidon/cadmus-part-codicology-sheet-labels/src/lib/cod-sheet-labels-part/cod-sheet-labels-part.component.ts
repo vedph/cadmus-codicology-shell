@@ -38,6 +38,7 @@ import { CodRowType, CodRowViewModel, CodSheetTable } from '../cod-sheet-table';
   selector: 'cadmus-cod-sheet-labels-part',
   templateUrl: './cod-sheet-labels-part.component.html',
   styleUrls: ['./cod-sheet-labels-part.component.css'],
+  standalone: false,
 })
 export class CodSheetLabelsPartComponent
   extends ModelEditorComponentBase<CodSheetLabelsPart>

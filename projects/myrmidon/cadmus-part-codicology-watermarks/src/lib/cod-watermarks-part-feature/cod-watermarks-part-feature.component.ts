@@ -9,6 +9,7 @@ import { ItemService, ThesaurusService } from '@myrmidon/cadmus-api';
   selector: 'cadmus-cod-watermarks-part-feature',
   templateUrl: './cod-watermarks-part-feature.component.html',
   styleUrls: ['./cod-watermarks-part-feature.component.css'],
+  standalone: false,
 })
 export class CodWatermarksPartFeatureComponent
   extends EditPartFeatureBase
@@ -43,7 +44,7 @@ export class CodWatermarksPartFeatureComponent
       'physical-size-tags',
       'physical-size-dim-tags',
       'physical-size-units',
-      'pin-link-settings'
+      'pin-link-settings',
     ];
   }
 }

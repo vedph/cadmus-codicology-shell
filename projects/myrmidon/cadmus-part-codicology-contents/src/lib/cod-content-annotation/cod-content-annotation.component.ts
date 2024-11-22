@@ -15,6 +15,7 @@ import { CodContentAnnotation } from '../cod-contents-part';
   selector: 'cadmus-cod-content-annotation',
   templateUrl: './cod-content-annotation.component.html',
   styleUrls: ['./cod-content-annotation.component.css'],
+  standalone: false,
 })
 export class CodContentAnnotationComponent implements OnInit {
   private _annotation: CodContentAnnotation | undefined;

@@ -20,6 +20,7 @@ import { CodLabelCell } from '../label-generator';
   selector: 'cadmus-cod-label-cell',
   templateUrl: './cod-label-cell.component.html',
   styleUrls: ['./cod-label-cell.component.css'],
+  standalone: false,
 })
 export class CodLabelCellComponent implements OnInit {
   private _cell: CodLabelCell | undefined;
