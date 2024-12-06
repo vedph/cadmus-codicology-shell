@@ -22,7 +22,7 @@ import {
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { PhysicalDimension } from '@myrmidon/cadmus-mat-physical-size';
 import { DecoratedCount } from '@myrmidon/cadmus-refs-decorated-counts';
-import { NgToolsValidators } from '@myrmidon/ng-tools';
+import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { distinctUntilChanged, Subscription } from 'rxjs';
 
 import { CodLayout } from '../cod-layouts-part';
@@ -108,11 +108,11 @@ export class CodLayoutEditorComponent implements OnInit, OnDestroy {
     this.editorClose = new EventEmitter<any>();
     // form
     this.sampleRanges = _formBuilder.control([], {
-      validators: NgToolsValidators.strictMinLengthValidator(1),
+      validators: NgxToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
     this.ranges = _formBuilder.control([], {
-      validators: NgToolsValidators.strictMinLengthValidator(1),
+      validators: NgxToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
     this.dimensions = _formBuilder.array([]);

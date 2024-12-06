@@ -9,7 +9,7 @@ import { take } from 'rxjs';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
-import { DialogService } from '@myrmidon/ng-mat-tools';
+import { DialogService } from '@myrmidon/ngx-mat-tools';
 
 import {
   CodDecorationArtist,

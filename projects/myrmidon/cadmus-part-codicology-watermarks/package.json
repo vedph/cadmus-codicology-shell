@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-watermarks",
-  "version": "7.0.0",
+  "version": "8.0.0",
   "description": "Cadmus codicology - watermarks.",
   "keywords": [
     "Cadmus"
@@ -16,14 +16,14 @@
   "peerDependencies": {
     "@angular/common": "^19.0.0",
     "@angular/core": "^19.0.0",
-    "@myrmidon/cadmus-cod-location": "^6.0.0",
-    "@myrmidon/cadmus-mat-physical-size": "^6.0.0",
-    "@myrmidon/cadmus-refs-asserted-chronotope": "^6.0.0",
-    "@myrmidon/cadmus-refs-asserted-ids": "^6.0.0",
-    "@myrmidon/cadmus-refs-historical-date": "^6.0.0",
-    "@myrmidon/cadmus-state": "^9.0.0",
-    "@myrmidon/cadmus-ui": "^9.0.0",
-    "@myrmidon/cadmus-ui-pg": "^9.0.0"
+    "@myrmidon/cadmus-cod-location": "^7.0.0",
+    "@myrmidon/cadmus-mat-physical-size": "^7.0.0",
+    "@myrmidon/cadmus-refs-asserted-chronotope": "^7.0.0",
+    "@myrmidon/cadmus-refs-asserted-ids": "^7.0.0",
+    "@myrmidon/cadmus-refs-historical-date": "^7.0.0",
+    "@myrmidon/cadmus-state": "^10.0.0",
+    "@myrmidon/cadmus-ui": "^10.0.0",
+    "@myrmidon/cadmus-ui-pg": "^10.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"

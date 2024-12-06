@@ -12,8 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-// myrmidon
-import { NgToolsModule } from '@myrmidon/ng-tools';
+import { FlatLookupPipe } from '@myrmidon/ngx-tools';
 
 // bricks
 import {
@@ -70,8 +69,8 @@ import { CodHandsPartFeatureComponent } from './cod-hands-part-feature/cod-hands
     MatSelectModule,
     MatTabsModule,
     MatTooltipModule,
+    FlatLookupPipe,
     // myrmidon
-    NgToolsModule,
     // bricks
     NoteSetComponent,
     CodLocationComponent,

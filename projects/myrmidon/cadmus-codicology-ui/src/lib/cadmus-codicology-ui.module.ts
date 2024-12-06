@@ -13,7 +13,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { NgeMarkdownModule } from '@cisstech/nge/markdown';
 
-import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
 import { RefLookupComponent } from '@myrmidon/cadmus-refs-lookup';
 
 import { CadmusApiModule } from '@myrmidon/cadmus-api';
@@ -39,7 +38,6 @@ import { CodLayoutFigureComponent } from './components/cod-layout-figure/cod-lay
     // vendors
     NgeMarkdownModule,
     // general
-    NgMatToolsModule,
     CadmusApiModule,
     RefLookupComponent
   ],

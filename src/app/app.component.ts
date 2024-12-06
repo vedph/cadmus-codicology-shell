@@ -4,7 +4,7 @@ import { AppRepository } from '@myrmidon/cadmus-state';
 import { Router } from '@angular/router';
 import { take } from 'rxjs/operators';
 import { AuthJwtService, User } from '@myrmidon/auth-jwt-login';
-import { EnvService } from '@myrmidon/ng-tools';
+import { EnvService } from '@myrmidon/ngx-tools';
 import { FormBuilder, FormControl } from '@angular/forms';
 
 @Component({

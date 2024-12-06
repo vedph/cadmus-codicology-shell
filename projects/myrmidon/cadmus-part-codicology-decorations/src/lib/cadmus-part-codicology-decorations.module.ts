@@ -16,8 +16,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgeMonacoModule } from '@cisstech/nge/monaco';
 
 // myrmidon
-import { NgToolsModule } from '@myrmidon/ng-tools';
-import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
+import { FlatLookupPipe } from '@myrmidon/ngx-tools';
 
 // bricks
 import { AssertionComponent } from '@myrmidon/cadmus-refs-assertion';
@@ -25,14 +24,20 @@ import {
   PhysicalSizeComponent,
   PhysicalSizePipe,
 } from '@myrmidon/cadmus-mat-physical-size';
-import { AssertedChronotopeComponent, AssertedChronotopeSetComponent } from '@myrmidon/cadmus-refs-asserted-chronotope';
+import {
+  AssertedChronotopeComponent,
+  AssertedChronotopeSetComponent,
+} from '@myrmidon/cadmus-refs-asserted-chronotope';
 import {
   AssertedCompositeIdComponent,
   AssertedCompositeIdsComponent,
 } from '@myrmidon/cadmus-refs-asserted-ids';
 import { DocReferencesComponent } from '@myrmidon/cadmus-refs-doc-references';
 import { HistoricalDateComponent } from '@myrmidon/cadmus-refs-historical-date';
-import { CodLocationComponent, CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
+import {
+  CodLocationComponent,
+  CodLocationRangePipe,
+} from '@myrmidon/cadmus-cod-location';
 import { FlagsPickerComponent } from '@myrmidon/cadmus-ui-flags-picker';
 
 // cadmus
@@ -75,9 +80,6 @@ import { CodDecorationsPartFeatureComponent } from './cod-decorations-part-featu
     MatTooltipModule,
     // vendor
     NgeMonacoModule,
-    // myrmidon
-    NgToolsModule,
-    NgMatToolsModule,
     // bricks
     PhysicalSizeComponent,
     PhysicalSizePipe,
@@ -91,6 +93,7 @@ import { CodDecorationsPartFeatureComponent } from './cod-decorations-part-featu
     FlagsPickerComponent,
     CodLocationComponent,
     CodLocationRangePipe,
+    FlatLookupPipe,
     // cadmus
     CadmusStateModule,
     CadmusUiModule,

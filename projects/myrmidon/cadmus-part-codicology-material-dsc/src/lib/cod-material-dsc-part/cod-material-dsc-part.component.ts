@@ -6,7 +6,7 @@ import {
   UntypedFormGroup,
 } from '@angular/forms';
 
-import { NgToolsValidators } from '@myrmidon/ng-tools';
+import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 import { EditedObject, ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
 import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
@@ -18,7 +18,7 @@ import {
   COD_MATERIAL_DSC_PART_TYPEID,
 } from '../cod-material-dsc-part';
 import { take } from 'rxjs';
-import { DialogService } from '@myrmidon/ng-mat-tools';
+import { DialogService } from '@myrmidon/ngx-mat-tools';
 
 /**
  * CodMaterialDsc part editor component.
@@ -73,7 +73,7 @@ export class CodMaterialDscPartComponent
     this.tabIndex = 0;
     // form
     this.units = formBuilder.control([], {
-      validators: NgToolsValidators.strictMinLengthValidator(1),
+      validators: NgxToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
     this.palimpsests = formBuilder.control([], { nonNullable: true });

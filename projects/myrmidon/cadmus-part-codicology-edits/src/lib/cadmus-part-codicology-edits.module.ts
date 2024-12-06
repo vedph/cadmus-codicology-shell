@@ -10,8 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-// myrmidon
-import { NgToolsModule } from '@myrmidon/ng-tools';
+import { EllipsisPipe, FlatLookupPipe } from '@myrmidon/ngx-tools';
 
 // bricks
 import { CodLocationComponent, CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
@@ -52,7 +51,8 @@ import { CodEditsPartFeatureComponent } from './cod-edits-part-feature/cod-edits
     MatTabsModule,
     MatTooltipModule,
     // myrmidon
-    NgToolsModule,
+    EllipsisPipe,
+    FlatLookupPipe,
     // bricks
     CodLocationComponent,
     CodLocationRangePipe,

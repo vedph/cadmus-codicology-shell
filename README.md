@@ -24,6 +24,10 @@ Per-library documentation:
 
 ## History
 
+### 8.0.0
+
+- 2024-12-06: ⚠️ updated core dependencies.
+
 ### 7.0.0
 
 - 2024-11-22: ⚠️ upgraded to Angular 19.

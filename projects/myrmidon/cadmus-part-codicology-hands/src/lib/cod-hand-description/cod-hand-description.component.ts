@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { NoteSet, NoteSetDefinition } from '@myrmidon/cadmus-ui-note-set';
-import { DialogService } from '@myrmidon/ng-mat-tools';
+import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { take } from 'rxjs';
 
 import { CodHandDescription, CodHandSign } from '../cod-hands-part';

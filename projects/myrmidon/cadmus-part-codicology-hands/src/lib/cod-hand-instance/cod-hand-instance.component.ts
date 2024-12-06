@@ -7,7 +7,7 @@ import { CodImage } from '@myrmidon/cadmus-codicology-ui';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
 import { Flag, FlagsPickerAdapter } from '@myrmidon/cadmus-ui-flags-picker';
-import { NgToolsValidators } from '@myrmidon/ng-tools';
+import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 
 import { CodHandInstance } from '../cod-hands-part';
 
@@ -129,18 +129,18 @@ export class CodHandInstanceComponent implements OnInit {
     // form
     this.script = formBuilder.control(null);
     this.scripts = formBuilder.control([], {
-      validators: NgToolsValidators.strictMinLengthValidator(1),
+      validators: NgxToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
     this.rank = formBuilder.control(0, { nonNullable: true });
     this.dscKey = formBuilder.control(null);
     this.typologies = formBuilder.control([], {
-      validators: NgToolsValidators.strictMinLengthValidator(1),
+      validators: NgxToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
     this.colors = formBuilder.control([], { nonNullable: true });
     this.ranges = formBuilder.control([], {
-      validators: NgToolsValidators.strictMinLengthValidator(1),
+      validators: NgxToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
     this.chronotope = formBuilder.control(null);

@@ -12,9 +12,6 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-// myrmidon
-import { NgToolsModule } from '@myrmidon/ng-tools';
-
 // bricks
 import {
   CodLocationComponent,
@@ -58,7 +55,6 @@ import { CodLayoutsPartFeatureComponent } from './cod-layouts-part-feature/cod-l
     MatTabsModule,
     MatTooltipModule,
     // Cadmus
-    NgToolsModule,
     CadmusCodicologyUiModule,
     CadmusStateModule,
     CadmusUiModule,

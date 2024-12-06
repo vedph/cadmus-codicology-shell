@@ -11,7 +11,7 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { PhysicalSize } from '@myrmidon/cadmus-mat-physical-size';
 import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
 import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
-import { NgToolsValidators } from '@myrmidon/ng-tools';
+import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 
 import { CodWatermark } from '../cod-watermarks-part';
 
@@ -99,7 +99,7 @@ export class CodWatermarkEditorComponent implements OnInit {
       Validators.maxLength(50),
     ]);
     this.sampleRanges = formBuilder.control([], {
-      validators: NgToolsValidators.strictMinLengthValidator(1),
+      validators: NgxToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
     this.ranges = formBuilder.control([], { nonNullable: true });

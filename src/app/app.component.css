@@ -22,3 +22,10 @@ fieldset {
   border-radius: 6px;
   padding: 6px 12px;
 }
+
+mat-toolbar {
+  background-color: #cf976a;
+}
+mat-toolbar mat-icon {
+  color: white;
+}

@@ -11,7 +11,7 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
 import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
 import { Flag, FlagsPickerAdapter } from '@myrmidon/cadmus-ui-flags-picker';
-import { DialogService } from '@myrmidon/ng-mat-tools';
+import { DialogService } from '@myrmidon/ngx-mat-tools';
 
 import {
   CodDecoration,

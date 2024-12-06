@@ -8,8 +8,8 @@ import {
 } from '@angular/forms';
 import { Observable, take } from 'rxjs';
 
-import { deepCopy } from '@myrmidon/ng-tools';
-import { DialogService } from '@myrmidon/ng-mat-tools';
+import { deepCopy } from '@myrmidon/ngx-tools';
+import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 import { EditedObject, ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
 import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';

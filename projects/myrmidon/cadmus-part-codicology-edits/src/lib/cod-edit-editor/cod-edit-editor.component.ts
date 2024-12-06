@@ -12,7 +12,7 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
 import { HistoricalDateModel } from '@myrmidon/cadmus-refs-historical-date';
 import { Flag, FlagsPickerAdapter } from '@myrmidon/cadmus-ui-flags-picker';
-import { NgToolsValidators } from '@myrmidon/ng-tools';
+import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 
 import { CodEdit } from '../cod-edits-part';
 import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
@@ -146,7 +146,7 @@ export class CodEditEditorComponent implements OnInit {
     this.authorIds = formBuilder.control([], { nonNullable: true });
     this.techniques = formBuilder.control([], { nonNullable: true });
     this.ranges = formBuilder.control([], {
-      validators: NgToolsValidators.strictMinLengthValidator(1),
+      validators: NgxToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
     this.language = formBuilder.control(null, Validators.maxLength(50));

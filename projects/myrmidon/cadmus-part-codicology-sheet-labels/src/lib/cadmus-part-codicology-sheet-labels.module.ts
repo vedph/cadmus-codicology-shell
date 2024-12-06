@@ -15,10 +15,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-// myrmidon
-import { NgToolsModule } from '@myrmidon/ng-tools';
-import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
-import { AuthJwtLoginModule } from '@myrmidon/auth-jwt-login';
+import { FlatLookupPipe } from '@myrmidon/ngx-tools';
 
 // bricks
 import { PhysicalSizeComponent } from '@myrmidon/cadmus-mat-physical-size';
@@ -76,10 +73,8 @@ import { CodLocationConverterComponent } from './cod-location-converter/cod-loca
     MatSlideToggleModule,
     MatTabsModule,
     MatTooltipModule,
+    FlatLookupPipe,
     // Cadmus
-    NgToolsModule,
-    NgMatToolsModule,
-    AuthJwtLoginModule,
     CadmusStateModule,
     CadmusUiModule,
     CadmusUiPgModule,

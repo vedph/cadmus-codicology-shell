@@ -1,4 +1,4 @@
-import { deepCopy } from '@myrmidon/ng-tools';
+import { deepCopy } from '@myrmidon/ngx-tools';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { CodColumn, CodRow } from './cod-sheet-labels-part';

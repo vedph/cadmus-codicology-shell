@@ -10,8 +10,8 @@ import { Observable, take } from 'rxjs';
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { Flag, FlagsPickerAdapter } from '@myrmidon/cadmus-ui-flags-picker';
-import { DialogService } from '@myrmidon/ng-mat-tools';
-import { NgToolsValidators } from '@myrmidon/ng-tools';
+import { DialogService } from '@myrmidon/ngx-mat-tools';
+import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 
 import { CodContent, CodContentAnnotation } from '../cod-contents-part';
 import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
@@ -124,7 +124,7 @@ export class CodContentEditorComponent implements OnInit {
     this.workId = formBuilder.control(null);
     this.author = formBuilder.control(null, Validators.maxLength(50));
     this.ranges = formBuilder.control([], {
-      validators: NgToolsValidators.strictMinLengthValidator(1),
+      validators: NgxToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
     this.tag = formBuilder.control(null, Validators.maxLength(50));

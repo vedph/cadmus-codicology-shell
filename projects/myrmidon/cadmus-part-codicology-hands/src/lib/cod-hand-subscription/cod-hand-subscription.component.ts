@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { NgToolsValidators } from '@myrmidon/ng-tools';
+import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 
 import { CodHandSubscription } from '../cod-hands-part';
 
@@ -52,7 +52,7 @@ export class CodHandSubscriptionComponent implements OnInit {
     this.editorClose = new EventEmitter<any>();
     // form
     this.ranges = formBuilder.control([], {
-      validators: NgToolsValidators.strictMinLengthValidator(1),
+      validators: NgxToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
     this.language = formBuilder.control(null, [

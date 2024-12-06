@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { NgToolsValidators } from '@myrmidon/ng-tools';
+import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 
 import { CodContentAnnotation } from '../cod-contents-part';
 
@@ -58,7 +58,7 @@ export class CodContentAnnotationComponent implements OnInit {
       Validators.maxLength(50),
     ]);
     this.ranges = formBuilder.control([], {
-      validators: NgToolsValidators.strictMinLengthValidator(1),
+      validators: NgxToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
     this.incipit = formBuilder.control(null, [

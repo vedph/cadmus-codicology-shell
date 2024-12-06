@@ -17,7 +17,6 @@ import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { CadmusUiFlagsPickerModule } from '@myrmidon/cadmus-ui-flags-picker';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
-import { NgToolsModule } from '@myrmidon/ng-tools';
 
 import { CodRColDefinitionComponent } from './cod-r-col-definition.component';
 
@@ -43,7 +42,6 @@ describe('CodRColDefinitionComponent', () => {
         MatTabsModule,
         MatTooltipModule,
         // Cadmus
-        NgToolsModule,
         CadmusStateModule,
         CadmusUiModule,
         CadmusUiPgModule,

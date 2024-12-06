@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { CodLocation, CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { NgToolsValidators } from '@myrmidon/ng-tools';
+import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 
 import { CodHandSign } from '../cod-hands-part';
 
@@ -58,7 +58,7 @@ export class CodHandSignComponent {
     ]);
     this.sampleRanges = formBuilder.control(
       [],
-      NgToolsValidators.strictMinLengthValidator(1)
+      NgxToolsValidators.strictMinLengthValidator(1)
     );
     this.description = formBuilder.control(null, Validators.maxLength(1000));
     this.form = formBuilder.group({

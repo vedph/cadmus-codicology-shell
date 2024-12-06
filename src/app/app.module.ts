@@ -48,13 +48,16 @@ import { NgeMonacoModule } from '@cisstech/nge/monaco';
 import { NgeMarkdownModule } from '@cisstech/nge/markdown';
 
 // myrmidon
-import { EnvServiceProvider, NgToolsModule } from '@myrmidon/ng-tools';
-import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
+import { EnvServiceProvider } from '@myrmidon/ngx-tools';
 import {
-  AuthJwtLoginModule,
+  AuthJwtLoginComponent,
+  GravatarPipe,
   authJwtInterceptor,
 } from '@myrmidon/auth-jwt-login';
-import { AuthJwtAdminModule } from '@myrmidon/auth-jwt-admin';
+import {
+  AuthJwtRegistrationComponent,
+  UserListComponent,
+} from '@myrmidon/auth-jwt-admin';
 
 // cadmus bricks
 import { DocReferencesComponent } from '@myrmidon/cadmus-refs-doc-references';
@@ -94,6 +97,11 @@ import { PART_EDITOR_KEYS } from './part-editor-keys';
 import { INDEX_LOOKUP_DEFINITIONS } from './index-lookup-definitions';
 import { ITEM_BROWSER_KEYS } from './item-browser-keys';
 import { NoteSetComponent } from '@myrmidon/cadmus-ui-note-set';
+import {
+  EllipsisPipe,
+  FlatLookupPipe,
+  SafeHtmlPipe,
+} from '@myrmidon/ngx-tools';
 
 @NgModule({
   declarations: [
@@ -150,10 +158,13 @@ import { NoteSetComponent } from '@myrmidon/cadmus-ui-note-set';
     NgeMonacoModule.forRoot({}),
     NgeMarkdownModule,
     // myrmidon
-    NgToolsModule,
-    NgMatToolsModule,
-    AuthJwtLoginModule,
-    AuthJwtAdminModule,
+    EllipsisPipe,
+    FlatLookupPipe,
+    SafeHtmlPipe,
+    AuthJwtLoginComponent,
+    AuthJwtRegistrationComponent,
+    UserListComponent,
+    GravatarPipe,
     // cadmus bricks
     DocReferencesComponent,
     HistoricalDateComponent,

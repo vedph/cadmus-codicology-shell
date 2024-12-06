@@ -1,4 +1,4 @@
-import { RomanNumber } from '@myrmidon/ng-tools';
+import { RomanNumber } from '@myrmidon/ngx-tools';
 
 import { CodColumn } from './cod-sheet-labels-part';
 import { CodRowPage, CodRowType } from './cod-sheet-table';

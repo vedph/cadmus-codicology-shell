@@ -10,14 +10,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
-import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
-import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
-import { CadmusUiFlagsPickerModule } from '@myrmidon/cadmus-ui-flags-picker';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
-import { NgToolsModule } from '@myrmidon/ng-tools';
 
 import { CodLabelCellComponent } from './cod-label-cell.component';
 
@@ -43,7 +38,6 @@ describe('CodLabelCellComponent', () => {
         MatTabsModule,
         MatTooltipModule,
         // Cadmus
-        NgToolsModule,
         CadmusStateModule,
         CadmusUiModule,
         CadmusUiPgModule,

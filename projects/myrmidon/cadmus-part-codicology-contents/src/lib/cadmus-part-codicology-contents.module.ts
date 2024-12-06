@@ -12,18 +12,19 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-// myrmidon
-import { NgToolsModule } from '@myrmidon/ng-tools';
-import { NgMatToolsModule } from '@myrmidon/ng-mat-tools';
-
 // bricks
 import {
   CodLocationComponent,
   CodLocationPipe,
   CodLocationRangePipe,
 } from '@myrmidon/cadmus-cod-location';
-import { AssertedCompositeIdComponent, AssertedCompositeIdsComponent, AssertedIdsComponent } from '@myrmidon/cadmus-refs-asserted-ids';
+import {
+  AssertedCompositeIdComponent,
+  AssertedCompositeIdsComponent,
+  AssertedIdsComponent,
+} from '@myrmidon/cadmus-refs-asserted-ids';
 import { FlagsPickerComponent } from '@myrmidon/cadmus-ui-flags-picker';
+import { EllipsisPipe, FlatLookupPipe } from '@myrmidon/ngx-tools';
 
 // cadmus
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
@@ -56,9 +57,10 @@ import { CodContentAnnotationComponent } from './cod-content-annotation/cod-cont
     MatSelectModule,
     MatTabsModule,
     MatTooltipModule,
+    // myrmidon
+    EllipsisPipe,
+    FlatLookupPipe,
     // Cadmus
-    NgToolsModule,
-    NgMatToolsModule,
     AssertedIdsComponent,
     AssertedCompositeIdComponent,
     AssertedCompositeIdsComponent,

@@ -18,7 +18,6 @@ import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { CadmusUiFlagsPickerModule } from '@myrmidon/cadmus-ui-flags-picker';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
-import { NgToolsModule } from '@myrmidon/ng-tools';
 
 import { CodSheetLabelsPartFeatureComponent } from './cod-sheet-labels-part-feature.component';
 

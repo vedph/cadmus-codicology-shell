@@ -7,8 +7,8 @@ import {
 } from '@angular/forms';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
-import { DialogService } from '@myrmidon/ng-mat-tools';
-import { NgToolsValidators } from '@myrmidon/ng-tools';
+import { DialogService } from '@myrmidon/ngx-mat-tools';
+import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 
 import { debounceTime, take } from 'rxjs';
 
@@ -121,7 +121,7 @@ export class CodHandComponent implements OnInit {
     this.ids = formBuilder.control([], { nonNullable: true });
     this.descriptions = formBuilder.control([], { nonNullable: true });
     this.instances = formBuilder.control([], {
-      validators: NgToolsValidators.strictMinLengthValidator(1),
+      validators: NgxToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
     this.subscriptions = formBuilder.control([], { nonNullable: true });

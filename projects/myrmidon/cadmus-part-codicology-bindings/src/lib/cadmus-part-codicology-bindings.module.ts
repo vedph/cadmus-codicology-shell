@@ -11,8 +11,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-// myrmidon
-import { NgToolsModule } from '@myrmidon/ng-tools';
 // bricks
 import {
   PhysicalSizeComponent,
@@ -23,6 +21,7 @@ import {
   HistoricalDateComponent,
   HistoricalDatePipe,
 } from '@myrmidon/cadmus-refs-historical-date';
+import { EllipsisPipe, FlatLookupPipe } from '@myrmidon/ngx-tools';
 // cadmus
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
@@ -52,7 +51,8 @@ import { CodBindingsPartFeatureComponent } from './cod-bindings-part-feature/cod
     MatTabsModule,
     MatTooltipModule,
     // myrmidon
-    NgToolsModule,
+    EllipsisPipe,
+    FlatLookupPipe,
     // cadmus
     CadmusStateModule,
     CadmusUiModule,

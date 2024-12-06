@@ -7,8 +7,8 @@ import {
 } from '@angular/forms';
 import { take } from 'rxjs/operators';
 
-import { deepCopy, NgToolsValidators } from '@myrmidon/ng-tools';
-import { DialogService } from '@myrmidon/ng-mat-tools';
+import { deepCopy, NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 import { EditedObject, ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
 import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
@@ -56,7 +56,7 @@ export class CodShelfmarksPartComponent
     // form
     this.shelfmarks = formBuilder.control([], {
       nonNullable: true,
-      validators: NgToolsValidators.strictMinLengthValidator(1),
+      validators: NgxToolsValidators.strictMinLengthValidator(1),
     });
   }
 
