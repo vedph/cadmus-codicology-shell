@@ -24,7 +24,9 @@ Per-library documentation:
 
 ## History
 
-- 2024-12-18: updated packages.
+- 2024-12-18:
+  - updated Angular and packages.
+  - removed legacy M2 themes.
 
 ### 8.0.0
 
