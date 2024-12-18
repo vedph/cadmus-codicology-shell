@@ -24,6 +24,8 @@ Per-library documentation:
 
 ## History
 
+- 2024-12-18: updated packages.
+
 ### 8.0.0
 
 - 2024-12-06: ⚠️ updated core dependencies.
