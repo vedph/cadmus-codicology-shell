@@ -15,7 +15,6 @@ import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-assert
 import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
 import { CadmusUiModule } from '@myrmidon/cadmus-ui';
-import { CadmusUiFlagsPickerModule } from '@myrmidon/cadmus-ui-flags-picker';
 import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
 
 import { CodSheetLabelsPartComponent } from './cod-sheet-labels-part.component';

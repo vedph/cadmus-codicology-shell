@@ -1,13 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs';
 
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { CodImage } from '@myrmidon/cadmus-codicology-ui';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
-import { Flag, FlagsPickerAdapter } from '@myrmidon/cadmus-ui-flags-picker';
 import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { Flag } from '@myrmidon/cadmus-ui-flag-set';
 
 import { CodHandInstance } from '../cod-hands-part';
 
@@ -24,8 +23,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   styleUrls: ['./cod-hand-instance.component.css'],
   standalone: false,
 })
-export class CodHandInstanceComponent implements OnInit {
-  private readonly _flagAdapter: FlagsPickerAdapter;
+export class CodHandInstanceComponent {
   private _instance: CodHandInstance | undefined;
   private _typologyEntries: ThesaurusEntry[] | undefined;
   private _colorEntries: ThesaurusEntry[] | undefined;
@@ -62,10 +60,7 @@ export class CodHandInstanceComponent implements OnInit {
       return;
     }
     this._typologyEntries = value || [];
-    this._flagAdapter.setSlotFlags(
-      'typologies',
-      this._typologyEntries.map(entryToFlag)
-    );
+    this.typologyFlags = this._typologyEntries.map(entryToFlag);
   }
   // cod-hand-colors
   @Input()
@@ -77,10 +72,7 @@ export class CodHandInstanceComponent implements OnInit {
       return;
     }
     this._colorEntries = value || [];
-    this._flagAdapter.setSlotFlags(
-      'colors',
-      this._colorEntries.map(entryToFlag)
-    );
+    this.colorFlags = this._colorEntries.map(entryToFlag);
   }
 
   // chronotope-tags
@@ -106,8 +98,8 @@ export class CodHandInstanceComponent implements OnInit {
 
   public script: FormControl<ThesaurusEntry | null>;
   public scripts: FormControl<ThesaurusEntry[]>;
-  public typologies: FormControl<Flag[]>;
-  public colors: FormControl<Flag[]>;
+  public typologies: FormControl<string[]>;
+  public colors: FormControl<string[]>;
   public ranges: FormControl<CodLocationRange[]>;
   public rank: FormControl<number>;
   public dscKey: FormControl<string | null>;
@@ -116,16 +108,12 @@ export class CodHandInstanceComponent implements OnInit {
   public form: FormGroup;
 
   // flags
-  public typologyFlags$: Observable<Flag[]>;
-  public colorFlags$: Observable<Flag[]>;
+  public typologyFlags: Flag[] = [];
+  public colorFlags: Flag[] = [];
 
   constructor(formBuilder: FormBuilder) {
     this.instanceChange = new EventEmitter<CodHandInstance>();
     this.editorClose = new EventEmitter<any>();
-    // flags
-    this._flagAdapter = new FlagsPickerAdapter();
-    this.typologyFlags$ = this._flagAdapter.selectFlags('typologies');
-    this.colorFlags$ = this._flagAdapter.selectFlags('colors');
     // form
     this.script = formBuilder.control(null);
     this.scripts = formBuilder.control([], {
@@ -157,8 +145,6 @@ export class CodHandInstanceComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
-
   private updateForm(model: CodHandInstance | undefined): void {
     if (!model) {
       this.form.reset();
@@ -178,10 +164,8 @@ export class CodHandInstanceComponent implements OnInit {
     this.dscKey.setValue(model.descriptionKey || null);
     // update the typologies control while setting typologies,
     // because it is involved in form's validation
-    this.typologies.setValue(
-      this._flagAdapter.setSlotChecks('typologies', model.typologies)
-    );
-    this._flagAdapter.setSlotChecks('colors', model.colors || []);
+    this.typologies.setValue(model.typologies);
+    this.colors.setValue(model.colors || []);
     this.ranges.setValue(model.ranges);
     this.chronotope.setValue(model.chronotope || null);
     this.images.setValue(model.images || []);
@@ -193,24 +177,22 @@ export class CodHandInstanceComponent implements OnInit {
       scripts: this.scripts.value.map((e) => e.id),
       rank: this.rank.value ? +this.rank.value : 0,
       descriptionKey: this.dscKey.value || undefined,
-      typologies: this._flagAdapter.getCheckedFlagIds('typologies'),
-      colors: this._flagAdapter.getOptionalCheckedFlagIds('colors'),
+      typologies: this.typologies.value,
+      colors: this.colors.value?.length ? this.colors.value : undefined,
       ranges: this.ranges.value || [],
       chronotope: this.chronotope.value || undefined,
       images: this.images.value?.length ? this.images.value : undefined,
     };
   }
 
-  public onTypologyFlagsChange(flags: Flag[]): void {
-    this._flagAdapter.setSlotFlags('typologies', flags, true);
-    this.typologies.setValue(flags);
+  public onTypologyIdsChange(ids: string[]): void {
+    this.typologies.setValue(ids);
     this.typologies.updateValueAndValidity();
     this.typologies.markAsDirty();
   }
 
-  public onColorFlagsChange(flags: Flag[]): void {
-    this._flagAdapter.setSlotFlags('colors', flags, true);
-    this.colors.setValue(flags);
+  public onColorIdsChange(ids: string[]): void {
+    this.colors.setValue(ids);
     this.colors.updateValueAndValidity();
     this.colors.markAsDirty();
   }

@@ -32,21 +32,20 @@
           [required]="true"
           [location]="ranges.value"
           (locationChange)="onLocationChange($event)"
-        ></cadmus-cod-location>
+        />
       </div>
 
       <!-- flags -->
-      @if (flags$ | async; as flags) {
+      @if (genFlags.length) {
       <div>
-        @if (flags.length) {
         <fieldset>
           <legend>features</legend>
-          <cadmus-ui-flags-picker
-            [flags]="flags"
-            (flagsChange)="onFlagsChange($event)"
-          ></cadmus-ui-flags-picker>
+          <cadmus-ui-flag-set
+            [flags]="genFlags"
+            [checkedIds]="flags.value"
+            (checkedIdsChange)="onGenIdsChange($event)"
+          />
         </fieldset>
-        }
       </div>
       }
 
@@ -103,17 +102,16 @@
         </mat-form-field>
       </div>
       <!-- typologies -->
-      @if (typologyFlags$ | async; as flags) {
       <div>
-        <fieldset [hidden]="!flags.length || hidden?.typologies">
+        <fieldset [hidden]="!typologyFlags.length || hidden?.typologies">
           <legend>typologies</legend>
-          <cadmus-ui-flags-picker
-            [flags]="flags"
-            (flagsChange)="onTypologyFlagsChange($event)"
-          ></cadmus-ui-flags-picker>
+          <cadmus-ui-flag-set
+            [flags]="typologyFlags"
+            [checkedIds]="typologies.value"
+            (checkedIdsChange)="onTypologyIdsChange($event)"
+          />
         </fieldset>
       </div>
-      }
 
       <!-- subject -->
       <div [hidden]="hidden?.subject">
@@ -128,79 +126,82 @@
       </div>
 
       <!-- colors -->
-      @if (colorFlags$ | async; as flags) {
       <div>
-        <fieldset [hidden]="!flags.length || hidden?.colors">
+        <fieldset [hidden]="!colorFlags.length || hidden?.colors">
           <legend>colors</legend>
-          <cadmus-ui-flags-picker
-            [flags]="flags"
-            (flagsChange)="onColorFlagsChange($event)"
-          ></cadmus-ui-flags-picker>
+          <cadmus-ui-flag-set
+            [flags]="colorFlags"
+            [checkedIds]="colors.value"
+            (checkedIdsChange)="onColorIdsChange($event)"
+          />
         </fieldset>
       </div>
-      }
 
       <!-- gildings -->
-      @if (gildingFlags$ | async; as flags) {
       <div>
         <fieldset
-          [hidden]="(!flags.length && !elemGildingFree) || hidden?.gildings"
+          [hidden]="
+            (!gildingFlags.length && !elemGildingFree) || hidden?.gildings
+          "
         >
           <legend>gildings</legend>
-          <cadmus-ui-flags-picker
-            [flags]="flags"
-            [allowUserFlags]="elemGildingFree || false"
-            (flagsChange)="onGildingFlagsChange($event)"
-          ></cadmus-ui-flags-picker>
+          <cadmus-ui-flag-set
+            [flags]="gildingFlags"
+            [allowCustom]="elemGildingFree || false"
+            [checkedIds]="gildings.value"
+            (checkedIdsChange)="onGildingIdsChange($event)"
+          />
         </fieldset>
       </div>
-      }
 
       <!-- techniques -->
-      @if (techniqueFlags$ | async; as flags) {
       <div>
         <fieldset
-          [hidden]="(!flags.length && !elemTechniqueFree) || hidden?.techniques"
+          [hidden]="
+            (!techniqueFlags.length && !elemTechniqueFree) || hidden?.techniques
+          "
         >
           <legend>techniques</legend>
-          <cadmus-ui-flags-picker
-            [flags]="flags"
-            [allowUserFlags]="elemTechniqueFree || false"
-            (flagsChange)="onTechniqueFlagsChange($event)"
-          ></cadmus-ui-flags-picker>
+          <cadmus-ui-flag-set
+            [flags]="techniqueFlags"
+            [allowCustom]="elemTechniqueFree || false"
+            [checkedIds]="techniques.value"
+            (checkedIdsChange)="onTechniqueIdsChange($event)"
+          />
         </fieldset>
       </div>
-      }
 
       <!-- tools -->
-      @if (toolFlags$ | async; as flags) {
-      <div>
-        <fieldset [hidden]="(!flags.length && !elemToolFree) || hidden?.tools">
-          <legend>tools</legend>
-          <cadmus-ui-flags-picker
-            [flags]="flags"
-            [allowUserFlags]="elemToolFree || false"
-            (flagsChange)="onToolFlagsChange($event)"
-          ></cadmus-ui-flags-picker>
-        </fieldset>
-      </div>
-      }
-
-      <!-- positions -->
-      @if (positionFlags$ | async; as flags) {
       <div>
         <fieldset
-          [hidden]="(!flags.length && !elemPositionFree) || hidden?.positions"
+          [hidden]="(!toolFlags.length && !elemToolFree) || hidden?.tools"
         >
-          <legend>positions</legend>
-          <cadmus-ui-flags-picker
-            [flags]="flags"
-            [allowUserFlags]="elemPositionFree || false"
-            (flagsChange)="onPositionFlagsChange($event)"
-          ></cadmus-ui-flags-picker>
+          <legend>tools</legend>
+          <cadmus-ui-flag-set
+            [flags]="toolFlags"
+            [allowCustom]="elemToolFree || false"
+            [checkedIds]="tools.value"
+            (checkedIdsChange)="onToolIdsChange($event)"
+          />
         </fieldset>
       </div>
-      }
+
+      <!-- positions -->
+      <div>
+        <fieldset
+          [hidden]="
+            (!positionFlags.length && !elemPositionFree) || hidden?.positions
+          "
+        >
+          <legend>positions</legend>
+          <cadmus-ui-flag-set
+            [flags]="positionFlags"
+            [allowCustom]="elemPositionFree || false"
+            [checkedIds]="positions.value"
+            (checkedIdsChange)="onPositionIdsChange($event)"
+          />
+        </fieldset>
+      </div>
     </mat-tab>
 
     <!-- DESCRIPTION -->
@@ -241,7 +242,6 @@
   <div class="toolbar-row">
     <button
       type="button"
-      color="warn"
       mat-icon-button
       matTooltip="Discard element changes"
       (click)="cancel()"
@@ -250,7 +250,6 @@
     </button>
     <button
       type="submit"
-      color="primary"
       class="mat-primary"
       mat-flat-button
       matTooltip="Accept element changes"

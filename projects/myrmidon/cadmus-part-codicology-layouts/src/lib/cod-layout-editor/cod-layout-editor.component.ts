@@ -13,6 +13,9 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { distinctUntilChanged, Subscription } from 'rxjs';
+
+import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import {
   CodLayoutRectSet,
@@ -22,8 +25,6 @@ import {
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { PhysicalDimension } from '@myrmidon/cadmus-mat-physical-size';
 import { DecoratedCount } from '@myrmidon/cadmus-refs-decorated-counts';
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
-import { distinctUntilChanged, Subscription } from 'rxjs';
 
 import { CodLayout } from '../cod-layouts-part';
 

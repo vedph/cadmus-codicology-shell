@@ -45,7 +45,6 @@
       <button
         type="button"
         mat-flat-button
-        color="primary"
         class="mat-primary"
         (click)="addDescription()"
       >
@@ -69,7 +68,6 @@
             <button
               type="button"
               mat-icon-button
-              color="primary"
               matTooltip="Edit this description"
               (click)="editDescription(description, i)"
             >
@@ -96,7 +94,6 @@
             <button
               type="button"
               mat-icon-button
-              color="warn"
               matTooltip="Delete this description"
               (click)="deleteDescription(i)"
             >
@@ -136,7 +133,6 @@
       <button
         type="button"
         mat-flat-button
-        color="primary"
         class="mat-primary"
         (click)="addInstance()"
       >
@@ -160,7 +156,6 @@
             <button
               type="button"
               mat-icon-button
-              color="primary"
               matTooltip="Edit this instance"
               (click)="editInstance(instance, i)"
             >
@@ -187,7 +182,6 @@
             <button
               type="button"
               mat-icon-button
-              color="warn"
               matTooltip="Delete this instance"
               (click)="deleteInstance(i)"
             >
@@ -239,7 +233,6 @@
       <button
         type="button"
         mat-flat-button
-        color="primary"
         class="mat-primary"
         (click)="addSubscription()"
       >
@@ -263,7 +256,6 @@
             <button
               type="button"
               mat-icon-button
-              color="primary"
               matTooltip="Edit this subscription"
               (click)="editSubscription(subscription, i)"
             >
@@ -290,7 +282,6 @@
             <button
               type="button"
               mat-icon-button
-              color="warn"
               matTooltip="Delete this subscription"
               (click)="deleteSubscription(i)"
             >
@@ -344,7 +335,6 @@
   <div class="toolbar-row">
     <button
       type="button"
-      color="warn"
       mat-icon-button
       matTooltip="Discard changes"
       (click)="cancel()"
@@ -353,7 +343,6 @@
     </button>
     <button
       type="submit"
-      color="primary"
       mat-icon-button
       matTooltip="Accept changes"
       [disabled]="form.invalid || form.pristine"

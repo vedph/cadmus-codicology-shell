@@ -18,7 +18,6 @@
         <button
           type="button"
           mat-flat-button
-          color="primary"
           class="mat-primary"
           [disabled]="!script.value"
           (click)="addScript()"
@@ -38,7 +37,6 @@
                   mat-icon-button
                   type="button"
                   matTooltip="Remove this script"
-                  color="warn"
                   (click)="deleteScript(i)"
                 >
                   <mat-icon class="mat-warn">remove_circle</mat-icon>
@@ -108,19 +106,21 @@
   <!-- typologies -->
   <fieldset>
     <legend>typologies</legend>
-    <cadmus-ui-flags-picker
-      [flags]="typologyFlags$ | async"
-      (flagsChange)="onTypologyFlagsChange($event)"
-    ></cadmus-ui-flags-picker>
+    <cadmus-ui-flag-set
+      [flags]="typologyFlags"
+      [checkedIds]="typologies.value"
+      (checkedIdsChange)="onTypologyIdsChange($event)"
+    />
   </fieldset>
 
   <!-- colors -->
   <fieldset>
     <legend>colors</legend>
-    <cadmus-ui-flags-picker
-      [flags]="colorFlags$ | async"
-      (flagsChange)="onColorFlagsChange($event)"
-    ></cadmus-ui-flags-picker>
+    <cadmus-ui-flag-set
+      [flags]="colorFlags"
+      [checkedIds]="colors.value"
+      (checkedIdsChange)="onColorIdsChange($event)"
+    />
   </fieldset>
 
   <!-- chronotope -->
@@ -131,9 +131,9 @@
       [assTagEntries]="assTagEntries"
       [refTagEntries]="refTagEntries"
       [refTypeEntries]="refTypeEntries"
-      [chronotope]="chronotope.value"
-      (chronotopeChange)="onChronotopeChange($event)"
-    ></cadmus-refs-asserted-chronotope>
+      [chronotope]="chronotope.value || undefined"
+      (chronotopeChange)="onChronotopeChange($event!)"
+    />
   </fieldset>
 
   <!-- images -->
@@ -143,14 +143,13 @@
       [typeEntries]="imgTypeEntries"
       [images]="images.value"
       (imagesChange)="onImagesChange($event)"
-    ></cadmus-cod-images>
+    />
   </fieldset>
 
   <!-- buttons -->
   <div class="toolbar-row">
     <button
       type="button"
-      color="warn"
       mat-icon-button
       matTooltip="Discard changes"
       (click)="cancel()"
@@ -159,7 +158,6 @@
     </button>
     <button
       type="submit"
-      color="primary"
       mat-icon-button
       matTooltip="Accept changes"
       [disabled]="form.invalid || form.pristine"

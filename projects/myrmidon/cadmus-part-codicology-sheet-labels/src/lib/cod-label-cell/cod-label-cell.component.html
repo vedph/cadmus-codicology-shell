@@ -14,7 +14,6 @@
       type="button"
       mat-icon-button
       matTooltip="Edit value"
-      color="primary"
       (click)="editValue()"
     >
       <mat-icon class="mat-primary">edit</mat-icon>
@@ -70,7 +69,6 @@
       type="button"
       mat-icon-button
       matTooltip="Discard edit"
-      color="warn"
       (click)="cancelEdit()"
     >
       <mat-icon class="mat-warn">clear</mat-icon>
@@ -80,7 +78,6 @@
       [disabled]="form.invalid"
       mat-icon-button
       matTooltip="Save edit"
-      color="primary"
     >
       <mat-icon class="mat-primary">check_circle</mat-icon>
     </button>

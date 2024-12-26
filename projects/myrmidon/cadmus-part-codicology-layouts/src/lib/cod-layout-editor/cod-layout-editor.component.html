@@ -147,14 +147,12 @@
             mat-icon-button
             matSuffix
             [disabled]="formulaForm.invalid"
-            color="primary"
           >
             <mat-icon class="mat-primary">check_circle</mat-icon>
           </button>
           <button
             matTooltip="Update formula"
             type="button"
-            color="warn"
             mat-icon-button
             matSuffix
             [disabled]="!dimensions.value?.length"
@@ -181,7 +179,6 @@
           <button
             type="button"
             mat-flat-button
-            color="primary"
             class="mat-primary"
             (click)="addDimension()"
           >
@@ -199,7 +196,6 @@
               mat-icon-button
               type="button"
               matTooltip="Remove this dimension"
-              color="warn"
               (click)="removeDimension(i)"
             >
               <mat-icon class="mat-warn">remove_circle</mat-icon>
@@ -306,8 +302,8 @@
         [idEntries]="cntIdEntries"
         [tagEntries]="cntTagEntries"
         [counts]="counts.value"
-        (countsChange)="onCountsChange($event)"
-      ></cadmus-refs-decorated-counts>
+        (countsChange)="onCountsChange($event!)"
+      />
     </fieldset>
 
     <br />
@@ -325,7 +321,6 @@
     <div>
       <button
         type="button"
-        color="warn"
         mat-icon-button
         matTooltip="Discard changes"
         (click)="cancel()"
@@ -334,7 +329,6 @@
       </button>
       <button
         type="submit"
-        color="primary"
         mat-icon-button
         matTooltip="Accept changes"
         [disabled]="form.invalid || form.pristine"
@@ -363,7 +357,7 @@
         <cadmus-cod-layout-figure
           [rects]="rectSet"
           [noScale]="false"
-        ></cadmus-cod-layout-figure>
+        />
       </div>
       }
     </div>

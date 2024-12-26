@@ -21,8 +21,8 @@ import { FlatLookupPipe } from '@myrmidon/ngx-tools';
 import { PhysicalSizeComponent } from '@myrmidon/cadmus-mat-physical-size';
 import { AssertedChronotopeComponent } from '@myrmidon/cadmus-refs-asserted-chronotope';
 import { HistoricalDateComponent } from '@myrmidon/cadmus-refs-historical-date';
-import { FlagsPickerComponent } from '@myrmidon/cadmus-ui-flags-picker';
 import { RefLookupComponent } from '@myrmidon/cadmus-refs-lookup';
+import { FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 
 // cadmus
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
@@ -81,7 +81,7 @@ import { CodLocationConverterComponent } from './cod-location-converter/cod-loca
     PhysicalSizeComponent,
     AssertedChronotopeComponent,
     HistoricalDateComponent,
-    FlagsPickerComponent,
+    FlagSetComponent,
     RefLookupComponent,
     CadmusCodicologyUiModule,
   ],

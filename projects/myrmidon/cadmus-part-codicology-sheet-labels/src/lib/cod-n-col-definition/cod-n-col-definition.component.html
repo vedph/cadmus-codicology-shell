@@ -107,10 +107,11 @@
 
   <fieldset>
     <legend>colors</legend>
-    <cadmus-ui-flags-picker
-      [flags]="colorFlags$ | async"
-      (flagsChange)="onColorFlagsChange($event)"
-    ></cadmus-ui-flags-picker>
+    <cadmus-ui-flag-set
+      [flags]="colorFlags"
+      [checkedIds]="colors.value"
+      (checkedIdsChange)="onColorIdsChange($event)"
+    />
   </fieldset>
 
   <div class="form-row">
@@ -118,8 +119,8 @@
     <!-- date -->
     @if (hasDate.value) {
     <cadmus-refs-historical-date
-      [date]="date.value"
-      (dateChange)="onDateChange($event)"
+      [date]="date.value || undefined"
+      (dateChange)="onDateChange($event!)"
     ></cadmus-refs-historical-date>
     }
   </div>
@@ -139,7 +140,6 @@
   <div>
     <button
       type="button"
-      color="warn"
       mat-icon-button
       matTooltip="Discard changes"
       (click)="cancel()"
@@ -148,7 +148,6 @@
     </button>
     <button
       type="submit"
-      color="primary"
       mat-icon-button
       matTooltip="Accept changes"
       [disabled]="form.invalid || form.pristine"

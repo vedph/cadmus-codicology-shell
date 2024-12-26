@@ -5,16 +5,16 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { Observable, take } from 'rxjs';
+import { take } from 'rxjs';
 
+import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { Flag, FlagsPickerAdapter } from '@myrmidon/cadmus-ui-flags-picker';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
+import { Flag } from '@myrmidon/cadmus-ui-flag-set';
 
 import { CodContent, CodContentAnnotation } from '../cod-contents-part';
-import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
 
 function entryToFlag(entry: ThesaurusEntry): Flag {
   return {
@@ -30,7 +30,6 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   standalone: false,
 })
 export class CodContentEditorComponent implements OnInit {
-  private readonly _flagAdapter: FlagsPickerAdapter;
   private _content: CodContent | undefined;
   private _editedAnnotationIndex: number;
   private _stateEntries: ThesaurusEntry[] | undefined;
@@ -57,10 +56,7 @@ export class CodContentEditorComponent implements OnInit {
       return;
     }
     this._stateEntries = value || [];
-    this._flagAdapter.setSlotFlags(
-      'states',
-      this._stateEntries.map(entryToFlag)
-    );
+    this.stateFlags = this._stateEntries.map(entryToFlag);
   }
   // cod-content-tags
   @Input()
@@ -101,23 +97,19 @@ export class CodContentEditorComponent implements OnInit {
   public note: FormControl<string | null>;
   public incipit: FormControl<string | null>;
   public explicit: FormControl<string | null>;
-  public states: FormControl<Flag[]>;
+  public states: FormControl<string[]>;
   public annotations: FormControl<CodContentAnnotation[] | null>;
   public form: FormGroup;
 
   public editedAnnotation?: CodContentAnnotation;
 
   // flags
-  public stateFlags$: Observable<Flag[]>;
+  public stateFlags: Flag[] = [];
 
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
     this.contentChange = new EventEmitter<CodContent>();
     this.editorClose = new EventEmitter<any>();
     this._editedAnnotationIndex = -1;
-
-    // flags
-    this._flagAdapter = new FlagsPickerAdapter();
-    this.stateFlags$ = this._flagAdapter.selectFlags('states');
 
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
@@ -155,7 +147,7 @@ export class CodContentEditorComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     if (this._content) {
       this.updateForm(this._content);
     }
@@ -171,7 +163,7 @@ export class CodContentEditorComponent implements OnInit {
     this.workId.setValue(content.workId || null);
     this.author.setValue(content.author || null);
     this.ranges.setValue(content.ranges || []);
-    this._flagAdapter.setSlotChecks('states', content.states);
+    this.states.setValue(content.states);
     this.tag.setValue(content.tag || null);
     this.title.setValue(content.title || null);
     this.location.setValue(content.location || null);
@@ -191,7 +183,7 @@ export class CodContentEditorComponent implements OnInit {
       workId: this.workId.value || undefined,
       author: this.author.value?.trim(),
       ranges: this.ranges.value || [],
-      states: this._flagAdapter.getCheckedFlagIds('states'),
+      states: this.states.value,
       title: this.title.value?.trim() || '',
       location: this.location.value?.trim(),
       claimedAuthor: this.claimedAuthor.value?.trim(),
@@ -213,9 +205,8 @@ export class CodContentEditorComponent implements OnInit {
     this.ranges.markAsDirty();
   }
 
-  public onStateFlagsChange(flags: Flag[]): void {
-    this._flagAdapter.setSlotFlags('states', flags, true);
-    this.states.setValue(flags);
+  public onStateIdsChange(ids: string[]): void {
+    this.states.setValue(ids);
     this.states.markAsDirty();
     this.states.updateValueAndValidity();
   }

@@ -5,17 +5,16 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { Observable } from 'rxjs';
 
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
 import { HistoricalDateModel } from '@myrmidon/cadmus-refs-historical-date';
-import { Flag, FlagsPickerAdapter } from '@myrmidon/cadmus-ui-flags-picker';
 import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
+import { Flag } from '@myrmidon/cadmus-ui-flag-set';
 
 import { CodEdit } from '../cod-edits-part';
-import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
 
 function entryToFlag(entry: ThesaurusEntry): Flag {
   return {
@@ -31,7 +30,6 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   standalone: false,
 })
 export class CodEditEditorComponent implements OnInit {
-  private readonly _flagAdapter: FlagsPickerAdapter;
   private _edit: CodEdit | undefined;
   private _colorEntries: ThesaurusEntry[];
   private _techEntries: ThesaurusEntry[];
@@ -58,10 +56,7 @@ export class CodEditEditorComponent implements OnInit {
       return;
     }
     this._colorEntries = value || [];
-    this._flagAdapter.setSlotFlags(
-      'colors',
-      this._colorEntries.map(entryToFlag)
-    );
+    this.colorFlags = this._colorEntries.map(entryToFlag);
   }
   // cod-edit-techniques
   @Input()
@@ -73,10 +68,7 @@ export class CodEditEditorComponent implements OnInit {
       return;
     }
     this._techEntries = value || [];
-    this._flagAdapter.setSlotFlags(
-      'techniques',
-      this._techEntries.map(entryToFlag)
-    );
+    this.techniqueFlags = this._techEntries.map(entryToFlag);
   }
   // cod-edit-types
   @Input()
@@ -112,20 +104,20 @@ export class CodEditEditorComponent implements OnInit {
   public type: FormControl<string | null>;
   public tag: FormControl<string | null>;
   public authorIds: FormControl<AssertedCompositeId[]>;
-  public techniques: FormControl<Flag[]>;
+  public techniques: FormControl<string[]>;
   public ranges: FormControl<CodLocationRange[]>;
   public language: FormControl<string | null>;
   public hasDate: FormControl<boolean>;
   public date: FormControl<HistoricalDateModel | null>;
-  public colors: FormControl<Flag[]>;
+  public colors: FormControl<string[]>;
   public description: FormControl<string | null>;
   public text: FormControl<string | null>;
   public references: FormControl<DocReference[]>;
   public form: FormGroup;
 
   // flags
-  public colorFlags$: Observable<Flag[]>;
-  public techniqueFlags$: Observable<Flag[]>;
+  public colorFlags: Flag[] = [];
+  public techniqueFlags: Flag[] = [];
 
   constructor(formBuilder: FormBuilder) {
     this.editChange = new EventEmitter<CodEdit>();
@@ -133,9 +125,6 @@ export class CodEditEditorComponent implements OnInit {
     // flags
     this._colorEntries = [];
     this._techEntries = [];
-    this._flagAdapter = new FlagsPickerAdapter();
-    this.colorFlags$ = this._flagAdapter.selectFlags('colors');
-    this.techniqueFlags$ = this._flagAdapter.selectFlags('techniques');
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.type = formBuilder.control(null, [
@@ -173,7 +162,7 @@ export class CodEditEditorComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     if (this._edit) {
       this.updateForm(this._edit);
     }
@@ -189,12 +178,12 @@ export class CodEditEditorComponent implements OnInit {
     this.type.setValue(model.type);
     this.tag.setValue(model.tag || null);
     this.authorIds.setValue(model.authorIds || []);
-    this._flagAdapter.setSlotChecks('techniques', model.techniques || []);
+    this.techniques.setValue(model.techniques || []);
     this.ranges.setValue(model.ranges || []);
     this.language.setValue(model.language || null);
     this.hasDate.setValue(model.date ? true : false);
     this.date.setValue(model.date || null);
-    this._flagAdapter.setSlotChecks('colors', model.colors || []);
+    this.colors.setValue(model.colors || []);
     this.description.setValue(model.description || null);
     this.text.setValue(model.text || null);
     this.references.setValue(model.references || []);
@@ -209,11 +198,11 @@ export class CodEditEditorComponent implements OnInit {
       authorIds: this.authorIds.value?.length
         ? this.authorIds.value
         : undefined,
-      techniques: this._flagAdapter.getOptionalCheckedFlagIds('techniques'),
+      techniques: this.techniques.value,
       ranges: this.ranges.value,
       language: this.language.value?.trim(),
       date: this.hasDate.value ? this.date.value || undefined : undefined,
-      colors: this._flagAdapter.getOptionalCheckedFlagIds('colors'),
+      colors: this.colors.value,
       description: this.description.value?.trim(),
       text: this.text.value?.trim(),
       references: this.references.value?.length
@@ -234,16 +223,14 @@ export class CodEditEditorComponent implements OnInit {
     this.ranges.markAsDirty();
   }
 
-  public onColorFlagsChange(flags: Flag[]): void {
-    this._flagAdapter.setSlotFlags('colors', flags, true);
-    this.colors.setValue(flags);
+  public onColorIdsChange(ids: string[]): void {
+    this.colors.setValue(ids);
     this.colors.updateValueAndValidity();
     this.colors.markAsDirty();
   }
 
-  public onTechniqueFlagsChange(flags: Flag[]): void {
-    this._flagAdapter.setSlotFlags('techniques', flags, true);
-    this.techniques.setValue(flags);
+  public onTechniqueIdsChange(ids: string[]): void {
+    this.techniques.setValue(ids);
     this.techniques.updateValueAndValidity();
     this.techniques.markAsDirty();
   }

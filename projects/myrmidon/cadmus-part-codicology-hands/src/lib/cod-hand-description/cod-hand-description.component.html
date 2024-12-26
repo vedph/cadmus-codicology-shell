@@ -23,9 +23,9 @@
     <legend>notes</legend>
     <!-- notes -->
     <cadmus-ui-note-set
-      [set]="initialNoteSet"
-      (noteChange)="onNoteChange($event)"
-    ></cadmus-ui-note-set>
+      [set]="initialNoteSet!"
+      (noteChange)="onNoteChange($event!)"
+    />
   </fieldset>
   <div style="margin-top: 6px">
     <!-- signs -->
@@ -33,7 +33,6 @@
       <button
         type="button"
         mat-flat-button
-        color="primary"
         class="mat-primary"
         (click)="addSign()"
       >
@@ -58,7 +57,6 @@
             <button
               type="button"
               mat-icon-button
-              color="primary"
               matTooltip="Edit this sign"
               (click)="editSign(sign, i)"
             >
@@ -85,7 +83,6 @@
             <button
               type="button"
               mat-icon-button
-              color="warn"
               matTooltip="Delete this sign"
               (click)="deleteSign(i)"
             >
@@ -111,7 +108,7 @@
         [sign]="editedSign"
         (signChange)="onSignSave($event)"
         (editorClose)="editSign(null)"
-      ></cadmus-cod-hand-sign>
+      />
     </mat-expansion-panel>
   </div>
 
@@ -119,7 +116,6 @@
   <div class="toolbar-row">
     <button
       type="button"
-      color="warn"
       mat-icon-button
       matTooltip="Discard changes"
       (click)="cancel()"
@@ -128,7 +124,6 @@
     </button>
     <button
       type="submit"
-      color="primary"
       mat-icon-button
       matTooltip="Accept changes"
       [disabled]="form.invalid || form.pristine"

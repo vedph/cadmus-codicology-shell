@@ -10,8 +10,8 @@ import { Observable, take } from 'rxjs';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
 import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
-import { Flag, FlagsPickerAdapter } from '@myrmidon/cadmus-ui-flags-picker';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
+import { Flag } from '@myrmidon/cadmus-ui-flag-set';
 
 import {
   CodDecoration,
@@ -58,8 +58,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   styleUrls: ['./cod-decoration.component.css'],
   standalone: false,
 })
-export class CodDecorationComponent implements OnInit {
-  private readonly _flagAdapter: FlagsPickerAdapter;
+export class CodDecorationComponent {
   private _decoration: CodDecoration | undefined;
   private _decFlagEntries: ThesaurusEntry[] | undefined;
 
@@ -89,10 +88,7 @@ export class CodDecorationComponent implements OnInit {
       return;
     }
     this._decFlagEntries = value || [];
-    this._flagAdapter.setSlotFlags(
-      'flags',
-      this._decFlagEntries.map(entryToFlag)
-    );
+    this.decFlags = this._decFlagEntries.map(entryToFlag);
   }
 
   // cod-decoration-element-types (required)
@@ -164,7 +160,7 @@ export class CodDecorationComponent implements OnInit {
 
   public eid: FormControl<string | null>;
   public name: FormControl<string | null>;
-  public flags: FormControl<Flag[]>;
+  public flags: FormControl<string[]>;
   public chronotopes: FormControl<AssertedChronotope[]>;
   public artists: FormControl<CodDecorationArtist[]>;
   public note: FormControl<string | null>;
@@ -188,7 +184,7 @@ export class CodDecorationComponent implements OnInit {
   };
 
   // flags
-  public decFlags$: Observable<Flag[]>;
+  public decFlags: Flag[] = [];
 
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
     this.editedElementIndex = -1;
@@ -196,9 +192,6 @@ export class CodDecorationComponent implements OnInit {
     this.editedArtistIndex = -1;
     this.decorationChange = new EventEmitter<CodDecoration>();
     this.editorClose = new EventEmitter<any>();
-    // flags
-    this._flagAdapter = new FlagsPickerAdapter();
-    this.decFlags$ = this._flagAdapter.selectFlags('flags');
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.name = formBuilder.control(null, [
@@ -223,8 +216,6 @@ export class CodDecorationComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
-
   private updateForm(decoration: CodDecoration | undefined): void {
     if (!decoration) {
       this.form.reset();
@@ -233,9 +224,7 @@ export class CodDecorationComponent implements OnInit {
 
     this.chronotopes.setValue(decoration.chronotopes || []);
     this.references.setValue(decoration.references || []);
-    this.flags.setValue(
-      this._flagAdapter.setSlotChecks('flags', decoration.flags || [])
-    );
+    this.flags.setValue(decoration.flags || []);
     this.eid.setValue(decoration.eid || null);
     this.name.setValue(decoration.name);
     this.note.setValue(decoration.note || null);
@@ -258,9 +247,8 @@ export class CodDecorationComponent implements OnInit {
     this.references.markAsDirty();
   }
 
-  public onFlagsChange(flags: Flag[]): void {
-    this._flagAdapter.setSlotFlags('flags', flags, true);
-    this.flags.setValue(flags);
+  public onFlagIdsChange(ids: string[]): void {
+    this.flags.setValue(ids);
     this.flags.updateValueAndValidity();
     this.flags.markAsDirty();
   }
@@ -269,7 +257,7 @@ export class CodDecorationComponent implements OnInit {
     return {
       eid: this.eid.value?.trim(),
       name: this.name.value?.trim() || '',
-      flags: this._flagAdapter.getOptionalCheckedFlagIds('flags'),
+      flags: this.flags.value?.length ? this.flags.value : undefined,
       chronotopes: this.chronotopes.value?.length
         ? this.chronotopes.value
         : undefined,

@@ -20,7 +20,7 @@ import {
 } from '@myrmidon/cadmus-refs-asserted-ids';
 import { DocReferencesComponent } from '@myrmidon/cadmus-refs-doc-references';
 import { HistoricalDateComponent } from '@myrmidon/cadmus-refs-historical-date';
-import { FlagsPickerComponent } from '@myrmidon/cadmus-ui-flags-picker';
+import { FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 
 // cadmus
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
@@ -60,7 +60,7 @@ import { CodEditsPartFeatureComponent } from './cod-edits-part-feature/cod-edits
     AssertedCompositeIdsComponent,
     DocReferencesComponent,
     HistoricalDateComponent,
-    FlagsPickerComponent,
+    FlagSetComponent,
     // cadmus
     CadmusStateModule,
     CadmusUiModule,

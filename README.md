@@ -24,6 +24,9 @@ Per-library documentation:
 
 ## History
 
+### 8.1.0
+
+- 2024-12-26: ⚠️ updated to bricks V3.
 - 2024-12-18:
   - updated Angular and packages.
   - removed legacy M2 themes.

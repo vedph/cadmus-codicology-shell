@@ -140,8 +140,8 @@ export class CodLocationConverterComponent implements OnInit {
       });
   }
 
-  public onItemChange(item: Item): void {
-    this.item = item;
+  public onItemChange(item: unknown): void {
+    this.item = item as Item;
     this.updateForm();
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-hands",
-  "version": "8.0.0",
+  "version": "8.1.0",
   "description": "Cadmus codicology - hands.",
   "keywords": [
     "Cadmus"
@@ -16,19 +16,19 @@
   "peerDependencies": {
     "@angular/common": "^19.0.0",
     "@angular/core": "^19.0.0",
-    "@myrmidon/ngx-tools": "^0.0.1",
-    "@myrmidon/cadmus-cod-location": "^7.0.0",
-    "@myrmidon/cadmus-mat-physical-size": "^7.0.0",
-    "@myrmidon/cadmus-refs-asserted-chronotope": "^7.0.0",
-    "@myrmidon/cadmus-refs-asserted-ids": "^7.0.0",
-    "@myrmidon/cadmus-refs-doc-references": "^7.0.0",
-    "@myrmidon/cadmus-refs-historical-date": "^7.0.0",
-    "@myrmidon/cadmus-ui-flags-picker": "^6.0.0",
-    "@myrmidon/cadmus-ui-note-set": "^7.0.0",
-    "@myrmidon/cadmus-state": "^10.0.0",
-    "@myrmidon/cadmus-ui": "^10.0.0",
-    "@myrmidon/cadmus-ui-pg": "^10.0.0",
-    "@myrmidon/cadmus-codicology-ui": "^8.0.0"
+    "@myrmidon/ngx-tools": "^1.0.0",
+    "@myrmidon/cadmus-cod-location": "^8.0.0",
+    "@myrmidon/cadmus-mat-physical-size": "^8.0.0",
+    "@myrmidon/cadmus-refs-asserted-chronotope": "^8.0.0",
+    "@myrmidon/cadmus-refs-asserted-ids": "^8.0.0",
+    "@myrmidon/cadmus-refs-doc-references": "^8.0.0",
+    "@myrmidon/cadmus-refs-historical-date": "^8.0.0",
+    "@myrmidon/cadmus-ui-flag-set": "^8.0.1",
+    "@myrmidon/cadmus-ui-note-set": "^8.0.0",
+    "@myrmidon/cadmus-state": "^10.2.0",
+    "@myrmidon/cadmus-ui": "^10.2.0",
+    "@myrmidon/cadmus-ui-pg": "^10.2.0",
+    "@myrmidon/cadmus-codicology-ui": "^8.1.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"

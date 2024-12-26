@@ -34,7 +34,6 @@
                 <button
                   type="button"
                   mat-icon-button
-                  color="primary"
                   matTooltip="Edit the selected column definition"
                   [disabled]="!opColumn.value"
                   (click)="onEditColumnDefinition()"
@@ -44,7 +43,6 @@
                 <button
                   type="button"
                   mat-icon-button
-                  color="warn"
                   matTooltip="Delete the selected column"
                   [disabled]="!opColumn.value"
                   (click)="onDeleteColumn()"
@@ -71,7 +69,6 @@
 
                 <button
                   mat-icon-button
-                  color="primary"
                   type="submit"
                   [disabled]="opForm.invalid"
                   matTooltip="Execute this action"
@@ -153,7 +150,6 @@
 
                 <button
                   mat-icon-button
-                  color="primary"
                   type="submit"
                   [disabled]="addForm.invalid"
                   matTooltip="Add the selected table element"
@@ -165,7 +161,6 @@
                 <button
                   type="button"
                   mat-icon-button
-                  color="warn"
                   matTooltip="Trim table rows"
                   (click)="onTrimRows()"
                 >
@@ -174,7 +169,6 @@
                 <button
                   type="button"
                   mat-icon-button
-                  color="warn"
                   matTooltip="Trim table rows and columns"
                   (click)="onTrimRowCols()"
                 >
@@ -292,7 +286,6 @@
             <button
               type="button"
               mat-flat-button
-              color="primary"
               class="mat-primary"
               (click)="addEndleaf()"
             >
@@ -316,7 +309,6 @@
                   <button
                     type="button"
                     mat-icon-button
-                    color="primary"
                     matTooltip="Edit this endleaf"
                     (click)="editEndleaf(endleaf, i)"
                   >
@@ -351,7 +343,6 @@
                   <button
                     type="button"
                     mat-icon-button
-                    color="warn"
                     matTooltip="Delete this endleaf"
                     (click)="deleteEndleaf(i)"
                   >

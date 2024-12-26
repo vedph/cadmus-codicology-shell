@@ -13,7 +13,6 @@
             <button
               type="button"
               mat-flat-button
-              color="primary"
               class="mat-primary"
               (click)="addBinding()"
             >
@@ -40,7 +39,6 @@
                   <button
                     type="button"
                     mat-icon-button
-                    color="primary"
                     matTooltip="Edit this binding"
                     (click)="editBinding(entry, i)"
                   >
@@ -67,7 +65,6 @@
                   <button
                     type="button"
                     mat-icon-button
-                    color="warn"
                     matTooltip="Delete this binding"
                     (click)="deleteBinding(i)"
                   >
@@ -113,7 +110,7 @@
             [binding]="editedBinding"
             (bindingChange)="onBindingSave($event)"
             (editorClose)="editBinding(null)"
-          ></cadmus-cod-binding-editor>
+          />
         </mat-tab>
         }
       </mat-tab-group>
@@ -123,7 +120,7 @@
         [form]="form"
         [noSave]="userLevel < 2"
         (closeRequest)="close()"
-      ></cadmus-close-save-buttons>
+      />
     </mat-card-actions>
   </mat-card>
 </form>

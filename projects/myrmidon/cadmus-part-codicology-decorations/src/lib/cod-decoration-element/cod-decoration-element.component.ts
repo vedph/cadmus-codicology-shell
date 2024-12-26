@@ -13,11 +13,12 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
+
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { CodImage } from '@myrmidon/cadmus-codicology-ui';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { Flag, FlagsPickerAdapter } from '@myrmidon/cadmus-ui-flags-picker';
-import { debounceTime, distinctUntilChanged, Observable } from 'rxjs';
+import { Flag } from '@myrmidon/cadmus-ui-flag-set';
 
 import { CodDecorationElement } from '../cod-decorations-part';
 
@@ -61,7 +62,6 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
   private _editorModel?: monaco.editor.ITextModel;
   private _editor?: monaco.editor.IStandaloneCodeEditor;
 
-  private readonly _flagAdapter: FlagsPickerAdapter;
   private _element: CodDecorationElement | undefined;
   private _elemFlagEntries: ThesaurusEntry[];
   private _elemColorEntries: ThesaurusEntry[];
@@ -100,17 +100,17 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
   public key: FormControl<string | null>;
   public parentKey: FormControl<string | null>;
   public type: FormControl<string | null>;
-  public flags: FormControl<Flag[]>;
+  public flags: FormControl<string[]>;
   public ranges: FormControl<CodLocationRange[]>;
   public instanceCount: FormControl<number>;
   // typologies
-  public typologies: FormControl<Flag[]>;
+  public typologies: FormControl<string[]>;
   public subject: FormControl<string | null>;
-  public colors: FormControl<Flag[]>;
-  public gildings: FormControl<Flag[]>;
-  public techniques: FormControl<Flag[]>;
-  public tools: FormControl<Flag[]>;
-  public positions: FormControl<Flag[]>;
+  public colors: FormControl<string[]>;
+  public gildings: FormControl<string[]>;
+  public techniques: FormControl<string[]>;
+  public tools: FormControl<string[]>;
+  public positions: FormControl<string[]>;
   public lineHeight: FormControl<number>;
   public textRelation: FormControl<string | null>;
   // description
@@ -120,13 +120,13 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
   public form: FormGroup;
 
   // flags
-  public flags$: Observable<Flag[]>;
-  public typologyFlags$: Observable<Flag[]>;
-  public colorFlags$: Observable<Flag[]>;
-  public gildingFlags$: Observable<Flag[]>;
-  public techniqueFlags$: Observable<Flag[]>;
-  public toolFlags$: Observable<Flag[]>;
-  public positionFlags$: Observable<Flag[]>;
+  public genFlags: Flag[] = [];
+  public typologyFlags: Flag[] = [];
+  public colorFlags: Flag[] = [];
+  public gildingFlags: Flag[] = [];
+  public techniqueFlags: Flag[] = [];
+  public toolFlags: Flag[] = [];
+  public positionFlags: Flag[] = [];
 
   // cod-decoration-element-types (required). All the other thesauri
   // (except decTypeHiddenEntries) have their entries filtered
@@ -147,6 +147,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
       return;
     }
     this._elemFlagEntries = value || [];
+    this.genFlags = this._elemFlagEntries.map(entryToFlag) || [];
   }
 
   // cod-decoration-element-colors
@@ -159,6 +160,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
       return;
     }
     this._elemColorEntries = value || [];
+    this.colorFlags = this._elemColorEntries.map(entryToFlag) || [];
   }
 
   // cod-decoration-element-gildings
@@ -171,6 +173,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
       return;
     }
     this._elemGildingEntries = value || [];
+    this.gildingFlags = this._elemGildingEntries.map(entryToFlag) || [];
   }
 
   // cod-decoration-element-techniques
@@ -183,6 +186,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
       return;
     }
     this._elemTechEntries = value || [];
+    this.techniqueFlags = this._elemTechEntries.map(entryToFlag) || [];
   }
 
   // cod-decoration-element-positions
@@ -195,6 +199,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
       return;
     }
     this._elemPosEntries = value || [];
+    this.positionFlags = this._elemPosEntries.map(entryToFlag) || [];
   }
 
   // cod-decoration-element-tools
@@ -207,6 +212,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
       return;
     }
     this._elemToolEntries = value || [];
+    this.toolFlags = this._elemToolEntries.map(entryToFlag) || [];
   }
 
   // cod-decoration-element-typologies
@@ -219,6 +225,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
       return;
     }
     this._elemTypolEntries = value || [];
+    this.typologyFlags = this._elemTypolEntries.map(entryToFlag) || [];
   }
 
   // cod-image-types
@@ -255,14 +262,6 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
     this._elemPosEntries = [];
     this._elemToolEntries = [];
     this._elemTypolEntries = [];
-    this._flagAdapter = new FlagsPickerAdapter();
-    this.flags$ = this._flagAdapter.selectFlags('flags');
-    this.typologyFlags$ = this._flagAdapter.selectFlags('typologies');
-    this.colorFlags$ = this._flagAdapter.selectFlags('colors');
-    this.gildingFlags$ = this._flagAdapter.selectFlags('gildings');
-    this.techniqueFlags$ = this._flagAdapter.selectFlags('techniques');
-    this.toolFlags$ = this._flagAdapter.selectFlags('tools');
-    this.positionFlags$ = this._flagAdapter.selectFlags('positions');
     // form
     this.key = formBuilder.control(null, [
       Validators.pattern('^[-a-zA-Z0-9_]+$'),
@@ -410,21 +409,19 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
 
     // filter entries for multiple-selections
     this.flags.setValue(
-      this._flagAdapter.setSlotFlags(
-        'flags',
+      (
         this.getFilteredEntries(this._elemFlagEntries, this.type.value)?.map(
           entryToFlag
         ) || []
-      )
+      ).map((f) => f.id)
     );
 
     this.colors.setValue(
-      this._flagAdapter.setSlotFlags(
-        'colors',
+      (
         this.getFilteredEntries(this._elemColorEntries, this.type.value)?.map(
           entryToFlag
         ) || []
-      )
+      ).map((f) => f.id)
     );
 
     // filter entries and set free for single-entry groups with "any.-"
@@ -434,46 +431,41 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
     );
     this.elemGildingFree = this.isFreeSet(entries);
     this.gildings.setValue(
-      this._flagAdapter.setSlotFlags(
-        'gildings',
-        this.elemGildingFree ? [] : entries?.map(entryToFlag) || []
-      )
+      this.elemGildingFree
+        ? []
+        : (entries?.map(entryToFlag) || []).map((f) => f.id)
     );
 
     entries = this.getFilteredEntries(this._elemTechEntries, this.type.value);
     this.elemTechniqueFree = this.isFreeSet(entries);
     this.techniques.setValue(
-      this._flagAdapter.setSlotFlags(
-        'techniques',
-        this.elemTechniqueFree ? [] : entries?.map(entryToFlag) || []
-      )
+      this.elemTechniqueFree
+        ? []
+        : (entries?.map(entryToFlag) || []).map((f) => f.id)
     );
 
     entries = this.getFilteredEntries(this._elemPosEntries, this.type.value);
     this.elemPositionFree = this.isFreeSet(entries);
     this.positions.setValue(
-      this._flagAdapter.setSlotFlags(
-        'positions',
-        this.elemPositionFree ? [] : entries?.map(entryToFlag) || []
-      )
+      this.elemPositionFree
+        ? []
+        : (entries?.map(entryToFlag) || []).map((f) => f.id)
     );
 
     entries = this.getFilteredEntries(this._elemToolEntries, this.type.value);
     this.elemToolFree = this.isFreeSet(entries);
     this.tools.setValue(
-      this._flagAdapter.setSlotFlags(
-        'tools',
-        this.elemToolFree ? [] : entries?.map(entryToFlag) || []
-      )
+      this.elemToolFree
+        ? []
+        : (entries?.map(entryToFlag) || []).map((f) => f.id)
     );
 
     this.typologies.setValue(
-      this._flagAdapter.setSlotFlags(
-        'typologies',
+      (
         this.getFilteredEntries(this._elemTypolEntries, this.type.value)?.map(
           entryToFlag
         ) || []
-      )
+      ).map((f) => f.id)
     );
 
     // visibility
@@ -490,25 +482,22 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
 
     this.ranges.setValue(element.ranges);
 
-    this._flagAdapter.setSlotChecks('flags', element.flags);
+    this.flags.setValue(element.flags || []);
 
     // typologies
     this.subject.setValue(element.subject || null);
-
-    this._flagAdapter.setSlotChecks('colors', element.colors || [], true);
-    this._flagAdapter.setSlotChecks(
-      'typologies',
-      element.typologies || [],
-      true
-    );
-    this._flagAdapter.setSlotChecks('gildings', element.gildings || [], true);
-    this._flagAdapter.setSlotChecks(
-      'techniques',
-      element.techniques || [],
-      true
-    );
-    this._flagAdapter.setSlotChecks('tools', element.tools || [], true);
-    this._flagAdapter.setSlotChecks('positions', element.positions || [], true);
+    // colors
+    this.colors.setValue(element.colors || []);
+    // typologies
+    this.typologies.setValue(element.typologies || []);
+    // gildings
+    this.gildings.setValue(element.gildings || []);
+    // techniques
+    this.techniques.setValue(element.techniques || []);
+    // tools
+    this.tools.setValue(element.tools || []);
+    // positions
+    this.positions.setValue(element.positions || []);
 
     this.lineHeight.setValue(element.lineHeight || 0);
     this.textRelation.setValue(element.textRelation || null);
@@ -553,16 +542,16 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
       key: this.key.value?.trim(),
       parentKey: this.parentKey.value?.trim(),
       type: this.type.value?.trim() || '',
-      flags: this._flagAdapter.getCheckedFlagIds('flags'),
+      flags: this.flags.value,
       ranges: this.ranges.value || [],
       instanceCount: this.instanceCount.value || 0,
-      typologies: this._flagAdapter.getOptionalCheckedFlagIds('typologies'),
+      typologies: this.typologies.value,
       subject: this.subject.value?.trim(),
-      colors: this._flagAdapter.getOptionalCheckedFlagIds('colors'),
-      gildings: this._flagAdapter.getOptionalCheckedFlagIds('gildings'),
-      techniques: this._flagAdapter.getOptionalCheckedFlagIds('techniques'),
-      tools: this._flagAdapter.getOptionalCheckedFlagIds('tools'),
-      positions: this._flagAdapter.getOptionalCheckedFlagIds('positions'),
+      colors: this.colors.value,
+      gildings: this.gildings.value,
+      techniques: this.techniques.value,
+      tools: this.tools.value,
+      positions: this.positions.value,
       lineHeight: this.lineHeight.value,
       textRelation: this.textRelation.value?.trim(),
       description: this.description.value?.trim(),
@@ -583,72 +572,65 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
     this.images.markAsDirty();
   }
 
-  public onFlagsChange(flags: Flag[]): void {
-    this._flagAdapter.setSlotFlags('flags', flags, true);
+  public onGenIdsChange(ids: string[]): void {
     if (this._updatingForm) {
       return;
     }
-    this.flags.setValue(flags);
+    this.flags.setValue(ids);
     this.flags.updateValueAndValidity();
     this.flags.markAsDirty();
   }
 
-  public onTypologyFlagsChange(flags: Flag[]): void {
-    this._flagAdapter.setSlotFlags('typologies', flags, true);
+  public onTypologyIdsChange(ids: string[]): void {
     if (this._updatingForm) {
       return;
     }
-    this.typologies.setValue(flags);
+    this.typologies.setValue(ids);
     this.typologies.updateValueAndValidity();
     this.typologies.markAsDirty();
   }
 
-  public onColorFlagsChange(flags: Flag[]): void {
-    this._flagAdapter.setSlotFlags('colors', flags, true);
+  public onColorIdsChange(ids: string[]): void {
     if (this._updatingForm) {
       return;
     }
-    this.colors.setValue(flags);
+    this.colors.setValue(ids);
     this.colors.updateValueAndValidity();
     this.colors.markAsDirty();
   }
 
-  public onGildingFlagsChange(flags: Flag[]): void {
-    this._flagAdapter.setSlotFlags('gildings', flags, true);
+  public onGildingIdsChange(ids: string[]): void {
     if (this._updatingForm) {
       return;
     }
-    this.gildings.setValue(flags);
+    this.gildings.setValue(ids);
     this.gildings.updateValueAndValidity();
     this.gildings.markAsDirty();
   }
 
-  public onTechniqueFlagsChange(flags: Flag[]): void {
-    this._flagAdapter.setSlotFlags('techniques', flags, true);
+  public onTechniqueIdsChange(ids: string[]): void {
     if (this._updatingForm) {
       return;
     }
-    this.techniques.setValue(flags);
+    this.techniques.setValue(ids);
     this.techniques.updateValueAndValidity();
     this.techniques.markAsDirty();
   }
 
-  public onToolFlagsChange(flags: Flag[]): void {
-    this._flagAdapter.setSlotFlags('tools', flags, true);
+  public onToolIdsChange(ids: string[]): void {
     if (this._updatingForm) {
       return;
     }
-    this.tools.setValue(flags);
+    this.tools.setValue(ids);
     this.tools.updateValueAndValidity();
     this.tools.markAsDirty();
   }
 
-  public onPositionFlagsChange(flags: Flag[]): void {
-    this._flagAdapter.setSlotFlags('positions', flags, true);
+  public onPositionIdsChange(ids: string[]): void {
     if (this._updatingForm) {
       return;
     }
-    this.positions.setValue(flags);
+    this.positions.setValue(ids);
     this.positions.updateValueAndValidity();
     this.positions.markAsDirty();
   }

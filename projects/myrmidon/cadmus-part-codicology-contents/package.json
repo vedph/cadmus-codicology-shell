@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-contents",
-  "version": "8.0.0",
+  "version": "8.1.0",
   "description": "Cadmus codicology - contents.",
   "keywords": [
     "Cadmus"
@@ -18,12 +18,12 @@
     "@angular/core": "^19.0.0",
     "@myrmidon/ngx-tools": "^0.0.1",
     "@myrmidon/ngx-mat-tools": "^0.0.1",
-    "@myrmidon/cadmus-cod-location": "^7.0.0",
-    "@myrmidon/cadmus-refs-asserted-ids": "^7.0.0",
-    "@myrmidon/cadmus-ui-flags-picker": "^6.0.0",
-    "@myrmidon/cadmus-state": "^10.0.0",
-    "@myrmidon/cadmus-ui": "^10.0.0",
-    "@myrmidon/cadmus-ui-pg": "^10.0.0"
+    "@myrmidon/cadmus-cod-location": "^8.0.0",
+    "@myrmidon/cadmus-refs-asserted-ids": "^8.0.0",
+    "@myrmidon/cadmus-ui-flag-set": "^8.0.1",
+    "@myrmidon/cadmus-state": "^10.2.0",
+    "@myrmidon/cadmus-ui": "^10.2.0",
+    "@myrmidon/cadmus-ui-pg": "^10.2.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"

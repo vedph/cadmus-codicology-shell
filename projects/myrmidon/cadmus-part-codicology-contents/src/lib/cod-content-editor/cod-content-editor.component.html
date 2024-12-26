@@ -14,7 +14,7 @@
       [required]="true"
       [location]="ranges.value"
       (locationChange)="onLocationChange($event)"
-    ></cadmus-cod-location>
+    />
     <!-- tag (bound) -->
     @if (tagEntries?.length) {
     <mat-form-field style="width: 8em">
@@ -47,9 +47,9 @@
         [refTagEntries]="refTagEntries"
         [idScopeEntries]="idScopeEntries"
         [refTypeEntries]="refTypeEntries"
-        [id]="workId.value"
-        (idChange)="onIdChange($event)"
-      ></cadmus-refs-asserted-composite-id>
+        [id]="workId.value || undefined"
+        (idChange)="onIdChange($event!)"
+      />
     </fieldset>
   </div>
   <div>
@@ -140,10 +140,11 @@
   </div>
   <div>
     <!-- states -->
-    <cadmus-ui-flags-picker
-      [flags]="stateFlags$ | async"
-      (flagsChange)="onStateFlagsChange($event)"
-    ></cadmus-ui-flags-picker>
+    <cadmus-ui-flag-set
+      [flags]="stateFlags"
+      [checkedIds]="states.value"
+      (checkedIdsChange)="onStateIdsChange($event!)"
+    />
   </div>
   <!-- annotations -->
   <mat-expansion-panel>
@@ -152,7 +153,6 @@
       <button
         type="button"
         mat-flat-button
-        color="primary"
         class="mat-primary"
         (click)="addAnnotation()"
       >
@@ -177,7 +177,6 @@
             <button
               type="button"
               mat-icon-button
-              color="primary"
               matTooltip="Edit this annotation"
               (click)="editAnnotation(i)"
             >
@@ -204,7 +203,6 @@
             <button
               type="button"
               mat-icon-button
-              color="warn"
               matTooltip="Delete this annotation"
               (click)="deleteAnnotation(i)"
             >
@@ -234,7 +232,7 @@
         [annotation]="editedAnnotation"
         (annotationChange)="onAnnotationSave($event)"
         (editorClose)="onAnnotationClose()"
-      ></cadmus-cod-content-annotation>
+      />
     </mat-expansion-panel>
   </mat-expansion-panel>
 
@@ -242,7 +240,6 @@
   <div>
     <button
       type="button"
-      color="warn"
       mat-icon-button
       matTooltip="Discard changes"
       (click)="cancel()"
@@ -251,7 +248,6 @@
     </button>
     <button
       type="submit"
-      color="primary"
       mat-icon-button
       matTooltip="Accept changes"
       [disabled]="form.invalid || form.pristine"

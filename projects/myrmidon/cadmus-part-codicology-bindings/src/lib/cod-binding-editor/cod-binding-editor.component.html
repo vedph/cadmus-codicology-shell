@@ -95,9 +95,9 @@
       defaultWUnit="mm"
       defaultHUnit="mm"
       defaultDUnit="mm"
-      [size]="size.value"
-      (sizeChange)="onSizeChange($event)"
-    ></cadmus-mat-physical-size>
+      [size]="size.value || undefined"
+      (sizeChange)="onSizeChange($event!)"
+    />
   </fieldset>
   }
 
@@ -122,16 +122,15 @@
       [assTagEntries]="assTagEntries"
       [refTagEntries]="refTagEntries"
       [refTypeEntries]="refTypeEntries"
-      [chronotope]="chronotope.value"
+      [chronotope]="chronotope.value || undefined"
       (chronotopeChange)="onChronotopeChange($event)"
-    ></cadmus-refs-asserted-chronotope>
+    />
   </div>
 
   <!-- buttons -->
   <div>
     <button
       type="button"
-      color="warn"
       mat-icon-button
       matTooltip="Discard changes"
       (click)="cancel()"
@@ -140,7 +139,6 @@
     </button>
     <button
       type="submit"
-      color="primary"
       mat-icon-button
       matTooltip="Accept changes"
       [disabled]="form.invalid || form.pristine"

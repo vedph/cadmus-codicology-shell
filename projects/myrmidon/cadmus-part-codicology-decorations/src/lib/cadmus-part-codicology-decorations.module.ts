@@ -38,7 +38,7 @@ import {
   CodLocationComponent,
   CodLocationRangePipe,
 } from '@myrmidon/cadmus-cod-location';
-import { FlagsPickerComponent } from '@myrmidon/cadmus-ui-flags-picker';
+import { FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 
 // cadmus
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
@@ -90,7 +90,7 @@ import { CodDecorationsPartFeatureComponent } from './cod-decorations-part-featu
     AssertionComponent,
     DocReferencesComponent,
     HistoricalDateComponent,
-    FlagsPickerComponent,
+    FlagSetComponent,
     CodLocationComponent,
     CodLocationRangePipe,
     FlatLookupPipe,

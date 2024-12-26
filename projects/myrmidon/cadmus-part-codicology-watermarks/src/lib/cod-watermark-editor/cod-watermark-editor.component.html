@@ -18,14 +18,14 @@
       [required]="true"
       [location]="sampleRanges.value"
       (locationChange)="onSampleRangesChange($event)"
-    ></cadmus-cod-location>
+    />
 
     <!-- ranges -->
     <cadmus-cod-location
       label="ranges"
       [location]="ranges.value"
       (locationChange)="onRangesChange($event)"
-    ></cadmus-cod-location>
+    />
   </div>
   <div>
     <!-- description -->
@@ -50,8 +50,8 @@
       [canSwitchMode]="canSwitchMode"
       [canEditTarget]="canEditTarget"
       [ids]="ids.value"
-      (idsChange)="onIdsChange($event)"
-    ></cadmus-refs-asserted-composite-ids>
+      (idsChange)="onIdsChange($event!)"
+    />
   </fieldset>
   <br />
   <div>
@@ -67,9 +67,9 @@
         defaultWUnit="mm"
         defaultHUnit="mm"
         defaultDUnit="mm"
-        [size]="size.value"
-        (sizeChange)="onSizeChange($event)"
-      ></cadmus-mat-physical-size>
+        [size]="size.value || undefined"
+        (sizeChange)="onSizeChange($event!)"
+      />
     </fieldset>
     }
   </div>
@@ -82,8 +82,8 @@
         [assTagEntries]="assTagEntries"
         [refTagEntries]="refTagEntries"
         [refTypeEntries]="refTypeEntries"
-        (chronotopesChange)="onChronotopesChange($event)"
-      ></cadmus-asserted-chronotope-set>
+        (chronotopesChange)="onChronotopesChange($event!)"
+      />
     </fieldset>
   </div>
 
@@ -91,7 +91,6 @@
   <div>
     <button
       type="button"
-      color="warn"
       mat-icon-button
       matTooltip="Discard changes"
       (click)="cancel()"
@@ -100,7 +99,6 @@
     </button>
     <button
       type="submit"
-      color="primary"
       mat-icon-button
       matTooltip="Accept changes"
       [disabled]="form.invalid || form.pristine"

@@ -23,8 +23,8 @@ import {
   AssertedCompositeIdsComponent,
   AssertedIdsComponent,
 } from '@myrmidon/cadmus-refs-asserted-ids';
-import { FlagsPickerComponent } from '@myrmidon/cadmus-ui-flags-picker';
 import { EllipsisPipe, FlatLookupPipe } from '@myrmidon/ngx-tools';
+import { FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 
 // cadmus
 import { CadmusStateModule } from '@myrmidon/cadmus-state';
@@ -70,7 +70,7 @@ import { CodContentAnnotationComponent } from './cod-content-annotation/cod-cont
     CodLocationComponent,
     CodLocationPipe,
     CodLocationRangePipe,
-    FlagsPickerComponent,
+    FlagSetComponent,
   ],
   exports: [
     CodContentEditorComponent,

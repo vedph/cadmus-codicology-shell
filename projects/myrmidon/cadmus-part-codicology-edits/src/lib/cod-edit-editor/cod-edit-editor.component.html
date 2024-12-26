@@ -78,17 +78,18 @@
       [internalDefault]="true"
       [ids]="authorIds.value"
       (idsChange)="onAuthorIdsChange($event)"
-    ></cadmus-refs-asserted-composite-ids>
+    />
   </div>
 
   <div>
     <!-- techniques -->
     <fieldset>
       <legend>techniques</legend>
-      <cadmus-ui-flags-picker
-        [flags]="techniqueFlags$ | async"
-        (flagsChange)="onTechniqueFlagsChange($event)"
-      ></cadmus-ui-flags-picker>
+      <cadmus-ui-flag-set
+        [flags]="techniqueFlags"
+        [checkedIds]="techniques.value"
+        (checkedIdsChange)="onTechniqueIdsChange($event)"
+      />
     </fieldset>
   </div>
 
@@ -122,9 +123,9 @@
       </div>
       @if (hasDate.value) {
       <cadmus-refs-historical-date
-        [date]="date.value"
-        (dateChange)="onDateChange($event)"
-      ></cadmus-refs-historical-date>
+        [date]="date.value || undefined"
+        (dateChange)="onDateChange($event!)"
+      />
       }
     </div>
   </div>
@@ -132,10 +133,11 @@
   <!-- colors -->
   <fieldset>
     <legend>colors</legend>
-    <cadmus-ui-flags-picker
-      [flags]="colorFlags$ | async"
-      (flagsChange)="onColorFlagsChange($event)"
-    ></cadmus-ui-flags-picker>
+    <cadmus-ui-flag-set
+      [flags]="colorFlags"
+      [checkedIds]="colors.value"
+      (checkedIdsChange)="onColorIdsChange($event)"
+    />
   </fieldset>
 
   <!-- description -->
@@ -167,13 +169,12 @@
     [typeEntries]="refTypeEntries"
     [references]="references.value"
     (referencesChange)="onReferencesChange($event)"
-  ></cadmus-refs-doc-references>
+  />
 
   <!-- buttons -->
   <div>
     <button
       type="button"
-      color="warn"
       mat-icon-button
       matTooltip="Discard changes"
       (click)="cancel()"
@@ -182,7 +183,6 @@
     </button>
     <button
       type="submit"
-      color="primary"
       mat-flat-button
       matTooltip="Accept changes"
       [disabled]="form.invalid || form.pristine"
