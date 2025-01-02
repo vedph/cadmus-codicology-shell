@@ -4,11 +4,24 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+
+import {
+  AssertedChronotope,
+  AssertedChronotopeComponent,
+} from '@myrmidon/cadmus-refs-asserted-chronotope';
+import { Assertion, AssertionComponent } from '@myrmidon/cadmus-refs-assertion';
+
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
-import { Assertion } from '@myrmidon/cadmus-refs-assertion';
 
 import { CodDecorationArtistStyle } from '../cod-decorations-part';
 
@@ -16,7 +29,20 @@ import { CodDecorationArtistStyle } from '../cod-decorations-part';
   selector: 'cadmus-cod-decoration-artist-style',
   templateUrl: './cod-decoration-artist-style.component.html',
   styleUrls: ['./cod-decoration-artist-style.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatError,
+    MatCheckbox,
+    AssertedChronotopeComponent,
+    AssertionComponent,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+  ],
 })
 export class CodDecorationArtistStyleComponent implements OnInit {
   private _style: CodDecorationArtistStyle | undefined;

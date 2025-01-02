@@ -15,4 +15,3 @@ export * from './lib/cod-sheet-labels-part/cod-sheet-labels-part.component';
 export * from './lib/cod-sheet-labels-part-feature/cod-sheet-labels-part-feature.component';
 export * from './lib/cod-location-converter';
 export * from './lib/cod-location-converter/cod-location-converter.component';
-export * from './lib/cadmus-part-codicology-sheet-labels.module';

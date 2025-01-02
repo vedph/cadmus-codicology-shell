@@ -32,8 +32,8 @@
               </tr>
             </thead>
             <tbody>
-              @for ( entry of shelfmarks.value; track entry; let i = $index;
-              let first = $first; let last = $last) {
+              @for ( entry of shelfmarks.value; track entry; let i = $index; let
+              first = $first; let last = $last) {
               <tr>
                 <td>
                   <button
@@ -91,7 +91,7 @@
             [shelfmark]="editedShelfmark"
             (shelfmarkChange)="onShelfmarkSave($event)"
             (editorClose)="editShelfmark(null)"
-          ></cadmus-cod-shelfmark-editor>
+          />
         </mat-tab>
         }
       </mat-tab-group>
@@ -101,7 +101,7 @@
         [form]="form"
         [noSave]="userLevel < 2"
         (closeRequest)="close()"
-      ></cadmus-close-save-buttons>
+      />
     </mat-card-actions>
   </mat-card>
 </form>

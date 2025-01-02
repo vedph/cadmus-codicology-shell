@@ -4,15 +4,40 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 
-import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
-import { HistoricalDateModel } from '@myrmidon/cadmus-refs-historical-date';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+
 import { NgxToolsValidators } from '@myrmidon/ngx-tools';
-import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
-import { Flag } from '@myrmidon/cadmus-ui-flag-set';
+import {
+  CodLocationRange,
+  CodLocationComponent,
+} from '@myrmidon/cadmus-cod-location';
+import {
+  DocReference,
+  DocReferencesComponent,
+} from '@myrmidon/cadmus-refs-doc-references';
+import {
+  HistoricalDateModel,
+  HistoricalDateComponent,
+} from '@myrmidon/cadmus-refs-historical-date';
+
+import {
+  AssertedCompositeId,
+  AssertedCompositeIdsComponent,
+} from '@myrmidon/cadmus-refs-asserted-ids';
+import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
+
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import { CodEdit } from '../cod-edits-part';
 
@@ -27,7 +52,26 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   selector: 'cadmus-cod-edit-editor',
   templateUrl: './cod-edit-editor.component.html',
   styleUrls: ['./cod-edit-editor.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatError,
+    MatSelect,
+    MatOption,
+    CodLocationComponent,
+    AssertedCompositeIdsComponent,
+    FlagSetComponent,
+    MatCheckbox,
+    HistoricalDateComponent,
+    DocReferencesComponent,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+    MatButton,
+  ],
 })
 export class CodEditEditorComponent implements OnInit {
   private _edit: CodEdit | undefined;

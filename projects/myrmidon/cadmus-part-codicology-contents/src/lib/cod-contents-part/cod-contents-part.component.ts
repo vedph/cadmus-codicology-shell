@@ -4,20 +4,42 @@ import {
   FormBuilder,
   FormGroup,
   UntypedFormGroup,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { take } from 'rxjs/operators';
+
+import {
+  MatCard,
+  MatCardHeader,
+  MatCardAvatar,
+  MatCardTitle,
+  MatCardContent,
+  MatCardActions,
+} from '@angular/material/card';
+import { MatIcon } from '@angular/material/icon';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
 
 import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
-import { EditedObject, ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
+import { CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
+
 import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  EditedObject,
+  ModelEditorComponentBase,
+  CadmusUiModule,
+} from '@myrmidon/cadmus-ui';
 
 import {
   CodContent,
   CodContentsPart,
   COD_CONTENTS_PART_TYPEID,
 } from '../cod-contents-part';
+import { CodContentEditorComponent } from '../cod-content-editor/cod-content-editor.component';
 
 /**
  * CodContentsPart editor component.
@@ -29,7 +51,25 @@ import {
   selector: 'cadmus-cod-contents-part',
   templateUrl: './cod-contents-part.component.html',
   styleUrls: ['./cod-contents-part.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatCard,
+    MatCardHeader,
+    MatCardAvatar,
+    MatIcon,
+    MatCardTitle,
+    MatCardContent,
+    MatTabGroup,
+    MatTab,
+    MatButton,
+    MatIconButton,
+    MatTooltip,
+    CodContentEditorComponent,
+    MatCardActions,
+    CadmusUiModule,
+    CodLocationRangePipe,
+  ],
 })
 export class CodContentsPartComponent
   extends ModelEditorComponentBase<CodContentsPart>

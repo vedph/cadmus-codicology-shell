@@ -4,12 +4,40 @@ import {
   FormBuilder,
   FormGroup,
   UntypedFormGroup,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
+import { take } from 'rxjs';
 
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import {
+  MatCard,
+  MatCardHeader,
+  MatCardAvatar,
+  MatCardTitle,
+  MatCardContent,
+  MatCardActions,
+} from '@angular/material/card';
+import { MatIcon } from '@angular/material/icon';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import {
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+} from '@angular/material/expansion';
+
+import { NgxToolsValidators, FlatLookupPipe } from '@myrmidon/ngx-tools';
+import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
-import { EditedObject, ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
+import { HistoricalDatePipe } from '@myrmidon/cadmus-refs-historical-date';
+import { CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
+
 import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  EditedObject,
+  ModelEditorComponentBase,
+  CadmusUiModule,
+} from '@myrmidon/cadmus-ui';
 
 import {
   CodMaterialDscPart,
@@ -17,8 +45,8 @@ import {
   CodUnit,
   COD_MATERIAL_DSC_PART_TYPEID,
 } from '../cod-material-dsc-part';
-import { take } from 'rxjs';
-import { DialogService } from '@myrmidon/ngx-mat-tools';
+import { CodUnitEditorComponent } from '../cod-unit-editor/cod-unit-editor.component';
+import { CodPalimpsestEditorComponent } from '../cod-palimpsest-editor/cod-palimpsest-editor.component';
 
 /**
  * CodMaterialDsc part editor component.
@@ -30,7 +58,30 @@ import { DialogService } from '@myrmidon/ngx-mat-tools';
   selector: 'cadmus-cod-material-dsc-part',
   templateUrl: './cod-material-dsc-part.component.html',
   styleUrls: ['./cod-material-dsc-part.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatCard,
+    MatCardHeader,
+    MatCardAvatar,
+    MatIcon,
+    MatCardTitle,
+    MatCardContent,
+    MatTabGroup,
+    MatTab,
+    MatButton,
+    MatIconButton,
+    MatTooltip,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    CodUnitEditorComponent,
+    CodPalimpsestEditorComponent,
+    MatCardActions,
+    CadmusUiModule,
+    FlatLookupPipe,
+    HistoricalDatePipe,
+    CodLocationRangePipe,
+  ],
 })
 export class CodMaterialDscPartComponent
   extends ModelEditorComponentBase<CodMaterialDscPart>

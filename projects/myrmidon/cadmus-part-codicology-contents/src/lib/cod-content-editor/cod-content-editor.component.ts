@@ -4,17 +4,44 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { take } from 'rxjs';
 
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
-import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import {
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+} from '@angular/material/expansion';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+
+import {
+  NgxToolsValidators,
+  EllipsisPipe,
+  FlatLookupPipe,
+} from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
-import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
-import { Flag } from '@myrmidon/cadmus-ui-flag-set';
+import {
+  AssertedCompositeId,
+  AssertedCompositeIdComponent,
+} from '@myrmidon/cadmus-refs-asserted-ids';
+import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
+
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  CodLocationRange,
+  CodLocationComponent,
+  CodLocationRangePipe,
+} from '@myrmidon/cadmus-cod-location';
 
 import { CodContent, CodContentAnnotation } from '../cod-contents-part';
+import { CodContentAnnotationComponent } from '../cod-content-annotation/cod-content-annotation.component';
 
 function entryToFlag(entry: ThesaurusEntry): Flag {
   return {
@@ -27,7 +54,29 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   selector: 'cadmus-cod-content-editor',
   templateUrl: './cod-content-editor.component.html',
   styleUrls: ['./cod-content-editor.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatError,
+    CodLocationComponent,
+    MatSelect,
+    MatOption,
+    AssertedCompositeIdComponent,
+    FlagSetComponent,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    MatButton,
+    MatIcon,
+    MatIconButton,
+    MatTooltip,
+    CodContentAnnotationComponent,
+    EllipsisPipe,
+    FlatLookupPipe,
+    CodLocationRangePipe,
+  ],
 })
 export class CodContentEditorComponent implements OnInit {
   private _content: CodContent | undefined;

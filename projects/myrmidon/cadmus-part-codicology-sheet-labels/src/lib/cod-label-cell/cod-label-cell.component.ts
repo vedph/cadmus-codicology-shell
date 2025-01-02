@@ -12,7 +12,15 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
+
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 
 import { CodLabelCell } from '../label-generator';
 
@@ -20,7 +28,17 @@ import { CodLabelCell } from '../label-generator';
   selector: 'cadmus-cod-label-cell',
   templateUrl: './cod-label-cell.component.html',
   styleUrls: ['./cod-label-cell.component.css'],
-  standalone: false,
+  imports: [
+    MatTooltip,
+    MatIcon,
+    MatIconButton,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatError,
+  ],
 })
 export class CodLabelCellComponent implements OnInit {
   private _cell: CodLabelCell | undefined;

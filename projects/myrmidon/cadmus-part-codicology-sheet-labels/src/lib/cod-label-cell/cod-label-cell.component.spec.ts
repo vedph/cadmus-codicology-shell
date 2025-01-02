@@ -22,8 +22,7 @@ describe('CodLabelCellComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CodLabelCellComponent ],
-      imports: [
+    imports: [
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
@@ -45,8 +44,9 @@ describe('CodLabelCellComponent', () => {
         CadmusRefsAssertedChronotopeModule,
         CadmusRefsHistoricalDateModule,
         CadmusUiFlagsPickerModule,
-      ],
-    })
+        CodLabelCellComponent,
+    ],
+})
     .compileComponents();
   });
 

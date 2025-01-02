@@ -10,4 +10,3 @@ export * from './lib/cod-decoration-artist/cod-decoration-artist.component';
 export * from './lib/cod-decoration/cod-decoration.component';
 export * from './lib/cod-decorations-part/cod-decorations-part.component';
 export * from './lib/cod-decorations-part-feature/cod-decorations-part-feature.component';
-export * from './lib/cadmus-part-codicology-decorations.module';

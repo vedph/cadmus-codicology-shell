@@ -93,7 +93,7 @@
             [layout]="editedLayout"
             (layoutChange)="onLayoutSave($event)"
             (editorClose)="editLayout(null)"
-          ></cadmus-cod-layout-editor>
+          />
         </mat-tab>
         }
       </mat-tab-group>
@@ -103,7 +103,7 @@
         [form]="form"
         [noSave]="userLevel < 2"
         (closeRequest)="close()"
-      ></cadmus-close-save-buttons>
+      />
     </mat-card-actions>
   </mat-card>
 </form>

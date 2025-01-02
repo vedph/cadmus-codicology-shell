@@ -4,10 +4,25 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
-import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatInput } from '@angular/material/input';
+import { MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+
 import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  CodLocationRange,
+  CodLocationComponent,
+} from '@myrmidon/cadmus-cod-location';
 
 import { CodHandSubscription } from '../cod-hands-part';
 
@@ -15,7 +30,20 @@ import { CodHandSubscription } from '../cod-hands-part';
   selector: 'cadmus-cod-hand-subscription',
   templateUrl: './cod-hand-subscription.component.html',
   styleUrls: ['./cod-hand-subscription.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    CodLocationComponent,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatError,
+    MatInput,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+  ],
 })
 export class CodHandSubscriptionComponent implements OnInit {
   private _subscription: CodHandSubscription | undefined;
@@ -89,8 +117,8 @@ export class CodHandSubscriptionComponent implements OnInit {
     this.form.markAsPristine();
   }
 
-  public onLocationChange(ranges: CodLocationRange[] | null): void {
-    this.ranges.setValue(ranges || []);
+  public onLocationChange(ranges: unknown): void {
+    this.ranges.setValue((ranges as CodLocationRange[]) || []);
     this.ranges.updateValueAndValidity();
     this.ranges.markAsDirty();
   }

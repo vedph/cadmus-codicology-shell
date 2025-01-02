@@ -12,19 +12,45 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { distinctUntilChanged, Subscription } from 'rxjs';
 
+import {
+  MatFormField,
+  MatLabel,
+  MatError,
+  MatHint,
+  MatSuffix,
+} from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatInput } from '@angular/material/input';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+import { MatSlider, MatSliderThumb } from '@angular/material/slider';
+import { MatCheckbox } from '@angular/material/checkbox';
+
 import { NgxToolsValidators } from '@myrmidon/ngx-tools';
-import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
+import {
+  CodLocationRange,
+  CodLocationComponent,
+} from '@myrmidon/cadmus-cod-location';
+import {
+  DecoratedCount,
+  DecoratedCountsComponent,
+} from '@myrmidon/cadmus-refs-decorated-counts';
+import { PhysicalDimension } from '@myrmidon/cadmus-mat-physical-size';
+
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
   CodLayoutRectSet,
   CodLayoutService,
   COD_LAYOUT_FORMULA_REGEX,
+  CodLayoutFigureComponent,
 } from '@myrmidon/cadmus-codicology-ui';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { PhysicalDimension } from '@myrmidon/cadmus-mat-physical-size';
-import { DecoratedCount } from '@myrmidon/cadmus-refs-decorated-counts';
 
 import { CodLayout } from '../cod-layouts-part';
 
@@ -34,7 +60,28 @@ const FIG_HEIGHT = 400;
   selector: 'cadmus-cod-layout-editor',
   templateUrl: './cod-layout-editor.component.html',
   styleUrls: ['./cod-layout-editor.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatError,
+    MatInput,
+    CodLocationComponent,
+    MatHint,
+    MatIconButton,
+    MatTooltip,
+    MatSuffix,
+    MatIcon,
+    MatButton,
+    DecoratedCountsComponent,
+    MatSlider,
+    MatSliderThumb,
+    MatCheckbox,
+    CodLayoutFigureComponent,
+  ],
 })
 export class CodLayoutEditorComponent implements OnInit, OnDestroy {
   private _layout: CodLayout | undefined;

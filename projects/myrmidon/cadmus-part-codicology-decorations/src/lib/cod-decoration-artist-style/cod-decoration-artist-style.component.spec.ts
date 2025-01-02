@@ -8,8 +8,8 @@ describe('CodDecorationArtistStyleComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CodDecorationArtistStyleComponent ]
-    })
+    imports: [CodDecorationArtistStyleComponent]
+})
     .compileComponents();
   });
 

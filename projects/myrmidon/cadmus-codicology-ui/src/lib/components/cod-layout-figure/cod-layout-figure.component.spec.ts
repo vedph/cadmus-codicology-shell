@@ -8,8 +8,8 @@ describe('CodLayoutFigureComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CodLayoutFigureComponent ]
-    })
+    imports: [CodLayoutFigureComponent]
+})
     .compileComponents();
   });
 

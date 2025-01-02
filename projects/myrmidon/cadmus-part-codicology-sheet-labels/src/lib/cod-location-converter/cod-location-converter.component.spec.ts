@@ -8,8 +8,8 @@ describe('CodLocationConverterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CodLocationConverterComponent ]
-    })
+    imports: [CodLocationConverterComponent]
+})
     .compileComponents();
   });
 

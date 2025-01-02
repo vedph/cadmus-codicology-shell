@@ -9,11 +9,11 @@ describe('CodLayoutsPartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CodLayoutsPartComponent ],
-      imports: [
-        ReactiveFormsModule
-      ]
-    })
+    imports: [
+        ReactiveFormsModule,
+        CodLayoutsPartComponent
+    ]
+})
     .compileComponents();
   });
 

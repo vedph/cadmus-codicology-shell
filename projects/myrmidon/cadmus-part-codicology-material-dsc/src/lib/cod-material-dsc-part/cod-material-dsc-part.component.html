@@ -171,7 +171,7 @@
             [unit]="editedUt"
             (unitChange)="onUnitSave($event)"
             (editorClose)="editUnit(null)"
-          ></cadmus-cod-unit-editor>
+          />
         </mat-tab>
         } @if (editedPs) {
         <mat-tab label="palimpsest">
@@ -183,7 +183,7 @@
             [palimpsest]="editedPs"
             (palimpsestChange)="onPalimpsestSave($event)"
             (editorClose)="editPalimpsest(null)"
-          ></cadmus-cod-palimpsest-editor>
+          />
         </mat-tab>
         }
       </mat-tab-group>
@@ -193,7 +193,7 @@
         [form]="form"
         [noSave]="userLevel < 2"
         (closeRequest)="close()"
-      ></cadmus-close-save-buttons>
+      />
     </mat-card-actions>
   </mat-card>
 </form>

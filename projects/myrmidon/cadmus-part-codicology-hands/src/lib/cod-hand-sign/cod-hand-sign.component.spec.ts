@@ -8,8 +8,8 @@ describe('CodHandSignComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CodHandSignComponent ]
-    })
+    imports: [CodHandSignComponent]
+})
     .compileComponents();
   });
 

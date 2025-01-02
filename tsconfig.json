@@ -1,78 +1,60 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
+      "@myrmidon/cadmus-codicology-ui": [
+        "./dist/myrmidon/cadmus-codicology-ui"
+      ],
       "@myrmidon/cadmus-part-codicology-bindings": [
-        "dist/myrmidon/cadmus-part-codicology-bindings/myrmidon-cadmus-part-codicology-bindings",
-        "dist/myrmidon/cadmus-part-codicology-bindings"
+        "./dist/myrmidon/cadmus-part-codicology-bindings"
       ],
       "@myrmidon/cadmus-part-codicology-contents": [
-        "dist/myrmidon/cadmus-part-codicology-contents/myrmidon-cadmus-part-codicology-contents",
-        "dist/myrmidon/cadmus-part-codicology-contents"
+        "./dist/myrmidon/cadmus-part-codicology-contents"
       ],
       "@myrmidon/cadmus-part-codicology-decorations": [
-        "dist/myrmidon/cadmus-part-codicology-decorations/myrmidon-cadmus-part-codicology-decorations",
-        "dist/myrmidon/cadmus-part-codicology-decorations"
+        "./dist/myrmidon/cadmus-part-codicology-decorations"
       ],
       "@myrmidon/cadmus-part-codicology-edits": [
-        "dist/myrmidon/cadmus-part-codicology-edits/myrmidon-cadmus-part-codicology-edits",
-        "dist/myrmidon/cadmus-part-codicology-edits"
-      ],
-      "@myrmidon/cadmus-part-codicology-layouts": [
-        "dist/myrmidon/cadmus-part-codicology-layouts/myrmidon-cadmus-part-codicology-layouts",
-        "dist/myrmidon/cadmus-part-codicology-layouts"
+        "./dist/myrmidon/cadmus-part-codicology-edits"
       ],
       "@myrmidon/cadmus-part-codicology-hands": [
-        "dist/myrmidon/cadmus-part-codicology-hands/myrmidon-cadmus-part-codicology-hands",
-        "dist/myrmidon/cadmus-part-codicology-hands"
+        "./dist/myrmidon/cadmus-part-codicology-hands"
+      ],
+      "@myrmidon/cadmus-part-codicology-layouts": [
+        "./dist/myrmidon/cadmus-part-codicology-layouts"
       ],
       "@myrmidon/cadmus-part-codicology-material-dsc": [
-        "dist/myrmidon/cadmus-part-codicology-material-dsc/myrmidon-cadmus-part-codicology-material-dsc",
-        "dist/myrmidon/cadmus-part-codicology-material-dsc"
+        "./dist/myrmidon/cadmus-part-codicology-material-dsc"
       ],
       "@myrmidon/cadmus-part-codicology-pg": [
-        "dist/myrmidon/cadmus-part-codicology-pg/myrmidon-cadmus-part-codicology-pg",
-        "dist/myrmidon/cadmus-part-codicology-pg"
-      ],
-      "@myrmidon/cadmus-part-codicology-shelfmarks": [
-        "dist/myrmidon/cadmus-part-codicology-shelfmarks/myrmidon-cadmus-part-codicology-shelfmarks",
-        "dist/myrmidon/cadmus-part-codicology-shelfmarks"
+        "./dist/myrmidon/cadmus-part-codicology-pg"
       ],
       "@myrmidon/cadmus-part-codicology-sheet-labels": [
-        "dist/myrmidon/cadmus-part-codicology-sheet-labels/myrmidon-cadmus-part-codicology-sheet-labels",
-        "dist/myrmidon/cadmus-part-codicology-sheet-labels"
+        "./dist/myrmidon/cadmus-part-codicology-sheet-labels"
       ],
-      "@myrmidon/cadmus-codicology-ui": [
-        "dist/myrmidon/cadmus-codicology-ui/myrmidon-cadmus-codicology-ui",
-        "dist/myrmidon/cadmus-codicology-ui"
+      "@myrmidon/cadmus-part-codicology-shelfmarks": [
+        "./dist/myrmidon/cadmus-part-codicology-shelfmarks"
       ],
       "@myrmidon/cadmus-part-codicology-watermarks": [
-        "dist/myrmidon/cadmus-part-codicology-watermarks/myrmidon-cadmus-part-codicology-watermarks",
-        "dist/myrmidon/cadmus-part-codicology-watermarks"
+        "./dist/myrmidon/cadmus-part-codicology-watermarks"
       ]
     },
-    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "sourceMap": true,
-    "declaration": false,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "module": "es2020",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
-    "useDefineForClassFields": false
+    "module": "ES2022"
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

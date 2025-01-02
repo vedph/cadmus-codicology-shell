@@ -4,20 +4,44 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
-import { Observable, take } from 'rxjs';
+import { take } from 'rxjs';
+
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import {
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+
+import { FlatLookupPipe } from '@myrmidon/ngx-tools';
+import { DialogService } from '@myrmidon/ngx-mat-tools';
+import {
+  AssertedChronotope,
+  AssertedChronotopeSetComponent,
+} from '@myrmidon/cadmus-refs-asserted-chronotope';
+import {
+  DocReference,
+  DocReferencesComponent,
+} from '@myrmidon/cadmus-refs-doc-references';
+import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
+import { CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
-import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
-import { DialogService } from '@myrmidon/ngx-mat-tools';
-import { Flag } from '@myrmidon/cadmus-ui-flag-set';
 
 import {
   CodDecoration,
   CodDecorationArtist,
   CodDecorationElement,
 } from '../cod-decorations-part';
+import { CodDecorationArtistComponent } from '../cod-decoration-artist/cod-decoration-artist.component';
+import { CodDecorationElementComponent } from '../cod-decoration-element/cod-decoration-element.component';
 
 function entryToFlag(entry: ThesaurusEntry): Flag {
   return {
@@ -56,7 +80,28 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   selector: 'cadmus-cod-decoration',
   templateUrl: './cod-decoration.component.html',
   styleUrls: ['./cod-decoration.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatError,
+    FlagSetComponent,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    MatIcon,
+    AssertedChronotopeSetComponent,
+    DocReferencesComponent,
+    MatButton,
+    MatIconButton,
+    MatTooltip,
+    CodDecorationArtistComponent,
+    CodDecorationElementComponent,
+    CodLocationRangePipe,
+    FlatLookupPipe,
+  ],
 })
 export class CodDecorationComponent {
   private _decoration: CodDecoration | undefined;

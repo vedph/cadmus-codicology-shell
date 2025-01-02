@@ -6,9 +6,25 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { debounceTime, Subscription } from 'rxjs';
+
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatInput } from '@angular/material/input';
+
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 export interface CodImage {
   id: string;
@@ -25,7 +41,20 @@ export interface CodImage {
   selector: 'cadmus-cod-images',
   templateUrl: './cod-images.component.html',
   styleUrls: ['./cod-images.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatButton,
+    MatIcon,
+    MatIconButton,
+    MatTooltip,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatError,
+    MatInput,
+  ],
 })
 export class CodImagesComponent implements OnInit, OnDestroy {
   private _subs: Subscription[];

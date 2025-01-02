@@ -4,9 +4,17 @@ import {
   FormControl,
   FormGroup,
   ValidatorFn,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+
+import { MatFormField, MatError } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatInput } from '@angular/material/input';
+
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 /**
  * The prefix added to a free text when emitting the idChange event.
@@ -17,7 +25,15 @@ const FREE_PREFIX = '$';
   selector: 'cadmus-text-or-entry-selector',
   templateUrl: './text-or-entry-selector.component.html',
   styleUrls: ['./text-or-entry-selector.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatSelect,
+    MatOption,
+    MatError,
+    MatInput,
+  ],
 })
 export class TextOrEntrySelectorComponent implements OnInit {
   private _validators: ValidatorFn[] | undefined;

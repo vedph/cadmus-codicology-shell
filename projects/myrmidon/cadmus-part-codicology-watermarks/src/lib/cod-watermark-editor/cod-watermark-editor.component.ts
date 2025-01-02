@@ -4,14 +4,36 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 
-import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { PhysicalSize } from '@myrmidon/cadmus-mat-physical-size';
-import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
-import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+
 import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import {
+  CodLocationRange,
+  CodLocationComponent,
+} from '@myrmidon/cadmus-cod-location';
+import {
+  PhysicalSize,
+  PhysicalSizeComponent,
+} from '@myrmidon/cadmus-mat-physical-size';
+import {
+  AssertedChronotope,
+  AssertedChronotopeSetComponent,
+} from '@myrmidon/cadmus-refs-asserted-chronotope';
+import {
+  AssertedCompositeId,
+  AssertedCompositeIdsComponent,
+} from '@myrmidon/cadmus-refs-asserted-ids';
+
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import { CodWatermark } from '../cod-watermarks-part';
 
@@ -19,7 +41,22 @@ import { CodWatermark } from '../cod-watermarks-part';
   selector: 'cadmus-cod-watermark-editor',
   templateUrl: './cod-watermark-editor.component.html',
   styleUrls: ['./cod-watermark-editor.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatError,
+    CodLocationComponent,
+    AssertedCompositeIdsComponent,
+    MatCheckbox,
+    PhysicalSizeComponent,
+    AssertedChronotopeSetComponent,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+  ],
 })
 export class CodWatermarkEditorComponent implements OnInit {
   private _watermark: CodWatermark | undefined;

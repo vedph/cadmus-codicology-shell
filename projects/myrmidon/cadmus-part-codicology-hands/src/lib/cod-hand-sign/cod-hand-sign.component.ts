@@ -4,10 +4,26 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
-import { CodLocation, CodLocationRange } from '@myrmidon/cadmus-cod-location';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatInput } from '@angular/material/input';
+import { MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+
 import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import {
+  CodLocation,
+  CodLocationRange,
+  CodLocationComponent,
+} from '@myrmidon/cadmus-cod-location';
+
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import { CodHandSign } from '../cod-hands-part';
 
@@ -15,7 +31,20 @@ import { CodHandSign } from '../cod-hands-part';
   selector: 'cadmus-cod-hand-sign',
   templateUrl: './cod-hand-sign.component.html',
   styleUrls: ['./cod-hand-sign.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatError,
+    MatInput,
+    CodLocationComponent,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+  ],
 })
 export class CodHandSignComponent {
   private _sign: CodHandSign | undefined;

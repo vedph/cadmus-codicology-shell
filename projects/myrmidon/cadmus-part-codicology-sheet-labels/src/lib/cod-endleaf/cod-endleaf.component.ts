@@ -4,10 +4,24 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatInput } from '@angular/material/input';
+import { MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+
+import {
+  AssertedChronotope,
+  AssertedChronotopeComponent,
+} from '@myrmidon/cadmus-refs-asserted-chronotope';
+
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
 
 import { CodEndleaf } from '../cod-sheet-labels-part';
 
@@ -15,7 +29,20 @@ import { CodEndleaf } from '../cod-sheet-labels-part';
   selector: 'cadmus-cod-endleaf',
   templateUrl: './cod-endleaf.component.html',
   styleUrls: ['./cod-endleaf.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatError,
+    MatInput,
+    AssertedChronotopeComponent,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+  ],
 })
 export class CodEndleafComponent implements OnInit {
   private _endleaf: CodEndleaf | undefined;

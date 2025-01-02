@@ -26,8 +26,7 @@ xdescribe('CodSheetLabelsPartFeatureComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CodSheetLabelsPartFeatureComponent],
-      imports: [
+    imports: [
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
@@ -51,14 +50,15 @@ xdescribe('CodSheetLabelsPartFeatureComponent', () => {
         CadmusRefsAssertedChronotopeModule,
         CadmusRefsHistoricalDateModule,
         CadmusUiFlagsPickerModule,
-      ],
-      providers: [
+        CodSheetLabelsPartFeatureComponent,
+    ],
+    providers: [
         {
-          provide: 'partEditorKeys',
-          useValue: {},
+            provide: 'partEditorKeys',
+            useValue: {},
         },
-      ],
-    }).compileComponents();
+    ],
+}).compileComponents();
   });
 
   beforeEach(() => {

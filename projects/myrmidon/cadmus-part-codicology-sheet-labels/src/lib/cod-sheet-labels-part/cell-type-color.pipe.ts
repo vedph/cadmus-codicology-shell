@@ -1,9 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({
-  name: 'cellTypeColor',
-  standalone: false,
-})
+@Pipe({ name: 'cellTypeColor', })
 export class CellTypeColorPipe implements PipeTransform {
   transform(value: unknown, ...args: unknown[]): unknown {
     if (!value) {

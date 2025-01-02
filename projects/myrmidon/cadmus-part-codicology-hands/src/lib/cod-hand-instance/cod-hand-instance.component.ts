@@ -1,12 +1,33 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 
-import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
-import { CodImage } from '@myrmidon/cadmus-codicology-ui';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatInput } from '@angular/material/input';
+
 import { NgxToolsValidators } from '@myrmidon/ngx-tools';
-import { Flag } from '@myrmidon/cadmus-ui-flag-set';
+import {
+  CodLocationRange,
+  CodLocationComponent,
+} from '@myrmidon/cadmus-cod-location';
+import {
+  AssertedChronotope,
+  AssertedChronotopeComponent,
+} from '@myrmidon/cadmus-refs-asserted-chronotope';
+import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
+
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { CodImage, CodImagesComponent } from '@myrmidon/cadmus-codicology-ui';
 
 import { CodHandInstance } from '../cod-hands-part';
 
@@ -21,7 +42,24 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   selector: 'cadmus-cod-hand-instance',
   templateUrl: './cod-hand-instance.component.html',
   styleUrls: ['./cod-hand-instance.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatButton,
+    MatIcon,
+    MatIconButton,
+    MatTooltip,
+    MatInput,
+    MatError,
+    CodLocationComponent,
+    FlagSetComponent,
+    AssertedChronotopeComponent,
+    CodImagesComponent,
+  ],
 })
 export class CodHandInstanceComponent {
   private _instance: CodHandInstance | undefined;

@@ -4,20 +4,41 @@ import {
   FormBuilder,
   FormGroup,
   UntypedFormGroup,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { take } from 'rxjs/operators';
 
-import { deepCopy, NgxToolsValidators } from '@myrmidon/ngx-tools';
+import {
+  MatCard,
+  MatCardHeader,
+  MatCardAvatar,
+  MatCardTitle,
+  MatCardContent,
+  MatCardActions,
+} from '@angular/material/card';
+import { MatIcon } from '@angular/material/icon';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+
+import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
-import { EditedObject, ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
+
 import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  EditedObject,
+  ModelEditorComponentBase,
+  CadmusUiModule,
+} from '@myrmidon/cadmus-ui';
 
 import {
   CodShelfmark,
   CodShelfmarksPart,
   COD_SHELFMARKS_PART_TYPEID,
 } from '../cod-shelfmarks-part';
+import { CodShelfmarkEditorComponent } from '../cod-shelfmark-editor/cod-shelfmark-editor.component';
 
 /**
  * CodShelfmarksPart editor component.
@@ -27,7 +48,24 @@ import {
   selector: 'cadmus-cod-shelfmarks-part',
   templateUrl: './cod-shelfmarks-part.component.html',
   styleUrls: ['./cod-shelfmarks-part.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatCard,
+    MatCardHeader,
+    MatCardAvatar,
+    MatIcon,
+    MatCardTitle,
+    MatCardContent,
+    MatTabGroup,
+    MatTab,
+    MatButton,
+    MatIconButton,
+    MatTooltip,
+    CodShelfmarkEditorComponent,
+    MatCardActions,
+    CadmusUiModule,
+  ],
 })
 export class CodShelfmarksPartComponent
   extends ModelEditorComponentBase<CodShelfmarksPart>

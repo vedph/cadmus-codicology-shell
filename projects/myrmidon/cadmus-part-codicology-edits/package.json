@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-edits",
-  "version": "8.1.0",
+  "version": "9.0.0",
   "description": "Cadmus codicology - edits.",
   "keywords": [
     "Cadmus"
@@ -18,7 +18,7 @@
     "@angular/core": "^19.0.0",
     "@myrmidon/ngx-tools": "^1.0.0",
     "@myrmidon/cadmus-cod-location": "^8.0.0",
-    "@myrmidon/cadmus-refs-asserted-ids": "^8.0.0",
+    "@myrmidon/cadmus-refs-asserted-ids": "^8.0.1",
     "@myrmidon/cadmus-refs-doc-references": "^8.0.0",
     "@myrmidon/cadmus-refs-historical-date": "^8.0.0",
     "@myrmidon/cadmus-ui-flag-set": "^8.0.1",

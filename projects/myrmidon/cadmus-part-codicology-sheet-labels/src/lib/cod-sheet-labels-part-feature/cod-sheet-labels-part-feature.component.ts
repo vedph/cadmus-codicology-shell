@@ -4,12 +4,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { EditPartFeatureBase, PartEditorService } from '@myrmidon/cadmus-state';
 import { ItemService, ThesaurusService } from '@myrmidon/cadmus-api';
+import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
+import { CodSheetLabelsPartComponent } from '../cod-sheet-labels-part/cod-sheet-labels-part.component';
 
 @Component({
   selector: 'cadmus-cod-sheet-labels-part-feature',
   templateUrl: './cod-sheet-labels-part-feature.component.html',
   styleUrls: ['./cod-sheet-labels-part-feature.component.css'],
-  standalone: false,
+  imports: [CadmusUiPgModule, CodSheetLabelsPartComponent],
 })
 export class CodSheetLabelsPartFeatureComponent
   extends EditPartFeatureBase

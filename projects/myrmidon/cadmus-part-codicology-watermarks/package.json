@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-watermarks",
-  "version": "8.1.0",
+  "version": "9.0.0",
   "description": "Cadmus codicology - watermarks.",
   "keywords": [
     "Cadmus"
@@ -19,7 +19,7 @@
     "@myrmidon/cadmus-cod-location": "^8.0.0",
     "@myrmidon/cadmus-mat-physical-size": "^8.0.0",
     "@myrmidon/cadmus-refs-asserted-chronotope": "^8.0.0",
-    "@myrmidon/cadmus-refs-asserted-ids": "^8.0.0",
+    "@myrmidon/cadmus-refs-asserted-ids": "^8.0.1",
     "@myrmidon/cadmus-refs-historical-date": "^8.0.0",
     "@myrmidon/cadmus-state": "^10.2.0",
     "@myrmidon/cadmus-ui": "^10.2.0",

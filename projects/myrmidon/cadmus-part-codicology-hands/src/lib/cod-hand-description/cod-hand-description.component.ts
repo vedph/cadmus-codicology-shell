@@ -5,19 +5,55 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { NoteSet, NoteSetDefinition } from '@myrmidon/cadmus-ui-note-set';
-import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { take } from 'rxjs';
 
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import {
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+} from '@angular/material/expansion';
+
+import { DialogService } from '@myrmidon/ngx-mat-tools';
+import {
+  NoteSet,
+  NoteSetDefinition,
+  NoteSetComponent,
+} from '@myrmidon/cadmus-ui-note-set';
+import { CodLocationPipe } from '@myrmidon/cadmus-cod-location';
+
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+
 import { CodHandDescription, CodHandSign } from '../cod-hands-part';
+import { CodHandSignComponent } from '../cod-hand-sign/cod-hand-sign.component';
 
 @Component({
   selector: 'cadmus-cod-hand-description',
   templateUrl: './cod-hand-description.component.html',
   styleUrls: ['./cod-hand-description.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatError,
+    NoteSetComponent,
+    MatButton,
+    MatIcon,
+    MatIconButton,
+    MatTooltip,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    CodHandSignComponent,
+    CodLocationPipe,
+  ],
 })
 export class CodHandDescriptionComponent implements OnInit {
   private _description: CodHandDescription | undefined;

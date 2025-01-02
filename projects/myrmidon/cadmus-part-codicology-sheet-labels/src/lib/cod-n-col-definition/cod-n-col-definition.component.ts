@@ -4,11 +4,26 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+
+import {
+  HistoricalDateModel,
+  HistoricalDateComponent,
+} from '@myrmidon/cadmus-refs-historical-date';
+import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
+
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { HistoricalDateModel } from '@myrmidon/cadmus-refs-historical-date';
-import { Flag } from '@myrmidon/cadmus-ui-flag-set';
 
 import { CodNColDefinition } from '../cod-sheet-labels-part';
 
@@ -23,7 +38,22 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   selector: 'cadmus-cod-n-col-definition',
   templateUrl: './cod-n-col-definition.component.html',
   styleUrls: ['./cod-n-col-definition.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatCheckbox,
+    MatSelect,
+    MatOption,
+    MatError,
+    FlagSetComponent,
+    HistoricalDateComponent,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+  ],
 })
 export class CodNColDefinitionComponent {
   private _definition: CodNColDefinition | undefined;

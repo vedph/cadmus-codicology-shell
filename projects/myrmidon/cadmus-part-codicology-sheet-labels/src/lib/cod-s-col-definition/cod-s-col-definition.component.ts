@@ -4,7 +4,17 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
+
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
@@ -14,7 +24,19 @@ import { CodSColDefinition } from '../cod-sheet-labels-part';
   selector: 'cadmus-cod-s-col-definition',
   templateUrl: './cod-s-col-definition.component.html',
   styleUrls: ['./cod-s-col-definition.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatSelect,
+    MatOption,
+    MatError,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+  ],
 })
 export class CodSColDefinitionComponent implements OnInit {
   private _definition: CodSColDefinition | undefined;

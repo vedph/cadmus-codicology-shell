@@ -1,50 +1,63 @@
 # CadmusPartCodicologyDecorations
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.2.0.
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.0.
 
-Decoration was derived from Itinera decorations with these changes in the model:
+## Code scaffolding
 
-- `CodDecorationArtist`: completely changed.
-- `CodDecorationElement`:
-  - (+) `instanceCount`
-  - (/) `gildings`: string[] instead of gilding: string
-  - (/) `techniques`: string[] instead of technique: string
-  - (/) `tools`: string[] instead of tool: string
-  - (/) `positions`: string[] instead of position: string
-  - (X) `imageId` replaced with:
-  - (+) `images`: CodImage[]
-- `CodDecoration`:
-  - (=) `id` renamed into `eid` and made optional
-  - (X) `date` and (X) `place` replaced with:
-  - (+) `chronotopes`
-  - (X) `artist` replaced with:
-  - (+) `artists`
+Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
 
-This part editor has an adaptive UI, which changes according to parameters provided in its thesauri. The thesaurus with ID `cod-decoration-element-types` defines all the types of decoration elements (e.g. illustration, ornamentation, initials, etc.). The UI adapts to the selected element type.
+```bash
+ng generate component component-name
+```
 
-This adaptation has different types:
+For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
 
-- some thesauri lists get filtered according to the selected type. Filtering happens by virtue of a convention: all the IDs in the list starting with a prefix equal to the element type ID plus a dot are targeted to that specific type. So, if a type ID is `ill` for illustration, one of the dependent thesauri reporting the element's typologies has entries whose ID start with `ill.` and thus target only the illustration type. When a user selects the illustration type, the dependent thesaurus entries get filtered to show only those relevant for it. The dependent thesauri are:
-  - `cod-decoration-element-flags`
-  - `cod-decoration-element-colors`
-  - `cod-decoration-element-gildings`
-  - `cod-decoration-element-techniques`
-  - `cod-decoration-element-positions`
-  - `cod-decoration-element-tools`
-  - `cod-decoration-element-typologies`
+```bash
+ng generate --help
+```
 
-- some controls get completely hidden. Which controls are to be hidden for which element type is defined in thesaurus `cod-decoration-type-hidden`, having an entry for each element type with the same ID; its value is a space-delimited list of control identifiers:
-  - `colors`
-  - `gildings`
-  - `lineHeight`
-  - `positions`
-  - `subject`
-  - `techniques`
-  - `textRelation`
-  - `tools`
+## Building
 
-- some lists may allow for user-defined (unbound) entries. A list allowing this contains a special entry with ID equal to the element type ID + `.-` and an empty value. This may happen for:
-  - gildings
-  - techniques
-  - positions
-  - tools
+To build the library, run:
+
+```bash
+ng build cadmus-part-codicology-decorations
+```
+
+This command will compile your project, and the build artifacts will be placed in the `dist/` directory.
+
+### Publishing the Library
+
+Once the project is built, you can publish your library by following these steps:
+
+1. Navigate to the `dist` directory:
+   ```bash
+   cd dist/cadmus-part-codicology-decorations
+   ```
+
+2. Run the `npm publish` command to publish your library to the npm registry:
+   ```bash
+   npm publish
+   ```
+
+## Running unit tests
+
+To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+
+```bash
+ng test
+```
+
+## Running end-to-end tests
+
+For end-to-end (e2e) testing, run:
+
+```bash
+ng e2e
+```
+
+Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+
+## Additional Resources
+
+For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

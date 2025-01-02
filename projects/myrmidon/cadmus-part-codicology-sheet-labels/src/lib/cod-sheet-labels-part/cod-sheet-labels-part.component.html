@@ -200,7 +200,7 @@
                 [definition]="editedNDef"
                 (definitionChange)="onEditedNDefChange($event)"
                 (editorClose)="onColumnDefClose()"
-              ></cadmus-cod-n-col-definition>
+              />
             </div>
             }
 
@@ -213,7 +213,7 @@
                 [definition]="editedCDef"
                 (definitionChange)="onEditedCDefChange($event)"
                 (editorClose)="onColumnDefClose()"
-              ></cadmus-cod-c-col-definition>
+              />
             </div>
             }
 
@@ -227,7 +227,7 @@
                 [definition]="editedSDef"
                 (definitionChange)="onEditedSDefChange($event)"
                 (editorClose)="onColumnDefClose()"
-              ></cadmus-cod-s-col-definition>
+              />
             </div>
             }
 
@@ -240,7 +240,7 @@
                 [definition]="editedRDef"
                 (definitionChange)="onEditedRDefChange($event)"
                 (editorClose)="onColumnDefClose()"
-              ></cadmus-cod-r-col-definition>
+              />
             </div>
             }
           </mat-expansion-panel>
@@ -269,7 +269,7 @@
                     [color]="$any(rc.id | cellTypeColor)"
                     [cell]="$any(rc | cellAdapter : r.id)"
                     (cellChange)="onCellChange($event)"
-                  ></cadmus-cod-label-cell>
+                  />
                 </td>
                 }
               </tr>
@@ -377,7 +377,7 @@
                 [endleaf]="editedEndleaf"
                 (endleafChange)="onEndleafSave($event)"
                 (editorClose)="editEndleaf(null)"
-              ></cadmus-cod-endleaf>
+              />
             </fieldset>
           </mat-expansion-panel>
         </mat-tab>
@@ -486,7 +486,7 @@
         [form]="form"
         [noSave]="userLevel < 2"
         (closeRequest)="close()"
-      ></cadmus-close-save-buttons>
+      />
     </mat-card-actions>
   </mat-card>
 </form>

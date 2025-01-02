@@ -30,7 +30,7 @@
       [internalDefault]="true"
       [ids]="ids.value"
       (idsChange)="onIdsChange($event)"
-    ></cadmus-refs-asserted-composite-ids>
+    />
   </fieldset>
 
   <!-- descriptions -->
@@ -117,7 +117,7 @@
         [description]="editedDsc"
         (descriptionChange)="onDescriptionSave($event)"
         (editorClose)="editDescription(null)"
-      ></cadmus-cod-hand-description>
+      />
     </mat-expansion-panel>
   </mat-expansion-panel>
 
@@ -216,8 +216,7 @@
         [dscKeys]="dscKeys"
         (instanceChange)="onInstanceSave($event)"
         (editorClose)="editInstance(null)"
-      >
-      </cadmus-cod-hand-instance>
+      />
     </mat-expansion-panel>
   </mat-expansion-panel>
 
@@ -309,7 +308,7 @@
         [subscription]="editedSub"
         (subscriptionChange)="onSubscriptionSave($event)"
         (editorClose)="editSubscription(null)"
-      ></cadmus-cod-hand-subscription>
+      />
     </mat-expansion-panel>
   </mat-expansion-panel>
 
@@ -328,7 +327,7 @@
       [typeEntries]="refTypeEntries"
       [references]="references.value"
       (referencesChange)="onReferencesChange($event)"
-    ></cadmus-refs-doc-references>
+    />
   </mat-expansion-panel>
 
   <!-- buttons -->

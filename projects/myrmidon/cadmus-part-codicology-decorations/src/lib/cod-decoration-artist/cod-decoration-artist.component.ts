@@ -4,23 +4,65 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { take } from 'rxjs';
 
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
+import {
+  MatFormField,
+  MatLabel,
+  MatError,
+  MatHint,
+} from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatInput } from '@angular/material/input';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import {
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+} from '@angular/material/expansion';
+
 import { DialogService } from '@myrmidon/ngx-mat-tools';
+import {
+  AssertedCompositeId,
+  AssertedCompositeIdsComponent,
+} from '@myrmidon/cadmus-refs-asserted-ids';
+
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import {
   CodDecorationArtist,
   CodDecorationArtistStyle,
 } from '../cod-decorations-part';
+import { CodDecorationArtistStyleComponent } from '../cod-decoration-artist-style/cod-decoration-artist-style.component';
 
 @Component({
   selector: 'cadmus-cod-decoration-artist',
   templateUrl: './cod-decoration-artist.component.html',
   styleUrls: ['./cod-decoration-artist.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatError,
+    MatInput,
+    AssertedCompositeIdsComponent,
+    MatHint,
+    MatButton,
+    MatIcon,
+    MatIconButton,
+    MatTooltip,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    CodDecorationArtistStyleComponent,
+  ],
 })
 export class CodDecorationArtistComponent implements OnInit {
   private _artist: CodDecorationArtist | undefined;

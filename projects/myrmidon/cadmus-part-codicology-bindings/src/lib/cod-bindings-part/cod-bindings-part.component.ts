@@ -4,20 +4,42 @@ import {
   FormBuilder,
   FormGroup,
   UntypedFormGroup,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { take } from 'rxjs/operators';
 
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import {
+  MatCard,
+  MatCardHeader,
+  MatCardAvatar,
+  MatCardTitle,
+  MatCardContent,
+  MatCardActions,
+} from '@angular/material/card';
+import { MatIcon } from '@angular/material/icon';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+
+import { NgxToolsValidators, FlatLookupPipe } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
-import { EditedObject, ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
+import { HistoricalDatePipe } from '@myrmidon/cadmus-refs-historical-date';
+
 import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  EditedObject,
+  ModelEditorComponentBase,
+  CadmusUiModule,
+} from '@myrmidon/cadmus-ui';
 
 import {
   CodBinding,
   CodBindingsPart,
   COD_BINDINGS_PART_TYPEID,
 } from '../cod-bindings-part';
+import { CodBindingEditorComponent } from '../cod-binding-editor/cod-binding-editor.component';
 
 /**
  * CodBindingsPart editor component.
@@ -29,7 +51,26 @@ import {
   selector: 'cadmus-cod-bindings-part',
   templateUrl: './cod-bindings-part.component.html',
   styleUrls: ['./cod-bindings-part.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatCard,
+    MatCardHeader,
+    MatCardAvatar,
+    MatIcon,
+    MatCardTitle,
+    MatCardContent,
+    MatTabGroup,
+    MatTab,
+    MatButton,
+    MatIconButton,
+    MatTooltip,
+    CodBindingEditorComponent,
+    MatCardActions,
+    CadmusUiModule,
+    FlatLookupPipe,
+    HistoricalDatePipe,
+  ],
 })
 export class CodBindingsPartComponent
   extends ModelEditorComponentBase<CodBindingsPart>

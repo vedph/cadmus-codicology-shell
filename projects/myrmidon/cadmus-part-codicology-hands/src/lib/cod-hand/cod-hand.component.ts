@@ -4,13 +4,35 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
-import { DialogService } from '@myrmidon/ngx-mat-tools';
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import {
+  DocReference,
+  DocReferencesComponent,
+} from '@myrmidon/cadmus-refs-doc-references';
 
 import { debounceTime, take } from 'rxjs';
+
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import {
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+
+import { DialogService } from '@myrmidon/ngx-mat-tools';
+import { NgxToolsValidators, FlatLookupPipe } from '@myrmidon/ngx-tools';
+import {
+  AssertedCompositeId,
+  AssertedCompositeIdsComponent,
+} from '@myrmidon/cadmus-refs-asserted-ids';
+import { CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
 
 import {
   CodHand,
@@ -18,13 +40,36 @@ import {
   CodHandInstance,
   CodHandSubscription,
 } from '../cod-hands-part';
-import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
+import { CodHandDescriptionComponent } from '../cod-hand-description/cod-hand-description.component';
+import { CodHandInstanceComponent } from '../cod-hand-instance/cod-hand-instance.component';
+import { CodHandSubscriptionComponent } from '../cod-hand-subscription/cod-hand-subscription.component';
 
 @Component({
   selector: 'cadmus-cod-hand',
   templateUrl: './cod-hand.component.html',
   styleUrls: ['./cod-hand.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatError,
+    AssertedCompositeIdsComponent,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    MatIcon,
+    MatButton,
+    MatIconButton,
+    MatTooltip,
+    CodHandDescriptionComponent,
+    CodHandInstanceComponent,
+    CodHandSubscriptionComponent,
+    DocReferencesComponent,
+    FlatLookupPipe,
+    CodLocationRangePipe,
+  ],
 })
 export class CodHandComponent implements OnInit {
   private _hand: CodHand | undefined;

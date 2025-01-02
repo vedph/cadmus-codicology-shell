@@ -25,8 +25,7 @@ describe('CodRColDefinitionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CodRColDefinitionComponent ],
-      imports: [
+    imports: [
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
@@ -48,8 +47,9 @@ describe('CodRColDefinitionComponent', () => {
         CadmusRefsAssertedChronotopeModule,
         CadmusRefsHistoricalDateModule,
         CadmusUiFlagsPickerModule,
-      ],
-    })
+        CodRColDefinitionComponent,
+    ],
+})
     .compileComponents();
   });
 

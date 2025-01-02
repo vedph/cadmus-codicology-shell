@@ -22,8 +22,7 @@ describe('CodCColDefinitionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CodCColDefinitionComponent],
-      imports: [
+    imports: [
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
@@ -41,8 +40,9 @@ describe('CodCColDefinitionComponent', () => {
         CadmusStateModule,
         CadmusUiModule,
         CadmusUiPgModule,
-      ],
-    }).compileComponents();
+        CodCColDefinitionComponent,
+    ],
+}).compileComponents();
   });
 
   beforeEach(() => {

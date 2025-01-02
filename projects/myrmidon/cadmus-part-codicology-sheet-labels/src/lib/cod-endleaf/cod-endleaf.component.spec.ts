@@ -22,8 +22,7 @@ describe('CodEndleafComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CodEndleafComponent],
-      imports: [
+    imports: [
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
@@ -41,8 +40,9 @@ describe('CodEndleafComponent', () => {
         CadmusStateModule,
         CadmusUiModule,
         CadmusUiPgModule,
-      ],
-    }).compileComponents();
+        CodEndleafComponent,
+    ],
+}).compileComponents();
   });
 
   beforeEach(() => {

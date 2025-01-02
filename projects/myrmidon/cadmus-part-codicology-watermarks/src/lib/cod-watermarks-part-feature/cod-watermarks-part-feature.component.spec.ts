@@ -8,8 +8,8 @@ describe('CodWatermarksPartFeatureComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CodWatermarksPartFeatureComponent ]
-    })
+    imports: [CodWatermarksPartFeatureComponent]
+})
     .compileComponents();
   });
 

@@ -4,20 +4,41 @@ import {
   FormBuilder,
   FormGroup,
   UntypedFormGroup,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { take } from 'rxjs/operators';
+
+import {
+  MatCard,
+  MatCardHeader,
+  MatCardAvatar,
+  MatCardTitle,
+  MatCardContent,
+  MatCardActions,
+} from '@angular/material/card';
+import { MatIcon } from '@angular/material/icon';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
 
 import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
-import { EditedObject, ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
+
 import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  EditedObject,
+  ModelEditorComponentBase,
+  CadmusUiModule,
+} from '@myrmidon/cadmus-ui';
 
 import {
   CodDecoration,
   CodDecorationsPart,
   COD_DECORATIONS_PART_TYPEID,
 } from '../cod-decorations-part';
+import { CodDecorationComponent } from '../cod-decoration/cod-decoration.component';
 
 /**
  * CodDecorationsPart editor component.
@@ -35,7 +56,24 @@ import {
   selector: 'cadmus-cod-decorations-part',
   templateUrl: './cod-decorations-part.component.html',
   styleUrls: ['./cod-decorations-part.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatCard,
+    MatCardHeader,
+    MatCardAvatar,
+    MatIcon,
+    MatCardTitle,
+    MatCardContent,
+    MatTabGroup,
+    MatTab,
+    MatButton,
+    MatIconButton,
+    MatTooltip,
+    CodDecorationComponent,
+    MatCardActions,
+    CadmusUiModule,
+  ],
 })
 export class CodDecorationsPartComponent
   extends ModelEditorComponentBase<CodDecorationsPart>

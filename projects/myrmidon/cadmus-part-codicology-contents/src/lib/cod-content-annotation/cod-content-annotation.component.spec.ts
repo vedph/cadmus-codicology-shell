@@ -8,8 +8,8 @@ describe('CodContentAnnotationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CodContentAnnotationComponent ]
-    })
+    imports: [CodContentAnnotationComponent]
+})
     .compileComponents();
   });
 

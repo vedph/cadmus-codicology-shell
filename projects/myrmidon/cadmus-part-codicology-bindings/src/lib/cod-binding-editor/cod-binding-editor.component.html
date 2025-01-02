@@ -1,8 +1,8 @@
 <form [formGroup]="form" (submit)="save()">
-  <div>
+  <div class="form-row">
     <!-- tag (bound) -->
     @if (tagEntries?.length) {
-    <mat-form-field style="width: 8em">
+    <mat-form-field>
       <mat-label>tag</mat-label>
       <mat-select [formControl]="tag">
         @for (e of tagEntries; track e.id) {
@@ -12,7 +12,7 @@
     </mat-form-field>
     }
     <!-- tag (free) -->
-    @if (!tagEntries?.length) {
+    @else {
     <mat-form-field>
       <mat-label>tag</mat-label>
       <input matInput [formControl]="tag" />
@@ -20,11 +20,11 @@
       <mat-error>tag too long</mat-error>
       }
     </mat-form-field>
-    } &nbsp;
+    }
 
     <!-- cover (bound) -->
     @if (coverEntries?.length) {
-    <mat-form-field style="width: 8em">
+    <mat-form-field>
       <mat-label>cover</mat-label>
       <mat-select [formControl]="coverMaterial">
         @for (e of coverEntries; track e.id) {
@@ -38,7 +38,7 @@
     </mat-form-field>
     }
     <!-- cover (free) -->
-    @if (!coverEntries?.length) {
+    @else {
     <mat-form-field>
       <mat-label>cover material</mat-label>
       <input matInput [formControl]="coverMaterial" />
@@ -50,10 +50,10 @@
       <mat-error>cover material too long</mat-error>
       }
     </mat-form-field>
-    } &nbsp;
+    }
     <!-- board (bound) -->
     @if (boardEntries?.length) {
-    <mat-form-field style="width: 8em">
+    <mat-form-field>
       <mat-label>board</mat-label>
       <mat-select [formControl]="boardMaterial">
         @for (e of boardEntries; track e.id) {
@@ -67,7 +67,7 @@
     </mat-form-field>
     }
     <!-- board (free) -->
-    @if (!boardEntries?.length) {
+    @else {
     <mat-form-field>
       <mat-label>board material</mat-label>
       <input matInput [formControl]="boardMaterial" />

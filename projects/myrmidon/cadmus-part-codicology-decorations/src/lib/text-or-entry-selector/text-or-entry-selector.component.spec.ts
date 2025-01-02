@@ -8,8 +8,8 @@ describe('TextOrEntrySelectorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TextOrEntrySelectorComponent ]
-    })
+    imports: [TextOrEntrySelectorComponent]
+})
     .compileComponents();
   });
 

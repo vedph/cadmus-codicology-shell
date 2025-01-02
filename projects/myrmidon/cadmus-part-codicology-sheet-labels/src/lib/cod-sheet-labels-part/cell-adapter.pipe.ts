@@ -7,10 +7,7 @@ import { CodColumn } from '../cod-sheet-labels-part';
  * by just adding it the rowId property got from the
  * pipe's first argument.
  */
-@Pipe({
-  name: 'cellAdapter',
-  standalone: false,
-})
+@Pipe({ name: 'cellAdapter', })
 export class CellAdapterPipe implements PipeTransform {
   transform(value: unknown, ...args: unknown[]): unknown {
     if (!value) {

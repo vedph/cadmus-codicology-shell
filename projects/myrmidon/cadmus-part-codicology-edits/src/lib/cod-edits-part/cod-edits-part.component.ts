@@ -1,16 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  FormControl,
-  FormBuilder,
-  FormGroup,
-  UntypedFormGroup,
-} from '@angular/forms';
+import { FormControl, FormBuilder, FormGroup, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { take } from 'rxjs/operators';
 
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { NgxToolsValidators, EllipsisPipe, FlatLookupPipe } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
-import { EditedObject, ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
+import { EditedObject, ModelEditorComponentBase, CadmusUiModule } from '@myrmidon/cadmus-ui';
 import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import {
@@ -18,6 +13,13 @@ import {
   CodEditsPart,
   COD_EDITS_PART_TYPEID,
 } from '../cod-edits-part';
+import { MatCard, MatCardHeader, MatCardAvatar, MatCardTitle, MatCardContent, MatCardActions } from '@angular/material/card';
+import { MatIcon } from '@angular/material/icon';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { CodEditEditorComponent } from '../cod-edit-editor/cod-edit-editor.component';
+import { CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
 
 /**
  * CodEditsPart editor component.
@@ -27,10 +29,30 @@ import {
  * external-id-scopes.
  */
 @Component({
-  selector: 'cadmus-cod-edits-part',
-  templateUrl: './cod-edits-part.component.html',
-  styleUrls: ['./cod-edits-part.component.css'],
-  standalone: false,
+    selector: 'cadmus-cod-edits-part',
+    templateUrl: './cod-edits-part.component.html',
+    styleUrls: ['./cod-edits-part.component.css'],
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatCard,
+        MatCardHeader,
+        MatCardAvatar,
+        MatIcon,
+        MatCardTitle,
+        MatCardContent,
+        MatTabGroup,
+        MatTab,
+        MatButton,
+        MatIconButton,
+        MatTooltip,
+        CodEditEditorComponent,
+        MatCardActions,
+        CadmusUiModule,
+        EllipsisPipe,
+        FlatLookupPipe,
+        CodLocationRangePipe,
+    ],
 })
 export class CodEditsPartComponent
   extends ModelEditorComponentBase<CodEditsPart>

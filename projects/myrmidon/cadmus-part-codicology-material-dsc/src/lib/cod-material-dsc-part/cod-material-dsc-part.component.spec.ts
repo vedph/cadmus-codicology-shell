@@ -8,8 +8,8 @@ describe('CodMaterialDscPartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CodMaterialDscPartComponent ]
-    })
+    imports: [CodMaterialDscPartComponent]
+})
     .compileComponents();
   });
 

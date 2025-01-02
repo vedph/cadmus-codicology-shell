@@ -17,7 +17,7 @@
     />
     <!-- tag (bound) -->
     @if (tagEntries?.length) {
-    <mat-form-field style="width: 8em">
+    <mat-form-field>
       <mat-label>tag</mat-label>
       <mat-select [formControl]="tag">
         @for (e of tagEntries; track e.id) {

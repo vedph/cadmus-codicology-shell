@@ -4,10 +4,29 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
+
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatInput } from '@angular/material/input';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { PhysicalSize } from '@myrmidon/cadmus-mat-physical-size';
-import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
+import {
+  PhysicalSize,
+  PhysicalSizeComponent,
+} from '@myrmidon/cadmus-mat-physical-size';
+
+import {
+  AssertedChronotope,
+  AssertedChronotopeComponent,
+} from '@myrmidon/cadmus-refs-asserted-chronotope';
 
 import { CodBinding } from '../cod-bindings-part';
 
@@ -15,7 +34,22 @@ import { CodBinding } from '../cod-bindings-part';
   selector: 'cadmus-cod-binding-editor',
   templateUrl: './cod-binding-editor.component.html',
   styleUrls: ['./cod-binding-editor.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatInput,
+    MatError,
+    MatCheckbox,
+    PhysicalSizeComponent,
+    AssertedChronotopeComponent,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+  ],
 })
 export class CodBindingEditorComponent implements OnInit {
   private _binding: CodBinding | undefined;

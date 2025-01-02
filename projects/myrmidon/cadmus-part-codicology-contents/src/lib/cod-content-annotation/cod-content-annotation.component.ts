@@ -4,10 +4,25 @@ import {
   FormControl,
   FormGroup,
   Validators,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
-import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatInput } from '@angular/material/input';
+import { MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+
 import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import {
+  CodLocationRange,
+  CodLocationComponent,
+} from '@myrmidon/cadmus-cod-location';
+
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import { CodContentAnnotation } from '../cod-contents-part';
 
@@ -15,7 +30,20 @@ import { CodContentAnnotation } from '../cod-contents-part';
   selector: 'cadmus-cod-content-annotation',
   templateUrl: './cod-content-annotation.component.html',
   styleUrls: ['./cod-content-annotation.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatError,
+    MatInput,
+    CodLocationComponent,
+    MatIconButton,
+    MatTooltip,
+    MatIcon,
+  ],
 })
 export class CodContentAnnotationComponent implements OnInit {
   private _annotation: CodContentAnnotation | undefined;

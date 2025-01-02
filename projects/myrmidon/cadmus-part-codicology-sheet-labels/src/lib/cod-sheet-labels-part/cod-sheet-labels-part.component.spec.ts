@@ -25,8 +25,7 @@ describe('CodSheetLabelsPartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CodSheetLabelsPartComponent ],
-      imports: [
+    imports: [
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
@@ -49,8 +48,9 @@ describe('CodSheetLabelsPartComponent', () => {
         CadmusRefsAssertedChronotopeModule,
         CadmusRefsHistoricalDateModule,
         CadmusUiFlagsPickerModule,
-      ],
-    })
+        CodSheetLabelsPartComponent,
+    ],
+})
     .compileComponents();
   });
 

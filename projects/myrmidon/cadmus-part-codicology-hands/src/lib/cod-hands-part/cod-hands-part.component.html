@@ -101,7 +101,7 @@
             [hand]="editedHand"
             (handChange)="onHandSave($event)"
             (editorClose)="onHandClose()"
-          ></cadmus-cod-hand>
+          />
         </mat-tab>
         }
       </mat-tab-group>
@@ -111,7 +111,7 @@
         [form]="form"
         [noSave]="userLevel < 2"
         (closeRequest)="close()"
-      ></cadmus-close-save-buttons>
+      />
     </mat-card-actions>
   </mat-card>
 </form>

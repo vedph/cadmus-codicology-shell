@@ -1,17 +1,43 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, Inject } from '@angular/core';
+import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { take } from 'rxjs/operators';
+
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+import { EnvService } from '@myrmidon/ngx-tools';
+import { AuthJwtService, GravatarPipe, User } from '@myrmidon/auth-jwt-login';
+
 import { Thesaurus, ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { AppRepository } from '@myrmidon/cadmus-state';
-import { Router } from '@angular/router';
-import { take } from 'rxjs/operators';
-import { AuthJwtService, User } from '@myrmidon/auth-jwt-login';
-import { EnvService } from '@myrmidon/ngx-tools';
-import { FormBuilder, FormControl } from '@angular/forms';
+
+import { CodLocationConverterComponent } from '../../projects/myrmidon/cadmus-part-codicology-sheet-labels/src/public-api';
 
 @Component({
   selector: 'app-root',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatSidenavModule,
+    MatSlideToggleModule,
+    MatToolbarModule,
+    MatTooltipModule,
+    GravatarPipe,
+    CodLocationConverterComponent,
+  ],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
-  standalone: false,
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
   public user?: User;

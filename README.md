@@ -1,6 +1,6 @@
 # Cadmus Codicology Shell
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.1.3.
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.6.
 
 The project is used as an incubator shell for developing and testing frontend Cadmus codicological components:
 
@@ -22,7 +22,35 @@ Per-library documentation:
 - each part is a library named after it following the pattern `cadmus-part-codicology-<PARTNAME>`.
 - a pages library `cadmus-part-codicology-pg` imports all these libraries and provides routing: `ng g library @myrmidon/cadmus-part-codicology-pg --prefix cadmus`.
 
+This workspace was setup as follows:
+
+```sh
+ng new cadmus-codicology-shell
+cd cadmus-codicology-shell
+ng add @angular/material
+ng add @angular/localize
+
+ng g library @myrmidon/cadmus-codicology-ui --prefix cadmus --force
+ng g library @myrmidon/cadmus-part-codicology-bindings --prefix cadmus --force
+ng g library @myrmidon/cadmus-part-codicology-contents --prefix cadmus --force
+ng g library @myrmidon/cadmus-part-codicology-decorations --prefix cadmus --force
+ng g library @myrmidon/cadmus-part-codicology-edits --prefix cadmus --force
+ng g library @myrmidon/cadmus-part-codicology-hands --prefix cadmus --force
+ng g library @myrmidon/cadmus-part-codicology-layouts --prefix cadmus --force
+ng g library @myrmidon/cadmus-part-codicology-material-dsc --prefix cadmus --force
+ng g library @myrmidon/cadmus-part-codicology-sheet-labels --prefix cadmus --force
+ng g library @myrmidon/cadmus-part-codicology-shelfmarks --prefix cadmus --force
+ng g library @myrmidon/cadmus-part-codicology-watermarks --prefix cadmus --force
+ng g library @myrmidon/cadmus-part-codicology-pg --prefix cadmus --force
+```
+
 ## History
+
+### 9.0.0
+
+- 2025-01-02:
+  - ⚠️ standalone components.
+  - refactored shell for modern Angular.
 
 ### 8.1.0
 

@@ -33,7 +33,7 @@
         [required]="true"
         [location]="sampleRanges.value"
         (locationChange)="onSampleLocationChange($event)"
-      ></cadmus-cod-location>
+      />
 
       <!-- ranges -->
       <cadmus-cod-location
@@ -41,7 +41,7 @@
         [required]="true"
         [location]="ranges.value"
         (locationChange)="onRangeLocationChange($event)"
-      ></cadmus-cod-location>
+      />
     </div>
     <div class="form-row">
       <!-- ruling (bound) -->
@@ -354,10 +354,7 @@
         style="height: 400px; overflow: hidden"
         [style.height.px]="figHeight"
       >
-        <cadmus-cod-layout-figure
-          [rects]="rectSet"
-          [noScale]="false"
-        />
+        <cadmus-cod-layout-figure [rects]="rectSet" [noScale]="false" />
       </div>
       }
     </div>

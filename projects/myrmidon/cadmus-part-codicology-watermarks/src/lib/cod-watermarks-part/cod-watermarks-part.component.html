@@ -30,8 +30,8 @@
               </tr>
             </thead>
             <tbody>
-              @for ( entry of watermarks.value; track entry; let i = $index;
-              let first = $first; let last = $last) {
+              @for ( entry of watermarks.value; track entry; let i = $index; let
+              first = $first; let last = $last) {
               <tr>
                 <td>
                   <button
@@ -96,7 +96,7 @@
             [watermark]="editedWatermark"
             (watermarkChange)="onWatermarkSave($event)"
             (editorClose)="editWatermark(null)"
-          ></cadmus-cod-watermark-editor>
+          />
         </mat-tab>
         }
       </mat-tab-group>
@@ -106,7 +106,7 @@
         [form]="form"
         [noSave]="userLevel < 2"
         (closeRequest)="close()"
-      ></cadmus-close-save-buttons>
+      />
     </mat-card-actions>
   </mat-card>
 </form>

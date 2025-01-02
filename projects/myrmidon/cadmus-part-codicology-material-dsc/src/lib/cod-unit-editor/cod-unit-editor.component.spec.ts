@@ -8,8 +8,8 @@ describe('CodUnitEditorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CodUnitEditorComponent ]
-    })
+    imports: [CodUnitEditorComponent]
+})
     .compileComponents();
   });
 

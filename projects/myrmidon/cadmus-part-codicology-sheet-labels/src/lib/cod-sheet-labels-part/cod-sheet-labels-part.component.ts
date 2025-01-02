@@ -5,14 +5,44 @@ import {
   Validators,
   FormGroup,
   UntypedFormGroup,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
+import { AsyncPipe } from '@angular/common';
 import { Observable, take } from 'rxjs';
 
-import { deepCopy } from '@myrmidon/ngx-tools';
+import {
+  MatCard,
+  MatCardHeader,
+  MatCardAvatar,
+  MatCardTitle,
+  MatCardContent,
+  MatCardActions,
+} from '@angular/material/card';
+import { MatIcon } from '@angular/material/icon';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { MatOption, MatOptgroup } from '@angular/material/core';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatInput } from '@angular/material/input';
+import { MatCheckbox } from '@angular/material/checkbox';
+import {
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+} from '@angular/material/expansion';
+
+import { deepCopy, FlatLookupPipe } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
-import { EditedObject, ModelEditorComponentBase } from '@myrmidon/cadmus-ui';
+
 import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  EditedObject,
+  ModelEditorComponentBase,
+  CadmusUiModule,
+} from '@myrmidon/cadmus-ui';
 
 import {
   CodCColDefinition,
@@ -25,6 +55,15 @@ import {
 } from '../cod-sheet-labels-part';
 import { CodLabelCell, LabelGenerator } from '../label-generator';
 import { CodRowType, CodRowViewModel, CodSheetTable } from '../cod-sheet-table';
+import { CodNColDefinitionComponent } from '../cod-n-col-definition/cod-n-col-definition.component';
+import { CodCColDefinitionComponent } from '../cod-c-col-definition/cod-c-col-definition.component';
+import { CodSColDefinitionComponent } from '../cod-s-col-definition/cod-s-col-definition.component';
+import { CodRColDefinitionComponent } from '../cod-r-col-definition/cod-r-col-definition.component';
+import { CodLabelCellComponent } from '../cod-label-cell/cod-label-cell.component';
+import { CodEndleafComponent } from '../cod-endleaf/cod-endleaf.component';
+
+import { CellAdapterPipe } from './cell-adapter.pipe';
+import { CellTypeColorPipe } from './cell-type-color.pipe';
 
 /**
  * CodSheetLabels part editor component.
@@ -38,7 +77,43 @@ import { CodRowType, CodRowViewModel, CodSheetTable } from '../cod-sheet-table';
   selector: 'cadmus-cod-sheet-labels-part',
   templateUrl: './cod-sheet-labels-part.component.html',
   styleUrls: ['./cod-sheet-labels-part.component.css'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatCard,
+    MatCardHeader,
+    MatCardAvatar,
+    MatIcon,
+    MatCardTitle,
+    MatCardContent,
+    MatTabGroup,
+    MatTab,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatError,
+    MatIconButton,
+    MatTooltip,
+    MatInput,
+    MatCheckbox,
+    MatOptgroup,
+    MatExpansionPanel,
+    MatExpansionPanelHeader,
+    CodNColDefinitionComponent,
+    CodCColDefinitionComponent,
+    CodSColDefinitionComponent,
+    CodRColDefinitionComponent,
+    CodLabelCellComponent,
+    MatButton,
+    CodEndleafComponent,
+    MatCardActions,
+    CadmusUiModule,
+    AsyncPipe,
+    FlatLookupPipe,
+    CellAdapterPipe,
+    CellTypeColorPipe,
+  ],
 })
 export class CodSheetLabelsPartComponent
   extends ModelEditorComponentBase<CodSheetLabelsPart>
