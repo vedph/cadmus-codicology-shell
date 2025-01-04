@@ -31,7 +31,7 @@ import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
   EditedObject,
   ModelEditorComponentBase,
-  CadmusUiModule,
+  CloseSaveButtonsComponent,
 } from '@myrmidon/cadmus-ui';
 
 import {
@@ -68,7 +68,7 @@ import { CodWatermarkEditorComponent } from '../cod-watermark-editor/cod-waterma
     MatTooltip,
     CodWatermarkEditorComponent,
     MatCardActions,
-    CadmusUiModule,
+    CloseSaveButtonsComponent,
     CodLocationRangePipe,
   ],
 })

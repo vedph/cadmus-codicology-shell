@@ -10,9 +10,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CadmusStateModule } from '@myrmidon/cadmus-state';
-import { CadmusUiModule } from '@myrmidon/cadmus-ui';
-import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
+import { CloseSaveButtonsComponent } from '@myrmidon/cadmus-ui';
+import { CurrentItemBarComponent } from '@myrmidon/cadmus-ui-pg';
 
 import { CodEndleafComponent } from './cod-endleaf.component';
 
@@ -22,7 +21,7 @@ describe('CodEndleafComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [
+      imports: [
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
@@ -37,12 +36,11 @@ describe('CodEndleafComponent', () => {
         MatTabsModule,
         MatTooltipModule,
         // Cadmus
-        CadmusStateModule,
-        CadmusUiModule,
-        CadmusUiPgModule,
+        CloseSaveButtonsComponent,
+        CurrentItemBarComponent,
         CodEndleafComponent,
-    ],
-}).compileComponents();
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {

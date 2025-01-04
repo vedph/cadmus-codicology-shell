@@ -41,7 +41,7 @@ import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
   EditedObject,
   ModelEditorComponentBase,
-  CadmusUiModule,
+  CloseSaveButtonsComponent,
 } from '@myrmidon/cadmus-ui';
 
 import {
@@ -108,7 +108,7 @@ import { CellTypeColorPipe } from './cell-type-color.pipe';
     MatButton,
     CodEndleafComponent,
     MatCardActions,
-    CadmusUiModule,
+    CloseSaveButtonsComponent,
     AsyncPipe,
     FlatLookupPipe,
     CellAdapterPipe,

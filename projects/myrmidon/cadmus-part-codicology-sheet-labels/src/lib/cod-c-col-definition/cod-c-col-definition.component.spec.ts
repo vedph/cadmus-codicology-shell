@@ -10,9 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CadmusStateModule } from '@myrmidon/cadmus-state';
-import { CadmusUiModule } from '@myrmidon/cadmus-ui';
-import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
+import { CurrentItemBarComponent } from '@myrmidon/cadmus-ui-pg';
 
 import { CodCColDefinitionComponent } from './cod-c-col-definition.component';
 
@@ -37,9 +35,7 @@ describe('CodCColDefinitionComponent', () => {
         MatTabsModule,
         MatTooltipModule,
         // Cadmus
-        CadmusStateModule,
-        CadmusUiModule,
-        CadmusUiPgModule,
+        CurrentItemBarComponent,
         CodCColDefinitionComponent,
     ],
 }).compileComponents();

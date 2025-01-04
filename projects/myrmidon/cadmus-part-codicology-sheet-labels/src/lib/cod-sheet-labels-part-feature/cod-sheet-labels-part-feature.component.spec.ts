@@ -10,13 +10,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
-import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
-import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
-import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
-import { CadmusStateModule } from '@myrmidon/cadmus-state';
-import { CadmusUiModule } from '@myrmidon/cadmus-ui';
-import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
+import { CloseSaveButtonsComponent } from '@myrmidon/cadmus-ui';
+import { CurrentItemBarComponent } from '@myrmidon/cadmus-ui-pg';
 
 import { CodSheetLabelsPartFeatureComponent } from './cod-sheet-labels-part-feature.component';
 
@@ -26,12 +21,11 @@ xdescribe('CodSheetLabelsPartFeatureComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [
+      imports: [
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
         BrowserAnimationsModule,
-        RouterTestingModule,
         // material
         MatButtonModule,
         MatCardModule,
@@ -42,23 +36,16 @@ xdescribe('CodSheetLabelsPartFeatureComponent', () => {
         MatTabsModule,
         MatTooltipModule,
         // Cadmus
-        NgToolsModule,
-        CadmusStateModule,
-        CadmusUiModule,
-        CadmusUiPgModule,
-        CadmusMatPhysicalSizeModule,
-        CadmusRefsAssertedChronotopeModule,
-        CadmusRefsHistoricalDateModule,
-        CadmusUiFlagsPickerModule,
+        CurrentItemBarComponent,
         CodSheetLabelsPartFeatureComponent,
-    ],
-    providers: [
+      ],
+      providers: [
         {
-            provide: 'partEditorKeys',
-            useValue: {},
+          provide: 'partEditorKeys',
+          useValue: {},
         },
-    ],
-}).compileComponents();
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {

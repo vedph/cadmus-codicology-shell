@@ -4,14 +4,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { EditPartFeatureBase, PartEditorService } from '@myrmidon/cadmus-state';
 import { ItemService, ThesaurusService } from '@myrmidon/cadmus-api';
-import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
+import { CurrentItemBarComponent } from '@myrmidon/cadmus-ui-pg';
 import { CodShelfmarksPartComponent } from '../cod-shelfmarks-part/cod-shelfmarks-part.component';
 
 @Component({
   selector: 'cadmus-cod-shelfmarks-part-feature',
   templateUrl: './cod-shelfmarks-part-feature.component.html',
   styleUrls: ['./cod-shelfmarks-part-feature.component.css'],
-  imports: [CadmusUiPgModule, CodShelfmarksPartComponent],
+  imports: [CurrentItemBarComponent, CodShelfmarksPartComponent],
 })
 export class CodShelfmarksPartFeatureComponent
   extends EditPartFeatureBase

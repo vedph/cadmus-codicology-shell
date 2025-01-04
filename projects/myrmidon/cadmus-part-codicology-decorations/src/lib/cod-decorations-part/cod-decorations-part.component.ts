@@ -30,7 +30,7 @@ import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
   EditedObject,
   ModelEditorComponentBase,
-  CadmusUiModule,
+  CloseSaveButtonsComponent,
 } from '@myrmidon/cadmus-ui';
 
 import {
@@ -72,7 +72,7 @@ import { CodDecorationComponent } from '../cod-decoration/cod-decoration.compone
     MatTooltip,
     CodDecorationComponent,
     MatCardActions,
-    CadmusUiModule,
+    CloseSaveButtonsComponent,
   ],
 })
 export class CodDecorationsPartComponent

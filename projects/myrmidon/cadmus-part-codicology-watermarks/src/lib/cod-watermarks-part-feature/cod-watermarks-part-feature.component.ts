@@ -4,14 +4,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { EditPartFeatureBase, PartEditorService } from '@myrmidon/cadmus-state';
 import { ItemService, ThesaurusService } from '@myrmidon/cadmus-api';
-import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
+import { CurrentItemBarComponent } from '@myrmidon/cadmus-ui-pg';
 import { CodWatermarksPartComponent } from '../cod-watermarks-part/cod-watermarks-part.component';
 
 @Component({
   selector: 'cadmus-cod-watermarks-part-feature',
   templateUrl: './cod-watermarks-part-feature.component.html',
   styleUrls: ['./cod-watermarks-part-feature.component.css'],
-  imports: [CadmusUiPgModule, CodWatermarksPartComponent],
+  imports: [CurrentItemBarComponent, CodWatermarksPartComponent],
 })
 export class CodWatermarksPartFeatureComponent
   extends EditPartFeatureBase

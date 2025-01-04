@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { EditPartFeatureBase, PartEditorService } from '@myrmidon/cadmus-state';
 import { ItemService, ThesaurusService } from '@myrmidon/cadmus-api';
-import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
+import { CurrentItemBarComponent } from '@myrmidon/cadmus-ui-pg';
 
 import { CodLayoutsPartComponent } from '../cod-layouts-part/cod-layouts-part.component';
 
@@ -12,7 +12,7 @@ import { CodLayoutsPartComponent } from '../cod-layouts-part/cod-layouts-part.co
   selector: 'cadmus-cod-layouts-part-feature',
   templateUrl: './cod-layouts-part-feature.component.html',
   styleUrls: ['./cod-layouts-part-feature.component.css'],
-  imports: [CadmusUiPgModule, CodLayoutsPartComponent],
+  imports: [CurrentItemBarComponent, CodLayoutsPartComponent],
 })
 export class CodLayoutsPartFeatureComponent
   extends EditPartFeatureBase

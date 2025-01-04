@@ -10,12 +10,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CadmusMatPhysicalSizeModule } from '@myrmidon/cadmus-mat-physical-size';
-import { CadmusRefsAssertedChronotopeModule } from '@myrmidon/cadmus-refs-asserted-chronotope';
-import { CadmusRefsHistoricalDateModule } from '@myrmidon/cadmus-refs-historical-date';
-import { CadmusStateModule } from '@myrmidon/cadmus-state';
-import { CadmusUiModule } from '@myrmidon/cadmus-ui';
-import { CadmusUiPgModule } from '@myrmidon/cadmus-ui-pg';
+import { CloseSaveButtonsComponent } from '@myrmidon/cadmus-ui';
+import { CurrentItemBarComponent } from '@myrmidon/cadmus-ui-pg';
 
 import { CodSheetLabelsPartComponent } from './cod-sheet-labels-part.component';
 
@@ -40,14 +36,8 @@ describe('CodSheetLabelsPartComponent', () => {
         MatTabsModule,
         MatTooltipModule,
         // Cadmus
-        NgToolsModule,
-        CadmusStateModule,
-        CadmusUiModule,
-        CadmusUiPgModule,
-        CadmusMatPhysicalSizeModule,
-        CadmusRefsAssertedChronotopeModule,
-        CadmusRefsHistoricalDateModule,
-        CadmusUiFlagsPickerModule,
+        CloseSaveButtonsComponent,
+        CurrentItemBarComponent,
         CodSheetLabelsPartComponent,
     ],
 })

@@ -30,7 +30,7 @@ import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
   EditedObject,
   ModelEditorComponentBase,
-  CadmusUiModule,
+  CloseSaveButtonsComponent,
 } from '@myrmidon/cadmus-ui';
 
 import {
@@ -64,7 +64,7 @@ import { CodShelfmarkEditorComponent } from '../cod-shelfmark-editor/cod-shelfma
     MatTooltip,
     CodShelfmarkEditorComponent,
     MatCardActions,
-    CadmusUiModule,
+    CloseSaveButtonsComponent,
   ],
 })
 export class CodShelfmarksPartComponent

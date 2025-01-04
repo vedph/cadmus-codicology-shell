@@ -36,7 +36,7 @@ import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
   EditedObject,
   ModelEditorComponentBase,
-  CadmusUiModule,
+  CloseSaveButtonsComponent,
 } from '@myrmidon/cadmus-ui';
 
 import {
@@ -77,7 +77,7 @@ import { CodPalimpsestEditorComponent } from '../cod-palimpsest-editor/cod-palim
     CodUnitEditorComponent,
     CodPalimpsestEditorComponent,
     MatCardActions,
-    CadmusUiModule,
+    CloseSaveButtonsComponent,
     FlatLookupPipe,
     HistoricalDatePipe,
     CodLocationRangePipe,
