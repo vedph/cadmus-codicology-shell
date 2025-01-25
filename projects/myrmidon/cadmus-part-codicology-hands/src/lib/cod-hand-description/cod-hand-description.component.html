@@ -104,9 +104,9 @@
         >sign #{{ editedSignIndex + 1 }}</mat-expansion-panel-header
       >
       <cadmus-cod-hand-sign
-        [typeEntries]="sgnTypeEntries"
+        [typeEntries]="sgnTypeEntries()"
         [sign]="editedSign"
-        (signChange)="onSignSave($event)"
+        (signChange)="onSignSave($event!)"
         (editorClose)="editSign(null)"
       />
     </mat-expansion-panel>

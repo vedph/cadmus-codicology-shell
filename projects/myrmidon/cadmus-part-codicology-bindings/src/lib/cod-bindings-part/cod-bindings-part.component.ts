@@ -18,7 +18,7 @@ import {
   MatCardActions,
 } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
-import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 
@@ -60,8 +60,7 @@ import { CodBindingEditorComponent } from '../cod-binding-editor/cod-binding-edi
     MatIcon,
     MatCardTitle,
     MatCardContent,
-    MatTabGroup,
-    MatTab,
+    MatExpansionModule,
     MatButton,
     MatIconButton,
     MatTooltip,
@@ -76,9 +75,7 @@ export class CodBindingsPartComponent
   extends ModelEditorComponentBase<CodBindingsPart>
   implements OnInit
 {
-  private _editedIndex: number;
-
-  public tabIndex: number;
+  public editedIndex: number;
   public editedBinding: CodBinding | undefined;
 
   // cod-binding-tags
@@ -110,8 +107,7 @@ export class CodBindingsPartComponent
     private _dialogService: DialogService
   ) {
     super(authService, formBuilder);
-    this._editedIndex = -1;
-    this.tabIndex = 0;
+    this.editedIndex = -1;
     // form
     this.entries = formBuilder.control([], {
       validators: NgxToolsValidators.strictMinLengthValidator(1),
@@ -227,22 +223,18 @@ export class CodBindingsPartComponent
 
   public editBinding(binding: CodBinding | null, index = -1): void {
     if (!binding) {
-      this._editedIndex = -1;
-      this.tabIndex = 0;
+      this.editedIndex = -1;
       this.editedBinding = undefined;
     } else {
-      this._editedIndex = index;
+      this.editedIndex = index;
       this.editedBinding = binding;
-      setTimeout(() => {
-        this.tabIndex = 1;
-      });
     }
   }
 
   public onBindingSave(binding: CodBinding): void {
     const bindings = [...this.entries.value];
-    if (this._editedIndex > -1) {
-      bindings.splice(this._editedIndex, 1, binding);
+    if (this.editedIndex > -1) {
+      bindings.splice(this.editedIndex, 1, binding);
     } else {
       bindings.push(binding);
     }

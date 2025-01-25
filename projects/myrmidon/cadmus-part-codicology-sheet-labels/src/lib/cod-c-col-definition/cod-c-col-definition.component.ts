@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -40,29 +40,13 @@ import { CodCColDefinition } from '../cod-sheet-labels-part';
     MatIcon,
   ],
 })
-export class CodCColDefinitionComponent implements OnInit {
-  private _definition: CodCColDefinition | undefined;
-
-  @Input()
-  public get definition(): CodCColDefinition | undefined {
-    return this._definition;
-  }
-  public set definition(value: CodCColDefinition | undefined) {
-    if (this._definition === value) {
-      return;
-    }
-    this._definition = value;
-    this.updateForm(value);
-  }
+export class CodCColDefinitionComponent {
+  public readonly definition = model<CodCColDefinition>();
 
   // cod-catchwords-positions
-  @Input()
-  public posEntries: ThesaurusEntry[] | undefined;
+  public readonly posEntries = input<ThesaurusEntry[]>();
 
-  @Output()
-  public definitionChange: EventEmitter<CodCColDefinition>;
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public readonly editorClose = output();
 
   public id: string;
   public rank: FormControl<number>;
@@ -73,9 +57,6 @@ export class CodCColDefinitionComponent implements OnInit {
   public form: FormGroup;
 
   constructor(formBuilder: FormBuilder) {
-    this.definitionChange = new EventEmitter<CodCColDefinition>();
-    this.editorClose = new EventEmitter<any>();
-    // form
     this.id = '';
     this.rank = formBuilder.control(0, { nonNullable: true });
     this.position = formBuilder.control(null, [
@@ -92,12 +73,10 @@ export class CodCColDefinitionComponent implements OnInit {
       decoration: this.decoration,
       note: this.note,
     });
-  }
 
-  ngOnInit(): void {
-    if (this._definition) {
-      this.updateForm(this._definition);
-    }
+    effect(() => {
+      this.updateForm(this.definition());
+    });
   }
 
   private updateForm(model: CodCColDefinition | undefined): void {
@@ -134,7 +113,6 @@ export class CodCColDefinitionComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this._definition = this.getModel();
-    this.definitionChange.emit(this._definition);
+    this.definition.set(this.getModel());
   }
 }

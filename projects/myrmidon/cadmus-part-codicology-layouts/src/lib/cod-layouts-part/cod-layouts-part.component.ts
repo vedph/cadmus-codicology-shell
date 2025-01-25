@@ -18,10 +18,10 @@ import {
   MatCardActions,
 } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
-import { MatTabGroup, MatTab } from '@angular/material/tabs';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
@@ -63,8 +63,7 @@ import { CodLayoutEditorComponent } from '../cod-layout-editor/cod-layout-editor
     MatIcon,
     MatCardTitle,
     MatCardContent,
-    MatTabGroup,
-    MatTab,
+    MatExpansionModule,
     MatButton,
     MatIconButton,
     MatTooltip,
@@ -81,7 +80,6 @@ export class CodLayoutsPartComponent
 {
   private _editedIndex: number;
 
-  public tabIndex: number;
   public editedLayout: CodLayout | undefined;
 
   // cod-layout-tags
@@ -110,7 +108,6 @@ export class CodLayoutsPartComponent
   ) {
     super(authService, formBuilder);
     this._editedIndex = -1;
-    this.tabIndex = 0;
     // form
     this.entries = formBuilder.control([], {
       validators: NgxToolsValidators.strictMinLengthValidator(1),
@@ -215,14 +212,10 @@ export class CodLayoutsPartComponent
   public editLayout(layout: CodLayout | null, index = -1): void {
     if (!layout) {
       this._editedIndex = -1;
-      this.tabIndex = 0;
       this.editedLayout = undefined;
     } else {
       this._editedIndex = index;
       this.editedLayout = layout;
-      setTimeout(() => {
-        this.tabIndex = 1;
-      });
     }
   }
 

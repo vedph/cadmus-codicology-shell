@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, effect, input, model, OnInit, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -58,64 +58,37 @@ import { CodWatermark } from '../cod-watermarks-part';
     MatIcon,
   ],
 })
-export class CodWatermarkEditorComponent implements OnInit {
-  private _watermark: CodWatermark | undefined;
-
-  @Input()
-  public get watermark(): CodWatermark | undefined {
-    return this._watermark;
-  }
-  public set watermark(value: CodWatermark | undefined) {
-    if (this._watermark === value) {
-      return;
-    }
-    this._watermark = value;
-    this.updateForm(value);
-  }
+export class CodWatermarkEditorComponent {
+  public readonly watermark = model<CodWatermark>();
 
   // asserted-id-tags
-  @Input()
-  public idTagEntries: ThesaurusEntry[] | undefined;
+  public readonly idTagEntries = input<ThesaurusEntry[]>();
   // asserted-id-scopes
-  @Input()
-  public idScopeEntries: ThesaurusEntry[] | undefined;
+  public readonly idScopeEntries = input<ThesaurusEntry[]>();
   // chronotope-tags
-  @Input()
-  public ctTagEntries: ThesaurusEntry[] | undefined;
+  public readonly ctTagEntries = input<ThesaurusEntry[]>();
   // assertion-tags
-  @Input()
-  public assTagEntries: ThesaurusEntry[] | undefined;
+  public readonly assTagEntries = input<ThesaurusEntry[]>();
   // doc-reference-types
-  @Input()
-  public refTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly refTypeEntries = input<ThesaurusEntry[]>();
   // doc-reference-tags
-  @Input()
-  public refTagEntries: ThesaurusEntry[] | undefined;
+  public readonly refTagEntries = input<ThesaurusEntry[]>();
   // physical-size-tags
-  @Input()
-  public szTagEntries: ThesaurusEntry[] | undefined;
+  public readonly szTagEntries = input<ThesaurusEntry[]>();
   // physical-size-dim-tags
-  @Input()
-  public szDimTagEntries: ThesaurusEntry[] | undefined;
+  public readonly szDimTagEntries = input<ThesaurusEntry[]>();
   // physical-size-units
-  @Input()
-  public szUnitEntries: ThesaurusEntry[] | undefined;
+  public readonly szUnitEntries = input<ThesaurusEntry[]>();
 
   // pin link settings
   // by-type: true/false
-  @Input()
-  public pinByTypeMode?: boolean;
+  public readonly pinByTypeMode = input<boolean>();
   // switch-mode: true/false
-  @Input()
-  public canSwitchMode?: boolean;
+  public readonly canSwitchMode = input<boolean>();
   // edit-target: true/false
-  @Input()
-  public canEditTarget?: boolean;
+  public readonly canEditTarget = input<boolean>();
 
-  @Output()
-  public watermarkChange: EventEmitter<CodWatermark>;
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public editorClose = output();
 
   public name: FormControl<string | null>;
   public sampleRanges: FormControl<CodLocationRange[]>;
@@ -128,9 +101,6 @@ export class CodWatermarkEditorComponent implements OnInit {
   public form: FormGroup;
 
   constructor(formBuilder: FormBuilder) {
-    this.watermarkChange = new EventEmitter<CodWatermark>();
-    this.editorClose = new EventEmitter<any>();
-    // form
     this.name = formBuilder.control(null, [
       Validators.required,
       Validators.maxLength(50),
@@ -155,9 +125,11 @@ export class CodWatermarkEditorComponent implements OnInit {
       size: this.size,
       chronotopes: this.chronotopes,
     });
-  }
 
-  ngOnInit(): void {}
+    effect(() => {
+      this.updateForm(this.watermark());
+    });
+  }
 
   private updateForm(model: CodWatermark | undefined): void {
     if (!model) {
@@ -228,7 +200,6 @@ export class CodWatermarkEditorComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this._watermark = this.getModel();
-    this.watermarkChange.emit(this._watermark);
+    this.watermark.set(this.getModel());
   }
 }

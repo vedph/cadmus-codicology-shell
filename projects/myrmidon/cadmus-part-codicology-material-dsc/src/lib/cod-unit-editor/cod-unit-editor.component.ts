@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -53,50 +53,27 @@ import { CodUnit } from '../cod-material-dsc-part';
     MatIcon,
   ],
 })
-export class CodUnitEditorComponent implements OnInit {
-  private _unit: CodUnit | undefined;
-
-  @Input()
-  public get unit(): CodUnit | undefined {
-    return this._unit;
-  }
-  public set unit(value: CodUnit | undefined) {
-    if (this._unit === value) {
-      return;
-    }
-    this._unit = value;
-    this.updateForm(value);
-  }
+export class CodUnitEditorComponent {
+  public readonly unit = model<CodUnit>();
 
   // cod-unit-tags
-  @Input()
-  public tagEntries: ThesaurusEntry[] | undefined;
+  public readonly tagEntries = input<ThesaurusEntry[]>();
   // cod-unit-materials
-  @Input()
-  public materialEntries: ThesaurusEntry[] | undefined;
+  public readonly materialEntries = input<ThesaurusEntry[]>();
   // cod-unit-formats
-  @Input()
-  public formatEntries: ThesaurusEntry[] | undefined;
+  public readonly formatEntries = input<ThesaurusEntry[]>();
   // cod-unit-states
-  @Input()
-  public stateEntries: ThesaurusEntry[] | undefined;
+  public readonly stateEntries = input<ThesaurusEntry[]>();
   // chronotope-tags
-  @Input()
-  public ctTagEntries: ThesaurusEntry[] | undefined;
+  public readonly ctTagEntries = input<ThesaurusEntry[]>();
   // assertion-tags
-  @Input()
-  public assTagEntries: ThesaurusEntry[] | undefined;
+  public readonly assTagEntries = input<ThesaurusEntry[]>();
   // doc-reference-types
-  @Input()
-  public refTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly refTypeEntries = input<ThesaurusEntry[]>();
   // doc-reference-tags
-  @Input()
-  public refTagEntries: ThesaurusEntry[] | undefined;
+  public readonly refTagEntries = input<ThesaurusEntry[]>();
 
-  @Output()
-  public unitChange: EventEmitter<CodUnit>;
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public readonly editorClose = output();
 
   public eid: FormControl<string | null>;
   public tag: FormControl<string | null>;
@@ -110,9 +87,6 @@ export class CodUnitEditorComponent implements OnInit {
   public form: FormGroup;
 
   constructor(formBuilder: FormBuilder) {
-    this.unitChange = new EventEmitter<CodUnit>();
-    this.editorClose = new EventEmitter<any>();
-    // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.tag = formBuilder.control(null, Validators.maxLength(50));
     this.noGregory = formBuilder.control(false, { nonNullable: true });
@@ -148,12 +122,10 @@ export class CodUnitEditorComponent implements OnInit {
       chronotopes: this.chronotopes,
       note: this.note,
     });
-  }
 
-  ngOnInit(): void {
-    if (this._unit) {
-      this.updateForm(this._unit);
-    }
+    effect(() => {
+      this.updateForm(this.unit());
+    });
   }
 
   private updateForm(unit: CodUnit | undefined): void {
@@ -210,7 +182,6 @@ export class CodUnitEditorComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this._unit = this.getModel();
-    this.unitChange.emit(this._unit);
+    this.unit.set(this.getModel());
   }
 }

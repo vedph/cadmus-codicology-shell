@@ -1,10 +1,9 @@
 import {
   Component,
+  effect,
   ElementRef,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
+  input,
+  model,
   ViewChild,
 } from '@angular/core';
 import {
@@ -40,26 +39,10 @@ import { CodLabelCell } from '../label-generator';
     MatError,
   ],
 })
-export class CodLabelCellComponent implements OnInit {
-  private _cell: CodLabelCell | undefined;
+export class CodLabelCellComponent {
+  public readonly cell = model<CodLabelCell>();
 
-  @Input()
-  public get cell(): CodLabelCell | undefined {
-    return this._cell;
-  }
-  public set cell(value: CodLabelCell | undefined) {
-    if (this._cell === value) {
-      return;
-    }
-    this._cell = value;
-    this.updateForm(value);
-  }
-
-  @Input()
-  public color?: string;
-
-  @Output()
-  public cellChange: EventEmitter<CodLabelCell>;
+  public readonly color = input<string>();
 
   @ViewChild('valueInput')
   public valueElement?: ElementRef;
@@ -73,7 +56,6 @@ export class CodLabelCellComponent implements OnInit {
 
   constructor(formBuilder: FormBuilder) {
     this.editMode = 'none';
-    this.cellChange = new EventEmitter<CodLabelCell>();
     // form
     this.value = formBuilder.control(null, Validators.maxLength(50));
     this.note = formBuilder.control(null, Validators.maxLength(500));
@@ -81,12 +63,10 @@ export class CodLabelCellComponent implements OnInit {
       value: this.value,
       note: this.note,
     });
-  }
 
-  ngOnInit(): void {
-    if (this._cell) {
-      this.updateForm(this._cell);
-    }
+    effect(() => {
+      this.updateForm(this.cell());
+    });
   }
 
   public editValue(): void {
@@ -122,24 +102,23 @@ export class CodLabelCellComponent implements OnInit {
 
   private getCell(): CodLabelCell {
     return {
-      rowId: this._cell!.rowId,
-      id: this._cell!.id,
+      rowId: this.cell()!.rowId,
+      id: this.cell()!.id,
       value: this.value.value?.trim(),
       note: this.note.value?.trim(),
     };
   }
 
   public saveEdit(): void {
-    if (this.form.invalid || !this._cell) {
+    if (this.form.invalid) {
       return;
     }
     this.editMode = 'none';
-    this._cell = this.getCell();
-    this.cellChange.emit(this._cell);
+    this.cell.set(this.getCell());
   }
 
   public cancelEdit(): void {
-    this.updateForm(this._cell);
+    this.updateForm(this.cell());
     this.editMode = 'none';
   }
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -62,77 +62,32 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   ],
 })
 export class CodHandInstanceComponent {
-  private _instance: CodHandInstance | undefined;
-  private _typologyEntries: ThesaurusEntry[] | undefined;
-  private _colorEntries: ThesaurusEntry[] | undefined;
-
-  @Input()
-  public get instance(): CodHandInstance | undefined {
-    return this._instance;
-  }
-  public set instance(value: CodHandInstance | undefined) {
-    if (this._instance === value) {
-      return;
-    }
-    this._instance = value;
-    this.updateForm(value);
-  }
+  public readonly instance = model<CodHandInstance>();
 
   /**
    * The keys of all the descriptions entered in this part.
    * This is used as a lookup, scoped to the currently edited part.
    */
-  @Input()
-  public dscKeys: string[] | undefined;
+  public readonly dscKeys = input<string[]>();
 
   // cod-hand-scripts (required)
-  @Input()
-  public scriptEntries: ThesaurusEntry[] | undefined;
+  public readonly scriptEntries = input<ThesaurusEntry[]>();
   // cod-hand-typologies
-  @Input()
-  public get typeEntries(): ThesaurusEntry[] | undefined {
-    return this._typologyEntries;
-  }
-  public set typeEntries(value: ThesaurusEntry[] | undefined) {
-    if (this._typologyEntries === value) {
-      return;
-    }
-    this._typologyEntries = value || [];
-    this.typologyFlags = this._typologyEntries.map(entryToFlag);
-  }
+  public readonly typeEntries = input<ThesaurusEntry[]>();
   // cod-hand-colors
-  @Input()
-  public get colorEntries(): ThesaurusEntry[] | undefined {
-    return this._colorEntries;
-  }
-  public set colorEntries(value: ThesaurusEntry[] | undefined) {
-    if (this._colorEntries === value) {
-      return;
-    }
-    this._colorEntries = value || [];
-    this.colorFlags = this._colorEntries.map(entryToFlag);
-  }
-
+  public readonly colorEntries = input<ThesaurusEntry[]>();
   // chronotope-tags
-  @Input()
-  public ctTagEntries: ThesaurusEntry[] | undefined;
+  public readonly ctTagEntries = input<ThesaurusEntry[]>();
   // assertion-tags
-  @Input()
-  public assTagEntries: ThesaurusEntry[] | undefined;
+  public readonly assTagEntries = input<ThesaurusEntry[]>();
   // doc-reference-types
-  @Input()
-  public refTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly refTypeEntries = input<ThesaurusEntry[]>();
   // doc-reference-tags
-  @Input()
-  public refTagEntries: ThesaurusEntry[] | undefined;
+  public readonly refTagEntries = input<ThesaurusEntry[]>();
   // cod-image-types
-  @Input()
-  public imgTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly imgTypeEntries = input<ThesaurusEntry[]>();
 
-  @Output()
-  public instanceChange: EventEmitter<CodHandInstance>;
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public readonly editorClose = output();
 
   public script: FormControl<ThesaurusEntry | null>;
   public scripts: FormControl<ThesaurusEntry[]>;
@@ -150,8 +105,6 @@ export class CodHandInstanceComponent {
   public colorFlags: Flag[] = [];
 
   constructor(formBuilder: FormBuilder) {
-    this.instanceChange = new EventEmitter<CodHandInstance>();
-    this.editorClose = new EventEmitter<any>();
     // form
     this.script = formBuilder.control(null);
     this.scripts = formBuilder.control([], {
@@ -181,6 +134,18 @@ export class CodHandInstanceComponent {
       chronotope: this.chronotope,
       images: this.images,
     });
+
+    effect(() => {
+      this.updateForm(this.instance());
+    });
+
+    effect(() => {
+      this.typologyFlags = this.typeEntries()?.map(entryToFlag) || [];
+    });
+
+    effect(() => {
+      this.colorFlags = this.colorEntries()?.map(entryToFlag) || [];
+    });
   }
 
   private updateForm(model: CodHandInstance | undefined): void {
@@ -192,7 +157,7 @@ export class CodHandInstanceComponent {
     this.scripts.setValue(
       model.scripts.map(
         (id) =>
-          this.scriptEntries?.find((e) => e.id === id) ?? {
+          this.scriptEntries()?.find((e) => e.id === id) ?? {
             id: id,
             value: id,
           }
@@ -308,7 +273,6 @@ export class CodHandInstanceComponent {
     if (this.form.invalid) {
       return;
     }
-    this._instance = this.getModel();
-    this.instanceChange.emit(this._instance);
+    this.instance.set(this.getModel());
   }
 }

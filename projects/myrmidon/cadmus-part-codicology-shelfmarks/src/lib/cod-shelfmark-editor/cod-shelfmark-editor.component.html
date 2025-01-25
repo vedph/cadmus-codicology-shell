@@ -1,18 +1,18 @@
 <form [formGroup]="form" (submit)="save()">
-  <div>
+  <div class="form-row">
     <!-- tag (bound) -->
-    @if (tagEntries?.length) {
+    @if (tagEntries()?.length) {
     <mat-form-field>
       <mat-label>tag</mat-label>
       <mat-select [formControl]="tag">
-        @for (e of tagEntries; track e.id) {
+        @for (e of tagEntries(); track e.id) {
         <mat-option [value]="e.id">{{ e.value }}</mat-option>
         }
       </mat-select>
     </mat-form-field>
     }
     <!-- tag (free) -->
-    @if (!tagEntries?.length) {
+    @else {
     <mat-form-field>
       <mat-label>tag</mat-label>
       <input matInput [formControl]="tag" />
@@ -22,7 +22,6 @@
     </mat-form-field>
     }
     <!-- city -->
-    &nbsp;
     <mat-form-field>
       <mat-label>city</mat-label>
       <input matInput [formControl]="city" />
@@ -33,13 +32,13 @@
       }
     </mat-form-field>
   </div>
-  <div>
+  <div class="form-row">
     <!-- library (bound) -->
-    @if (libEntries?.length) {
+    @if (libEntries()?.length) {
     <mat-form-field>
       <mat-label>library</mat-label>
       <mat-select [formControl]="library">
-        @for (e of libEntries; track e.id) {
+        @for (e of libEntries(); track e.id) {
         <mat-option [value]="e.id">{{ e.value }}</mat-option>
         }
       </mat-select>
@@ -50,7 +49,7 @@
     </mat-form-field>
     }
     <!-- library (free) -->
-    @if (!libEntries?.length) {
+    @else {
     <mat-form-field>
       <mat-label>library</mat-label>
       <input matInput [formControl]="library" />
@@ -63,8 +62,8 @@
       }
     </mat-form-field>
     }
+
     <!-- fund -->
-    &nbsp;
     <mat-form-field>
       <mat-label>fund</mat-label>
       <input matInput [formControl]="fund" />
@@ -72,8 +71,8 @@
       <mat-error>fund too long</mat-error>
       }
     </mat-form-field>
+
     <!-- location -->
-    &nbsp;
     <mat-form-field>
       <mat-label>location</mat-label>
       <input matInput [formControl]="location" />

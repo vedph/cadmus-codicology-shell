@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -38,32 +38,15 @@ import { CodShelfmark } from '../cod-shelfmarks-part';
     MatIcon,
   ],
 })
-export class CodShelfmarkEditorComponent implements OnInit {
-  private _shelfmark: CodShelfmark | undefined;
-
-  @Input()
-  public get shelfmark(): CodShelfmark | undefined {
-    return this._shelfmark;
-  }
-  public set shelfmark(value: CodShelfmark | undefined) {
-    if (this._shelfmark === value) {
-      return;
-    }
-    this._shelfmark = value;
-    this.updateForm(value);
-  }
+export class CodShelfmarkEditorComponent {
+  public readonly shelfmark = model<CodShelfmark>();
 
   // cod-shelfmark-tags
-  @Input()
-  public tagEntries: ThesaurusEntry[] | undefined;
+  public readonly tagEntries = input<ThesaurusEntry[]>();
   // cod-shelfmark-libraries
-  @Input()
-  public libEntries: ThesaurusEntry[] | undefined;
+  public readonly libEntries = input<ThesaurusEntry[]>();
 
-  @Output()
-  public shelfmarkChange: EventEmitter<CodShelfmark>;
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public editorClose = output();
 
   public tag: FormControl<string | null>;
   public city: FormControl<string | null>;
@@ -73,9 +56,6 @@ export class CodShelfmarkEditorComponent implements OnInit {
   public form: FormGroup;
 
   constructor(formBuilder: FormBuilder) {
-    this.shelfmarkChange = new EventEmitter<CodShelfmark>();
-    this.editorClose = new EventEmitter<any>();
-    // form
     this.tag = formBuilder.control(null, Validators.maxLength(50));
     this.city = formBuilder.control(null, [
       Validators.required,
@@ -95,12 +75,10 @@ export class CodShelfmarkEditorComponent implements OnInit {
       fund: this.fund,
       location: this.location,
     });
-  }
 
-  ngOnInit(): void {
-    if (this._shelfmark) {
-      this.updateForm(this._shelfmark);
-    }
+    effect(() => {
+      this.updateForm(this.shelfmark());
+    });
   }
 
   private updateForm(model: CodShelfmark | undefined): void {
@@ -135,7 +113,6 @@ export class CodShelfmarkEditorComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this._shelfmark = this.getModel();
-    this.shelfmarkChange.emit(this._shelfmark);
+    this.shelfmark.set(this.getModel());
   }
 }

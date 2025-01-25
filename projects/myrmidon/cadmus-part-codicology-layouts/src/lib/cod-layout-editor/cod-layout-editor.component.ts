@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, effect, input, model, output } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -15,7 +8,6 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { distinctUntilChanged, Subscription } from 'rxjs';
 
 import {
   MatFormField,
@@ -31,7 +23,7 @@ import { MatIconButton, MatButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 import { MatSlider, MatSliderThumb } from '@angular/material/slider';
-import { MatCheckbox } from '@angular/material/checkbox';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 import {
@@ -77,57 +69,35 @@ const FIG_HEIGHT = 400;
     MatIcon,
     MatButton,
     DecoratedCountsComponent,
+    MatSlideToggleModule,
     MatSlider,
     MatSliderThumb,
-    MatCheckbox,
     CodLayoutFigureComponent,
   ],
 })
-export class CodLayoutEditorComponent implements OnInit, OnDestroy {
-  private _layout: CodLayout | undefined;
-  private _subGap?: Subscription;
+export class CodLayoutEditorComponent {
+  private _figHasGap = false;
 
-  @Input()
-  public get layout(): CodLayout | undefined {
-    return this._layout;
-  }
-  public set layout(value: CodLayout | undefined) {
-    if (this._layout === value) {
-      return;
-    }
-    this._layout = value;
-    this.updateForm(value);
-  }
+  public readonly layout = model<CodLayout>();
 
   // cod-layout-tags
-  @Input()
-  public tagEntries: ThesaurusEntry[] | undefined;
+  public readonly tagEntries = input<ThesaurusEntry[]>();
   // cod-layout-ruling-techniques
-  @Input()
-  public rulTechEntries: ThesaurusEntry[] | undefined;
+  public rulTechEntries = input<ThesaurusEntry[]>();
   // cod-layout-derolez
-  @Input()
-  public drzEntries: ThesaurusEntry[] | undefined;
+  public drzEntries = input<ThesaurusEntry[]>();
   // cod-layout-prickings
-  @Input()
-  public prkEntries: ThesaurusEntry[] | undefined;
+  public prkEntries = input<ThesaurusEntry[]>();
   // decorated-count-ids
-  @Input()
-  public cntIdEntries: ThesaurusEntry[] | undefined;
+  public cntIdEntries = input<ThesaurusEntry[]>();
   // decorated-count-tags
-  @Input()
-  public cntTagEntries: ThesaurusEntry[] | undefined;
+  public cntTagEntries = input<ThesaurusEntry[]>();
   // physical-size-dim-tags
-  @Input()
-  public szDimTagEntries: ThesaurusEntry[] | undefined;
+  public szDimTagEntries = input<ThesaurusEntry[]>();
   // physical-size-units
-  @Input()
-  public szUnitEntries: ThesaurusEntry[] | undefined;
+  public szUnitEntries = input<ThesaurusEntry[]>();
 
-  @Output()
-  public layoutChange: EventEmitter<CodLayout>;
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public editorClose = output();
 
   public sampleRanges: FormControl<CodLocationRange[]>;
   public ranges: FormControl<CodLocationRange[]>;
@@ -146,14 +116,11 @@ export class CodLayoutEditorComponent implements OnInit, OnDestroy {
   public formulaError?: string;
   public rectSet: CodLayoutRectSet | undefined;
   public figHeight = FIG_HEIGHT;
-  public figHasGap: FormControl<boolean>;
 
   constructor(
     private _formBuilder: FormBuilder,
     private _codLayoutService: CodLayoutService
   ) {
-    this.layoutChange = new EventEmitter<CodLayout>();
-    this.editorClose = new EventEmitter<any>();
     // form
     this.sampleRanges = _formBuilder.control([], {
       validators: NgxToolsValidators.strictMinLengthValidator(1),
@@ -191,20 +158,10 @@ export class CodLayoutEditorComponent implements OnInit, OnDestroy {
     this.formulaForm = _formBuilder.group({
       formula: this.formula,
     });
-    // figure
-    this.figHasGap = _formBuilder.control(false, { nonNullable: true });
-  }
 
-  ngOnInit(): void {
-    this._subGap = this.figHasGap.valueChanges
-      .pipe(distinctUntilChanged())
-      .subscribe((value) => {
-        this.toggleFigExploded(value);
-      });
-  }
-
-  ngOnDestroy(): void {
-    this._subGap?.unsubscribe();
+    effect(() => {
+      this.updateForm(this.layout());
+    });
   }
 
   private updateForm(layout: CodLayout | undefined): void {
@@ -286,7 +243,7 @@ export class CodLayoutEditorComponent implements OnInit, OnDestroy {
     this.rectSet = {
       height: this._codLayoutService.getHeightRects(map),
       width: this._codLayoutService.getWidthRects(map),
-      gap: this.figHasGap.value ? 4 : 0,
+      gap: this._figHasGap ? 4 : 0,
     };
 
     // update dimensions: first collect all the measurements
@@ -356,13 +313,15 @@ export class CodLayoutEditorComponent implements OnInit, OnDestroy {
     this.figHeight = FIG_HEIGHT * value;
   }
 
-  private toggleFigExploded(value: boolean): void {
+  public toggleFigExploded(checked: boolean): void {
+    console.log('toggleFigExploded', checked);
     if (!this.rectSet) {
       return;
     }
+    this._figHasGap = checked || false;
     this.rectSet = {
       ...this.rectSet,
-      gap: value ? 4 : 0,
+      gap: checked ? 4 : 0,
     };
   }
   //#endregion
@@ -400,7 +359,9 @@ export class CodLayoutEditorComponent implements OnInit, OnDestroy {
       value: this._formBuilder.control(item?.value || 0, Validators.required),
       unit: this._formBuilder.control(
         item?.unit ??
-          (this.szUnitEntries?.length ? this.szUnitEntries[0].id : undefined),
+          (this.szUnitEntries()?.length
+            ? this.szUnitEntries()![0].id
+            : undefined),
         [Validators.required, Validators.maxLength(50)]
       ),
     });
@@ -467,7 +428,6 @@ export class CodLayoutEditorComponent implements OnInit, OnDestroy {
     if (this.form.invalid) {
       return;
     }
-    this._layout = this.getModel();
-    this.layoutChange.emit(this._layout);
+    this.layout.set(this.getModel());
   }
 }

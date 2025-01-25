@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -46,38 +46,19 @@ import { CodPalimpsest } from '../cod-material-dsc-part';
     MatIcon,
   ],
 })
-export class CodPalimpsestEditorComponent implements OnInit {
-  private _palimpsest: CodPalimpsest | undefined;
-
-  @Input()
-  public get palimpsest(): CodPalimpsest | undefined {
-    return this._palimpsest;
-  }
-  public set palimpsest(value: CodPalimpsest | undefined) {
-    if (this._palimpsest === value) {
-      return;
-    }
-    this._palimpsest = value;
-    this.updateForm(value);
-  }
+export class CodPalimpsestEditorComponent {
+  public readonly palimpsest = model<CodPalimpsest>();
 
   // chronotope-tags
-  @Input()
-  public ctTagEntries: ThesaurusEntry[] | undefined;
+  public readonly ctTagEntries = input<ThesaurusEntry[]>();
   // assertion-tags
-  @Input()
-  public assTagEntries: ThesaurusEntry[] | undefined;
+  public readonly assTagEntries = input<ThesaurusEntry[]>();
   // doc-reference-types
-  @Input()
-  public refTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly refTypeEntries = input<ThesaurusEntry[]>();
   // doc-reference-tags
-  @Input()
-  public refTagEntries: ThesaurusEntry[] | undefined;
+  public readonly refTagEntries = input<ThesaurusEntry[]>();
 
-  @Output()
-  public palimpsestChange: EventEmitter<CodPalimpsest>;
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public readonly editorClose = output();
 
   public ranges: FormControl<CodLocationRange[]>;
   public chronotope: FormControl<AssertedChronotope | null>;
@@ -85,9 +66,6 @@ export class CodPalimpsestEditorComponent implements OnInit {
   public form: FormGroup;
 
   constructor(formBuilder: FormBuilder) {
-    this.palimpsestChange = new EventEmitter<CodPalimpsest>();
-    this.editorClose = new EventEmitter<any>();
-    // form
     this.ranges = formBuilder.control([], {
       validators: NgxToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
@@ -99,12 +77,10 @@ export class CodPalimpsestEditorComponent implements OnInit {
       chronotope: this.chronotope,
       note: this.note,
     });
-  }
 
-  ngOnInit(): void {
-    if (this._palimpsest) {
-      this.updateForm(this._palimpsest);
-    }
+    effect(() => {
+      this.updateForm(this.palimpsest());
+    });
   }
 
   private updateForm(palimpsest: CodPalimpsest | undefined): void {
@@ -147,7 +123,6 @@ export class CodPalimpsestEditorComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this._palimpsest = this.getModel();
-    this.palimpsestChange.emit(this._palimpsest);
+    this.palimpsest.set(this.getModel());
   }
 }

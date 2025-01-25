@@ -18,8 +18,8 @@ import {
   MatCardActions,
 } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
-import { MatTabGroup, MatTab } from '@angular/material/tabs';
 import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltip } from '@angular/material/tooltip';
 
 import {
@@ -64,8 +64,7 @@ import { CodEditEditorComponent } from '../cod-edit-editor/cod-edit-editor.compo
     MatIcon,
     MatCardTitle,
     MatCardContent,
-    MatTabGroup,
-    MatTab,
+    MatExpansionModule,
     MatButton,
     MatIconButton,
     MatTooltip,
@@ -81,9 +80,7 @@ export class CodEditsPartComponent
   extends ModelEditorComponentBase<CodEditsPart>
   implements OnInit
 {
-  private _editedIndex: number;
-
-  public tabIndex: number;
+  public editedIndex: number;
   public editedEdit: CodEdit | undefined;
 
   // cod-edit-colors
@@ -115,8 +112,7 @@ export class CodEditsPartComponent
     private _dialogService: DialogService
   ) {
     super(authService, formBuilder);
-    this._editedIndex = -1;
-    this.tabIndex = 0;
+    this.editedIndex = -1;
     // form
     this.edits = formBuilder.control([], {
       validators: NgxToolsValidators.strictMinLengthValidator(1),
@@ -231,23 +227,19 @@ export class CodEditsPartComponent
 
   public editEdit(edit: CodEdit | null, index = -1): void {
     if (!edit) {
-      this._editedIndex = -1;
-      this.tabIndex = 0;
+      this.editedIndex = -1;
       this.editedEdit = undefined;
     } else {
-      this._editedIndex = index;
+      this.editedIndex = index;
       this.editedEdit = edit;
-      setTimeout(() => {
-        this.tabIndex = 1;
-      });
     }
   }
 
   public onEditSave(edit: CodEdit): void {
     const edits = [...this.edits.value];
 
-    if (this._editedIndex > -1) {
-      edits.splice(this._editedIndex, 1, edit);
+    if (this.editedIndex > -1) {
+      edits.splice(this.editedIndex, 1, edit);
     } else {
       edits.push(edit);
     }

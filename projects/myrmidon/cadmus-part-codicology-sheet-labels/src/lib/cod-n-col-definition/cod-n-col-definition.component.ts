@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -56,48 +56,18 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   ],
 })
 export class CodNColDefinitionComponent {
-  private _definition: CodNColDefinition | undefined;
-  private _clrEntries: ThesaurusEntry[] | undefined;
-
-  @Input()
-  public get definition(): CodNColDefinition | undefined {
-    return this._definition;
-  }
-  public set definition(value: CodNColDefinition | undefined) {
-    if (this._definition === value) {
-      return;
-    }
-    this._definition = value;
-    this.updateForm(value);
-  }
+  public readonly definition = model<CodNColDefinition>();
 
   // cod-numbering-systems
-  @Input()
-  public sysEntries: ThesaurusEntry[] | undefined;
+  public readonly sysEntries = input<ThesaurusEntry[]>();
   // cod-numbering-techniques
-  @Input()
-  public techEntries: ThesaurusEntry[] | undefined;
+  public readonly techEntries = input<ThesaurusEntry[]>();
   // cod-numbering-positions
-  @Input()
-  public posEntries: ThesaurusEntry[] | undefined;
-
+  public readonly posEntries = input<ThesaurusEntry[]>();
   // cod-numbering-colors
-  @Input()
-  public get clrEntries(): ThesaurusEntry[] | undefined {
-    return this._clrEntries;
-  }
-  public set clrEntries(value: ThesaurusEntry[] | undefined) {
-    if (this._clrEntries === value) {
-      return;
-    }
-    this._clrEntries = value || [];
-    this.colorFlags = this._clrEntries.map(entryToFlag);
-  }
+  public readonly clrEntries = input<ThesaurusEntry[]>();
 
-  @Output()
-  public definitionChange: EventEmitter<CodNColDefinition>;
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public readonly editorClose = output();
 
   public id: string;
   public rank: FormControl<number>;
@@ -116,9 +86,6 @@ export class CodNColDefinitionComponent {
   public colorFlags: Flag[] = [];
 
   constructor(formBuilder: FormBuilder) {
-    this.definitionChange = new EventEmitter<CodNColDefinition>();
-    this.editorClose = new EventEmitter<any>();
-    // form
     this.id = '';
     this.rank = formBuilder.control(0, { nonNullable: true });
     this.isPagination = formBuilder.control(false, { nonNullable: true });
@@ -150,6 +117,14 @@ export class CodNColDefinitionComponent {
       hasDate: this.hasDate,
       date: this.date,
       note: this.note,
+    });
+
+    effect(() => {
+      this.updateForm(this.definition());
+    });
+
+    effect(() => {
+      this.colorFlags = this.clrEntries()?.map(entryToFlag) || [];
     });
   }
 
@@ -208,7 +183,6 @@ export class CodNColDefinitionComponent {
     if (this.form.invalid) {
       return;
     }
-    this._definition = this.getModel();
-    this.definitionChange.emit(this._definition);
+    this.definition.set(this.getModel());
   }
 }

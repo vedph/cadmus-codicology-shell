@@ -7,109 +7,107 @@
       <mat-card-title>Manuscript Edits Part</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <mat-tab-group [(selectedIndex)]="tabIndex">
-        <mat-tab label="edits">
-          <div>
-            <button
-              type="button"
-              mat-flat-button
-              class="mat-primary"
-              (click)="addEdit()"
-            >
-              <mat-icon>add_circle</mat-icon> edit
-            </button>
-          </div>
-          @if (edits.value.length) {
-          <table>
-            <thead>
-              <tr>
-                <th></th>
-                <th>type</th>
-                <th>extent</th>
-                <th>text</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for ( entry of edits.value; track entry; let i = $index; let
-              first = $first; let last = $last) {
-              <tr>
-                <td class="fit-width">
-                  <button
-                    type="button"
-                    mat-icon-button
-                    matTooltip="Edit this edit"
-                    (click)="editEdit(entry, i)"
-                  >
-                    <mat-icon class="mat-primary">edit</mat-icon>
-                  </button>
-                  <button
-                    type="button"
-                    mat-icon-button
-                    matTooltip="Move this edit up"
-                    [disabled]="first"
-                    (click)="moveEditUp(i)"
-                  >
-                    <mat-icon>arrow_upward</mat-icon>
-                  </button>
-                  <button
-                    type="button"
-                    mat-icon-button
-                    matTooltip="Move this edit down"
-                    [disabled]="last"
-                    (click)="moveEditDown(i)"
-                  >
-                    <mat-icon>arrow_downward</mat-icon>
-                  </button>
-                  <button
-                    type="button"
-                    mat-icon-button
-                    matTooltip="Delete this edit"
-                    (click)="deleteEdit(i)"
-                  >
-                    <mat-icon class="mat-warn">remove_circle</mat-icon>
-                  </button>
-                </td>
-                <td>
-                  {{ entry.type | flatLookup : typeEntries : "id" : "value" }}
-                </td>
-                <td>{{ entry.ranges | codLocationRange }}</td>
-                <td>
-                  {{ entry.text | ellipsis }}
-                </td>
-              </tr>
-              }
-            </tbody>
-          </table>
+      <div>
+        <button
+          type="button"
+          mat-flat-button
+          class="mat-primary"
+          (click)="addEdit()"
+        >
+          <mat-icon>add_circle</mat-icon> edit
+        </button>
+      </div>
+      @if (edits.value.length) {
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>type</th>
+            <th>extent</th>
+            <th>text</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for ( entry of edits.value; track entry; let i = $index; let first =
+          $first; let last = $last) {
+          <tr [class.selected]="editedIndex === i">
+            <td class="fit-width">
+              <button
+                type="button"
+                mat-icon-button
+                matTooltip="Edit this edit"
+                (click)="editEdit(entry, i)"
+              >
+                <mat-icon class="mat-primary">edit</mat-icon>
+              </button>
+              <button
+                type="button"
+                mat-icon-button
+                matTooltip="Move this edit up"
+                [disabled]="first"
+                (click)="moveEditUp(i)"
+              >
+                <mat-icon>arrow_upward</mat-icon>
+              </button>
+              <button
+                type="button"
+                mat-icon-button
+                matTooltip="Move this edit down"
+                [disabled]="last"
+                (click)="moveEditDown(i)"
+              >
+                <mat-icon>arrow_downward</mat-icon>
+              </button>
+              <button
+                type="button"
+                mat-icon-button
+                matTooltip="Delete this edit"
+                (click)="deleteEdit(i)"
+              >
+                <mat-icon class="mat-warn">remove_circle</mat-icon>
+              </button>
+            </td>
+            <td>
+              {{ entry.type | flatLookup : typeEntries : "id" : "value" }}
+            </td>
+            <td>{{ entry.ranges | codLocationRange }}</td>
+            <td>
+              {{ entry.text | ellipsis }}
+            </td>
+          </tr>
           }
-        </mat-tab>
+        </tbody>
+      </table>
+      } @if (editedEdit) {
+      <mat-expansion-panel [expanded]="editedEdit" [disabled]="!editedEdit">
+        <mat-expansion-panel-header>
+          <mat-panel-title> #{{ editedIndex + 1 }} </mat-panel-title>
+        </mat-expansion-panel-header>
 
-        @if (editedEdit) {
-        <mat-tab label="edit">
-          <cadmus-cod-edit-editor
-            [tagEntries]="tagEntries"
-            [langEntries]="langEntries"
-            [techEntries]="techEntries"
-            [typeEntries]="typeEntries"
-            [colorEntries]="colorEntries"
-            [refTagEntries]="refTagEntries"
-            [refTypeEntries]="refTypeEntries"
-            [assTagEntries]="assTagEntries"
-            [idScopeEntries]="idScopeEntries"
-            [idTagEntries]="idTagEntries"
-            [edit]="editedEdit"
-            (editChange)="onEditSave($event)"
-            (editorClose)="editEdit(null)"
-          ></cadmus-cod-edit-editor>
-        </mat-tab>
-        }
-      </mat-tab-group>
+        <cadmus-cod-edit-editor
+          [tagEntries]="tagEntries"
+          [langEntries]="langEntries"
+          [techEntries]="techEntries"
+          [typeEntries]="typeEntries"
+          [colorEntries]="colorEntries"
+          [refTagEntries]="refTagEntries"
+          [refTypeEntries]="refTypeEntries"
+          [assTagEntries]="assTagEntries"
+          [idScopeEntries]="idScopeEntries"
+          [idTagEntries]="idTagEntries"
+          [edit]="editedEdit"
+          (editChange)="onEditSave($event!)"
+          (editorClose)="editEdit(null)"
+        />
+      </mat-expansion-panel>
+      }
     </mat-card-content>
     <mat-card-actions>
       <cadmus-close-save-buttons
         [form]="form"
         [noSave]="userLevel < 2"
         (closeRequest)="close()"
-      ></cadmus-close-save-buttons>
+      />
     </mat-card-actions>
   </mat-card>
 </form>

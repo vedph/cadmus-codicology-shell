@@ -1,5 +1,5 @@
 import { KeyValue } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -55,30 +55,15 @@ import { CodHandSignComponent } from '../cod-hand-sign/cod-hand-sign.component';
     CodLocationPipe,
   ],
 })
-export class CodHandDescriptionComponent implements OnInit {
-  private _description: CodHandDescription | undefined;
+export class CodHandDescriptionComponent {
   private _noteDefs: NoteSetDefinition[];
 
-  @Input()
-  public get description(): CodHandDescription | undefined {
-    return this._description;
-  }
-  public set description(value: CodHandDescription | undefined) {
-    if (this._description === value) {
-      return;
-    }
-    this._description = value;
-    this.updateForm(value);
-  }
+  public readonly description = model<CodHandDescription>();
 
   // cod-hand-sign-types
-  @Input()
-  public sgnTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly sgnTypeEntries = input<ThesaurusEntry[]>();
 
-  @Output()
-  public descriptionChange: EventEmitter<CodHandDescription>;
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public readonly editorClose = output();
 
   public key: FormControl<string | null>;
   public dsc: FormControl<string | null>;
@@ -118,8 +103,6 @@ export class CodHandDescriptionComponent implements OnInit {
         maxLength: 1000,
       },
     ];
-    this.descriptionChange = new EventEmitter<CodHandDescription>();
-    this.editorClose = new EventEmitter<any>();
     // form
     this.key = formBuilder.control(null, Validators.maxLength(100));
     this.dsc = formBuilder.control(null, Validators.maxLength(1000));
@@ -137,12 +120,10 @@ export class CodHandDescriptionComponent implements OnInit {
       abbreviations: this.abbreviations,
       signs: this.signs,
     });
-  }
 
-  ngOnInit(): void {
-    if (this._description) {
-      this.updateForm(this._description);
-    }
+    effect(() => {
+      this.updateForm(this.description());
+    });
   }
 
   private updateForm(model: CodHandDescription | undefined): void {
@@ -223,7 +204,7 @@ export class CodHandDescriptionComponent implements OnInit {
   //#region signs
   public addSign(): void {
     this.editSign({
-      type: this.sgnTypeEntries?.length ? this.sgnTypeEntries[0].id : '',
+      type: this.sgnTypeEntries()?.length ? this.sgnTypeEntries()![0].id : '',
       sampleLocation: { n: 0 },
     });
   }
@@ -301,7 +282,6 @@ export class CodHandDescriptionComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this._description = this.getModel();
-    this.descriptionChange.emit(this._description);
+    this.description.set(this.getModel());
   }
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -64,63 +64,37 @@ import { CodDecorationArtistStyleComponent } from '../cod-decoration-artist-styl
     CodDecorationArtistStyleComponent,
   ],
 })
-export class CodDecorationArtistComponent implements OnInit {
-  private _artist: CodDecorationArtist | undefined;
-  private _editedStyleIndex: number;
+export class CodDecorationArtistComponent {
+  public editedStyleIndex: number;
 
-  @Input()
-  public get artist(): CodDecorationArtist | undefined {
-    return this._artist;
-  }
-  public set artist(value: CodDecorationArtist | undefined) {
-    if (this._artist === value) {
-      return;
-    }
-    this._artist = value;
-    this.updateForm(value);
-  }
+  public readonly artist = model<CodDecorationArtist>();
 
   // cod-decoration-artist-types
-  @Input()
-  public artTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly artTypeEntries = input<ThesaurusEntry[]>();
   // cod-decoration-artist-style-names
-  @Input()
-  public artStyleEntries: ThesaurusEntry[] | undefined;
+  public readonly artStyleEntries = input<ThesaurusEntry[]>();
   // chronotope-tags
-  @Input()
-  public ctTagEntries: ThesaurusEntry[] | undefined;
+  public readonly ctTagEntries = input<ThesaurusEntry[]>();
   // assertion-tags
-  @Input()
-  public assTagEntries: ThesaurusEntry[] | undefined;
+  public readonly assTagEntries = input<ThesaurusEntry[]>();
   // doc-reference-types
-  @Input()
-  public refTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly refTypeEntries = input<ThesaurusEntry[]>();
   // doc-reference-tags
-  @Input()
-  public refTagEntries: ThesaurusEntry[] | undefined;
+  public readonly refTagEntries = input<ThesaurusEntry[]>();
   // external-id-tags
-  @Input()
-  public idTagEntries: ThesaurusEntry[] | undefined;
+  public readonly idTagEntries = input<ThesaurusEntry[]>();
   // external-id-scopes
-  @Input()
-  public idScopeEntries: ThesaurusEntry[] | undefined;
+  public readonly idScopeEntries = input<ThesaurusEntry[]>();
 
   // pin link settings
   // by-type: true/false
-  @Input()
-  public pinByTypeMode?: boolean;
+  public readonly pinByTypeMode = input<boolean>();
   // switch-mode: true/false
-  @Input()
-  public canSwitchMode?: boolean;
+  public readonly canSwitchMode = input<boolean>();
   // edit-target: true/false
-  @Input()
-  public canEditTarget?: boolean;
+  public readonly canEditTarget = input<boolean>();
 
-  @Output()
-  public artistChange: EventEmitter<CodDecorationArtist>;
-
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public readonly editorClose = output();
 
   public eid: FormControl<string | null>;
   public type: FormControl<string | null>;
@@ -134,9 +108,7 @@ export class CodDecorationArtistComponent implements OnInit {
   public editedStyle?: CodDecorationArtistStyle;
 
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
-    this.artistChange = new EventEmitter<CodDecorationArtist>();
-    this.editorClose = new EventEmitter<any>();
-    this._editedStyleIndex = -1;
+    this.editedStyleIndex = -1;
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.type = formBuilder.control(null, [
@@ -161,12 +133,10 @@ export class CodDecorationArtistComponent implements OnInit {
       elementKeys: this.elementKeys,
       note: this.note,
     });
-  }
 
-  ngOnInit(): void {
-    if (this._artist) {
-      this.updateForm(this._artist);
-    }
+    effect(() => {
+      this.updateForm(this.artist());
+    });
   }
 
   private updateForm(artist: CodDecorationArtist | undefined): void {
@@ -225,16 +195,16 @@ export class CodDecorationArtistComponent implements OnInit {
   //#region styles
   public addStyle(): void {
     this.editStyle({
-      name: this.artStyleEntries?.length ? this.artStyleEntries[0].id : '',
+      name: this.artStyleEntries()?.length ? this.artStyleEntries()![0].id : '',
     });
   }
 
   public editStyle(style: CodDecorationArtistStyle | null, index = -1): void {
     if (!style) {
-      this._editedStyleIndex = -1;
+      this.editedStyleIndex = -1;
       this.editedStyle = undefined;
     } else {
-      this._editedStyleIndex = index;
+      this.editedStyleIndex = index;
       this.editedStyle = style;
     }
   }
@@ -242,8 +212,8 @@ export class CodDecorationArtistComponent implements OnInit {
   public onStyleSave(style: CodDecorationArtistStyle): void {
     const styles = [...this.styles.value];
 
-    if (this._editedStyleIndex > -1) {
-      styles.splice(this._editedStyleIndex, 1, style);
+    if (this.editedStyleIndex > -1) {
+      styles.splice(this.editedStyleIndex, 1, style);
     } else {
       styles.push(style);
     }
@@ -304,7 +274,6 @@ export class CodDecorationArtistComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this._artist = this.getArtist();
-    this.artistChange.emit(this._artist);
+    this.artist.set(this.getArtist());
   }
 }

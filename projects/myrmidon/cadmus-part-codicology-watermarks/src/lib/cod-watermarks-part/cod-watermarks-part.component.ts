@@ -18,7 +18,7 @@ import {
   MatCardActions,
 } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
-import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 
@@ -61,8 +61,7 @@ import { CodWatermarkEditorComponent } from '../cod-watermark-editor/cod-waterma
     MatIcon,
     MatCardTitle,
     MatCardContent,
-    MatTabGroup,
-    MatTab,
+    MatExpansionModule,
     MatButton,
     MatIconButton,
     MatTooltip,
@@ -76,9 +75,7 @@ export class CodWatermarksPartComponent
   extends ModelEditorComponentBase<CodWatermarksPart>
   implements OnInit
 {
-  private _editedIndex: number;
-
-  public tabIndex: number;
+  public editedIndex: number;
   public editedWatermark: CodWatermark | undefined;
 
   // asserted-id-tags
@@ -116,8 +113,7 @@ export class CodWatermarksPartComponent
     private _dialogService: DialogService
   ) {
     super(authService, formBuilder);
-    this._editedIndex = -1;
-    this.tabIndex = 0;
+    this.editedIndex = -1;
     // form
     this.watermarks = formBuilder.control([], {
       nonNullable: true,
@@ -251,23 +247,19 @@ export class CodWatermarksPartComponent
 
   public editWatermark(watermark: CodWatermark | null, index = -1): void {
     if (!watermark) {
-      this._editedIndex = -1;
-      this.tabIndex = 0;
+      this.editedIndex = -1;
       this.editedWatermark = undefined;
     } else {
-      this._editedIndex = index;
+      this.editedIndex = index;
       this.editedWatermark = watermark;
-      setTimeout(() => {
-        this.tabIndex = 1;
-      });
     }
   }
 
   public onWatermarkSave(watermark: CodWatermark): void {
     const watermarks = [...this.watermarks.value];
 
-    if (this._editedIndex > -1) {
-      watermarks.splice(this._editedIndex, 1, watermark);
+    if (this.editedIndex > -1) {
+      watermarks.splice(this.editedIndex, 1, watermark);
     } else {
       watermarks.push(watermark);
     }

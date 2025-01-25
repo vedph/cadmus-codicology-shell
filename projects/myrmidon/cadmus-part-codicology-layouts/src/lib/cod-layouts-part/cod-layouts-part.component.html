@@ -7,96 +7,95 @@
       <mat-card-title>Manuscript Layouts Part</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <mat-tab-group [(selectedIndex)]="tabIndex">
-        <mat-tab label="layouts">
-          <div>
-            <button
-              type="button"
-              mat-flat-button
-              class="mat-primary"
-              (click)="addLayout()"
-            >
-              <mat-icon>add_circle</mat-icon> layout
-            </button>
-          </div>
-          @if (entries.value.length) {
-          <table>
-            <thead>
-              <tr>
-                <th></th>
-                <th>sample</th>
-                <th>extent</th>
-                <th>cols</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for ( entry of entries.value; track entry; let i = $index; let
-              first = $first; let last = $last) {
-              <tr>
-                <td>
-                  <button
-                    type="button"
-                    mat-icon-button
-                    matTooltip="Edit this layout"
-                    (click)="editLayout(entry, i)"
-                  >
-                    <mat-icon class="mat-primary">edit</mat-icon>
-                  </button>
-                  <button
-                    type="button"
-                    mat-icon-button
-                    matTooltip="Move this layout up"
-                    [disabled]="first"
-                    (click)="moveLayoutUp(i)"
-                  >
-                    <mat-icon>arrow_upward</mat-icon>
-                  </button>
-                  <button
-                    type="button"
-                    mat-icon-button
-                    matTooltip="Move this layout down"
-                    [disabled]="last"
-                    (click)="moveLayoutDown(i)"
-                  >
-                    <mat-icon>arrow_downward</mat-icon>
-                  </button>
-                  <button
-                    type="button"
-                    mat-icon-button
-                    matTooltip="Delete this layout"
-                    (click)="deleteLayout(i)"
-                  >
-                    <mat-icon class="mat-warn">remove_circle</mat-icon>
-                  </button>
-                </td>
-                <td>{{ entry.sample | codLocation }}</td>
-                <td>{{ entry.ranges | codLocationRange }}</td>
-                <td>{{ entry.columnCount || 0 }}</td>
-              </tr>
-              }
-            </tbody>
-          </table>
+      <div>
+        <button
+          type="button"
+          mat-flat-button
+          class="mat-primary"
+          (click)="addLayout()"
+        >
+          <mat-icon>add_circle</mat-icon> layout
+        </button>
+      </div>
+      @if (entries.value.length) {
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>sample</th>
+            <th>extent</th>
+            <th>cols</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for ( entry of entries.value; track entry; let i = $index; let first
+          = $first; let last = $last) {
+          <tr [class.selected]="editedLayout === entry">
+            <td>
+              <button
+                type="button"
+                mat-icon-button
+                matTooltip="Edit this layout"
+                (click)="editLayout(entry, i)"
+              >
+                <mat-icon class="mat-primary">edit</mat-icon>
+              </button>
+              <button
+                type="button"
+                mat-icon-button
+                matTooltip="Move this layout up"
+                [disabled]="first"
+                (click)="moveLayoutUp(i)"
+              >
+                <mat-icon>arrow_upward</mat-icon>
+              </button>
+              <button
+                type="button"
+                mat-icon-button
+                matTooltip="Move this layout down"
+                [disabled]="last"
+                (click)="moveLayoutDown(i)"
+              >
+                <mat-icon>arrow_downward</mat-icon>
+              </button>
+              <button
+                type="button"
+                mat-icon-button
+                matTooltip="Delete this layout"
+                (click)="deleteLayout(i)"
+              >
+                <mat-icon class="mat-warn">remove_circle</mat-icon>
+              </button>
+            </td>
+            <td>{{ entry.sample | codLocation }}</td>
+            <td>{{ entry.ranges | codLocationRange }}</td>
+            <td>{{ entry.columnCount || 0 }}</td>
+          </tr>
           }
-        </mat-tab>
-
-        @if (editedLayout) {
-        <mat-tab label="layout">
-          <cadmus-cod-layout-editor
-            [tagEntries]="tagEntries"
-            [rulTechEntries]="rulTechEntries"
-            [drzEntries]="drzEntries"
-            [prkEntries]="prkEntries"
-            [cntIdEntries]="cntIdEntries"
-            [cntTagEntries]="cntTagEntries"
-            [szDimTagEntries]="szDimTagEntries"
-            [szUnitEntries]="szUnitEntries"
-            [layout]="editedLayout"
-            (layoutChange)="onLayoutSave($event)"
-            (editorClose)="editLayout(null)"
-          />
-        </mat-tab>
-        }
-      </mat-tab-group>
+        </tbody>
+      </table>
+      } @if (editedLayout) {
+      <mat-expansion-panel [expanded]="editedLayout" [disabled]="!editedLayout">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ editedLayout.sample | codLocation }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <cadmus-cod-layout-editor
+          [tagEntries]="tagEntries"
+          [rulTechEntries]="rulTechEntries"
+          [drzEntries]="drzEntries"
+          [prkEntries]="prkEntries"
+          [cntIdEntries]="cntIdEntries"
+          [cntTagEntries]="cntTagEntries"
+          [szDimTagEntries]="szDimTagEntries"
+          [szUnitEntries]="szUnitEntries"
+          [layout]="editedLayout"
+          (layoutChange)="onLayoutSave($event!)"
+          (editorClose)="editLayout(null)"
+        />
+      </mat-expansion-panel>
+      }
     </mat-card-content>
     <mat-card-actions>
       <cadmus-close-save-buttons

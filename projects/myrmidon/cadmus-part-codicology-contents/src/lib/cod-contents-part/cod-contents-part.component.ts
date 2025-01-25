@@ -18,7 +18,7 @@ import {
   MatCardActions,
 } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
-import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 
@@ -60,8 +60,7 @@ import { CodContentEditorComponent } from '../cod-content-editor/cod-content-edi
     MatIcon,
     MatCardTitle,
     MatCardContent,
-    MatTabGroup,
-    MatTab,
+    MatExpansionModule,
     MatButton,
     MatIconButton,
     MatTooltip,
@@ -75,9 +74,7 @@ export class CodContentsPartComponent
   extends ModelEditorComponentBase<CodContentsPart>
   implements OnInit
 {
-  private _editedIndex: number;
-
-  public tabIndex: number;
+  public editedIndex: number;
   public editedContent: CodContent | undefined;
 
   // cod-content-states
@@ -105,8 +102,7 @@ export class CodContentsPartComponent
     private _dialogService: DialogService
   ) {
     super(authService, formBuilder);
-    this._editedIndex = -1;
-    this.tabIndex = 0;
+    this.editedIndex = -1;
     // form
     this.contents = formBuilder.control([], {
       validators: NgxToolsValidators.strictMinLengthValidator(1),
@@ -210,23 +206,19 @@ export class CodContentsPartComponent
 
   public editContent(content: CodContent | null, index = -1): void {
     if (!content) {
-      this._editedIndex = -1;
-      this.tabIndex = 0;
+      this.editedIndex = -1;
       this.editedContent = undefined;
     } else {
-      this._editedIndex = index;
+      this.editedIndex = index;
       this.editedContent = content;
-      setTimeout(() => {
-        this.tabIndex = 1;
-      });
     }
   }
 
   public onContentSave(content: CodContent): void {
     const contents = [...this.contents.value];
 
-    if (this._editedIndex > -1) {
-      contents.splice(this._editedIndex, 1, content);
+    if (this.editedIndex > -1) {
+      contents.splice(this.editedIndex, 1, content);
     } else {
       contents.push(content);
     }

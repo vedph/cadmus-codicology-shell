@@ -1,7 +1,7 @@
 @if (user$ | async) {
 <form [formGroup]="form">
   @if (loading) {
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  <mat-progress-bar mode="indeterminate" />
   }
   <!-- item -->
   <cadmus-ref-lookup

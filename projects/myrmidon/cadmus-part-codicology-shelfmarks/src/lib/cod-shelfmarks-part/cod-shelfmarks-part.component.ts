@@ -18,7 +18,7 @@ import {
   MatCardActions,
 } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
-import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 
@@ -57,8 +57,7 @@ import { CodShelfmarkEditorComponent } from '../cod-shelfmark-editor/cod-shelfma
     MatIcon,
     MatCardTitle,
     MatCardContent,
-    MatTabGroup,
-    MatTab,
+    MatExpansionModule,
     MatButton,
     MatIconButton,
     MatTooltip,
@@ -71,9 +70,7 @@ export class CodShelfmarksPartComponent
   extends ModelEditorComponentBase<CodShelfmarksPart>
   implements OnInit
 {
-  private _editedIndex: number;
-
-  public tabIndex: number;
+  public editedIndex: number;
   public editedShelfmark: CodShelfmark | undefined;
 
   // cod-shelfmark-tags
@@ -89,8 +86,7 @@ export class CodShelfmarksPartComponent
     private _dialogService: DialogService
   ) {
     super(authService, formBuilder);
-    this._editedIndex = -1;
-    this.tabIndex = 0;
+    this.editedIndex = -1;
     // form
     this.shelfmarks = formBuilder.control([], {
       nonNullable: true,
@@ -160,23 +156,19 @@ export class CodShelfmarksPartComponent
 
   public editShelfmark(shelfmark: CodShelfmark | null, index = -1): void {
     if (!shelfmark) {
-      this._editedIndex = -1;
-      this.tabIndex = 0;
+      this.editedIndex = -1;
       this.editedShelfmark = undefined;
     } else {
-      this._editedIndex = index;
+      this.editedIndex = index;
       this.editedShelfmark = shelfmark;
-      setTimeout(() => {
-        this.tabIndex = 1;
-      });
     }
   }
 
   public onShelfmarkSave(shelfmark: CodShelfmark): void {
     const shelfmarks = [...this.shelfmarks.value];
 
-    if (this._editedIndex > -1) {
-      shelfmarks.splice(this._editedIndex, 1, shelfmark);
+    if (this.editedIndex > -1) {
+      shelfmarks.splice(this.editedIndex, 1, shelfmark);
     } else {
       shelfmarks.push(shelfmark);
     }

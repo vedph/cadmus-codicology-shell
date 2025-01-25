@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -104,104 +104,57 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   ],
 })
 export class CodDecorationComponent {
-  private _decoration: CodDecoration | undefined;
-  private _decFlagEntries: ThesaurusEntry[] | undefined;
-
-  @Input()
-  public get decoration(): CodDecoration | undefined {
-    return this._decoration;
-  }
-  public set decoration(value: CodDecoration | undefined) {
-    if (this._decoration === value) {
-      return;
-    }
-    this._decoration = value;
-    this.updateForm(value);
-  }
+  public readonly decoration = model<CodDecoration>();
 
   // cod-decoration-element-flags
-  @Input()
-  public decElemFlagEntries: ThesaurusEntry[] | undefined;
+  public readonly decElemFlagEntries = input<ThesaurusEntry[]>();
 
   // cod-decoration-flags
-  @Input()
-  public get decFlagEntries(): ThesaurusEntry[] | undefined {
-    return this._decFlagEntries;
-  }
-  public set decFlagEntries(value: ThesaurusEntry[] | undefined) {
-    if (this._decFlagEntries === value) {
-      return;
-    }
-    this._decFlagEntries = value || [];
-    this.decFlags = this._decFlagEntries.map(entryToFlag);
-  }
+  public readonly decFlagEntries = input<ThesaurusEntry[]>();
 
   // cod-decoration-element-types (required)
-  @Input()
-  public decElemTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly decElemTypeEntries = input<ThesaurusEntry[]>();
   // cod-decoration-type-hidden
-  @Input()
-  public decTypeHiddenEntries: ThesaurusEntry[] | undefined;
+  public readonly decTypeHiddenEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-colors
-  @Input()
-  public decElemColorEntries: ThesaurusEntry[] | undefined;
+  public readonly decElemColorEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-gildings
-  @Input()
-  public decElemGildingEntries: ThesaurusEntry[] | undefined;
+  public readonly decElemGildingEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-techniques
-  @Input()
-  public decElemTechEntries: ThesaurusEntry[] | undefined;
+  public readonly decElemTechEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-positions
-  @Input()
-  public decElemPosEntries: ThesaurusEntry[] | undefined;
+  public readonly decElemPosEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-tools
-  @Input()
-  public decElemToolEntries: ThesaurusEntry[] | undefined;
+  public readonly decElemToolEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-typologies
-  @Input()
-  public decElemTypolEntries: ThesaurusEntry[] | undefined;
+  public readonly decElemTypolEntries = input<ThesaurusEntry[]>();
   // cod-image-types
-  @Input()
-  public imgTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly imgTypeEntries = input<ThesaurusEntry[]>();
   // cod-decoration-artist-types
-  @Input()
-  public artTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly artTypeEntries = input<ThesaurusEntry[]>();
   // cod-decoration-artist-style-names
-  @Input()
-  public artStyleEntries: ThesaurusEntry[] | undefined;
+  public readonly artStyleEntries = input<ThesaurusEntry[]>();
   // chronotope-tags
-  @Input()
-  public ctTagEntries: ThesaurusEntry[] | undefined;
+  public readonly ctTagEntries = input<ThesaurusEntry[]>();
   // assertion-tags
-  @Input()
-  public assTagEntries: ThesaurusEntry[] | undefined;
+  public readonly assTagEntries = input<ThesaurusEntry[]>();
   // doc-reference-types
-  @Input()
-  public refTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly refTypeEntries = input<ThesaurusEntry[]>();
   // doc-reference-tags
-  @Input()
-  public refTagEntries: ThesaurusEntry[] | undefined;
+  public readonly refTagEntries = input<ThesaurusEntry[]>();
   // external-id-tags
-  @Input()
-  public idTagEntries: ThesaurusEntry[] | undefined;
+  public readonly idTagEntries = input<ThesaurusEntry[]>();
   // external-id-scopes
-  @Input()
-  public idScopeEntries: ThesaurusEntry[] | undefined;
+  public readonly idScopeEntries = input<ThesaurusEntry[]>();
   // pin link settings
   // by-type: true/false
-  @Input()
-  public pinByTypeMode?: boolean;
+  public readonly pinByTypeMode = input<boolean>();
   // switch-mode: true/false
-  @Input()
-  public canSwitchMode?: boolean;
+  public readonly canSwitchMode = input<boolean>();
   // edit-target: true/false
-  @Input()
-  public canEditTarget?: boolean;
+  public readonly canEditTarget = input<boolean>();
 
-  @Output()
-  public decorationChange: EventEmitter<CodDecoration>;
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public readonly editorClose = output();
 
   public eid: FormControl<string | null>;
   public name: FormControl<string | null>;
@@ -235,8 +188,6 @@ export class CodDecorationComponent {
     this.editedElementIndex = -1;
     this.parentKeys = [];
     this.editedArtistIndex = -1;
-    this.decorationChange = new EventEmitter<CodDecoration>();
-    this.editorClose = new EventEmitter<any>();
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.name = formBuilder.control(null, [
@@ -258,6 +209,14 @@ export class CodDecorationComponent {
       note: this.note,
       references: this.references,
       elements: this.elements,
+    });
+
+    effect(() => {
+      this.updateForm(this.decoration());
+    });
+
+    effect(() => {
+      this.decFlags = this.decFlagEntries()?.map(entryToFlag) || [];
     });
   }
 
@@ -318,8 +277,8 @@ export class CodDecorationComponent {
   //#region elements
   public addElement(): void {
     this.editElement({
-      type: this.decElemTypeEntries?.length
-        ? this.decElemTypeEntries[0].id
+      type: this.decElemTypeEntries()?.length
+        ? this.decElemTypeEntries()![0].id
         : '',
       flags: [],
       ranges: [],
@@ -409,7 +368,7 @@ export class CodDecorationComponent {
   //#region artists
   public addArtist(): void {
     this.editArtist({
-      type: this.artTypeEntries?.length ? this.artTypeEntries[0].id : '',
+      type: this.artTypeEntries()?.length ? this.artTypeEntries()![0].id : '',
       name: '',
     });
   }
@@ -489,7 +448,6 @@ export class CodDecorationComponent {
     if (this.form.invalid) {
       return;
     }
-    this._decoration = this.getDecoration();
-    this.decorationChange.emit(this._decoration);
+    this.decoration.set(this.getDecoration());
   }
 }

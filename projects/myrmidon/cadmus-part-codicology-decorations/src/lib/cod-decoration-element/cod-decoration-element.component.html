@@ -1,17 +1,17 @@
 <form [formGroup]="form" (submit)="save()">
   <div class="type-head">
-    {{ type.value | flatLookup : decElemTypeEntries : "id" : "value" }}
+    {{ type.value | flatLookup : decElemTypeEntries() : "id" : "value" }}
   </div>
   <mat-tab-group>
     <!-- GENERAL -->
     <mat-tab label="general">
       <div class="form-row" style="margin-top: 8px">
         <!-- type (bound) -->
-        @if (decElemTypeEntries?.length) {
+        @if (decElemTypeEntries()?.length) {
         <mat-form-field style="width: 14em" appearance="outline">
           <mat-label>type</mat-label>
           <mat-select [formControl]="type">
-            @for (e of decElemTypeEntries; track e.id) {
+            @for (e of decElemTypeEntries(); track e.id) {
             <mat-option [value]="e.id">{{ e.value }}</mat-option>
             }
           </mat-select>
@@ -19,7 +19,7 @@
           <mat-error>type required</mat-error>
           }
         </mat-form-field>
-        } &nbsp;
+        }
         <!-- instanceCount -->
         <mat-form-field style="width: 6em">
           <mat-label>count</mat-label>
@@ -63,12 +63,12 @@
         </mat-form-field>
         &nbsp;
         <!-- parentKey -->
-        @if (parentKeys?.length) {
+        @if (parentKeys()?.length) {
         <mat-form-field>
           <mat-label>parent key</mat-label>
           <mat-select [formControl]="parentKey">
             <mat-option [value]="null">(none)</mat-option>
-            @for (k of parentKeys; track k) {
+            @for (k of parentKeys(); track k) {
             <mat-option [value]="k">{{ k }}</mat-option>
             }
           </mat-select>
@@ -220,7 +220,7 @@
       <div>
         <!-- images -->
         <cadmus-cod-images
-          [typeEntries]="imgTypeEntries"
+          [typeEntries]="imgTypeEntries()"
           [images]="images.value"
           (imagesChange)="onImagesChange($event)"
         />

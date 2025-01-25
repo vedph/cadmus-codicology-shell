@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -47,28 +47,12 @@ import { CodHandSign } from '../cod-hands-part';
   ],
 })
 export class CodHandSignComponent {
-  private _sign: CodHandSign | undefined;
-
-  @Input()
-  public get sign(): CodHandSign | undefined {
-    return this._sign;
-  }
-  public set sign(value: CodHandSign | undefined) {
-    if (this._sign === value) {
-      return;
-    }
-    this._sign = value;
-    this.updateForm(value);
-  }
+  public readonly sign = model<CodHandSign>();
 
   // cod-hand-sign-types
-  @Input()
-  public typeEntries: ThesaurusEntry[] | undefined;
+  public readonly typeEntries = input<ThesaurusEntry[]>();
 
-  @Output()
-  public signChange: EventEmitter<CodHandSign>;
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public editorClose = output();
 
   public eid: FormControl<string | null>;
   public type: FormControl<string | null>;
@@ -77,9 +61,6 @@ export class CodHandSignComponent {
   public form: FormGroup;
 
   constructor(formBuilder: FormBuilder) {
-    this.signChange = new EventEmitter<CodHandSign>();
-    this.editorClose = new EventEmitter<any>();
-
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.type = formBuilder.control(null, [
       Validators.required,
@@ -95,6 +76,10 @@ export class CodHandSignComponent {
       type: this.type,
       sampleRanges: this.sampleRanges,
       description: this.description,
+    });
+
+    effect(() => {
+      this.updateForm(this.sign());
     });
   }
 
@@ -141,7 +126,6 @@ export class CodHandSignComponent {
     if (this.form.invalid) {
       return;
     }
-    this._sign = this.getSign();
-    this.signChange.emit(this._sign);
+    this.sign.set(this.getSign());
   }
 }

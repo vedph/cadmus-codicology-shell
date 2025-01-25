@@ -54,10 +54,10 @@
       >
     </mat-expansion-panel-header>
     <cadmus-asserted-chronotope-set
-      [tagEntries]="ctTagEntries"
-      [assTagEntries]="assTagEntries"
-      [refTagEntries]="refTagEntries"
-      [refTypeEntries]="refTypeEntries"
+      [tagEntries]="ctTagEntries()"
+      [assTagEntries]="assTagEntries()"
+      [refTagEntries]="refTagEntries()"
+      [refTypeEntries]="refTypeEntries()"
       [chronotopes]="chronotopes.value"
       (chronotopesChange)="onChronotopesChange($event!)"
     ></cadmus-asserted-chronotope-set>
@@ -74,8 +74,8 @@
       >
     </mat-expansion-panel-header>
     <cadmus-refs-doc-references
-      [tagEntries]="refTagEntries"
-      [typeEntries]="refTypeEntries"
+      [tagEntries]="refTagEntries()"
+      [typeEntries]="refTypeEntries()"
       [references]="references.value"
       (referencesChange)="onReferencesChange($event)"
     />
@@ -112,7 +112,7 @@
       <tbody>
         @for ( artist of artists.value; track artist; let i = $index; let first
         = $first; let last = $last) {
-        <tr>
+        <tr [class.selected]="editedArtistIndex === i">
           <td>
             <button
               type="button"
@@ -164,26 +164,26 @@
         <mat-panel-title>artist {{ editedArtist?.name }}</mat-panel-title>
       </mat-expansion-panel-header>
       <cadmus-cod-decoration-artist
-        [idScopeEntries]="idScopeEntries"
-        [idTagEntries]="idTagEntries"
-        [assTagEntries]="assTagEntries"
-        [refTypeEntries]="refTypeEntries"
-        [refTagEntries]="refTagEntries"
-        [ctTagEntries]="ctTagEntries"
-        [artTypeEntries]="artTypeEntries"
-        [artStyleEntries]="artStyleEntries"
-        [pinByTypeMode]="pinByTypeMode"
-        [canSwitchMode]="canSwitchMode"
-        [canEditTarget]="canEditTarget"
+        [idScopeEntries]="idScopeEntries()"
+        [idTagEntries]="idTagEntries()"
+        [assTagEntries]="assTagEntries()"
+        [refTypeEntries]="refTypeEntries()"
+        [refTagEntries]="refTagEntries()"
+        [ctTagEntries]="ctTagEntries()"
+        [artTypeEntries]="artTypeEntries()"
+        [artStyleEntries]="artStyleEntries()"
+        [pinByTypeMode]="pinByTypeMode()"
+        [canSwitchMode]="canSwitchMode()"
+        [canEditTarget]="canEditTarget()"
         [artist]="editedArtist"
-        (artistChange)="onArtistSave($event)"
+        (artistChange)="onArtistSave($event!)"
         (editorClose)="editArtist(null)"
       />
     </mat-expansion-panel>
   </mat-expansion-panel>
 
   <!-- elements -->
-  <h3>elements</h3>
+  elements
   <div>
     <button
       type="button"
@@ -209,7 +209,7 @@
     <tbody>
       @for ( element of elements.value; track element; let i = $index; let first
       = $first; let last = $last) {
-      <tr>
+      <tr [class.selected]="editedElementIndex === i">
         <td>
           <button
             type="button"
@@ -262,19 +262,19 @@
   <!-- ELEMENT -->
   <mat-expansion-panel [disabled]="!editedElement" [expanded]="editedElement">
     <cadmus-cod-decoration-element
-      [imgTypeEntries]="imgTypeEntries"
-      [decElemPosEntries]="decElemPosEntries"
-      [decElemFlagEntries]="decElemFlagEntries"
-      [decElemTechEntries]="decElemTechEntries"
-      [decElemToolEntries]="decElemToolEntries"
-      [decElemTypeEntries]="decElemTypeEntries"
-      [decElemColorEntries]="decElemColorEntries"
-      [decElemTypolEntries]="decElemTypolEntries"
-      [decTypeHiddenEntries]="decTypeHiddenEntries"
-      [decElemGildingEntries]="decElemGildingEntries"
+      [imgTypeEntries]="imgTypeEntries()"
+      [decElemPosEntries]="decElemPosEntries()"
+      [decElemFlagEntries]="decElemFlagEntries()"
+      [decElemTechEntries]="decElemTechEntries()"
+      [decElemToolEntries]="decElemToolEntries()"
+      [decElemTypeEntries]="decElemTypeEntries()"
+      [decElemColorEntries]="decElemColorEntries()"
+      [decElemTypolEntries]="decElemTypolEntries()"
+      [decTypeHiddenEntries]="decTypeHiddenEntries()"
+      [decElemGildingEntries]="decElemGildingEntries()"
       [element]="editedElement"
       [parentKeys]="parentKeys"
-      (elementChange)="onElementSave($event)"
+      (elementChange)="onElementSave($event!)"
       (editorClose)="editElement(null)"
     />
   </mat-expansion-panel>
@@ -293,10 +293,11 @@
     <button
       type="submit"
       mat-flat-button
+      class="mat-primary"
       matTooltip="Accept decoration changes"
       [disabled]="form.invalid || form.pristine"
     >
-      <mat-icon class="mat-primary">check_circle</mat-icon> decoration
+      <mat-icon>check_circle</mat-icon> decoration
     </button>
   </div>
 </form>

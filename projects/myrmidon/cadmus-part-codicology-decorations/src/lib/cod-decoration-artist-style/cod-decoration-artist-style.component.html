@@ -17,10 +17,10 @@
     <mat-checkbox [formControl]="hasChronotope">chronotope</mat-checkbox>
     @if (hasChronotope.value) {
     <cadmus-refs-asserted-chronotope
-      [tagEntries]="ctTagEntries"
-      [assTagEntries]="assTagEntries"
-      [refTagEntries]="refTagEntries"
-      [refTypeEntries]="refTypeEntries"
+      [tagEntries]="ctTagEntries()"
+      [assTagEntries]="assTagEntries()"
+      [refTagEntries]="refTagEntries()"
+      [refTypeEntries]="refTypeEntries()"
       [chronotope]="chronotope.value || undefined"
       (chronotopeChange)="onChronotopeChange($event)"
     />
@@ -32,9 +32,9 @@
     <mat-checkbox [formControl]="hasAssertion">assertion</mat-checkbox>
     @if (hasAssertion.value) {
     <cadmus-refs-assertion
-      [assTagEntries]="assTagEntries"
-      [refTagEntries]="refTagEntries"
-      [refTypeEntries]="refTypeEntries"
+      [assTagEntries]="assTagEntries()"
+      [refTagEntries]="refTagEntries()"
+      [refTypeEntries]="refTypeEntries()"
       [assertion]="assertion.value || undefined"
       (assertionChange)="onAssertionChange($event)"
     />

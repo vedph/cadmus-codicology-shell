@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, effect, input, model, OnInit, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -72,66 +72,39 @@ import { CodHandSubscriptionComponent } from '../cod-hand-subscription/cod-hand-
   ],
 })
 export class CodHandComponent implements OnInit {
-  private _hand: CodHand | undefined;
-
-  @Input()
-  public get hand(): CodHand | undefined {
-    return this._hand;
-  }
-  public set hand(value: CodHand | undefined) {
-    if (this._hand === value) {
-      return;
-    }
-    this._hand = value;
-    this.updateForm(value);
-  }
+  public readonly hand = model<CodHand>();
 
   // thesauri from description:
   // cod-hand-sign-types
-  @Input()
-  public sgnTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly sgnTypeEntries = input<ThesaurusEntry[]>();
 
   // thesauri from instance:
   // cod-hand-scripts
-  @Input()
-  public scriptEntries: ThesaurusEntry[] | undefined;
+  public readonly scriptEntries = input<ThesaurusEntry[]>();
   // cod-hand-typologies
-  @Input()
-  public typeEntries: ThesaurusEntry[] | undefined;
+  public readonly typeEntries = input<ThesaurusEntry[]>();
   // cod-hand-colors
-  @Input()
-  public colorEntries: ThesaurusEntry[] | undefined;
+  public readonly colorEntries = input<ThesaurusEntry[]>();
   // chronotope-tags
-  @Input()
-  public ctTagEntries: ThesaurusEntry[] | undefined;
+  public readonly ctTagEntries = input<ThesaurusEntry[]>();
   // assertion-tags
-  @Input()
-  public assTagEntries: ThesaurusEntry[] | undefined;
+  public readonly assTagEntries = input<ThesaurusEntry[]>();
   // doc-reference-types
-  @Input()
-  public refTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly refTypeEntries = input<ThesaurusEntry[]>();
   // doc-reference-tags
-  @Input()
-  public refTagEntries: ThesaurusEntry[] | undefined;
+  public readonly refTagEntries = input<ThesaurusEntry[]>();
   // cod-image-types
-  @Input()
-  public imgTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly imgTypeEntries = input<ThesaurusEntry[]>();
   // external-id-tags
-  @Input()
-  public idTagEntries: ThesaurusEntry[] | undefined;
+  public readonly idTagEntries = input<ThesaurusEntry[]>();
   // external-id-scopes
-  @Input()
-  public idScopeEntries: ThesaurusEntry[] | undefined;
+  public readonly idScopeEntries = input<ThesaurusEntry[]>();
 
   // thesauri from subscription:
   // cod-hand-subscription-languages
-  @Input()
-  public subLangEntries: ThesaurusEntry[] | undefined;
+  public readonly subLangEntries = input<ThesaurusEntry[]>();
 
-  @Output()
-  public handChange: EventEmitter<CodHand>;
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public readonly editorClose = output();
 
   public eid: FormControl<string | null>;
   public name: FormControl<string | null>;
@@ -157,8 +130,6 @@ export class CodHandComponent implements OnInit {
     this.editedDscIndex = -1;
     this.editedIstIndex = -1;
     this.editedSubIndex = -1;
-    this.handChange = new EventEmitter<CodHand>();
-    this.editorClose = new EventEmitter<any>();
     this.dscKeys = [];
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
@@ -180,6 +151,10 @@ export class CodHandComponent implements OnInit {
       subscriptions: this.subscriptions,
       references: this.references,
     });
+
+    effect(() => {
+      this.updateForm(this.hand());
+    });
   }
 
   private updateDscKeys(descriptions: CodHandDescription[]): void {
@@ -190,11 +165,7 @@ export class CodHandComponent implements OnInit {
     this.dscKeys = keys;
   }
 
-  ngOnInit(): void {
-    // if (this._hand) {
-    //   this.updateForm(this._hand);
-    // }
-
+  public ngOnInit(): void {
     // whenever descriptions change, update their keys list
     this.descriptions.valueChanges
       .pipe(debounceTime(200))
@@ -395,7 +366,9 @@ export class CodHandComponent implements OnInit {
   public addSubscription(): void {
     this.editSubscription({
       ranges: [],
-      language: this.subLangEntries?.length ? this.subLangEntries[0].id : '',
+      language: this.subLangEntries()?.length
+        ? this.subLangEntries()![0].id
+        : '',
     });
   }
 
@@ -481,7 +454,6 @@ export class CodHandComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this._hand = this.getHand();
-    this.handChange.emit(this._hand);
+    this.hand.set(this.getHand());
   }
 }

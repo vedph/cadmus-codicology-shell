@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -44,44 +44,23 @@ import { CodEndleaf } from '../cod-sheet-labels-part';
     MatIcon,
   ],
 })
-export class CodEndleafComponent implements OnInit {
-  private _endleaf: CodEndleaf | undefined;
-
-  @Input()
-  public get endleaf(): CodEndleaf | undefined {
-    return this._endleaf;
-  }
-  public set endleaf(value: CodEndleaf | undefined) {
-    if (this._endleaf === value) {
-      return;
-    }
-    this._endleaf = value;
-    this.updateForm(value);
-  }
+export class CodEndleafComponent {
+  public readonly endleaf = model<CodEndleaf>();
 
   // cod-endleaf-materials
-  @Input()
-  public matEntries: ThesaurusEntry[] | undefined;
+  public readonly matEntries = input<ThesaurusEntry[]>();
   // chronotope-tags
-  @Input()
-  public ctTagEntries: ThesaurusEntry[] | undefined;
+  public readonly ctTagEntries = input<ThesaurusEntry[]>();
   // assertion-tags
-  @Input()
-  public assTagEntries: ThesaurusEntry[] | undefined;
+  public readonly assTagEntries = input<ThesaurusEntry[]>();
   // doc-reference-types
-  @Input()
-  public refTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly refTypeEntries = input<ThesaurusEntry[]>();
   // doc-reference-tags
-  @Input()
-  public refTagEntries: ThesaurusEntry[] | undefined;
+  public readonly refTagEntries = input<ThesaurusEntry[]>();
 
-  @Input()
-  public locations: string[];
+  public readonly locations = input<string[]>([]);
 
-  @Output()
-  public endleafChange: EventEmitter<CodEndleaf>;
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public readonly editorClose = output();
 
   public location: FormControl<string | null>;
   public material: FormControl<string | null>;
@@ -89,10 +68,6 @@ export class CodEndleafComponent implements OnInit {
   public form: FormGroup;
 
   constructor(formBuilder: FormBuilder) {
-    this.endleafChange = new EventEmitter<CodEndleaf>();
-    this.editorClose = new EventEmitter<any>();
-    this.locations = [];
-    // form
     this.location = formBuilder.control(null, [
       Validators.required,
       Validators.maxLength(50),
@@ -107,12 +82,10 @@ export class CodEndleafComponent implements OnInit {
       material: this.material,
       chronotope: this.chronotope,
     });
-  }
 
-  ngOnInit(): void {
-    if (this._endleaf) {
-      this.updateForm(this._endleaf);
-    }
+    effect(() => {
+      this.updateForm(this.endleaf());
+    });
   }
 
   private updateForm(model: CodEndleaf | undefined): void {
@@ -149,7 +122,6 @@ export class CodEndleafComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this._endleaf = this.getModel();
-    this.endleafChange.emit(this._endleaf);
+    this.endleaf.set(this.getModel());
   }
 }

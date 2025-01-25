@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, effect, input, Input, model, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -60,8 +60,6 @@ import { CodLocationConverter } from '../cod-location-converter';
 })
 export class CodLocationConverterComponent implements OnInit {
   private readonly _converter: CodLocationConverter;
-  private _item: Item | undefined | null;
-  private _facetId: string | undefined;
   private _locFrozen?: boolean;
   private _labFrozen?: boolean;
 
@@ -79,31 +77,12 @@ export class CodLocationConverterComponent implements OnInit {
   /**
    * The current item.
    */
-  @Input()
-  public get item(): Item | undefined | null {
-    return this._item;
-  }
-  public set item(value: Item | undefined | null) {
-    if (this._item === value) {
-      return;
-    }
-    this._item = value;
-  }
+  public readonly item = model<Item>();
 
   /**
    * The facet ID for filtering items during lookup.
    */
-  @Input()
-  public get facetId(): string | undefined {
-    return this._facetId;
-  }
-  public set facetId(value: string | undefined) {
-    if (this._facetId === value) {
-      return;
-    }
-    this._facetId = value;
-    this.baseFilter = value ? { facetId: value } : undefined;
-  }
+  public readonly facetId = input<string>();
 
   constructor(
     public lookupService: ItemRefLookupService,
@@ -127,9 +106,19 @@ export class CodLocationConverterComponent implements OnInit {
       location: this.location,
       label: this.label,
     });
+
+    effect(() => {
+      this.updateForm(this.item());
+    });
+
+    effect(() => {
+      this.baseFilter = this.facetId()
+        ? { facetId: this.facetId() }
+        : undefined;
+    });
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     // auto convert from label
     this.label.valueChanges
       .pipe(distinctUntilChanged(), debounceTime(300))
@@ -170,8 +159,7 @@ export class CodLocationConverterComponent implements OnInit {
   }
 
   public onItemChange(item: unknown): void {
-    this.item = item as Item;
-    this.updateForm();
+    this.item.set(item as Item);
   }
 
   private resetForm(): void {
@@ -179,14 +167,14 @@ export class CodLocationConverterComponent implements OnInit {
     this.form.reset();
   }
 
-  private updateForm(): void {
-    if (!this._item) {
+  private updateForm(item?: Item): void {
+    if (!item) {
       this.resetForm();
       return;
     }
     this.loading = true;
     this._itemService
-      .getPartFromTypeAndRole(this._item.id, COD_SHEET_LABELS_PART_TYPEID)
+      .getPartFromTypeAndRole(item.id, COD_SHEET_LABELS_PART_TYPEID)
       .pipe(take(1))
       .subscribe({
         next: (part) => {
@@ -201,10 +189,10 @@ export class CodLocationConverterComponent implements OnInit {
         },
         error: (error) => {
           this.loading = false;
-          console.error('Error loading labels part for item ' + this._item!.id);
-          if (error) {
-            console.error(JSON.stringify(error));
-          }
+          console.error(
+            'Error loading labels part for item ' + item!.id,
+            error
+          );
         },
       });
   }

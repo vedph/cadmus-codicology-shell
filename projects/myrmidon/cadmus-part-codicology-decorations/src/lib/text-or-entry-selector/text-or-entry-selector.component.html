@@ -1,9 +1,9 @@
 <form [formGroup]="form">
   <!-- bound -->
-  @if (!free && entries?.length) {
+  @if (!free && entries()?.length) {
   <mat-form-field>
-    <mat-select [formControl]="idCtl" [placeholder]="label">
-      @for (e of entries; track e.id) {
+    <mat-select [formControl]="idCtl" [placeholder]="label()">
+      @for (e of entries(); track e.id) {
       <mat-option [value]="e.id">{{ e.value }}</mat-option>
       }
     </mat-select>
@@ -14,9 +14,9 @@
   }
 
   <!-- free -->
-  @if (free || !entries?.length) {
+  @else {
   <mat-form-field>
-    <input matInput [formControl]="idCtl" [placeholder]="label" />
+    <input matInput [formControl]="idCtl" [placeholder]="label()" />
     @if ($any(idCtl).errors?.required && (idCtl.dirty || idCtl.touched)) {
     <mat-error>required</mat-error>
     } @if ($any(idCtl).errors?.maxLength && (idCtl.dirty || idCtl.touched)) {

@@ -7,11 +7,11 @@
     </mat-form-field>
 
     <!-- position (bound) -->
-    @if (posEntries?.length) {
+    @if (posEntries()?.length) {
     <mat-form-field class="form-col">
       <mat-label>position</mat-label>
       <mat-select [formControl]="position">
-        @for (e of posEntries; track e.id) {
+        @for (e of posEntries(); track e.id) {
         <mat-option [value]="e.id">{{ e.value }}</mat-option>
         }
       </mat-select>
@@ -22,7 +22,7 @@
     </mat-form-field>
     }
     <!-- position (free) -->
-    @if (!posEntries?.length) {
+    @else {
     <mat-form-field class="form-col">
       <mat-label>position</mat-label>
       <input matInput [formControl]="position" />

@@ -160,6 +160,10 @@ graph LR;
 
 ## History
 
+### 10.0.1
+
+- 2025-01-25: ⚠️ migrated to signals.
+
 ### 10.0.0
 
 - 2025-01-10: updated Angular and packages.

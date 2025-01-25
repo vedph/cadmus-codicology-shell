@@ -1,11 +1,11 @@
-@if (cell) {
-<div class="cell" [style.background-color]="color || 'transparent'">
+@if (cell()) {
+<div class="cell" [style.background-color]="color() || 'transparent'">
   <!-- display -->
   @if (editMode === 'none') {
   <div class="form-row-center">
-    <span>{{ cell.value }}</span>
-    @if (cell.note) {
-    <span [matTooltip]="cell.note">
+    <span>{{ cell()?.value }}</span>
+    @if (cell()?.note) {
+    <span [matTooltip]="cell()!.note">
       <mat-icon>description</mat-icon>
     </span>
     }

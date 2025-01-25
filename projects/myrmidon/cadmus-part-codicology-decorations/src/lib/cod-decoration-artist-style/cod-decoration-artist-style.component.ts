@@ -1,4 +1,14 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  effect,
+  EventEmitter,
+  input,
+  Input,
+  model,
+  OnInit,
+  output,
+  Output,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -45,38 +55,18 @@ import { CodDecorationArtistStyle } from '../cod-decorations-part';
   ],
 })
 export class CodDecorationArtistStyleComponent implements OnInit {
-  private _style: CodDecorationArtistStyle | undefined;
-
-  @Input()
-  public get style(): CodDecorationArtistStyle | undefined {
-    return this._style;
-  }
-  public set style(value: CodDecorationArtistStyle | undefined) {
-    if (this._style === value) {
-      return;
-    }
-    this._style = value;
-    this.updateForm(value);
-  }
+  public readonly style = model<CodDecorationArtistStyle>();
 
   // chronotope-tags
-  @Input()
-  public ctTagEntries: ThesaurusEntry[] | undefined;
+  public readonly ctTagEntries = input<ThesaurusEntry[]>();
   // assertion-tags
-  @Input()
-  public assTagEntries: ThesaurusEntry[] | undefined;
+  public readonly assTagEntries = input<ThesaurusEntry[]>();
   // doc-reference-types
-  @Input()
-  public refTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly refTypeEntries = input<ThesaurusEntry[]>();
   // doc-reference-tags
-  @Input()
-  public refTagEntries: ThesaurusEntry[] | undefined;
+  public readonly refTagEntries = input<ThesaurusEntry[]>();
 
-  @Output()
-  public styleChange: EventEmitter<CodDecorationArtistStyle>;
-
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public readonly editorClose = output();
 
   public name: FormControl<string | null>;
   public hasChronotope: FormControl<boolean>;
@@ -86,9 +76,6 @@ export class CodDecorationArtistStyleComponent implements OnInit {
   public form: FormGroup;
 
   constructor(formBuilder: FormBuilder) {
-    this.styleChange = new EventEmitter<CodDecorationArtistStyle>();
-    this.editorClose = new EventEmitter<any>();
-    // form
     this.name = formBuilder.control(null, [
       Validators.required,
       Validators.maxLength(50),
@@ -103,6 +90,10 @@ export class CodDecorationArtistStyleComponent implements OnInit {
       chronotope: this.chronotope,
       hasAssertion: this.hasAssertion,
       assertion: this.assertion,
+    });
+
+    effect(() => {
+      this.updateForm(this.style());
     });
   }
 
@@ -153,7 +144,6 @@ export class CodDecorationArtistStyleComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this._style = this.getStyle();
-    this.styleChange.emit(this._style);
+    this.style.set(this.getStyle());
   }
 }

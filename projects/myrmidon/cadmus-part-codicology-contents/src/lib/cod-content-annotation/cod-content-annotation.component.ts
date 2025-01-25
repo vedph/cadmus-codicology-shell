@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -45,29 +45,13 @@ import { CodContentAnnotation } from '../cod-contents-part';
     MatIcon,
   ],
 })
-export class CodContentAnnotationComponent implements OnInit {
-  private _annotation: CodContentAnnotation | undefined;
-
-  @Input()
-  public get annotation(): CodContentAnnotation | undefined {
-    return this._annotation;
-  }
-  public set annotation(value: CodContentAnnotation | undefined) {
-    if (this._annotation === value) {
-      return;
-    }
-    this._annotation = value;
-    this.updateForm(value);
-  }
+export class CodContentAnnotationComponent {
+  public readonly annotation = model<CodContentAnnotation>();
 
   // cod-content-annotation-types
-  @Input()
-  public typeEntries: ThesaurusEntry[] | undefined;
+  public readonly typeEntries = input<ThesaurusEntry[]>();
 
-  @Output()
-  public annotationChange: EventEmitter<CodContentAnnotation>;
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public editorClose = output();
 
   public type: FormControl<string | null>;
   public ranges: FormControl<CodLocationRange[]>;
@@ -78,9 +62,6 @@ export class CodContentAnnotationComponent implements OnInit {
   public form: FormGroup;
 
   constructor(formBuilder: FormBuilder) {
-    this.annotationChange = new EventEmitter<CodContentAnnotation>();
-    this.editorClose = new EventEmitter<any>();
-    // form
     this.type = formBuilder.control(null, [
       Validators.required,
       Validators.maxLength(50),
@@ -104,12 +85,10 @@ export class CodContentAnnotationComponent implements OnInit {
       note: this.note,
       text: this.text,
     });
-  }
 
-  ngOnInit(): void {
-    if (this._annotation) {
-      this.updateForm(this._annotation);
-    }
+    effect(() => {
+      this.updateForm(this.annotation());
+    });
   }
 
   private updateForm(model: CodContentAnnotation | undefined): void {
@@ -152,7 +131,6 @@ export class CodContentAnnotationComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this._annotation = this.getModel();
-    this.annotationChange.emit(this._annotation);
+    this.annotation.set(this.getModel());
   }
 }

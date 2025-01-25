@@ -1,11 +1,11 @@
 <form [formGroup]="form" (submit)="save()">
   <div style="display: flex; gap: 8px; align-items: center">
     <!-- type (bound) -->
-    @if (artTypeEntries?.length) {
+    @if (artTypeEntries()?.length) {
     <mat-form-field style="flex: 0 0 auto">
       <mat-label>type</mat-label>
       <mat-select [formControl]="type">
-        @for (e of artTypeEntries; track e.id) {
+        @for (e of artTypeEntries(); track e.id) {
         <mat-option [value]="e.id">{{ e.value }}</mat-option>
         }
       </mat-select>
@@ -15,7 +15,7 @@
     </mat-form-field>
     }
     <!-- type (free) -->
-    @if (!artTypeEntries?.length) {
+    @else {
     <mat-form-field style="flex: 0 0 auto">
       <mat-label>type</mat-label>
       <input matInput [formControl]="type" />
@@ -50,14 +50,14 @@
   <div>
     <!-- ids -->
     <cadmus-refs-asserted-composite-ids
-      [idScopeEntries]="idScopeEntries"
-      [idTagEntries]="idTagEntries"
-      [assTagEntries]="assTagEntries"
-      [refTypeEntries]="refTypeEntries"
-      [refTagEntries]="refTagEntries"
-      [pinByTypeMode]="pinByTypeMode"
-      [canSwitchMode]="canSwitchMode"
-      [canEditTarget]="canEditTarget"
+      [idScopeEntries]="idScopeEntries()"
+      [idTagEntries]="idTagEntries()"
+      [assTagEntries]="assTagEntries()"
+      [refTypeEntries]="refTypeEntries()"
+      [refTagEntries]="refTagEntries()"
+      [pinByTypeMode]="pinByTypeMode()"
+      [canSwitchMode]="canSwitchMode()"
+      [canEditTarget]="canEditTarget()"
       [internalDefault]="true"
       [ids]="ids.value"
       (idsChange)="onIdsChange($event)"
@@ -102,7 +102,7 @@
       <tbody>
         @for ( s of styles.value || []; track s; let i = $index; let first =
         $first; let last = $last) {
-        <tr>
+        <tr [class.selected]="editedStyleIndex === i">
           <td>
             <button
               mat-icon-button
@@ -149,12 +149,12 @@
         >style {{ editedStyle?.name }}</mat-expansion-panel-header
       >
       <cadmus-cod-decoration-artist-style
-        [ctTagEntries]="ctTagEntries"
-        [assTagEntries]="assTagEntries"
-        [refTagEntries]="refTagEntries"
-        [refTypeEntries]="refTypeEntries"
+        [ctTagEntries]="ctTagEntries()"
+        [assTagEntries]="assTagEntries()"
+        [refTagEntries]="refTagEntries()"
+        [refTypeEntries]="refTypeEntries()"
         [style]="editedStyle"
-        (styleChange)="onStyleSave($event)"
+        (styleChange)="onStyleSave($event!)"
         (editorClose)="editStyle(null)"
       />
     </mat-expansion-panel>

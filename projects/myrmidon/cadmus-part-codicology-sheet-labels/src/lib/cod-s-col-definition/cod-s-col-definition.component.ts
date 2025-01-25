@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -38,33 +38,15 @@ import { CodSColDefinition } from '../cod-sheet-labels-part';
     MatIcon,
   ],
 })
-export class CodSColDefinitionComponent implements OnInit {
-  private _definition: CodSColDefinition | undefined;
-
-  @Input()
-  public get definition(): CodSColDefinition | undefined {
-    return this._definition;
-  }
-  public set definition(value: CodSColDefinition | undefined) {
-    if (this._definition === value) {
-      return;
-    }
-    this._definition = value;
-    this.updateForm(value);
-  }
+export class CodSColDefinitionComponent {
+  public readonly definition = model<CodSColDefinition>();
 
   // cod-quiresig-systems
-  @Input()
-  public sysEntries: ThesaurusEntry[] | undefined;
-
+  public readonly sysEntries = input<ThesaurusEntry[]>();
   // cod-quiresig-positions
-  @Input()
-  public posEntries: ThesaurusEntry[] | undefined;
+  public readonly posEntries = input<ThesaurusEntry[]>();
 
-  @Output()
-  public definitionChange: EventEmitter<CodSColDefinition>;
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public readonly editorClose = output();
 
   public id: string;
   public rank: FormControl<number>;
@@ -74,9 +56,6 @@ export class CodSColDefinitionComponent implements OnInit {
   public form: FormGroup;
 
   constructor(formBuilder: FormBuilder) {
-    this.definitionChange = new EventEmitter<CodSColDefinition>();
-    this.editorClose = new EventEmitter<any>();
-    // form
     this.id = '';
     this.rank = formBuilder.control(0, { nonNullable: true });
     this.system = formBuilder.control(null, [
@@ -94,12 +73,10 @@ export class CodSColDefinitionComponent implements OnInit {
       position: this.position,
       note: this.note,
     });
-  }
 
-  ngOnInit(): void {
-    if (this._definition) {
-      this.updateForm(this._definition);
-    }
+    effect(() => {
+      this.updateForm(this.definition());
+    });
   }
 
   private updateForm(model: CodSColDefinition | undefined): void {
@@ -134,7 +111,6 @@ export class CodSColDefinitionComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this._definition = this.getModel();
-    this.definitionChange.emit(this._definition);
+    this.definition.set(this.getModel());
   }
 }

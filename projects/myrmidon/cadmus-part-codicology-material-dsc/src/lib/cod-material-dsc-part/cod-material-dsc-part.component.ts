@@ -18,10 +18,10 @@ import {
   MatCardActions,
 } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
-import { MatTabGroup, MatTab } from '@angular/material/tabs';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import {
+  MatExpansionModule,
   MatExpansionPanel,
   MatExpansionPanelHeader,
 } from '@angular/material/expansion';
@@ -67,8 +67,7 @@ import { CodPalimpsestEditorComponent } from '../cod-palimpsest-editor/cod-palim
     MatIcon,
     MatCardTitle,
     MatCardContent,
-    MatTabGroup,
-    MatTab,
+    MatExpansionModule,
     MatButton,
     MatIconButton,
     MatTooltip,
@@ -87,9 +86,8 @@ export class CodMaterialDscPartComponent
   extends ModelEditorComponentBase<CodMaterialDscPart>
   implements OnInit
 {
-  private _editedUtIndex: number;
-  private _editedPsIndex: number;
-  public tabIndex: number;
+  public editedUtIndex: number;
+  public editedPsIndex: number;
   public editedUt: CodUnit | undefined;
   public editedPs: CodPalimpsest | undefined;
 
@@ -119,9 +117,8 @@ export class CodMaterialDscPartComponent
     private _dialogService: DialogService
   ) {
     super(authService, formBuilder);
-    this._editedUtIndex = -1;
-    this._editedPsIndex = -1;
-    this.tabIndex = 0;
+    this.editedUtIndex = -1;
+    this.editedPsIndex = -1;
     // form
     this.units = formBuilder.control([], {
       validators: NgxToolsValidators.strictMinLengthValidator(1),
@@ -234,27 +231,23 @@ export class CodMaterialDscPartComponent
   }
 
   public editUnit(unit: CodUnit | null, index = -1): void {
-    this._editedPsIndex = -1;
+    this.editedPsIndex = -1;
     this.editedPs = undefined;
 
     if (!unit) {
-      this._editedUtIndex = -1;
-      this.tabIndex = 0;
+      this.editedUtIndex = -1;
       this.editedUt = undefined;
     } else {
-      this._editedUtIndex = index;
+      this.editedUtIndex = index;
       this.editedUt = unit;
-      setTimeout(() => {
-        this.tabIndex = 1;
-      });
     }
   }
 
   public onUnitSave(unit: CodUnit): void {
     const units = [...this.units.value];
 
-    if (this._editedUtIndex > -1) {
-      units.splice(this._editedUtIndex, 1, unit);
+    if (this.editedUtIndex > -1) {
+      units.splice(this.editedUtIndex, 1, unit);
     } else {
       units.push(unit);
     }
@@ -315,27 +308,23 @@ export class CodMaterialDscPartComponent
   }
 
   public editPalimpsest(palimpsest: CodPalimpsest | null, index = -1): void {
-    this._editedUtIndex = -1;
+    this.editedUtIndex = -1;
     this.editedUt = undefined;
 
     if (!palimpsest) {
-      this._editedPsIndex = -1;
-      this.tabIndex = 0;
+      this.editedPsIndex = -1;
       this.editedPs = undefined;
     } else {
-      this._editedPsIndex = index;
+      this.editedPsIndex = index;
       this.editedPs = palimpsest;
-      setTimeout(() => {
-        this.tabIndex = 2;
-      });
     }
   }
 
   public onPalimpsestSave(palimpsest: CodPalimpsest): void {
     const palimpsests = [...this.palimpsests.value];
 
-    if (this._editedPsIndex > -1) {
-      palimpsests.splice(this._editedPsIndex, 1, palimpsest);
+    if (this.editedPsIndex > -1) {
+      palimpsests.splice(this.editedPsIndex, 1, palimpsest);
     } else {
       palimpsests.push(palimpsest);
     }

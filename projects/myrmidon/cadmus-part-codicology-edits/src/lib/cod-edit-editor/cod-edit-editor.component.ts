@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -13,7 +13,7 @@ import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
 import { MatCheckbox } from '@angular/material/checkbox';
-import { MatIconButton, MatButton } from '@angular/material/button';
+import { MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 
@@ -70,79 +70,33 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     MatIconButton,
     MatTooltip,
     MatIcon,
-    MatButton,
   ],
 })
-export class CodEditEditorComponent implements OnInit {
-  private _edit: CodEdit | undefined;
-  private _colorEntries: ThesaurusEntry[];
-  private _techEntries: ThesaurusEntry[];
-
-  @Input()
-  public get edit(): CodEdit | undefined {
-    return this._edit;
-  }
-  public set edit(value: CodEdit | undefined) {
-    if (this._edit === value) {
-      return;
-    }
-    this._edit = value;
-    this.updateForm(value);
-  }
+export class CodEditEditorComponent {
+  public readonly edit = model<CodEdit>();
 
   // cod-edit-colors
-  @Input()
-  public get colorEntries(): ThesaurusEntry[] | undefined {
-    return this._colorEntries;
-  }
-  public set colorEntries(value: ThesaurusEntry[] | undefined) {
-    if (this._colorEntries === value) {
-      return;
-    }
-    this._colorEntries = value || [];
-    this.colorFlags = this._colorEntries.map(entryToFlag);
-  }
+  public readonly colorEntries = input<ThesaurusEntry[]>();
   // cod-edit-techniques
-  @Input()
-  public get techEntries(): ThesaurusEntry[] | undefined {
-    return this._techEntries;
-  }
-  public set techEntries(value: ThesaurusEntry[] | undefined) {
-    if (this._techEntries === value) {
-      return;
-    }
-    this._techEntries = value || [];
-    this.techniqueFlags = this._techEntries.map(entryToFlag);
-  }
+  public readonly techEntries = input<ThesaurusEntry[]>();
   // cod-edit-types
-  @Input()
-  public typeEntries: ThesaurusEntry[] | undefined;
+  public readonly typeEntries = input<ThesaurusEntry[]>();
   // cod-edit-tags
-  @Input()
-  public tagEntries: ThesaurusEntry[] | undefined;
+  public readonly tagEntries = input<ThesaurusEntry[]>();
   // cod-edit-languages
-  @Input()
-  public langEntries: ThesaurusEntry[] | undefined;
+  public readonly langEntries = input<ThesaurusEntry[]>();
   // doc-reference-types
-  @Input()
-  public refTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly refTypeEntries = input<ThesaurusEntry[]>();
   // doc-reference-tags
-  @Input()
-  public refTagEntries: ThesaurusEntry[] | undefined;
+  public readonly refTagEntries = input<ThesaurusEntry[]>();
   // assertion-tags
-  @Input()
-  public assTagEntries: ThesaurusEntry[] | undefined;
+  public readonly assTagEntries = input<ThesaurusEntry[]>();
   // external-id-tags
-  @Input()
-  public idTagEntries: ThesaurusEntry[] | undefined;
+  public readonly idTagEntries = input<ThesaurusEntry[]>();
   // external-id-scopes
-  @Input()
-  public idScopeEntries: ThesaurusEntry[] | undefined;
+  public readonly idScopeEntries = input<ThesaurusEntry[]>();
 
-  @Output()
-  public editChange: EventEmitter<CodEdit>;
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public editorClose = output();
 
   public eid: FormControl<string | null>;
   public type: FormControl<string | null>;
@@ -164,11 +118,6 @@ export class CodEditEditorComponent implements OnInit {
   public techniqueFlags: Flag[] = [];
 
   constructor(formBuilder: FormBuilder) {
-    this.editChange = new EventEmitter<CodEdit>();
-    this.editorClose = new EventEmitter<any>();
-    // flags
-    this._colorEntries = [];
-    this._techEntries = [];
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.type = formBuilder.control(null, [
@@ -204,12 +153,18 @@ export class CodEditEditorComponent implements OnInit {
       text: this.text,
       references: this.references,
     });
-  }
 
-  public ngOnInit(): void {
-    if (this._edit) {
-      this.updateForm(this._edit);
-    }
+    effect(() => {
+      this.updateForm(this.edit());
+    });
+
+    effect(() => {
+      this.colorFlags = this.colorEntries()?.map(entryToFlag) || [];
+    });
+
+    effect(() => {
+      this.techniqueFlags = this.techEntries()?.map(entryToFlag) || [];
+    });
   }
 
   private updateForm(model: CodEdit | undefined): void {
@@ -299,7 +254,6 @@ export class CodEditEditorComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this._edit = this.getModel();
-    this.editChange.emit(this._edit);
+    this.edit.set(this.getModel());
   }
 }

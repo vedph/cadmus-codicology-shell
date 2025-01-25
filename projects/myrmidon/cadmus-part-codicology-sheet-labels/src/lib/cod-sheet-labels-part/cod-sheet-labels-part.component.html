@@ -198,7 +198,7 @@
                 [sysEntries]="sysnEntries"
                 [techEntries]="techEntries"
                 [definition]="editedNDef"
-                (definitionChange)="onEditedNDefChange($event)"
+                (definitionChange)="onEditedNDefChange($event!)"
                 (editorClose)="onColumnDefClose()"
               />
             </div>
@@ -211,7 +211,7 @@
               <cadmus-cod-c-col-definition
                 [posEntries]="poscEntries"
                 [definition]="editedCDef"
-                (definitionChange)="onEditedCDefChange($event)"
+                (definitionChange)="onEditedCDefChange($event!)"
                 (editorClose)="onColumnDefClose()"
               />
             </div>
@@ -225,7 +225,7 @@
                 [posEntries]="possEntries"
                 [sysEntries]="syssEntries"
                 [definition]="editedSDef"
-                (definitionChange)="onEditedSDefChange($event)"
+                (definitionChange)="onEditedSDefChange($event!)"
                 (editorClose)="onColumnDefClose()"
               />
             </div>
@@ -238,7 +238,7 @@
               <cadmus-cod-r-col-definition
                 [posEntries]="possEntries"
                 [definition]="editedRDef"
-                (definitionChange)="onEditedRDefChange($event)"
+                (definitionChange)="onEditedRDefChange($event!)"
                 (editorClose)="onColumnDefClose()"
               />
             </div>
@@ -268,7 +268,7 @@
                   <cadmus-cod-label-cell
                     [color]="$any(rc.id | cellTypeColor)"
                     [cell]="$any(rc | cellAdapter : r.id)"
-                    (cellChange)="onCellChange($event)"
+                    (cellChange)="onCellChange($event!)"
                   />
                 </td>
                 }
@@ -375,15 +375,14 @@
                 [refTypeEntries]="refTypeEntries"
                 [locations]="endleafRowIds"
                 [endleaf]="editedEndleaf"
-                (endleafChange)="onEndleafSave($event)"
+                (endleafChange)="onEndleafSave($event!)"
                 (editorClose)="editEndleaf(null)"
               />
             </fieldset>
           </mat-expansion-panel>
         </mat-tab>
 
-        <!-- HELP ng serve
-                              -->
+        <!-- HELP -->
         <mat-tab label="help">
           <div id="help">
             <h2>Overview</h2>

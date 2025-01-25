@@ -99,7 +99,7 @@
             [idTagEntries]="idTagEntries"
             [idScopeEntries]="idScopeEntries"
             [hand]="editedHand"
-            (handChange)="onHandSave($event)"
+            (handChange)="onHandSave($event!)"
             (editorClose)="onHandClose()"
           />
         </mat-tab>

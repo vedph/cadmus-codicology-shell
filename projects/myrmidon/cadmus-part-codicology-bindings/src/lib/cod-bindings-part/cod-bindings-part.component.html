@@ -7,113 +7,113 @@
       <mat-card-title>Bindings Part</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <mat-tab-group [(selectedIndex)]="tabIndex">
-        <mat-tab label="bindings">
-          <div>
-            <button
-              type="button"
-              mat-flat-button
-              class="mat-primary"
-              (click)="addBinding()"
-            >
-              <mat-icon>add_circle</mat-icon> binding
-            </button>
-          </div>
-          @if (entries.value.length) {
-          <table>
-            <thead>
-              <tr>
-                <th></th>
-                <th>tag</th>
-                <th>cover</th>
-                <th>board</th>
-                <th>place</th>
-                <th>date</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for ( entry of entries.value; track entry; let i = $index; let
-              first = $first; let last = $last) {
-              <tr>
-                <td>
-                  <button
-                    type="button"
-                    mat-icon-button
-                    matTooltip="Edit this binding"
-                    (click)="editBinding(entry, i)"
-                  >
-                    <mat-icon class="mat-primary">edit</mat-icon>
-                  </button>
-                  <button
-                    type="button"
-                    mat-icon-button
-                    matTooltip="Move this binding up"
-                    [disabled]="first"
-                    (click)="moveBindingUp(i)"
-                  >
-                    <mat-icon>arrow_upward</mat-icon>
-                  </button>
-                  <button
-                    type="button"
-                    mat-icon-button
-                    matTooltip="Move this binding down"
-                    [disabled]="last"
-                    (click)="moveBindingDown(i)"
-                  >
-                    <mat-icon>arrow_downward</mat-icon>
-                  </button>
-                  <button
-                    type="button"
-                    mat-icon-button
-                    matTooltip="Delete this binding"
-                    (click)="deleteBinding(i)"
-                  >
-                    <mat-icon class="mat-warn">remove_circle</mat-icon>
-                  </button>
-                </td>
-                <td>{{ entry.tag }}</td>
-                <td>
-                  {{
-                    entry.coverMaterial
-                      | flatLookup : coverEntries : "id" : "value"
-                  }}
-                </td>
-                <td>
-                  {{
-                    entry.boardMaterial
-                      | flatLookup : boardEntries : "id" : "value"
-                  }}
-                </td>
-                <td>{{ entry.chronotope.place?.value }}</td>
-                <td>{{ entry.chronotope.date | historicalDate }}</td>
-                <td></td>
-              </tr>
-              }
-            </tbody>
-          </table>
+      <div>
+        <button
+          type="button"
+          mat-flat-button
+          class="mat-primary"
+          (click)="addBinding()"
+        >
+          <mat-icon>add_circle</mat-icon> binding
+        </button>
+      </div>
+      @if (entries.value.length) {
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>tag</th>
+            <th>cover</th>
+            <th>board</th>
+            <th>place</th>
+            <th>date</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for ( entry of entries.value; track entry; let i = $index; let first
+          = $first; let last = $last) {
+          <tr [class.selected]="i === editedIndex">
+            <td>
+              <button
+                type="button"
+                mat-icon-button
+                matTooltip="Edit this binding"
+                (click)="editBinding(entry, i)"
+              >
+                <mat-icon class="mat-primary">edit</mat-icon>
+              </button>
+              <button
+                type="button"
+                mat-icon-button
+                matTooltip="Move this binding up"
+                [disabled]="first"
+                (click)="moveBindingUp(i)"
+              >
+                <mat-icon>arrow_upward</mat-icon>
+              </button>
+              <button
+                type="button"
+                mat-icon-button
+                matTooltip="Move this binding down"
+                [disabled]="last"
+                (click)="moveBindingDown(i)"
+              >
+                <mat-icon>arrow_downward</mat-icon>
+              </button>
+              <button
+                type="button"
+                mat-icon-button
+                matTooltip="Delete this binding"
+                (click)="deleteBinding(i)"
+              >
+                <mat-icon class="mat-warn">remove_circle</mat-icon>
+              </button>
+            </td>
+            <td>{{ entry.tag }}</td>
+            <td>
+              {{
+                entry.coverMaterial | flatLookup : coverEntries : "id" : "value"
+              }}
+            </td>
+            <td>
+              {{
+                entry.boardMaterial | flatLookup : boardEntries : "id" : "value"
+              }}
+            </td>
+            <td>{{ entry.chronotope.place?.value }}</td>
+            <td>{{ entry.chronotope.date | historicalDate }}</td>
+            <td></td>
+          </tr>
           }
-        </mat-tab>
-
-        @if (editedBinding) {
-        <mat-tab label="binding">
-          <cadmus-cod-binding-editor
-            [tagEntries]="tagEntries"
-            [coverEntries]="coverEntries"
-            [boardEntries]="boardEntries"
-            [ctTagEntries]="ctTagEntries"
-            [assTagEntries]="assTagEntries"
-            [refTypeEntries]="refTypeEntries"
-            [refTagEntries]="refTagEntries"
-            [szTagEntries]="szTagEntries"
-            [szDimTagEntries]="szDimTagEntries"
-            [szUnitEntries]="szUnitEntries"
-            [binding]="editedBinding"
-            (bindingChange)="onBindingSave($event)"
-            (editorClose)="editBinding(null)"
-          />
-        </mat-tab>
-        }
-      </mat-tab-group>
+        </tbody>
+      </table>
+      } @if (editedBinding) {
+      <mat-expansion-panel
+        [expanded]="editedBinding"
+        [disabled]="!editedBinding"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            #{{ editedIndex + 1 }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <cadmus-cod-binding-editor
+          [tagEntries]="tagEntries"
+          [coverEntries]="coverEntries"
+          [boardEntries]="boardEntries"
+          [ctTagEntries]="ctTagEntries"
+          [assTagEntries]="assTagEntries"
+          [refTypeEntries]="refTypeEntries"
+          [refTagEntries]="refTagEntries"
+          [szTagEntries]="szTagEntries"
+          [szDimTagEntries]="szDimTagEntries"
+          [szUnitEntries]="szUnitEntries"
+          [binding]="editedBinding"
+          (bindingChange)="onBindingSave($event!)"
+          (editorClose)="editBinding(null)"
+        />
+      </mat-expansion-panel>
+      }
     </mat-card-content>
     <mat-card-actions>
       <cadmus-close-save-buttons

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -45,29 +45,13 @@ import { CodHandSubscription } from '../cod-hands-part';
     MatIcon,
   ],
 })
-export class CodHandSubscriptionComponent implements OnInit {
-  private _subscription: CodHandSubscription | undefined;
-
-  @Input()
-  public get subscription(): CodHandSubscription | undefined {
-    return this._subscription;
-  }
-  public set subscription(value: CodHandSubscription | undefined) {
-    if (this._subscription === value) {
-      return;
-    }
-    this._subscription = value;
-    this.updateForm(value);
-  }
+export class CodHandSubscriptionComponent {
+  public readonly subscription = model<CodHandSubscription>();
 
   // cod-hand-subscription-languages
-  @Input()
-  public langEntries: ThesaurusEntry[] | undefined;
+  public readonly langEntries = input<ThesaurusEntry[]>();
 
-  @Output()
-  public subscriptionChange: EventEmitter<CodHandSubscription>;
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public readonly editorClose = output();
 
   public ranges: FormControl<CodLocationRange[]>;
   public language: FormControl<string | null>;
@@ -76,9 +60,6 @@ export class CodHandSubscriptionComponent implements OnInit {
   public form: FormGroup;
 
   constructor(formBuilder: FormBuilder) {
-    this.subscriptionChange = new EventEmitter<CodHandSubscription>();
-    this.editorClose = new EventEmitter<any>();
-    // form
     this.ranges = formBuilder.control([], {
       validators: NgxToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
@@ -95,12 +76,10 @@ export class CodHandSubscriptionComponent implements OnInit {
       text: this.text,
       note: this.note,
     });
-  }
 
-  ngOnInit(): void {
-    if (this._subscription) {
-      this.updateForm(this._subscription);
-    }
+    effect(() => {
+      this.updateForm(this.subscription());
+    });
   }
 
   private updateForm(subscription: CodHandSubscription | undefined): void {
@@ -140,7 +119,6 @@ export class CodHandSubscriptionComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this._subscription = this.getSubscription();
-    this.subscriptionChange.emit(this._subscription);
+    this.subscription.set(this.getSubscription());
   }
 }

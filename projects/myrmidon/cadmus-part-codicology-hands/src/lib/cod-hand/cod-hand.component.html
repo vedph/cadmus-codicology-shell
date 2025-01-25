@@ -22,11 +22,11 @@
   <fieldset>
     <legend>identifications</legend>
     <cadmus-refs-asserted-composite-ids
-      [idScopeEntries]="idScopeEntries"
-      [idTagEntries]="idTagEntries"
-      [assTagEntries]="assTagEntries"
-      [refTypeEntries]="refTypeEntries"
-      [refTagEntries]="refTagEntries"
+      [idScopeEntries]="idScopeEntries()"
+      [idTagEntries]="idTagEntries()"
+      [assTagEntries]="assTagEntries()"
+      [refTypeEntries]="refTypeEntries()"
+      [refTagEntries]="refTagEntries()"
       [internalDefault]="true"
       [ids]="ids.value"
       (idsChange)="onIdsChange($event)"
@@ -113,9 +113,9 @@
         >description #{{ editedDscIndex + 1 }}</mat-expansion-panel-header
       >
       <cadmus-cod-hand-description
-        [sgnTypeEntries]="sgnTypeEntries"
+        [sgnTypeEntries]="sgnTypeEntries()"
         [description]="editedDsc"
-        (descriptionChange)="onDescriptionSave($event)"
+        (descriptionChange)="onDescriptionSave($event!)"
         (editorClose)="editDescription(null)"
       />
     </mat-expansion-panel>
@@ -204,17 +204,17 @@
         >instance #{{ editedIstIndex + 1 }}</mat-expansion-panel-header
       >
       <cadmus-cod-hand-instance
-        [typeEntries]="typeEntries"
-        [colorEntries]="colorEntries"
-        [ctTagEntries]="ctTagEntries"
-        [assTagEntries]="assTagEntries"
-        [refTagEntries]="refTagEntries"
-        [scriptEntries]="scriptEntries"
-        [imgTypeEntries]="imgTypeEntries"
-        [refTypeEntries]="refTypeEntries"
+        [typeEntries]="typeEntries()"
+        [colorEntries]="colorEntries()"
+        [ctTagEntries]="ctTagEntries()"
+        [assTagEntries]="assTagEntries()"
+        [refTagEntries]="refTagEntries()"
+        [scriptEntries]="scriptEntries()"
+        [imgTypeEntries]="imgTypeEntries()"
+        [refTypeEntries]="refTypeEntries()"
         [instance]="editedIst"
         [dscKeys]="dscKeys"
-        (instanceChange)="onInstanceSave($event)"
+        (instanceChange)="onInstanceSave($event!)"
         (editorClose)="editInstance(null)"
       />
     </mat-expansion-panel>
@@ -291,7 +291,7 @@
           <td>
             {{
               subscription.language
-                | flatLookup : subLangEntries : "id" : "value"
+                | flatLookup : subLangEntries() : "id" : "value"
             }}
           </td>
         </tr>
@@ -304,9 +304,9 @@
         >subscription #{{ editedSubIndex + 1 }}</mat-expansion-panel-header
       >
       <cadmus-cod-hand-subscription
-        [langEntries]="subLangEntries"
+        [langEntries]="subLangEntries()"
         [subscription]="editedSub"
-        (subscriptionChange)="onSubscriptionSave($event)"
+        (subscriptionChange)="onSubscriptionSave($event!)"
         (editorClose)="editSubscription(null)"
       />
     </mat-expansion-panel>
@@ -323,8 +323,8 @@
       </mat-panel-title>
     </mat-expansion-panel-header>
     <cadmus-refs-doc-references
-      [tagEntries]="refTagEntries"
-      [typeEntries]="refTypeEntries"
+      [tagEntries]="refTagEntries()"
+      [typeEntries]="refTypeEntries()"
       [references]="references.value"
       (referencesChange)="onReferencesChange($event)"
     />

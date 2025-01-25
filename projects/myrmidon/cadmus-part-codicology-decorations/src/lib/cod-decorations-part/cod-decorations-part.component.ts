@@ -18,9 +18,9 @@ import {
   MatCardActions,
 } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
-import { MatTabGroup, MatTab } from '@angular/material/tabs';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
@@ -65,9 +65,8 @@ import { CodDecorationComponent } from '../cod-decoration/cod-decoration.compone
     MatIcon,
     MatCardTitle,
     MatCardContent,
-    MatTabGroup,
-    MatTab,
     MatButton,
+    MatExpansionModule,
     MatIconButton,
     MatTooltip,
     CodDecorationComponent,
@@ -79,9 +78,7 @@ export class CodDecorationsPartComponent
   extends ModelEditorComponentBase<CodDecorationsPart>
   implements OnInit
 {
-  private _editedIndex: number;
-
-  public tabIndex: number;
+  public editedIndex: number;
   public editedDecoration: CodDecoration | undefined;
 
   // cod-decoration-flags
@@ -139,8 +136,7 @@ export class CodDecorationsPartComponent
     private _dialogService: DialogService
   ) {
     super(authService, formBuilder);
-    this._editedIndex = -1;
-    this.tabIndex = 0;
+    this.editedIndex = -1;
     // form
     this.decorations = formBuilder.control([], {
       validators: NgxToolsValidators.strictMinLengthValidator(1),
@@ -349,23 +345,19 @@ export class CodDecorationsPartComponent
 
   public editDecoration(decoration: CodDecoration | null, index = -1): void {
     if (!decoration) {
-      this._editedIndex = -1;
-      this.tabIndex = 0;
+      this.editedIndex = -1;
       this.editedDecoration = undefined;
     } else {
-      this._editedIndex = index;
+      this.editedIndex = index;
       this.editedDecoration = decoration;
-      setTimeout(() => {
-        this.tabIndex = 1;
-      });
     }
   }
 
   public onDecorationSave(decoration: CodDecoration): void {
     const decorations = [...this.decorations.value];
 
-    if (this._editedIndex > -1) {
-      decorations.splice(this._editedIndex, 1, decoration);
+    if (this.editedIndex > -1) {
+      decorations.splice(this.editedIndex, 1, decoration);
     } else {
       decorations.push(decoration);
     }

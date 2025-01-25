@@ -2,11 +2,11 @@
   <form [formGroup]="form" (submit)="save()" id="editor">
     <div class="form-row">
       <!-- tag (bound) -->
-      @if (tagEntries?.length) {
-      <mat-form-field style="width: 8em">
+      @if (tagEntries()?.length) {
+      <mat-form-field>
         <mat-label>tag</mat-label>
         <mat-select [formControl]="tag">
-          @for (e of tagEntries; track e.id) {
+          @for (e of tagEntries(); track e.id) {
           <mat-option [value]="e.id">{{ e.value }}</mat-option>
           }
         </mat-select>
@@ -16,7 +16,7 @@
       </mat-form-field>
       }
       <!-- tag (free) -->
-      @if (!tagEntries?.length) {
+      @else {
       <mat-form-field>
         <mat-label>tag</mat-label>
         <input matInput [formControl]="tag" />
@@ -45,18 +45,18 @@
     </div>
     <div class="form-row">
       <!-- ruling (bound) -->
-      @if (rulTechEntries?.length) {
-      <mat-form-field style="width: 8em">
+      @if (rulTechEntries()?.length) {
+      <mat-form-field>
         <mat-label>ruling</mat-label>
         <mat-select [formControl]="ruling">
-          @for (e of rulTechEntries; track e.id) {
+          @for (e of rulTechEntries(); track e.id) {
           <mat-option [value]="e.id">{{ e.value }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
       }
       <!-- ruling (free) -->
-      @if (!rulTechEntries?.length) {
+      @else {
       <mat-form-field>
         <mat-label>ruling</mat-label>
         <input matInput [formControl]="ruling" />
@@ -68,18 +68,18 @@
       }
 
       <!-- derolez (bound) -->
-      @if (drzEntries?.length) {
-      <mat-form-field style="width: 8em">
+      @if (drzEntries()?.length) {
+      <mat-form-field>
         <mat-label>derolez</mat-label>
         <mat-select [formControl]="derolez">
-          @for (e of drzEntries; track e.id) {
+          @for (e of drzEntries(); track e.id) {
           <mat-option [value]="e.id">{{ e.value }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
       }
       <!-- derolez (free) -->
-      @if (!drzEntries?.length) {
+      @else {
       <mat-form-field>
         <mat-label>derolez</mat-label>
         <input matInput [formControl]="derolez" />
@@ -91,18 +91,18 @@
       }
 
       <!-- pricking (bound) -->
-      @if (prkEntries?.length) {
-      <mat-form-field style="width: 8em">
+      @if (prkEntries()?.length) {
+      <mat-form-field>
         <mat-label>pricking</mat-label>
         <mat-select [formControl]="pricking">
-          @for (e of prkEntries; track e.id) {
+          @for (e of prkEntries(); track e.id) {
           <mat-option [value]="e.id">{{ e.value }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
       }
       <!-- pricking (free) -->
-      @if (!prkEntries?.length) {
+      @else {
       <mat-form-field>
         <mat-label>pricking</mat-label>
         <input matInput [formControl]="pricking" />
@@ -189,49 +189,51 @@
         first = $first; let last = $last) {
         <div>
           <!-- child form -->
-          <div [formGroupName]="i">
+          <div [formGroupName]="i" class="form-row">
             <!-- child actions -->
-            {{ i + 1 }}.
-            <button
-              mat-icon-button
-              type="button"
-              matTooltip="Remove this dimension"
-              (click)="removeDimension(i)"
-            >
-              <mat-icon class="mat-warn">remove_circle</mat-icon>
-            </button>
-            <button
-              [disabled]="first"
-              mat-icon-button
-              type="button"
-              matTooltip="Move dimension up"
-              (click)="moveDimensionUp(i)"
-            >
-              <mat-icon>arrow_upward</mat-icon>
-            </button>
-            <button
-              [disabled]="last"
-              mat-icon-button
-              type="button"
-              matTooltip="Move dimension down"
-              (click)="moveDimensionDown(i)"
-            >
-              <mat-icon>arrow_downward</mat-icon>
-            </button>
+            <div>
+              {{ i + 1 }}.
+              <button
+                mat-icon-button
+                type="button"
+                matTooltip="Remove this dimension"
+                (click)="removeDimension(i)"
+              >
+                <mat-icon class="mat-warn">remove_circle</mat-icon>
+              </button>
+              <button
+                [disabled]="first"
+                mat-icon-button
+                type="button"
+                matTooltip="Move dimension up"
+                (click)="moveDimensionUp(i)"
+              >
+                <mat-icon>arrow_upward</mat-icon>
+              </button>
+              <button
+                [disabled]="last"
+                mat-icon-button
+                type="button"
+                matTooltip="Move dimension down"
+                (click)="moveDimensionDown(i)"
+              >
+                <mat-icon>arrow_downward</mat-icon>
+              </button>
+            </div>
             <!-- child controls -->
             <!-- tag (bound) -->
-            @if (szDimTagEntries?.length) {
-            <mat-form-field style="width: 8em">
+            @if (szDimTagEntries()?.length) {
+            <mat-form-field>
               <mat-label>tag</mat-label>
               <mat-select formControlName="tag">
-                @for (e of szDimTagEntries; track e.id) {
+                @for (e of szDimTagEntries(); track e.id) {
                 <mat-option [value]="e.id">{{ e.value }}</mat-option>
                 }
               </mat-select>
             </mat-form-field>
             }
             <!-- tag (free) -->
-            @if (!szDimTagEntries?.length) {
+            @else {
             <mat-form-field>
               <mat-label>tag</mat-label>
               <input matInput formControlName="tag" />
@@ -241,7 +243,7 @@
               <mat-error>tag too long</mat-error>
               }
             </mat-form-field>
-            } &nbsp;
+            }
             <!-- value -->
             <mat-form-field style="width: 5em">
               <mat-label>value</mat-label>
@@ -256,13 +258,13 @@
               <mat-error>value too long</mat-error>
               }
             </mat-form-field>
-            &nbsp;
+
             <!-- unit (bound) -->
-            @if (szUnitEntries?.length) {
-            <mat-form-field style="width: 8em">
+            @if (szUnitEntries()?.length) {
+            <mat-form-field>
               <mat-label>unit</mat-label>
               <mat-select formControlName="unit">
-                @for (e of szUnitEntries; track e.id) {
+                @for (e of szUnitEntries(); track e.id) {
                 <mat-option [value]="e.id">{{ e.value }}</mat-option>
                 }
               </mat-select>
@@ -274,7 +276,7 @@
             </mat-form-field>
             }
             <!-- unit (free) -->
-            @if (!szUnitEntries?.length) {
+            @else {
             <mat-form-field>
               <mat-label>unit</mat-label>
               <input matInput formControlName="unit" />
@@ -299,8 +301,8 @@
     <fieldset>
       <legend>counts</legend>
       <cadmus-refs-decorated-counts
-        [idEntries]="cntIdEntries"
-        [tagEntries]="cntTagEntries"
+        [idEntries]="cntIdEntries()"
+        [tagEntries]="cntTagEntries()"
         [counts]="counts.value"
         (countsChange)="onCountsChange($event!)"
       />
@@ -340,12 +342,12 @@
 
   <div id="figure">
     <!-- layout figure -->
-    <div style="margin: 0 8px">
+    <div class="form-row">
       <mat-slider min="1" max="3" value="1" step="0.1">
         <input matSliderThumb (valueChange)="onFigSliderChange($event)" />
       </mat-slider>
-      <mat-checkbox style="margin-left: 8px" [formControl]="figHasGap"
-        >exploded</mat-checkbox
+      <mat-slide-toggle (change)="toggleFigExploded($event.checked)"
+        >exploded</mat-slide-toggle
       >
     </div>
     <div id="fig-container">

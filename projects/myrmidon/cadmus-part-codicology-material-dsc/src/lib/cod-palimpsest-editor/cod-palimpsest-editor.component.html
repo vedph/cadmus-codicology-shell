@@ -13,10 +13,10 @@
     <fieldset>
       <legend>chronotope</legend>
       <cadmus-refs-asserted-chronotope
-        [tagEntries]="ctTagEntries"
-        [assTagEntries]="assTagEntries"
-        [refTagEntries]="refTagEntries"
-        [refTypeEntries]="refTypeEntries"
+        [tagEntries]="ctTagEntries()"
+        [assTagEntries]="assTagEntries()"
+        [refTagEntries]="refTagEntries()"
+        [refTypeEntries]="refTypeEntries()"
         [chronotope]="chronotope.value || undefined"
         (chronotopeChange)="onChronotopeChange($event!)"
       />

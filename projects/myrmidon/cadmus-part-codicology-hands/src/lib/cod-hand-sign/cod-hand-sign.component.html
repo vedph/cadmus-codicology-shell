@@ -1,11 +1,11 @@
 <form [formGroup]="form" (submit)="save()">
   <div class="form-row">
     <!-- type (bound) -->
-    @if (typeEntries?.length) {
+    @if (typeEntries()?.length) {
     <mat-form-field>
       <mat-label>type</mat-label>
       <mat-select [formControl]="type">
-        @for (e of typeEntries; track e.id) {
+        @for (e of typeEntries(); track e.id) {
         <mat-option [value]="e.id">{{ e.value }}</mat-option>
         }
       </mat-select>
@@ -14,9 +14,8 @@
       }
     </mat-form-field>
     }
-
     <!-- type (free) -->
-    @if (!typeEntries?.length) {
+    @else {
     <mat-form-field>
       <mat-label>type</mat-label>
       <input matInput [formControl]="type" />

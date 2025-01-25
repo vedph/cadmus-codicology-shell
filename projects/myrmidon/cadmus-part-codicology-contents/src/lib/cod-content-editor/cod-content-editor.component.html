@@ -16,18 +16,18 @@
       (locationChange)="onLocationChange($event)"
     />
     <!-- tag (bound) -->
-    @if (tagEntries?.length) {
+    @if (tagEntries()?.length) {
     <mat-form-field>
       <mat-label>tag</mat-label>
       <mat-select [formControl]="tag">
-        @for (e of tagEntries; track e.id) {
+        @for (e of tagEntries(); track e.id) {
         <mat-option [value]="e.id">{{ e.value }}</mat-option>
         }
       </mat-select>
     </mat-form-field>
     }
     <!-- tag (free) -->
-    @if (!tagEntries?.length) {
+    @else {
     <mat-form-field>
       <mat-label>tag</mat-label>
       <input matInput [formControl]="tag" />
@@ -42,11 +42,11 @@
     <fieldset>
       <legend>work ID</legend>
       <cadmus-refs-asserted-composite-id
-        [idTagEntries]="idTagEntries"
-        [assTagEntries]="assTagEntries"
-        [refTagEntries]="refTagEntries"
-        [idScopeEntries]="idScopeEntries"
-        [refTypeEntries]="refTypeEntries"
+        [idTagEntries]="idTagEntries()"
+        [assTagEntries]="assTagEntries()"
+        [refTagEntries]="refTagEntries()"
+        [idScopeEntries]="idScopeEntries()"
+        [refTypeEntries]="refTypeEntries()"
         [id]="workId.value || undefined"
         (idChange)="onIdChange($event!)"
       />
@@ -228,9 +228,9 @@
     >
       <mat-expansion-panel-header>annotation</mat-expansion-panel-header>
       <cadmus-cod-content-annotation
-        [typeEntries]="annTypeEntries"
+        [typeEntries]="annTypeEntries()"
         [annotation]="editedAnnotation"
-        (annotationChange)="onAnnotationSave($event)"
+        (annotationChange)="onAnnotationSave($event!)"
         (editorClose)="onAnnotationClose()"
       />
     </mat-expansion-panel>

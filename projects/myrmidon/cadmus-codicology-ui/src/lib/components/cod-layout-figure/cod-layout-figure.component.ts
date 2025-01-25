@@ -1,9 +1,10 @@
 import {
   AfterViewInit,
   Component,
+  effect,
   ElementRef,
-  Input,
-  OnInit,
+  input,
+  model,
   ViewChild,
 } from '@angular/core';
 
@@ -24,13 +25,15 @@ interface CodLayoutFigureRect {
   fill: string;
 }
 
+/**
+ * A figure displaying a set of MS layout rectangles.
+ */
 @Component({
   selector: 'cadmus-cod-layout-figure',
   templateUrl: './cod-layout-figure.component.html',
   styleUrls: ['./cod-layout-figure.component.css'],
 })
-export class CodLayoutFigureComponent implements OnInit, AfterViewInit {
-  private _rectSet: CodLayoutRectSet | undefined;
+export class CodLayoutFigureComponent implements AfterViewInit {
   private _afterInit = false;
   // visibility mode: 0=none, 1=height, 2=width, 3=both
   public visMode = 3;
@@ -42,39 +45,23 @@ export class CodLayoutFigureComponent implements OnInit, AfterViewInit {
 
   @ViewChild('fig') fig: ElementRef | undefined;
 
-  @Input()
-  public noScale?: boolean;
+  /**
+   * If true, the figure will not be scaled to fit the size.
+   */
+  public readonly noScale = input<boolean>();
 
   /**
    * The desired size of the figure.
    */
-  @Input()
-  public get size(): { height: number; width: number } {
-    return { height: this.height, width: this.width };
-  }
-  public set size(value: { height: number; width: number }) {
-    if (value) {
-      this.height = value.height;
-      this.width = value.width;
-    }
-  }
+  public readonly size = model<{ height: number; width: number }>({
+    width: 200,
+    height: 400,
+  });
 
   /**
    * The set of MS layout rectangles to be displayed.
    */
-  @Input()
-  public get rects(): CodLayoutRectSet | undefined {
-    return this._rectSet;
-  }
-  public set rects(value: CodLayoutRectSet | undefined) {
-    if (this._rectSet === value) {
-      return;
-    }
-    this._rectSet = value;
-    if (this._afterInit) {
-      this.refresh();
-    }
-  }
+  public readonly rects = model<CodLayoutRectSet>();
 
   public viewbox: string;
 
@@ -84,10 +71,24 @@ export class CodLayoutFigureComponent implements OnInit, AfterViewInit {
     this.height = 400;
     this.heightRects = [];
     this.widthRects = [];
+
+    effect(() => {
+      const size = this.size();
+      if (size) {
+        this.height = size.height;
+        this.width = size.width;
+      } else {
+        this.height = 400;
+        this.width = 200;
+      }
+      if (this._afterInit) {
+        this.refresh(this.rects());
+      }
+    });
   }
 
-  private refresh(): void {
-    if (!this._rectSet) {
+  private refresh(rects?: CodLayoutRectSet): void {
+    if (!rects) {
       this.widthRects = [];
       this.heightRects = [];
       this.viewbox = '0 0 200 400';
@@ -96,31 +97,29 @@ export class CodLayoutFigureComponent implements OnInit, AfterViewInit {
 
     // viewport
     const h =
-      this._rectSet.height.reduce((a, b) => {
+      rects.height.reduce((a, b) => {
         return a + b.value;
       }, 0) +
       // gaps
-      this._rectSet.gap * this._rectSet.height.length;
+      rects.gap * rects.height.length;
 
     const w =
-      this._rectSet.width.reduce((a, b) => {
+      rects.width.reduce((a, b) => {
         return a + b.value;
       }, 0) +
       // gaps
-      this._rectSet.gap * this._rectSet.width.length;
+      rects.gap * rects.width.length;
 
     // height
     const hr: CodLayoutFigureRect[] = [];
     // the horz boxes have margin at left and right
-    const hlm = this._rectSet.width[0].value + this._rectSet.gap;
-    const hrm =
-      this._rectSet.gap +
-      this._rectSet.width[this._rectSet.width.length - 1].value;
-    const hw = w - hlm - hrm - this._rectSet.gap;
+    const hlm = rects.width[0].value + rects.gap;
+    const hrm = rects.gap + rects.width[rects.width.length - 1].value;
+    const hw = w - hlm - hrm - rects.gap;
 
     let y = 0;
-    for (let i = 0; i < this._rectSet.height.length; i++) {
-      const r = this._rectSet.height[i];
+    for (let i = 0; i < rects.height.length; i++) {
+      const r = rects.height[i];
       hr.push({
         name: r.name,
         x: hlm,
@@ -129,21 +128,19 @@ export class CodLayoutFigureComponent implements OnInit, AfterViewInit {
         height: r.value,
         fill: r.empty ? 'white' : '#c0c0c0',
       });
-      y += r.value + this._rectSet.gap;
+      y += r.value + rects.gap;
     }
 
     // width
     const wr: CodLayoutFigureRect[] = [];
     // the vert boxes have margin at top and bottom
-    const wtm = this._rectSet.height[0].value + this._rectSet.gap;
-    const wbm =
-      this._rectSet.height[this._rectSet.height.length - 1].value +
-      this._rectSet.gap;
-    const wh = h - wtm - wbm - this._rectSet.gap;
+    const wtm = rects.height[0].value + rects.gap;
+    const wbm = rects.height[rects.height.length - 1].value + rects.gap;
+    const wh = h - wtm - wbm - rects.gap;
     let x = 0;
 
-    for (let i = 0; i < this._rectSet.width.length; i++) {
-      const r = this._rectSet.width[i];
+    for (let i = 0; i < rects.width.length; i++) {
+      const r = rects.width[i];
       wr.push({
         name: r.name,
         x: x,
@@ -152,32 +149,24 @@ export class CodLayoutFigureComponent implements OnInit, AfterViewInit {
         height: wh,
         fill: r.empty ? 'white' : '#c0c0c0',
       });
-      x += r.value + this._rectSet.gap;
+      x += r.value + rects.gap;
     }
 
     this.heightRects = hr;
     this.widthRects = wr;
 
     // scale
-    if (this.noScale) {
+    if (this.noScale()) {
       this.viewbox = `0 0 ${w} ${h}`;
-      // this.width = w;
-      // this.height = h;
-      // if (this.fig?.nativeElement) {
-      //   this.fig.nativeElement.style.width = w;
-      //   this.fig.nativeElement.style.height = h;
-      // }
     } else {
       this.viewbox = `0 0 ${this.width} ${this.height}`;
     }
   }
 
-  public ngOnInit(): void {}
-
   public ngAfterViewInit(): void {
     this._afterInit = true;
     setTimeout(() => {
-      this.refresh();
+      this.refresh(this.rects());
     }, 500);
   }
 

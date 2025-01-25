@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -51,56 +51,31 @@ import { CodBinding } from '../cod-bindings-part';
     MatIcon,
   ],
 })
-export class CodBindingEditorComponent implements OnInit {
-  private _binding: CodBinding | undefined;
-
-  @Input()
-  public get binding(): CodBinding | undefined {
-    return this._binding;
-  }
-  public set binding(value: CodBinding | undefined) {
-    if (this._binding === value) {
-      return;
-    }
-    this._binding = value;
-    this.updateForm(value);
-  }
+export class CodBindingEditorComponent {
+  public readonly binding = model<CodBinding>();
 
   // cod-binding-tags
-  @Input()
-  public tagEntries: ThesaurusEntry[] | undefined;
+  public readonly tagEntries = input<ThesaurusEntry[]>();
   // cod-binding-cover-materials
-  @Input()
-  public coverEntries: ThesaurusEntry[] | undefined;
+  public readonly coverEntries = input<ThesaurusEntry[]>();
   // cod-binding-board-materials
-  @Input()
-  public boardEntries: ThesaurusEntry[] | undefined;
+  public readonly boardEntries = input<ThesaurusEntry[]>();
   // chronotope-tags
-  @Input()
-  public ctTagEntries: ThesaurusEntry[] | undefined;
+  public readonly ctTagEntries = input<ThesaurusEntry[]>();
   // assertion-tags
-  @Input()
-  public assTagEntries: ThesaurusEntry[] | undefined;
+  public readonly assTagEntries = input<ThesaurusEntry[]>();
   // doc-reference-types
-  @Input()
-  public refTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly refTypeEntries = input<ThesaurusEntry[]>();
   // doc-reference-tags
-  @Input()
-  public refTagEntries: ThesaurusEntry[] | undefined;
+  public readonly refTagEntries = input<ThesaurusEntry[]>();
   // physical-size-tags
-  @Input()
-  public szTagEntries: ThesaurusEntry[] | undefined;
+  public readonly szTagEntries = input<ThesaurusEntry[]>();
   // physical-size-dim-tags
-  @Input()
-  public szDimTagEntries: ThesaurusEntry[] | undefined;
+  public readonly szDimTagEntries = input<ThesaurusEntry[]>();
   // physical-size-units
-  @Input()
-  public szUnitEntries: ThesaurusEntry[] | undefined;
+  public readonly szUnitEntries = input<ThesaurusEntry[]>();
 
-  @Output()
-  public bindingChange: EventEmitter<CodBinding>;
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public editorClose = output();
 
   public tag: FormControl<string | null>;
   public coverMaterial: FormControl<string | null>;
@@ -112,8 +87,6 @@ export class CodBindingEditorComponent implements OnInit {
   public form: FormGroup;
 
   constructor(formBuilder: FormBuilder) {
-    this.bindingChange = new EventEmitter<CodBinding>();
-    this.editorClose = new EventEmitter<any>();
     // form
     this.tag = formBuilder.control(null, Validators.maxLength(50));
     this.coverMaterial = formBuilder.control(null, [
@@ -137,12 +110,10 @@ export class CodBindingEditorComponent implements OnInit {
       hasSize: this.hasSize,
       description: this.description,
     });
-  }
 
-  ngOnInit(): void {
-    if (this._binding) {
-      this.updateForm(this._binding);
-    }
+    effect(() => {
+      this.updateForm(this.binding());
+    });
   }
 
   private updateForm(model: CodBinding | undefined): void {
@@ -190,7 +161,6 @@ export class CodBindingEditorComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this._binding = this.getModel();
-    this.bindingChange.emit(this._binding);
+    this.binding.set(this.getModel());
   }
 }

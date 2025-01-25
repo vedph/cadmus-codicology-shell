@@ -1,10 +1,11 @@
 import {
   Component,
-  EventEmitter,
-  Input,
+  effect,
+  input,
+  model,
   OnDestroy,
   OnInit,
-  Output,
+  output,
   ViewChild,
 } from '@angular/core';
 import {
@@ -100,39 +101,16 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
   private _editorModel?: monaco.editor.ITextModel;
   private _editor?: monaco.editor.IStandaloneCodeEditor;
 
-  private _element: CodDecorationElement | undefined;
-  private _elemFlagEntries: ThesaurusEntry[];
-  private _elemColorEntries: ThesaurusEntry[];
-  private _elemGildingEntries: ThesaurusEntry[];
-  private _elemTechEntries: ThesaurusEntry[];
-  private _elemPosEntries: ThesaurusEntry[];
-  private _elemToolEntries: ThesaurusEntry[];
-  private _elemTypolEntries: ThesaurusEntry[];
   private _updatingForm?: boolean;
   private _adjustingUI?: boolean;
 
   @ViewChild('dsceditor', { static: false }) dscEditor: any;
 
-  @Input()
-  public get element(): CodDecorationElement | undefined {
-    return this._element;
-  }
-  public set element(value: CodDecorationElement | undefined) {
-    if (this._element === value) {
-      return;
-    }
-    console.log('setting element');
-    this._element = value;
-    this.updateForm(value);
-  }
+  public readonly element = model<CodDecorationElement>();
 
-  @Input()
-  public parentKeys: string[] | undefined;
+  public readonly parentKeys = input<string[]>();
 
-  @Output()
-  public elementChange: EventEmitter<CodDecorationElement>;
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public readonly editorClose = output();
 
   // general
   public key: FormControl<string | null>;
@@ -169,106 +147,25 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
   // cod-decoration-element-types (required). All the other thesauri
   // (except decTypeHiddenEntries) have their entries filtered
   // by the value selected from this thesaurus.
-  @Input()
-  public decElemTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly decElemTypeEntries = input<ThesaurusEntry[]>();
   // cod-decoration-type-hidden
-  @Input()
-  public decTypeHiddenEntries: ThesaurusEntry[] | undefined;
-
+  public readonly decTypeHiddenEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-flags
-  @Input()
-  public get decElemFlagEntries(): ThesaurusEntry[] | undefined {
-    return this._elemFlagEntries;
-  }
-  public set decElemFlagEntries(value: ThesaurusEntry[] | undefined) {
-    if (this._elemFlagEntries === value) {
-      return;
-    }
-    this._elemFlagEntries = value || [];
-    this.genFlags = this._elemFlagEntries.map(entryToFlag) || [];
-  }
-
+  public readonly decElemFlagEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-colors
-  @Input()
-  public get decElemColorEntries(): ThesaurusEntry[] | undefined {
-    return this._elemColorEntries;
-  }
-  public set decElemColorEntries(value: ThesaurusEntry[] | undefined) {
-    if (this._elemColorEntries === value) {
-      return;
-    }
-    this._elemColorEntries = value || [];
-    this.colorFlags = this._elemColorEntries.map(entryToFlag) || [];
-  }
-
+  public readonly decElemColorEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-gildings
-  @Input()
-  public get decElemGildingEntries(): ThesaurusEntry[] | undefined {
-    return this._elemGildingEntries;
-  }
-  public set decElemGildingEntries(value: ThesaurusEntry[] | undefined) {
-    if (this._elemGildingEntries === value) {
-      return;
-    }
-    this._elemGildingEntries = value || [];
-    this.gildingFlags = this._elemGildingEntries.map(entryToFlag) || [];
-  }
-
+  public readonly decElemGildingEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-techniques
-  @Input()
-  public get decElemTechEntries(): ThesaurusEntry[] | undefined {
-    return this._elemTechEntries;
-  }
-  public set decElemTechEntries(value: ThesaurusEntry[] | undefined) {
-    if (this._elemTechEntries === value) {
-      return;
-    }
-    this._elemTechEntries = value || [];
-    this.techniqueFlags = this._elemTechEntries.map(entryToFlag) || [];
-  }
-
+  public readonly decElemTechEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-positions
-  @Input()
-  public get decElemPosEntries(): ThesaurusEntry[] | undefined {
-    return this._elemPosEntries;
-  }
-  public set decElemPosEntries(value: ThesaurusEntry[] | undefined) {
-    if (this._elemPosEntries === value) {
-      return;
-    }
-    this._elemPosEntries = value || [];
-    this.positionFlags = this._elemPosEntries.map(entryToFlag) || [];
-  }
-
+  public readonly decElemPosEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-tools
-  @Input()
-  public get decElemToolEntries(): ThesaurusEntry[] | undefined {
-    return this._elemToolEntries;
-  }
-  public set decElemToolEntries(value: ThesaurusEntry[] | undefined) {
-    if (this._elemToolEntries === value) {
-      return;
-    }
-    this._elemToolEntries = value || [];
-    this.toolFlags = this._elemToolEntries.map(entryToFlag) || [];
-  }
-
+  public readonly decElemToolEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-typologies
-  @Input()
-  public get decElemTypolEntries(): ThesaurusEntry[] | undefined {
-    return this._elemTypolEntries;
-  }
-  public set decElemTypolEntries(value: ThesaurusEntry[] | undefined) {
-    if (this._elemTypolEntries === value) {
-      return;
-    }
-    this._elemTypolEntries = value || [];
-    this.typologyFlags = this._elemTypolEntries.map(entryToFlag) || [];
-  }
-
+  public readonly decElemTypolEntries = input<ThesaurusEntry[]>();
   // cod-image-types
-  @Input()
-  public imgTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly imgTypeEntries = input<ThesaurusEntry[]>();
 
   // the filtered entries:
   public elemFlagEntries: ThesaurusEntry[] | undefined;
@@ -290,17 +187,6 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
   public hidden?: HiddenDecElemFields;
 
   constructor(formBuilder: FormBuilder) {
-    this.elementChange = new EventEmitter<CodDecorationElement>();
-    this.editorClose = new EventEmitter<any>();
-    // flags
-    this._elemFlagEntries = [];
-    this._elemColorEntries = [];
-    this._elemGildingEntries = [];
-    this._elemTechEntries = [];
-    this._elemPosEntries = [];
-    this._elemToolEntries = [];
-    this._elemTypolEntries = [];
-    // form
     this.key = formBuilder.control(null, [
       Validators.pattern('^[-a-zA-Z0-9_]+$'),
       Validators.maxLength(50),
@@ -351,6 +237,38 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
       images: this.images,
       note: this.note,
     });
+
+    effect(() => {
+      this.updateForm(this.element());
+    });
+
+    effect(() => {
+      this.genFlags = this.decElemFlagEntries()?.map(entryToFlag) || [];
+    });
+
+    effect(() => {
+      this.colorFlags = this.decElemColorEntries()?.map(entryToFlag) || [];
+    });
+
+    effect(() => {
+      this.gildingFlags = this.decElemGildingEntries()?.map(entryToFlag) || [];
+    });
+
+    effect(() => {
+      this.techniqueFlags = this.decElemTechEntries()?.map(entryToFlag) || [];
+    });
+
+    effect(() => {
+      this.positionFlags = this.decElemPosEntries()?.map(entryToFlag) || [];
+    });
+
+    effect(() => {
+      this.toolFlags = this.decElemToolEntries()?.map(entryToFlag) || [];
+    });
+
+    effect(() => {
+      this.typologyFlags = this.decElemTypolEntries()?.map(entryToFlag) || [];
+    });
   }
 
   /**
@@ -382,7 +300,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
 
   private updateVisibility(): void {
     const hidden: any = {};
-    const entry = this.decTypeHiddenEntries?.find(
+    const entry = this.decTypeHiddenEntries()?.find(
       (e) => e.id === this.type.value
     );
     if (entry) {
@@ -448,23 +366,25 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
     // filter entries for multiple-selections
     this.flags.setValue(
       (
-        this.getFilteredEntries(this._elemFlagEntries, this.type.value)?.map(
-          entryToFlag
-        ) || []
+        this.getFilteredEntries(
+          this.decElemFlagEntries(),
+          this.type.value
+        )?.map(entryToFlag) || []
       ).map((f) => f.id)
     );
 
     this.colors.setValue(
       (
-        this.getFilteredEntries(this._elemColorEntries, this.type.value)?.map(
-          entryToFlag
-        ) || []
+        this.getFilteredEntries(
+          this.decElemColorEntries(),
+          this.type.value
+        )?.map(entryToFlag) || []
       ).map((f) => f.id)
     );
 
     // filter entries and set free for single-entry groups with "any.-"
     let entries = this.getFilteredEntries(
-      this._elemGildingEntries,
+      this.decElemGildingEntries(),
       this.type.value
     );
     this.elemGildingFree = this.isFreeSet(entries);
@@ -474,7 +394,10 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
         : (entries?.map(entryToFlag) || []).map((f) => f.id)
     );
 
-    entries = this.getFilteredEntries(this._elemTechEntries, this.type.value);
+    entries = this.getFilteredEntries(
+      this.decElemTechEntries(),
+      this.type.value
+    );
     this.elemTechniqueFree = this.isFreeSet(entries);
     this.techniques.setValue(
       this.elemTechniqueFree
@@ -482,7 +405,10 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
         : (entries?.map(entryToFlag) || []).map((f) => f.id)
     );
 
-    entries = this.getFilteredEntries(this._elemPosEntries, this.type.value);
+    entries = this.getFilteredEntries(
+      this.decElemPosEntries(),
+      this.type.value
+    );
     this.elemPositionFree = this.isFreeSet(entries);
     this.positions.setValue(
       this.elemPositionFree
@@ -490,7 +416,10 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
         : (entries?.map(entryToFlag) || []).map((f) => f.id)
     );
 
-    entries = this.getFilteredEntries(this._elemToolEntries, this.type.value);
+    entries = this.getFilteredEntries(
+      this.decElemToolEntries(),
+      this.type.value
+    );
     this.elemToolFree = this.isFreeSet(entries);
     this.tools.setValue(
       this.elemToolFree
@@ -500,9 +429,10 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
 
     this.typologies.setValue(
       (
-        this.getFilteredEntries(this._elemTypolEntries, this.type.value)?.map(
-          entryToFlag
-        ) || []
+        this.getFilteredEntries(
+          this.decElemTypolEntries(),
+          this.type.value
+        )?.map(entryToFlag) || []
       ).map((f) => f.id)
     );
 
@@ -681,7 +611,6 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
     if (this.form.invalid) {
       return;
     }
-    this._element = this.getElement();
-    this.elementChange.emit(this._element);
+    this.element.set(this.getElement());
   }
 }

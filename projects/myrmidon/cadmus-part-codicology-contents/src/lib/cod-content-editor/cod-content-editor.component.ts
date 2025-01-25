@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -78,61 +78,29 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     CodLocationRangePipe,
   ],
 })
-export class CodContentEditorComponent implements OnInit {
-  private _content: CodContent | undefined;
+export class CodContentEditorComponent {
   private _editedAnnotationIndex: number;
-  private _stateEntries: ThesaurusEntry[] | undefined;
 
-  @Input()
-  public get content(): CodContent | undefined {
-    return this._content;
-  }
-  public set content(value: CodContent | undefined) {
-    if (this._content === value) {
-      return;
-    }
-    this._content = value;
-    this.updateForm(value);
-  }
+  public readonly content = model<CodContent>();
 
   // cod-content-states
-  @Input()
-  public get stateEntries(): ThesaurusEntry[] | undefined {
-    return this._stateEntries;
-  }
-  public set stateEntries(value: ThesaurusEntry[] | undefined) {
-    if (this._stateEntries === value) {
-      return;
-    }
-    this._stateEntries = value || [];
-    this.stateFlags = this._stateEntries.map(entryToFlag);
-  }
+  public readonly stateEntries = input<ThesaurusEntry[]>();
   // cod-content-tags
-  @Input()
-  public tagEntries: ThesaurusEntry[] | undefined;
+  public readonly tagEntries = input<ThesaurusEntry[]>();
   // cod-content-annotation-types
-  @Input()
-  public annTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly annTypeEntries = input<ThesaurusEntry[]>();
   // assertion-tags
-  @Input()
-  public assTagEntries: ThesaurusEntry[] | undefined;
+  public readonly assTagEntries = input<ThesaurusEntry[]>();
   // doc-reference-types
-  @Input()
-  public refTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly refTypeEntries = input<ThesaurusEntry[]>();
   // doc-reference-tags
-  @Input()
-  public refTagEntries: ThesaurusEntry[] | undefined;
+  public readonly refTagEntries = input<ThesaurusEntry[]>();
   // external-id-tags
-  @Input()
-  public idTagEntries: ThesaurusEntry[] | undefined;
+  public readonly idTagEntries = input<ThesaurusEntry[]>();
   // external-id-scopes
-  @Input()
-  public idScopeEntries: ThesaurusEntry[] | undefined;
+  public readonly idScopeEntries = input<ThesaurusEntry[]>();
 
-  @Output()
-  public contentChange: EventEmitter<CodContent>;
-  @Output()
-  public editorClose: EventEmitter<any>;
+  public editorClose = output();
 
   public eid: FormControl<string | null>;
   public workId: FormControl<AssertedCompositeId | null>;
@@ -156,8 +124,6 @@ export class CodContentEditorComponent implements OnInit {
   public stateFlags: Flag[] = [];
 
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
-    this.contentChange = new EventEmitter<CodContent>();
-    this.editorClose = new EventEmitter<any>();
     this._editedAnnotationIndex = -1;
 
     // form
@@ -194,12 +160,14 @@ export class CodContentEditorComponent implements OnInit {
       states: this.states,
       annotations: this.annotations,
     });
-  }
 
-  public ngOnInit(): void {
-    if (this._content) {
-      this.updateForm(this._content);
-    }
+    effect(() => {
+      this.updateForm(this.content());
+    });
+
+    effect(() => {
+      this.stateFlags = this.stateEntries()?.map(entryToFlag) || [];
+    });
   }
 
   private updateForm(content: CodContent | undefined): void {
@@ -269,7 +237,7 @@ export class CodContentEditorComponent implements OnInit {
   //#region Annotations
   public addAnnotation(): void {
     const annotation: CodContentAnnotation = {
-      type: this.annTypeEntries?.length ? this.annTypeEntries[0].id : '',
+      type: this.annTypeEntries()?.length ? this.annTypeEntries()![0].id : '',
       range: { start: { n: 0 }, end: { n: 0 } },
       incipit: '',
       explicit: '',
@@ -346,7 +314,6 @@ export class CodContentEditorComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this._content = this.getModel();
-    this.contentChange.emit(this._content);
+    this.content.set(this.getModel());
   }
 }

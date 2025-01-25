@@ -41,14 +41,14 @@
   <fieldset>
     <legend>identifiers</legend>
     <cadmus-refs-asserted-composite-ids
-      [idScopeEntries]="idScopeEntries"
-      [idTagEntries]="idTagEntries"
-      [assTagEntries]="assTagEntries"
-      [refTypeEntries]="refTypeEntries"
-      [refTagEntries]="refTagEntries"
-      [pinByTypeMode]="pinByTypeMode"
-      [canSwitchMode]="canSwitchMode"
-      [canEditTarget]="canEditTarget"
+      [idScopeEntries]="idScopeEntries()"
+      [idTagEntries]="idTagEntries()"
+      [assTagEntries]="assTagEntries()"
+      [refTypeEntries]="refTypeEntries()"
+      [refTagEntries]="refTagEntries()"
+      [pinByTypeMode]="pinByTypeMode()"
+      [canSwitchMode]="canSwitchMode()"
+      [canEditTarget]="canEditTarget()"
       [ids]="ids.value"
       (idsChange)="onIdsChange($event!)"
     />
@@ -60,10 +60,10 @@
     <fieldset>
       <legend>size</legend>
       <cadmus-mat-physical-size
-        [tagEntries]="szTagEntries"
-        [unitEntries]="szUnitEntries"
+        [tagEntries]="szTagEntries()"
+        [unitEntries]="szUnitEntries()"
         [hBeforeW]="true"
-        [dimTagEntries]="szDimTagEntries"
+        [dimTagEntries]="szDimTagEntries()"
         defaultWUnit="mm"
         defaultHUnit="mm"
         defaultDUnit="mm"
@@ -78,10 +78,10 @@
       <legend>chronotopes</legend>
       <cadmus-asserted-chronotope-set
         [chronotopes]="chronotopes.value"
-        [tagEntries]="ctTagEntries"
-        [assTagEntries]="assTagEntries"
-        [refTagEntries]="refTagEntries"
-        [refTypeEntries]="refTypeEntries"
+        [tagEntries]="ctTagEntries()"
+        [assTagEntries]="assTagEntries()"
+        [refTagEntries]="refTagEntries()"
+        [refTypeEntries]="refTypeEntries()"
         (chronotopesChange)="onChronotopesChange($event!)"
       />
     </fieldset>

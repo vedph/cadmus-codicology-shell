@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, effect, input, Input, model, OnDestroy } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -56,49 +49,37 @@ export interface CodImage {
     MatInput,
   ],
 })
-export class CodImagesComponent implements OnInit, OnDestroy {
+export class CodImagesComponent implements OnDestroy {
   private _subs: Subscription[];
-  private _images: CodImage[] | undefined | null;
+  private _dropNextInput?: boolean;
 
   /**
    * The images edited.
    */
-  @Input()
-  public get images(): CodImage[] | undefined | null {
-    return this._images;
-  }
-  public set images(value: CodImage[] | undefined | null) {
-    if (this._images === value) {
-      return;
-    }
-    this._images = value;
-    this.updateForm(value);
-  }
+  public readonly images = model<CodImage[]>();
 
   // cod-image-types
-  @Input()
-  public typeEntries: ThesaurusEntry[] | undefined;
-
-  /**
-   * Emitted when images change.
-   */
-  @Output()
-  public imagesChange: EventEmitter<CodImage[] | undefined>;
+  public readonly typeEntries = input<ThesaurusEntry[]>();
 
   public imagesArr: FormArray;
   public form: FormGroup;
 
   constructor(private _formBuilder: FormBuilder) {
-    this.imagesChange = new EventEmitter<CodImage[] | undefined>();
     this._subs = [];
     // form
     this.imagesArr = _formBuilder.array([]);
     this.form = _formBuilder.group({
       imagesArr: this.imagesArr,
     });
-  }
 
-  ngOnInit(): void {}
+    effect(() => {
+      if (this._dropNextInput) {
+        this._dropNextInput = false;
+        return;
+      }
+      this.updateForm(this.images());
+    });
+  }
 
   private unsubscribeEntries(): void {
     for (let i = 0; i < this._subs.length; i++) {
@@ -217,7 +198,7 @@ export class CodImagesComponent implements OnInit, OnDestroy {
   }
 
   private emitImagesChange(): void {
-    this._images = this.getImages();
-    this.imagesChange.emit(this._images);
+    this._dropNextInput = true;
+    this.images.set(this.getImages());
   }
 }

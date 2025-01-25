@@ -4,7 +4,7 @@
     <mat-form-field>
       <mat-label>location</mat-label>
       <mat-select [formControl]="location">
-        @for (l of locations; track l) {
+        @for (l of locations(); track l) {
         <mat-option [value]="l">{{ l }}</mat-option>
         }
       </mat-select>
@@ -15,11 +15,11 @@
     </mat-form-field>
 
     <!-- material (bound) -->
-    @if (matEntries?.length) {
+    @if (matEntries()?.length) {
     <mat-form-field class="form-col">
       <mat-label>material</mat-label>
       <mat-select [formControl]="material">
-        @for (e of matEntries; track e.id) {
+        @for (e of matEntries(); track e.id) {
         <mat-option [value]="e.id">{{ e.value }}</mat-option>
         }
       </mat-select>
@@ -30,7 +30,7 @@
     </mat-form-field>
     }
     <!-- material (free) -->
-    @if (!matEntries?.length) {
+    @else {
     <mat-form-field class="form-col">
       <mat-label>material</mat-label>
       <input matInput [formControl]="material" />
@@ -47,10 +47,10 @@
 
   <!-- chronotope -->
   <cadmus-refs-asserted-chronotope
-    [tagEntries]="ctTagEntries"
-    [assTagEntries]="assTagEntries"
-    [refTagEntries]="refTagEntries"
-    [refTypeEntries]="refTypeEntries"
+    [tagEntries]="ctTagEntries()"
+    [assTagEntries]="assTagEntries()"
+    [refTagEntries]="refTagEntries()"
+    [refTypeEntries]="refTypeEntries()"
     [chronotope]="chronotope.value || undefined"
     (chronotopeChange)="onChronotopeChange($event)"
   />
