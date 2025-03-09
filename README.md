@@ -160,6 +160,10 @@ graph LR;
 
 ## History
 
+- 2025-03-09:
+  - ⚠️ breaking change because of migration to Cadmus shell V12.
+  - updated Angular and packages.
+
 ### 10.0.1
 
 - 2025-01-25: ⚠️ migrated to signals.
