@@ -29,13 +29,23 @@
 
     <!-- range -->
     <cadmus-cod-location
-      style="flex: 0 0 auto"
       label="range"
       [required]="true"
       [location]="ranges.value"
       (locationChange)="onLocationChange($event)"
     />
   </div>
+
+  <!-- features -->
+  @if (featFlags().length) {
+  <div>
+    <cadmus-ui-flag-set
+      [flags]="featFlags()"
+      [checkedIds]="features.value"
+      (checkedIdsChange)="onCheckedIdsChange($event)"
+    />
+  </div>
+  }
 
   <!-- incipit -->
   <div>

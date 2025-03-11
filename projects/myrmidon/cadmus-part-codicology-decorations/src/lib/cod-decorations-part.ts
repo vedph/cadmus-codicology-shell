@@ -36,6 +36,7 @@ export interface CodDecorationElement {
   key?: string;
   parentKey?: string;
   type: string;
+  tag?: string;
   flags: string[];
   ranges: CodLocationRange[];
   instanceCount?: number;
@@ -803,6 +804,9 @@ export const COD_DECORATIONS_PART_SCHEMA = {
                           type: 'string',
                         },
                         parentKey: {
+                          type: 'string',
+                        },
+                        tag: {
                           type: 'string',
                         },
                         typologies: {

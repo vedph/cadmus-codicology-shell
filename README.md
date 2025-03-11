@@ -160,6 +160,16 @@ graph LR;
 
 ## History
 
+- 2025-03-11: changes to models and corresponding UI for:
+  - `CodDecorationElement`: ➕ add `tag` (`string`, optional thesaurus 📚 `cod-decoration-element-tags`).
+  - `CodWatermark`:
+    - ➕ add `rangesAsQuire` checkbox (`boolean`) meaning that `ranges` refers to quires rather than sheets.
+    - UI: make sample not required.
+  - `CodContent`: ➕ add `claimedAuthorRanges` (`CodLocationRange[]`) and `claimedTitleRanges` (`CodLocationRange[]`) for ranges referring to claimed author and claimed work.
+  - `CodContentAnnotation`:
+    - ➕ add `features` (`string[]`, flags) with its thesaurus 📚 `cod-content-annotation-features`.
+    - ➕ add `languages` (`string[]`, flags) with its thesaurus 📚 `cod-content-annotation-languages`.
+
 - 2025-03-09:
   - ⚠️ breaking change because of migration to Cadmus shell V12.
   - updated Angular and packages.

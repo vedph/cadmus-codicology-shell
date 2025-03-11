@@ -1,4 +1,11 @@
-import { Component, effect, input, model, output } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  input,
+  model,
+  output,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -21,10 +28,18 @@ import {
   CodLocationRange,
   CodLocationComponent,
 } from '@myrmidon/cadmus-cod-location';
+import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import { CodContentAnnotation } from '../cod-contents-part';
+
+function entryToFlag(entry: ThesaurusEntry): Flag {
+  return {
+    id: entry.id,
+    label: entry.value,
+  };
+}
 
 @Component({
   selector: 'cadmus-cod-content-annotation',
@@ -43,6 +58,7 @@ import { CodContentAnnotation } from '../cod-contents-part';
     MatIconButton,
     MatTooltip,
     MatIcon,
+    FlagSetComponent,
   ],
 })
 export class CodContentAnnotationComponent {
@@ -50,16 +66,26 @@ export class CodContentAnnotationComponent {
 
   // cod-content-annotation-types
   public readonly typeEntries = input<ThesaurusEntry[]>();
+  // cod-content-annotation-features
+  public readonly featureEntries = input<ThesaurusEntry[]>();
+  // cod-content-annotation-languages
+  public readonly langEntries = input<ThesaurusEntry[]>();
 
   public editorClose = output();
 
   public type: FormControl<string | null>;
   public ranges: FormControl<CodLocationRange[]>;
+  public features: FormControl<string[]>;
+  public languages: FormControl<string[]>;
   public incipit: FormControl<string | null>;
   public explicit: FormControl<string | null>;
   public text: FormControl<string | null>;
   public note: FormControl<string | null>;
   public form: FormGroup;
+
+  public featFlags = computed(
+    () => this.featureEntries()?.map((e) => entryToFlag(e)) || []
+  );
 
   constructor(formBuilder: FormBuilder) {
     this.type = formBuilder.control(null, [
@@ -70,6 +96,8 @@ export class CodContentAnnotationComponent {
       validators: NgxToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
+    this.features = formBuilder.control([], { nonNullable: true });
+    this.languages = formBuilder.control([], { nonNullable: true });
     this.incipit = formBuilder.control(null, [
       Validators.required,
       Validators.maxLength(500),
@@ -80,6 +108,8 @@ export class CodContentAnnotationComponent {
     this.form = formBuilder.group({
       type: this.type,
       ranges: this.ranges,
+      features: this.features,
+      languages: this.languages,
       incipit: this.incipit,
       explicit: this.explicit,
       note: this.note,
@@ -99,6 +129,8 @@ export class CodContentAnnotationComponent {
 
     this.type.setValue(model.type);
     this.ranges.setValue([model.range]);
+    this.features.setValue(model.features || []);
+    this.languages.setValue(model.languages || []);
     this.incipit.setValue(model.incipit);
     this.explicit.setValue(model.explicit || null);
     this.text.setValue(model.text || null);
@@ -110,6 +142,8 @@ export class CodContentAnnotationComponent {
     return {
       type: this.type.value?.trim() || '',
       range: this.ranges.value.length ? this.ranges.value[0] : (null as any),
+      features: this.features.value || [],
+      languages: this.languages.value || [],
       incipit: this.incipit.value?.trim() || '',
       explicit: this.explicit.value?.trim() || '',
       text: this.text.value?.trim() || '',
@@ -121,6 +155,12 @@ export class CodContentAnnotationComponent {
     this.ranges.setValue(ranges || []);
     this.ranges.updateValueAndValidity();
     this.ranges.markAsDirty();
+  }
+
+  public onCheckedIdsChange(ids: string[]): void {
+    this.features.setValue(ids);
+    this.features.markAsDirty();
+    this.features.updateValueAndValidity();
   }
 
   public cancel(): void {

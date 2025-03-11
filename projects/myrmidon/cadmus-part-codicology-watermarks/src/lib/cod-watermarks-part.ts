@@ -11,6 +11,7 @@ export interface CodWatermark {
   name: string;
   sampleRange: CodLocationRange;
   ranges?: CodLocationRange[];
+  rangesAsQuire?: boolean;
   ids?: AssertedCompositeId[];
   size?: PhysicalSize;
   chronotopes?: AssertedChronotope[];
@@ -235,6 +236,9 @@ export const COD_WATERMARKS_PART_SCHEMA = {
           },
         ],
       },
+    },
+    rangesAsQuire: {
+      type: 'boolean',
     },
     ids: {
       type: 'array',

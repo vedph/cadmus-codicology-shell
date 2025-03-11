@@ -116,6 +116,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
   public key: FormControl<string | null>;
   public parentKey: FormControl<string | null>;
   public type: FormControl<string | null>;
+  public tag: FormControl<string | null>;
   public flags: FormControl<string[]>;
   public ranges: FormControl<CodLocationRange[]>;
   public instanceCount: FormControl<number>;
@@ -162,6 +163,8 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
   public readonly decElemPosEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-tools
   public readonly decElemToolEntries = input<ThesaurusEntry[]>();
+  // cod-decoration-element-tags
+  public readonly decElemTagEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-typologies
   public readonly decElemTypolEntries = input<ThesaurusEntry[]>();
   // cod-image-types
@@ -199,6 +202,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
       Validators.required,
       Validators.maxLength(50),
     ]);
+    this.tag = formBuilder.control(null, Validators.maxLength(50));
     this.flags = formBuilder.control([], { nonNullable: true });
     this.ranges = formBuilder.control([], { nonNullable: true });
     this.instanceCount = formBuilder.control(0, { nonNullable: true });
@@ -221,6 +225,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
       key: this.key,
       parentKey: this.parentKey,
       type: this.type,
+      tag: this.tag,
       flags: this.flags,
       instanceCount: this.instanceCount,
       ranges: this.ranges,
@@ -491,6 +496,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
     }
     // general
     this.type.setValue(element.type, { emitEvent: false });
+    this.tag.setValue(element.tag || null, { emitEvent: false });
     setTimeout(() => {
       // let the UI adjust itself before setting type-dependent controls
       console.log('adjust UI from updateForm');
@@ -510,6 +516,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
       key: this.key.value?.trim(),
       parentKey: this.parentKey.value?.trim(),
       type: this.type.value?.trim() || '',
+      tag: this.tag.value?.trim(),
       flags: this.flags.value,
       ranges: this.ranges.value || [],
       instanceCount: this.instanceCount.value || 0,

@@ -61,10 +61,8 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     MatLabel,
     MatInput,
     MatError,
-    CodLocationComponent,
     MatSelect,
     MatOption,
-    AssertedCompositeIdComponent,
     FlagSetComponent,
     MatExpansionPanel,
     MatExpansionPanelHeader,
@@ -72,10 +70,12 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     MatIcon,
     MatIconButton,
     MatTooltip,
-    CodContentAnnotationComponent,
     EllipsisPipe,
     FlatLookupPipe,
     CodLocationRangePipe,
+    AssertedCompositeIdComponent,
+    CodContentAnnotationComponent,
+    CodLocationComponent,
   ],
 })
 export class CodContentEditorComponent {
@@ -89,6 +89,10 @@ export class CodContentEditorComponent {
   public readonly tagEntries = input<ThesaurusEntry[]>();
   // cod-content-annotation-types
   public readonly annTypeEntries = input<ThesaurusEntry[]>();
+  // cod-content-annotation-features
+  public readonly annFeatureEntries = input<ThesaurusEntry[]>();
+  // cod-content-annotation-languages
+  public readonly annLangEntries = input<ThesaurusEntry[]>();
   // assertion-tags
   public readonly assTagEntries = input<ThesaurusEntry[]>();
   // doc-reference-types
@@ -110,7 +114,9 @@ export class CodContentEditorComponent {
   public title: FormControl<string | null>;
   public location: FormControl<string | null>;
   public claimedAuthor: FormControl<string | null>;
+  public claimedAuthorRanges: FormControl<CodLocationRange[]>;
   public claimedTitle: FormControl<string | null>;
+  public claimedTitleRanges: FormControl<CodLocationRange[]>;
   public note: FormControl<string | null>;
   public incipit: FormControl<string | null>;
   public explicit: FormControl<string | null>;
@@ -138,7 +144,9 @@ export class CodContentEditorComponent {
     this.title = formBuilder.control(null, Validators.maxLength(200));
     this.location = formBuilder.control(null, Validators.maxLength(50));
     this.claimedAuthor = formBuilder.control(null, Validators.maxLength(50));
+    this.claimedAuthorRanges = formBuilder.control([], { nonNullable: true });
     this.claimedTitle = formBuilder.control(null, Validators.maxLength(200));
+    this.claimedTitleRanges = formBuilder.control([], { nonNullable: true });
     this.note = formBuilder.control(null, Validators.maxLength(1000));
     this.incipit = formBuilder.control(null, Validators.maxLength(1000));
     this.explicit = formBuilder.control(null, Validators.maxLength(1000));
@@ -153,7 +161,9 @@ export class CodContentEditorComponent {
       title: this.title,
       location: this.location,
       claimedAuthor: this.claimedAuthor,
+      claimedAuthorRanges: this.claimedAuthorRanges,
       claimedTitle: this.claimedTitle,
+      claimedTitleRanges: this.claimedTitleRanges,
       note: this.note,
       incipit: this.incipit,
       explicit: this.explicit,
@@ -185,7 +195,9 @@ export class CodContentEditorComponent {
     this.title.setValue(content.title || null);
     this.location.setValue(content.location || null);
     this.claimedAuthor.setValue(content.claimedAuthor || null);
+    this.claimedTitleRanges.setValue(content.claimedAuthorRanges || []);
     this.claimedTitle.setValue(content.claimedTitle || null);
+    this.claimedTitleRanges.setValue(content.claimedTitleRanges || []);
     this.note.setValue(content.note || null);
     this.incipit.setValue(content.incipit || null);
     this.explicit.setValue(content.explicit || null);
@@ -204,7 +216,9 @@ export class CodContentEditorComponent {
       title: this.title.value?.trim() || '',
       location: this.location.value?.trim(),
       claimedAuthor: this.claimedAuthor.value?.trim(),
+      claimedAuthorRanges: this.claimedAuthorRanges.value || undefined,
       claimedTitle: this.claimedTitle.value?.trim(),
+      claimedTitleRanges: this.claimedTitleRanges.value || undefined,
       tag: this.tag.value?.trim(),
       note: this.note.value?.trim(),
       incipit: this.incipit.value?.trim(),
@@ -232,6 +246,18 @@ export class CodContentEditorComponent {
     this.workId.setValue(id);
     this.workId.markAsDirty();
     this.workId.updateValueAndValidity();
+  }
+
+  public onCALocationChange(ranges: CodLocationRange[] | null): void {
+    this.claimedAuthorRanges.setValue(ranges || []);
+    this.claimedAuthorRanges.updateValueAndValidity();
+    this.claimedAuthorRanges.markAsDirty();
+  }
+
+  public onCTLocationChange(ranges: CodLocationRange[] | null): void {
+    this.claimedTitleRanges.setValue(ranges || []);
+    this.claimedTitleRanges.updateValueAndValidity();
+    this.claimedTitleRanges.markAsDirty();
   }
 
   //#region Annotations

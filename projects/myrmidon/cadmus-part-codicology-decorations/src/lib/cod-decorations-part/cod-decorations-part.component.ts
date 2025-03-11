@@ -47,6 +47,7 @@ import { CodDecorationComponent } from '../cod-decoration/cod-decoration.compone
  * cod-decoration-type-hidden, cod-decoration-element-colors,
  * cod-decoration-element-gildings, cod-decoration-element-techniques,
  * cod-decoration-element-positions, cod-decoration-element-tools,
+ * cod-decoration-element-tags,
  * cod-decoration-element-typologies, cod-image-types,
  * cod-decoration-artist-types, cod-decoration-artist-style-names,
  * chronotope-tags, assertion-tags, doc-reference-types, doc-reference-tags,
@@ -97,6 +98,8 @@ export class CodDecorationsPartComponent
   public decElemTechEntries: ThesaurusEntry[] | undefined;
   // cod-decoration-element-positions
   public decElemPosEntries: ThesaurusEntry[] | undefined;
+  // cod-decoration-element-tags
+  public decElemTagEntries: ThesaurusEntry[] | undefined;
   // cod-decoration-element-tools
   public decElemToolEntries: ThesaurusEntry[] | undefined;
   // cod-decoration-element-typologies
@@ -221,6 +224,13 @@ export class CodDecorationsPartComponent
       this.decElemTechEntries = thesauri[key].entries;
     } else {
       this.decElemTechEntries = undefined;
+    }
+
+    key = 'cod-decoration-element-tags';
+    if (this.hasThesaurus(key)) {
+      this.decElemTagEntries = thesauri[key].entries;
+    } else {
+      this.decElemTagEntries = undefined;
     }
 
     key = 'cod-decoration-element-positions';

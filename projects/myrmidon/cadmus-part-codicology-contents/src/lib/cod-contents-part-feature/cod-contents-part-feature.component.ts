@@ -41,6 +41,8 @@ export class CodContentsPartFeatureComponent
       'cod-content-states',
       'cod-content-tags',
       'cod-content-annotation-types',
+      'cod-content-annotation-features',
+      'cod-content-annotation-languages',
       'assertion-tags',
       'doc-reference-types',
       'doc-reference-tags',

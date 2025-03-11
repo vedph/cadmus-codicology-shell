@@ -93,6 +93,7 @@ export class CodWatermarkEditorComponent {
   public name: FormControl<string | null>;
   public sampleRanges: FormControl<CodLocationRange[]>;
   public ranges: FormControl<CodLocationRange[]>;
+  public rangesAsQuire: FormControl<boolean>;
   public description: FormControl<string | null>;
   public ids: FormControl<AssertedCompositeId[]>;
   public hasSize: FormControl<boolean>;
@@ -106,10 +107,10 @@ export class CodWatermarkEditorComponent {
       Validators.maxLength(50),
     ]);
     this.sampleRanges = formBuilder.control([], {
-      validators: NgxToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
     this.ranges = formBuilder.control([], { nonNullable: true });
+    this.rangesAsQuire = formBuilder.control(false, { nonNullable: true });
     this.description = formBuilder.control(null, Validators.maxLength(5000));
     this.ids = formBuilder.control([], { nonNullable: true });
     this.hasSize = formBuilder.control(false, { nonNullable: true });
@@ -119,6 +120,7 @@ export class CodWatermarkEditorComponent {
       name: this.name,
       sampleRanges: this.sampleRanges,
       ranges: this.ranges,
+      rangesAsQuire: this.rangesAsQuire,
       description: this.description,
       ids: this.ids,
       hasSize: this.hasSize,
@@ -140,6 +142,7 @@ export class CodWatermarkEditorComponent {
     this.name.setValue(model.name);
     this.sampleRanges.setValue([model.sampleRange]);
     this.ranges.setValue(model.ranges || []);
+    this.rangesAsQuire.setValue(model.rangesAsQuire || false);
     this.ids.setValue(model.ids || []);
     this.size.setValue(model.size || null);
     this.hasSize.setValue(model.size ? true : false);
@@ -183,6 +186,7 @@ export class CodWatermarkEditorComponent {
       name: this.name.value?.trim() || '',
       sampleRange: this.sampleRanges.value[0],
       ranges: this.ranges.value?.length ? this.ranges.value : undefined,
+      rangesAsQuire: this.rangesAsQuire.value ? true : undefined,
       ids: this.ids.value?.length ? this.ids.value : undefined,
       size: this.hasSize.value ? this.size.value || undefined : undefined,
       chronotopes: this.chronotopes.value.length

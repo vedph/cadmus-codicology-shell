@@ -52,7 +52,7 @@
       />
     </fieldset>
   </div>
-  <div>
+  <div class="form-row">
     <!-- author -->
     <mat-form-field>
       <mat-label>author</mat-label>
@@ -73,7 +73,7 @@
       <mat-error>title too long</mat-error>
       }
     </mat-form-field>
-    &nbsp;
+
     <!-- location -->
     <mat-form-field style="width: 6em">
       <mat-label>location</mat-label>
@@ -84,7 +84,8 @@
       }
     </mat-form-field>
   </div>
-  <div>
+
+  <div class="form-row">
     <!-- claimedAuthor -->
     <mat-form-field>
       <mat-label>claimed author</mat-label>
@@ -95,7 +96,13 @@
       }
     </mat-form-field>
 
-    &nbsp;
+    <!-- claimedAuthorRanges -->
+    <cadmus-cod-location
+      label="claimed author ranges"
+      [location]="claimedAuthorRanges.value"
+      (locationChange)="onCALocationChange($event)"
+    />
+
     <!-- claimedTitle -->
     <mat-form-field>
       <mat-label>claimed title</mat-label>
@@ -105,6 +112,13 @@
       <mat-error>title too long</mat-error>
       }
     </mat-form-field>
+
+    <!-- claimedTitleRanges -->
+    <cadmus-cod-location
+      label="claimed title ranges"
+      [location]="claimedTitleRanges.value"
+      (locationChange)="onCTLocationChange($event)"
+    />
   </div>
   <div>
     <!-- note -->
@@ -229,6 +243,8 @@
       <mat-expansion-panel-header>annotation</mat-expansion-panel-header>
       <cadmus-cod-content-annotation
         [typeEntries]="annTypeEntries()"
+        [featureEntries]="annFeatureEntries()"
+        [langEntries]="annLangEntries()"
         [annotation]="editedAnnotation"
         (annotationChange)="onAnnotationSave($event!)"
         (editorClose)="onAnnotationClose()"

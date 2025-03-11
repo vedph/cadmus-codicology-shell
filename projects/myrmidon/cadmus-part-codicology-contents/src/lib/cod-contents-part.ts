@@ -5,6 +5,8 @@ import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
 export interface CodContentAnnotation {
   type: string;
   range: CodLocationRange;
+  features?: string[];
+  languages?: string[];
   incipit: string;
   explicit?: string;
   text?: string;
@@ -20,7 +22,9 @@ export interface CodContent {
   title?: string;
   location?: string;
   claimedAuthor?: string;
+  claimedAuthorRanges?: CodLocationRange[];
   claimedTitle?: string;
+  claimedTitleRanges?: CodLocationRange[];
   tag?: string;
   note?: string;
   incipit?: string;
@@ -288,8 +292,166 @@ export const COD_CONTENTS_PART_SCHEMA = {
               claimedAuthor: {
                 type: 'string',
               },
+              claimedAuthorRanges: {
+                type: 'array',
+                items: {
+                  anyOf: [
+                    {
+                      type: 'object',
+                      required: ['start', 'end'],
+                      properties: {
+                        start: {
+                          type: 'object',
+                          required: ['n'],
+                          properties: {
+                            endleaf: {
+                              type: 'integer',
+                            },
+                            s: {
+                              type: 'string',
+                            },
+                            n: {
+                              type: 'integer',
+                            },
+                            rmn: {
+                              type: 'boolean',
+                            },
+                            sfx: {
+                              type: 'string',
+                            },
+                            v: {
+                              type: 'boolean',
+                            },
+                            c: {
+                              type: 'integer',
+                            },
+                            l: {
+                              type: 'integer',
+                            },
+                            word: {
+                              type: 'string',
+                            },
+                          },
+                        },
+                        end: {
+                          type: 'object',
+                          required: ['n'],
+                          properties: {
+                            endleaf: {
+                              type: 'integer',
+                            },
+                            s: {
+                              type: 'string',
+                            },
+                            n: {
+                              type: 'integer',
+                            },
+                            rmn: {
+                              type: 'boolean',
+                            },
+                            sfx: {
+                              type: 'string',
+                            },
+                            v: {
+                              type: 'boolean',
+                            },
+                            c: {
+                              type: 'integer',
+                            },
+                            l: {
+                              type: 'integer',
+                            },
+                            word: {
+                              type: 'string',
+                            },
+                          },
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
               claimedTitle: {
                 type: 'string',
+              },
+              claimedTitleRanges: {
+                type: 'array',
+                items: {
+                  anyOf: [
+                    {
+                      type: 'object',
+                      required: ['start', 'end'],
+                      properties: {
+                        start: {
+                          type: 'object',
+                          required: ['n'],
+                          properties: {
+                            endleaf: {
+                              type: 'integer',
+                            },
+                            s: {
+                              type: 'string',
+                            },
+                            n: {
+                              type: 'integer',
+                            },
+                            rmn: {
+                              type: 'boolean',
+                            },
+                            sfx: {
+                              type: 'string',
+                            },
+                            v: {
+                              type: 'boolean',
+                            },
+                            c: {
+                              type: 'integer',
+                            },
+                            l: {
+                              type: 'integer',
+                            },
+                            word: {
+                              type: 'string',
+                            },
+                          },
+                        },
+                        end: {
+                          type: 'object',
+                          required: ['n'],
+                          properties: {
+                            endleaf: {
+                              type: 'integer',
+                            },
+                            s: {
+                              type: 'string',
+                            },
+                            n: {
+                              type: 'integer',
+                            },
+                            rmn: {
+                              type: 'boolean',
+                            },
+                            sfx: {
+                              type: 'string',
+                            },
+                            v: {
+                              type: 'boolean',
+                            },
+                            c: {
+                              type: 'integer',
+                            },
+                            l: {
+                              type: 'integer',
+                            },
+                            word: {
+                              type: 'string',
+                            },
+                          },
+                        },
+                      },
+                    },
+                  ],
+                },
               },
               tag: {
                 type: 'string',
@@ -384,6 +546,26 @@ export const COD_CONTENTS_PART_SCHEMA = {
                                 },
                               },
                             },
+                          },
+                        },
+                        features: {
+                          type: 'array',
+                          items: {
+                            anyOf: [
+                              {
+                                type: 'string',
+                              },
+                            ],
+                          },
+                        },
+                        languages: {
+                          type: 'array',
+                          items: {
+                            anyOf: [
+                              {
+                                type: 'string',
+                              },
+                            ],
                           },
                         },
                         incipit: {
