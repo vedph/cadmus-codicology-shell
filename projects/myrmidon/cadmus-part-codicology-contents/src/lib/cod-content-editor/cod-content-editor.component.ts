@@ -15,7 +15,9 @@ import { MatSelect } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
 import {
   MatExpansionPanel,
+  MatExpansionPanelDescription,
   MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
 } from '@angular/material/expansion';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -66,6 +68,8 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     FlagSetComponent,
     MatExpansionPanel,
     MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    MatExpansionPanelDescription,
     MatButton,
     MatIcon,
     MatIconButton,

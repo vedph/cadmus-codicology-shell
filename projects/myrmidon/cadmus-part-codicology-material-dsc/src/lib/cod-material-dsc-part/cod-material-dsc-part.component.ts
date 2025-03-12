@@ -303,7 +303,7 @@ export class CodMaterialDscPartComponent
   //#region Palimpsests
   public addPalimpsest(): void {
     this.editPalimpsest({
-      range: { start: { n: 0 }, end: { n: 0 } },
+      ranges: [{ start: { n: 0 }, end: { n: 0 } }],
     });
   }
 

@@ -42,7 +42,18 @@
     <cadmus-ui-flag-set
       [flags]="featFlags()"
       [checkedIds]="features.value"
-      (checkedIdsChange)="onCheckedIdsChange($event)"
+      (checkedIdsChange)="onFeatCheckedIdsChange($event)"
+    />
+  </div>
+  }
+
+  <!-- languages -->
+  @if (langFlags().length) {
+  <div>
+    <cadmus-ui-flag-set
+      [flags]="langFlags()"
+      [checkedIds]="languages.value"
+      (checkedIdsChange)="onLangCheckedIdsChange($event)"
     />
   </div>
   }

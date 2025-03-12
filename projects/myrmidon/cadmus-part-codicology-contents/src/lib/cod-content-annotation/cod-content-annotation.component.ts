@@ -83,8 +83,12 @@ export class CodContentAnnotationComponent {
   public note: FormControl<string | null>;
   public form: FormGroup;
 
-  public featFlags = computed(
+  public featFlags = computed<Flag[]>(
     () => this.featureEntries()?.map((e) => entryToFlag(e)) || []
+  );
+
+  public langFlags = computed<Flag[]>(
+    () => this.langEntries()?.map((e) => entryToFlag(e)) || []
   );
 
   constructor(formBuilder: FormBuilder) {
@@ -157,10 +161,16 @@ export class CodContentAnnotationComponent {
     this.ranges.markAsDirty();
   }
 
-  public onCheckedIdsChange(ids: string[]): void {
+  public onFeatCheckedIdsChange(ids: string[]): void {
     this.features.setValue(ids);
     this.features.markAsDirty();
     this.features.updateValueAndValidity();
+  }
+
+  public onLangCheckedIdsChange(ids: string[]): void {
+    this.languages.setValue(ids);
+    this.languages.markAsDirty();
+    this.languages.updateValueAndValidity();
   }
 
   public cancel(): void {

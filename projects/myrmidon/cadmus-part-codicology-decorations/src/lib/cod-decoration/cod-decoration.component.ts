@@ -124,6 +124,8 @@ export class CodDecorationComponent {
   public readonly decElemTechEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-positions
   public readonly decElemPosEntries = input<ThesaurusEntry[]>();
+  // cod-decoration-element-tags
+  public readonly decElemTagEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-tools
   public readonly decElemToolEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-typologies

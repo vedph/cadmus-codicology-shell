@@ -162,7 +162,13 @@
   </div>
   <!-- annotations -->
   <mat-expansion-panel>
-    <mat-expansion-panel-header>annotations</mat-expansion-panel-header>
+    <mat-expansion-panel-header>
+      <mat-panel-title>annotations</mat-panel-title>
+      <mat-panel-description>
+        {{ annotations.value?.length || 0 }}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
     <div>
       <button
         type="button"

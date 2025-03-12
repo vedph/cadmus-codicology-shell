@@ -43,7 +43,8 @@ import { CodContentEditorComponent } from '../cod-content-editor/cod-content-edi
 
 /**
  * CodContentsPart editor component.
- * Thesauri: cod-content-states, cod-content-tags, cod-content-annotation-types
+ * Thesauri: cod-content-states, cod-content-tags, cod-content-annotation-features,
+ * cod-content-annotation-languages, cod-content-annotation-types,
  * assertion-tags, doc-reference-types, doc-reference-tags, external-id-tags,
  * external-id-scopes (all optional).
  */
@@ -75,24 +76,28 @@ export class CodContentsPartComponent
   implements OnInit
 {
   public editedIndex: number;
-  public editedContent: CodContent | undefined;
+  public editedContent?: CodContent;
 
   // cod-content-states
-  public stateEntries: ThesaurusEntry[] | undefined;
+  public stateEntries?: ThesaurusEntry[];
   // cod-content-tags
-  public tagEntries: ThesaurusEntry[] | undefined;
+  public tagEntries?: ThesaurusEntry[];
   // cod-content-annotation-types
-  public annTypeEntries: ThesaurusEntry[] | undefined;
+  public annTypeEntries?: ThesaurusEntry[];
+  // cod-content-annotation-features
+  public annFeatureEntries?: ThesaurusEntry[];
+  // cod-content-annotation-languages
+  public annLangEntries?: ThesaurusEntry[];
   // assertion-tags
-  public assTagEntries: ThesaurusEntry[] | undefined;
+  public assTagEntries?: ThesaurusEntry[];
   // doc-reference-types
-  public refTypeEntries: ThesaurusEntry[] | undefined;
+  public refTypeEntries?: ThesaurusEntry[];
   // doc-reference-tags
-  public refTagEntries: ThesaurusEntry[] | undefined;
+  public refTagEntries?: ThesaurusEntry[];
   // external-id-tags
-  public idTagEntries: ThesaurusEntry[] | undefined;
+  public idTagEntries?: ThesaurusEntry[];
   // external-id-scopes
-  public idScopeEntries: ThesaurusEntry[] | undefined;
+  public idScopeEntries?: ThesaurusEntry[];
 
   public contents: FormControl<CodContent[]>;
 
@@ -132,6 +137,18 @@ export class CodContentsPartComponent
       this.tagEntries = thesauri[key].entries;
     } else {
       this.tagEntries = undefined;
+    }
+    key = 'cod-content-annotation-features';
+    if (this.hasThesaurus(key)) {
+      this.annFeatureEntries = thesauri[key].entries;
+    } else {
+      this.annFeatureEntries = undefined;
+    }
+    key = 'cod-content-annotation-languages';
+    if (this.hasThesaurus(key)) {
+      this.annLangEntries = thesauri[key].entries;
+    } else {
+      this.annLangEntries = undefined;
     }
     key = 'cod-content-annotation-types';
     if (this.hasThesaurus(key)) {
