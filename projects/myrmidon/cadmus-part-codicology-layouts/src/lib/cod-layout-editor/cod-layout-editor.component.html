@@ -30,7 +30,6 @@
       <cadmus-cod-location
         label="sample"
         [single]="true"
-        [required]="true"
         [location]="sampleRanges.value"
         (locationChange)="onSampleLocationChange($event)"
       />
@@ -43,30 +42,20 @@
         (locationChange)="onRangeLocationChange($event)"
       />
     </div>
-    <div class="form-row">
-      <!-- ruling (bound) -->
-      @if (rulTechEntries()?.length) {
-      <mat-form-field>
-        <mat-label>ruling</mat-label>
-        <mat-select [formControl]="ruling">
-          @for (e of rulTechEntries(); track e.id) {
-          <mat-option [value]="e.id">{{ e.value }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-      }
-      <!-- ruling (free) -->
-      @else {
-      <mat-form-field>
-        <mat-label>ruling</mat-label>
-        <input matInput [formControl]="ruling" />
-        @if ( $any(ruling).errors?.maxLength && (ruling.dirty || ruling.touched)
-        ) {
-        <mat-error>ruling too long</mat-error>
-        }
-      </mat-form-field>
-      }
 
+    <!-- rulings -->
+    @if (rulTechEntries()?.length) {
+    <fieldset>
+      <legend>rulings</legend>
+      <cadmus-ui-flag-set
+        [flags]="rulFlags()"
+        [checkedIds]="rulings.value"
+        (checkedIdsChange)="onCheckedIdsChange($event)"
+      />
+    </fieldset>
+    }
+
+    <div class="form-row">
       <!-- derolez (bound) -->
       @if (drzEntries()?.length) {
       <mat-form-field>

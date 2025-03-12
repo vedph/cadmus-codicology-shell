@@ -238,10 +238,6 @@ export class CodWatermarksPartComponent
   public addWatermark(): void {
     this.editWatermark({
       name: '',
-      sampleRange: {
-        start: { n: 0 },
-        end: { n: 0 },
-      },
     });
   }
 

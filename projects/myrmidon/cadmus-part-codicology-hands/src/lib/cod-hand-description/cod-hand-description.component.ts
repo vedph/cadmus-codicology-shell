@@ -71,6 +71,7 @@ export class CodHandDescriptionComponent {
   public corrections: FormControl<string | null>;
   public punctuation: FormControl<string | null>;
   public abbreviations: FormControl<string | null>;
+  public note: FormControl<string | null>;
   public signs: FormControl<CodHandSign[]>;
   public form: FormGroup;
 
@@ -102,6 +103,11 @@ export class CodHandDescriptionComponent {
         markdown: true,
         maxLength: 1000,
       },
+      {
+        key: 'n',
+        label: 'note',
+        maxLength: 1000,
+      }
     ];
     // form
     this.key = formBuilder.control(null, Validators.maxLength(100));
@@ -110,6 +116,7 @@ export class CodHandDescriptionComponent {
     this.corrections = formBuilder.control(null);
     this.punctuation = formBuilder.control(null);
     this.abbreviations = formBuilder.control(null);
+    this.note = formBuilder.control(null, Validators.maxLength(1000));
     this.signs = formBuilder.control([], { nonNullable: true });
     this.form = formBuilder.group({
       key: this.key,
@@ -118,6 +125,7 @@ export class CodHandDescriptionComponent {
       corrections: this.corrections,
       punctuation: this.punctuation,
       abbreviations: this.abbreviations,
+      note: this.note,
       signs: this.signs,
     });
 
@@ -143,6 +151,7 @@ export class CodHandDescriptionComponent {
     this.corrections.setValue(model.corrections || null);
     this.punctuation.setValue(model.punctuation || null);
     this.abbreviations.setValue(model.abbreviations || null);
+
     if (model.initials) {
       map.set('i', model.initials);
     }
@@ -154,6 +163,9 @@ export class CodHandDescriptionComponent {
     }
     if (model.abbreviations) {
       map.set('a', model.abbreviations);
+    }
+    if (model.note) {
+      map.set('n', model.note);
     }
     this.initialNoteSet = {
       definitions: this._noteDefs,
@@ -172,6 +184,7 @@ export class CodHandDescriptionComponent {
       corrections: this.corrections.value?.trim(),
       punctuation: this.punctuation.value?.trim(),
       abbreviations: this.abbreviations.value?.trim(),
+      note: this.note.value?.trim(),
       signs: this.signs.value?.length ? this.signs.value : undefined,
     };
   }
@@ -197,6 +210,11 @@ export class CodHandDescriptionComponent {
         this.abbreviations.setValue(pair.value);
         this.abbreviations.updateValueAndValidity();
         this.abbreviations.markAsDirty();
+        break;
+      case 'n':
+        this.note.setValue(pair.value);
+        this.note.updateValueAndValidity();
+        this.note.markAsDirty();
         break;
     }
   }

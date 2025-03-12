@@ -4,10 +4,10 @@ import { PhysicalDimension } from '@myrmidon/cadmus-mat-physical-size';
 import { DecoratedCount } from '@myrmidon/cadmus-refs-decorated-counts';
 
 export interface CodLayout {
-  sample: CodLocation;
+  sample?: CodLocation;
   ranges: CodLocationRange[];
   dimensions?: PhysicalDimension[];
-  rulingTechnique?: string;
+  rulingTechniques?: string[];
   derolez?: string;
   pricking?: string;
   columnCount: number;
@@ -85,7 +85,7 @@ export const COD_LAYOUTS_PART_SCHEMA = {
         anyOf: [
           {
             type: 'object',
-            required: ['sample', 'ranges', 'columnCount'],
+            required: ['ranges', 'columnCount'],
             properties: {
               sample: {
                 type: 'object',
@@ -221,8 +221,11 @@ export const COD_LAYOUTS_PART_SCHEMA = {
                   ],
                 },
               },
-              rulingTechnique: {
-                type: 'string',
+              rulingTechniques: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                },
               },
               derolez: {
                 type: 'string',

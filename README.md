@@ -169,6 +169,12 @@ graph LR;
   - `CodContentAnnotation`:
     - ➕ add `features` (`string[]`, flags) with its thesaurus 📚 `cod-content-annotation-features`.
     - ➕ add `languages` (`string[]`, flags) with its thesaurus 📚 `cod-content-annotation-languages`.
+  - `CodHandInstance`: ➕ add `note` (`string`).
+  - `CodHandDescription`: ➕ add `note` (`string`).
+  - ⚠️ `CodPalimpsest`: change `range` (`CodLocationRange`) into `ranges` (`CodLocationRange[]`).
+  - `CodLayout`:
+    - ⚠️ change `rulingTechnique` (`string`) into `rulingTechniques` (`string[]`, flags). This is a breaking change, make tool to download and reinject.
+    - UI: make `sample` not required.
 
 - 2025-03-09:
   - ⚠️ breaking change because of migration to Cadmus shell V12.

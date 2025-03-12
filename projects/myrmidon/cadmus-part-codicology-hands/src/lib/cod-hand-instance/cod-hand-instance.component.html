@@ -100,7 +100,7 @@
       [location]="ranges.value"
       [required]="true"
       (locationChange)="onLocationChange($event)"
-    ></cadmus-cod-location>
+    />
   </div>
 
   <!-- typologies -->
@@ -145,6 +145,19 @@
       (imagesChange)="onImagesChange($event)"
     />
   </fieldset>
+
+  <!-- note -->
+  <div>
+    <mat-form-field class="long-text">
+      <mat-label>note</mat-label>
+      <textarea
+        matInput
+        [formControl]="note"
+        placeholder="note"
+        rows="2"
+      ></textarea>
+    </mat-form-field>
+  </div>
 
   <!-- buttons -->
   <div class="toolbar-row">

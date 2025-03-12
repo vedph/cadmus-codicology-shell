@@ -1,4 +1,4 @@
-import { Component, effect, input, model, OnInit, output } from '@angular/core';
+import { Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -15,7 +15,6 @@ import { MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 import {
   CodLocationRange,
   CodLocationComponent,
@@ -140,7 +139,7 @@ export class CodWatermarkEditorComponent {
     }
 
     this.name.setValue(model.name);
-    this.sampleRanges.setValue([model.sampleRange]);
+    this.sampleRanges.setValue(model.sampleRange ? [model.sampleRange] : []);
     this.ranges.setValue(model.ranges || []);
     this.rangesAsQuire.setValue(model.rangesAsQuire || false);
     this.ids.setValue(model.ids || []);
@@ -184,7 +183,9 @@ export class CodWatermarkEditorComponent {
   private getModel(): CodWatermark {
     return {
       name: this.name.value?.trim() || '',
-      sampleRange: this.sampleRanges.value[0],
+      sampleRange: this.sampleRanges.value
+        ? this.sampleRanges.value[0]
+        : undefined,
       ranges: this.ranges.value?.length ? this.ranges.value : undefined,
       rangesAsQuire: this.rangesAsQuire.value ? true : undefined,
       ids: this.ids.value?.length ? this.ids.value : undefined,

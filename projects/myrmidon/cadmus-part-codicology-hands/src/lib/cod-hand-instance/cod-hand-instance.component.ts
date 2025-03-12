@@ -4,7 +4,9 @@ import {
   FormControl,
   FormGroup,
   FormsModule,
+  MaxLengthValidator,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
 
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
@@ -98,6 +100,7 @@ export class CodHandInstanceComponent {
   public dscKey: FormControl<string | null>;
   public chronotope: FormControl<AssertedChronotope | null>;
   public images: FormControl<CodImage[]>;
+  public note: FormControl<string | null>;
   public form: FormGroup;
 
   // flags
@@ -124,6 +127,9 @@ export class CodHandInstanceComponent {
     });
     this.chronotope = formBuilder.control(null);
     this.images = formBuilder.control([], { nonNullable: true });
+    this.note = formBuilder.control(null, {
+      validators: Validators.maxLength(1000),
+    });
     this.form = formBuilder.group({
       scripts: this.scripts,
       rank: this.rank,
@@ -133,6 +139,7 @@ export class CodHandInstanceComponent {
       ranges: this.ranges,
       chronotope: this.chronotope,
       images: this.images,
+      note: this.note,
     });
 
     effect(() => {
@@ -172,6 +179,7 @@ export class CodHandInstanceComponent {
     this.ranges.setValue(model.ranges);
     this.chronotope.setValue(model.chronotope || null);
     this.images.setValue(model.images || []);
+    this.note.setValue(model.note || null);
     this.form.markAsPristine();
   }
 
@@ -185,6 +193,7 @@ export class CodHandInstanceComponent {
       ranges: this.ranges.value || [],
       chronotope: this.chronotope.value || undefined,
       images: this.images.value?.length ? this.images.value : undefined,
+      note: this.note.value || undefined,
     };
   }
 

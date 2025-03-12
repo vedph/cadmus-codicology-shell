@@ -9,7 +9,7 @@ import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
  */
 export interface CodWatermark {
   name: string;
-  sampleRange: CodLocationRange;
+  sampleRange?: CodLocationRange;
   ranges?: CodLocationRange[];
   rangesAsQuire?: boolean;
   ids?: AssertedCompositeId[];

@@ -1,4 +1,11 @@
-import { Component, effect, input, model, output } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  input,
+  model,
+  output,
+} from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -43,10 +50,18 @@ import {
   COD_LAYOUT_FORMULA_REGEX,
   CodLayoutFigureComponent,
 } from '@myrmidon/cadmus-codicology-ui';
+import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 
 import { CodLayout } from '../cod-layouts-part';
 
 const FIG_HEIGHT = 400;
+
+function entryToFlag(entry: ThesaurusEntry): Flag {
+  return {
+    id: entry.id,
+    label: entry.value,
+  };
+}
 
 @Component({
   selector: 'cadmus-cod-layout-editor',
@@ -73,6 +88,7 @@ const FIG_HEIGHT = 400;
     MatSlider,
     MatSliderThumb,
     CodLayoutFigureComponent,
+    FlagSetComponent,
   ],
 })
 export class CodLayoutEditorComponent {
@@ -99,10 +115,14 @@ export class CodLayoutEditorComponent {
 
   public editorClose = output();
 
+  public readonly rulFlags = computed<Flag[]>(
+    () => this.rulTechEntries()?.map(entryToFlag) || []
+  );
+
   public sampleRanges: FormControl<CodLocationRange[]>;
   public ranges: FormControl<CodLocationRange[]>;
   public dimensions: FormArray;
-  public ruling: FormControl<string | null>;
+  public rulings: FormControl<string[]>;
   public derolez: FormControl<string | null>;
   public pricking: FormControl<string | null>;
   public columnCount: FormControl<number>;
@@ -131,7 +151,7 @@ export class CodLayoutEditorComponent {
       nonNullable: true,
     });
     this.dimensions = _formBuilder.array([]);
-    this.ruling = _formBuilder.control(null, Validators.maxLength(50));
+    this.rulings = _formBuilder.control([], { nonNullable: true });
     this.derolez = _formBuilder.control(null, Validators.maxLength(50));
     this.pricking = _formBuilder.control(null, Validators.maxLength(50));
     this.columnCount = _formBuilder.control(0, { nonNullable: true });
@@ -142,7 +162,7 @@ export class CodLayoutEditorComponent {
       sampleRanges: this.sampleRanges,
       ranges: this.ranges,
       dimensions: this.dimensions,
-      ruling: this.ruling,
+      rulings: this.rulings,
       derolez: this.derolez,
       pricking: this.pricking,
       columnCount: this.columnCount,
@@ -174,7 +194,7 @@ export class CodLayoutEditorComponent {
       layout.sample ? [{ start: layout.sample, end: layout.sample }] : []
     );
     this.ranges.setValue(layout.ranges);
-    this.ruling.setValue(layout.rulingTechnique || null);
+    this.rulings.setValue(layout.rulingTechniques || []);
     this.derolez.setValue(layout.derolez || null);
     this.pricking.setValue(layout.pricking || null);
     this.columnCount.setValue(layout.columnCount);
@@ -328,10 +348,12 @@ export class CodLayoutEditorComponent {
 
   private getModel(): CodLayout {
     return {
-      sample: this.sampleRanges.value[0].start,
+      sample: this.sampleRanges.value[0]?.start,
       ranges: this.ranges.value || [],
       dimensions: this.getDimensions(),
-      rulingTechnique: this.ruling.value?.trim(),
+      rulingTechniques: this.rulings.value?.length
+        ? this.rulings.value
+        : undefined,
       derolez: this.derolez.value?.trim(),
       pricking: this.pricking.value?.trim(),
       columnCount: this.columnCount.value || 0,
@@ -418,6 +440,12 @@ export class CodLayoutEditorComponent {
     this.counts.setValue(counts);
     this.counts.updateValueAndValidity();
     this.counts.markAsDirty();
+  }
+
+  public onCheckedIdsChange(ids: string[]): void {
+    this.rulings.setValue(ids);
+    this.rulings.updateValueAndValidity();
+    this.rulings.markAsDirty();
   }
 
   public cancel(): void {

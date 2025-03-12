@@ -89,7 +89,7 @@ export class CodPalimpsestEditorComponent {
       return;
     }
 
-    this.ranges.setValue([palimpsest.range]);
+    this.ranges.setValue(palimpsest.ranges);
     this.chronotope.setValue(palimpsest.chronotope || null);
     this.note.setValue(palimpsest.note || null);
     this.form.markAsPristine();
@@ -109,7 +109,7 @@ export class CodPalimpsestEditorComponent {
 
   private getModel(): CodPalimpsest {
     return {
-      range: this.ranges.value[0],
+      ranges: this.ranges.value,
       chronotope: this.chronotope.value!,
       note: this.note.value?.trim(),
     };

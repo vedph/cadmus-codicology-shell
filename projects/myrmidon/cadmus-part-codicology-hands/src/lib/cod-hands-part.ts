@@ -35,6 +35,7 @@ export interface CodHandDescription {
   corrections?: string;
   punctuation?: string;
   abbreviations?: string;
+  note?: string;
   signs?: CodHandSign[];
 }
 
@@ -50,6 +51,7 @@ export interface CodHandInstance {
   descriptionKey?: string;
   chronotope?: AssertedChronotope;
   images?: CodImage[];
+  note?: string;
 }
 
 /**
@@ -536,6 +538,9 @@ export const COD_HANDS_PART_SCHEMA = {
                             ],
                           },
                         },
+                        note: {
+                          type: 'string',
+                        },
                       },
                     },
                   ],
@@ -565,6 +570,9 @@ export const COD_HANDS_PART_SCHEMA = {
                           type: 'string',
                         },
                         abbreviations: {
+                          type: 'string',
+                        },
+                        note: {
                           type: 'string',
                         },
                         signs: {
