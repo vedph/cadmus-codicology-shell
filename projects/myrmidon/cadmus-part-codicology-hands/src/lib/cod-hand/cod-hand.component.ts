@@ -19,6 +19,7 @@ import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import {
   MatExpansionPanel,
+  MatExpansionPanelDescription,
   MatExpansionPanelHeader,
   MatExpansionPanelTitle,
 } from '@angular/material/expansion';
@@ -59,6 +60,7 @@ import { CodHandSubscriptionComponent } from '../cod-hand-subscription/cod-hand-
     MatExpansionPanel,
     MatExpansionPanelHeader,
     MatExpansionPanelTitle,
+    MatExpansionPanelDescription,
     MatIcon,
     MatButton,
     MatIconButton,
