@@ -32,7 +32,7 @@
           @for ( unit of units.value; track unit; let i = $index; let first =
           $first; let last = $last) {
           <tr [class.selected]="editedUtIndex === i">
-            <td>
+            <td class="fit-width">
               <button
                 type="button"
                 mat-icon-button
@@ -82,7 +82,12 @@
       }
 
       <mat-expansion-panel>
-        <mat-expansion-panel-header>Palimpsests</mat-expansion-panel-header>
+        <mat-expansion-panel-header>
+          <mat-panel-title> Palimpsests </mat-panel-title>
+          <mat-panel-description>{{
+            palimpsests.value.length
+          }}</mat-panel-description>
+        </mat-expansion-panel-header>
         <div>
           <button
             type="button"
@@ -107,7 +112,7 @@
             @for ( entry of palimpsests.value; track entry; let i = $index; let
             first = $first; let last = $last) {
             <tr [class.selected]="editedPsIndex === i">
-              <td>
+              <td class="fit-width">
                 <button
                   type="button"
                   mat-icon-button

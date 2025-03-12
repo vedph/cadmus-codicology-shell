@@ -23,7 +23,9 @@ import { MatTooltip } from '@angular/material/tooltip';
 import {
   MatExpansionModule,
   MatExpansionPanel,
+  MatExpansionPanelDescription,
   MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
 } from '@angular/material/expansion';
 
 import { NgxToolsValidators, FlatLookupPipe } from '@myrmidon/ngx-tools';
@@ -73,6 +75,8 @@ import { CodPalimpsestEditorComponent } from '../cod-palimpsest-editor/cod-palim
     MatTooltip,
     MatExpansionPanel,
     MatExpansionPanelHeader,
+    MatExpansionPanelTitle,
+    MatExpansionPanelDescription,
     CodUnitEditorComponent,
     CodPalimpsestEditorComponent,
     MatCardActions,
