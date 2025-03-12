@@ -175,6 +175,7 @@ graph LR;
   - `CodLayout`:
     - ⚠️ change `rulingTechnique` (`string`) into `rulingTechniques` (`string[]`, flags). This is a breaking change, make tool to download and reinject.
     - UI: make `sample` not required.
+  - `CodHandSign`: ➕ add `mufi` (`number`) for the corresponding MUFI code. This implies adding the corresponding brick `@myrmidon/cadmus-refs-mufi-lookup` and the MUFI service endpoint in `env.js`.
 
 - 2025-03-09:
   - ⚠️ breaking change because of migration to Cadmus shell V12.

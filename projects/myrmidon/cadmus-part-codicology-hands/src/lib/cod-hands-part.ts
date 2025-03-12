@@ -20,6 +20,7 @@ export interface CodHandSubscription {
  */
 export interface CodHandSign {
   eid?: string;
+  mufi?: number;
   type: string;
   sampleLocation: CodLocation;
   description?: string;
@@ -585,6 +586,9 @@ export const COD_HANDS_PART_SCHEMA = {
                                 properties: {
                                   eid: {
                                     type: 'string',
+                                  },
+                                  mufi: {
+                                    type: 'integer',
                                   },
                                   type: {
                                     type: 'string',

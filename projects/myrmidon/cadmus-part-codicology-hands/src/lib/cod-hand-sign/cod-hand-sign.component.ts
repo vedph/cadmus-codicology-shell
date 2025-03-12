@@ -16,12 +16,22 @@ import { MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import {
+  NgxToolsValidators,
+  SafeHtmlPipe,
+  ReplaceStringPipe,
+} from '@myrmidon/ngx-tools';
+import { RefLookupComponent } from '@myrmidon/cadmus-refs-lookup';
 import {
   CodLocation,
   CodLocationRange,
   CodLocationComponent,
 } from '@myrmidon/cadmus-cod-location';
+import {
+  MufiChar,
+  MufiRefLookupService,
+  MufiService,
+} from '@myrmidon/cadmus-refs-mufi-lookup';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
@@ -44,6 +54,9 @@ import { CodHandSign } from '../cod-hands-part';
     MatIconButton,
     MatTooltip,
     MatIcon,
+    RefLookupComponent,
+    ReplaceStringPipe,
+    SafeHtmlPipe,
   ],
 })
 export class CodHandSignComponent {
@@ -55,13 +68,19 @@ export class CodHandSignComponent {
   public editorClose = output();
 
   public eid: FormControl<string | null>;
+  public mufi: FormControl<MufiChar | null>;
   public type: FormControl<string | null>;
   public sampleRanges: FormControl<CodLocationRange[] | null>;
   public description: FormControl<string | null>;
   public form: FormGroup;
 
-  constructor(formBuilder: FormBuilder) {
+  constructor(
+    formBuilder: FormBuilder,
+    public lookupService: MufiRefLookupService,
+    private _mufiService: MufiService
+  ) {
     this.eid = formBuilder.control(null, Validators.maxLength(100));
+    this.mufi = formBuilder.control(null);
     this.type = formBuilder.control(null, [
       Validators.required,
       Validators.maxLength(50),
@@ -73,6 +92,7 @@ export class CodHandSignComponent {
     this.description = formBuilder.control(null, Validators.maxLength(1000));
     this.form = formBuilder.group({
       eid: this.eid,
+      mufi: this.mufi,
       type: this.type,
       sampleRanges: this.sampleRanges,
       description: this.description,
@@ -98,12 +118,20 @@ export class CodHandSignComponent {
     );
     this.description.setValue(sign.description || null);
 
+    // if sign.mufi is set, lookup the char and set it
+    if (sign.mufi) {
+      this._mufiService.get(sign.mufi).subscribe((char) => {
+        this.mufi.setValue(char, { emitEvent: false });
+      });
+    }
+
     this.form.markAsPristine();
   }
 
   private getSign(): CodHandSign {
     return {
       eid: this.eid.value?.trim(),
+      mufi: this.mufi.value?.code || undefined,
       type: this.type.value?.trim() || '',
       sampleLocation: this.sampleRanges.value?.length
         ? this.sampleRanges.value[0].start
@@ -116,6 +144,13 @@ export class CodHandSignComponent {
     this.sampleRanges.setValue(ranges || []);
     this.sampleRanges.updateValueAndValidity();
     this.sampleRanges.markAsDirty();
+  }
+
+  public onMufiItemChange(mufi: unknown | null): void {
+    const mufiChar = mufi as MufiChar;
+    this.mufi.setValue(mufiChar);
+    this.mufi.markAsDirty();
+    this.mufi.updateValueAndValidity();
   }
 
   public cancel(): void {

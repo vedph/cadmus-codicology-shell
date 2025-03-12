@@ -19,3 +19,25 @@
 .toolbar-row * {
   flex: 0 0 auto;
 }
+div#glyph-box {
+  margin: 0 8px;
+  border: 1px solid silver;
+  border-radius: 6px;
+  padding: 4px;
+  background-color: white;
+  display: inline-block;
+  width: fit-content;
+  height: fit-content;
+}
+div#glyph-box svg {
+  display: block;
+}
+div#glyph-comment {
+  margin: 8px 0;
+  max-width: 600px;
+  font-size: 90%;
+  color: #a0a0a0;
+  border: 1px solid silver;
+  border-radius: 6px;
+  padding: 4px;
+}

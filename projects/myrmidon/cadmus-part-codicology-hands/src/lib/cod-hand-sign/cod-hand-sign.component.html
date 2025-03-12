@@ -41,8 +41,36 @@
       label="sample loc."
       [location]="sampleRanges.value"
       (locationChange)="onLocationChange($event)"
-    ></cadmus-cod-location>
+    />
   </div>
+
+  <!-- MUFI -->
+  <div class="form-row">
+    <!-- MUFI lookup -->
+    <cadmus-ref-lookup
+      [service]="lookupService"
+      [item]="mufi.value"
+      [required]="true"
+      label="MUFI"
+      (itemChange)="onMufiItemChange($event)"
+    />
+    <!-- svg -->
+    @if (mufi.value?.svg) {
+    <div id="glyph-box">
+      <div
+        [innerHTML]="
+          mufi.value?.svg || ''
+            | replaceString : 'rgb(64,101,101)' : 'rgb(68,76,255)' : false
+            | safeHtml
+        "
+      ></div>
+    </div>
+    }
+  </div>
+  <!-- comment -->
+  @if (mufi.value?.comment) {
+  <div id="glyph-comment">{{ mufi.value!.comment }}</div>
+  }
   <div>
     <!-- description -->
     <mat-form-field class="long-text">
@@ -54,6 +82,7 @@
       }
     </mat-form-field>
   </div>
+
   <!-- buttons -->
   <div class="toolbar-row">
     <button
