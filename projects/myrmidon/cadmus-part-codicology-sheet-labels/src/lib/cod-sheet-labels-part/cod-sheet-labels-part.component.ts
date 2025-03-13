@@ -152,6 +152,7 @@ export class CodSheetLabelsPartComponent
   public cDefs: FormControl<CodCColDefinition[]>;
   public sDefs: FormControl<CodSColDefinition[]>;
   public rDefs: FormControl<CodRColDefinition[]>;
+  public note: FormControl<string | null>;
 
   public endleaves: FormControl<CodEndleaf[]>;
   public autoAppend: FormControl<boolean>;
@@ -232,6 +233,7 @@ export class CodSheetLabelsPartComponent
     this.cDefs = formBuilder.control([], { nonNullable: true });
     this.sDefs = formBuilder.control([], { nonNullable: true });
     this.rDefs = formBuilder.control([], { nonNullable: true });
+    this.note = formBuilder.control(null, Validators.maxLength(1000));
 
     this.endleaves = formBuilder.control([], { nonNullable: true });
 
@@ -264,6 +266,7 @@ export class CodSheetLabelsPartComponent
       cDefs: this.cDefs,
       sDefs: this.sDefs,
       rDefs: this.rDefs,
+      note: this.note,
       endleaves: this.endleaves,
     });
   }
@@ -353,6 +356,7 @@ export class CodSheetLabelsPartComponent
     this.cDefs.setValue(part.cDefinitions || []);
     this.sDefs.setValue(part.sDefinitions || []);
     this.rDefs.setValue(part.rDefinitions || []);
+    this.note.setValue(part.note || null);
     this.endleaves.setValue(part.endleaves || []);
 
     // other values in UI
@@ -383,6 +387,7 @@ export class CodSheetLabelsPartComponent
     part.cDefinitions = this.cDefs.value?.length ? this.cDefs.value : undefined;
     part.sDefinitions = this.sDefs.value?.length ? this.sDefs.value : undefined;
     part.rDefinitions = this.rDefs.value?.length ? this.rDefs.value : undefined;
+    part.note = this.note.value?.length ? this.note.value : undefined;
     part.endleaves = this.endleaves.value?.length
       ? this.endleaves.value
       : undefined;

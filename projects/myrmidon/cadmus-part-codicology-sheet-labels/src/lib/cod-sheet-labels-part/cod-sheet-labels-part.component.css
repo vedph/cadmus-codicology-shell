@@ -17,6 +17,9 @@ fieldset {
   border-radius: 6px;
   margin: 8px 0;
 }
+.full-width {
+  width: 100%;
+}
 
 table {
   margin: 8px 0;
@@ -60,6 +63,12 @@ div#bar {
   grid-template-columns: 1fr 1fr;
   grid-template-areas: "operation adder";
   gap: 8px;
+}
+div#operation {
+  grid-area: operation;
+}
+div#adder {
+  grid-area: adder;
 }
 /* lt-md */
 @media only screen and (max-width: 959px) {

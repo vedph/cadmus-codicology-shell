@@ -13,169 +13,177 @@
           <!-- bar -->
           <div id="bar">
             <!-- operation -->
-            <fieldset style="grid-area: operation">
-              <legend>action</legend>
-              <form [formGroup]="opForm" class="form-row" (submit)="onAction()">
-                <!-- opColumn -->
-                <mat-form-field style="width: 8em">
-                  <mat-label>column</mat-label>
-                  <mat-select [formControl]="opColumn">
-                    @for (c of columns$ | async; track c) {
-                    <mat-option [value]="c">{{ c }}</mat-option>
+            <div id="operation">
+              <fieldset>
+                <legend>action</legend>
+                <form
+                  [formGroup]="opForm"
+                  class="form-row"
+                  (submit)="onAction()"
+                >
+                  <!-- opColumn -->
+                  <mat-form-field style="width: 8em">
+                    <mat-label>column</mat-label>
+                    <mat-select [formControl]="opColumn">
+                      @for (c of columns$ | async; track c) {
+                      <mat-option [value]="c">{{ c }}</mat-option>
+                      }
+                    </mat-select>
+                    @if ( $any(opColumn).errors?.required && (opColumn.dirty ||
+                    opColumn.touched) ) {
+                    <mat-error>column required</mat-error>
                     }
-                  </mat-select>
-                  @if ( $any(opColumn).errors?.required && (opColumn.dirty ||
-                  opColumn.touched) ) {
-                  <mat-error>column required</mat-error>
-                  }
-                </mat-form-field>
+                  </mat-form-field>
 
-                <!-- column actions -->
-                <button
-                  type="button"
-                  mat-icon-button
-                  matTooltip="Edit the selected column definition"
-                  [disabled]="!opColumn.value"
-                  (click)="onEditColumnDefinition()"
-                >
-                  <mat-icon class="mat-primary">fact_check</mat-icon>
-                </button>
-                <button
-                  type="button"
-                  mat-icon-button
-                  matTooltip="Delete the selected column"
-                  [disabled]="!opColumn.value"
-                  (click)="onDeleteColumn()"
-                >
-                  <mat-icon class="mat-warn">delete</mat-icon>
-                </button>
+                  <!-- column actions -->
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Edit the selected column definition"
+                    [disabled]="!opColumn.value"
+                    (click)="onEditColumnDefinition()"
+                  >
+                    <mat-icon class="mat-primary">fact_check</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Delete the selected column"
+                    [disabled]="!opColumn.value"
+                    (click)="onDeleteColumn()"
+                  >
+                    <mat-icon class="mat-warn">delete</mat-icon>
+                  </button>
 
-                <!-- opAction -->
-                <mat-form-field style="width: 8em">
-                  <mat-label>action</mat-label>
-                  <input
-                    matInput
-                    [formControl]="opAction"
-                    (keyup.enter)="$any($event.target).select()"
-                  />
-                  @if ( $any(opAction).errors?.required && (opAction.dirty ||
-                  opAction.touched) ) {
-                  <mat-error>action required</mat-error>
-                  } @if ( $any(opAction).errors?.pattern && (opAction.dirty ||
-                  opAction.touched) ) {
-                  <mat-error>invalid action</mat-error>
-                  }
-                </mat-form-field>
+                  <!-- opAction -->
+                  <mat-form-field style="width: 8em">
+                    <mat-label>action</mat-label>
+                    <input
+                      matInput
+                      [formControl]="opAction"
+                      (keyup.enter)="$any($event.target).select()"
+                    />
+                    @if ( $any(opAction).errors?.required && (opAction.dirty ||
+                    opAction.touched) ) {
+                    <mat-error>action required</mat-error>
+                    } @if ( $any(opAction).errors?.pattern && (opAction.dirty ||
+                    opAction.touched) ) {
+                    <mat-error>invalid action</mat-error>
+                    }
+                  </mat-form-field>
 
-                <button
-                  mat-icon-button
-                  type="submit"
-                  [disabled]="opForm.invalid"
-                  matTooltip="Execute this action"
-                >
-                  <mat-icon class="mat-primary">play_circle</mat-icon>
-                </button>
+                  <button
+                    mat-icon-button
+                    type="submit"
+                    [disabled]="opForm.invalid"
+                    matTooltip="Execute this action"
+                  >
+                    <mat-icon class="mat-primary">play_circle</mat-icon>
+                  </button>
 
-                <mat-checkbox
-                  [formControl]="autoAppend"
-                  matTooltip="Auto-append rows on overflow"
-                  >auto-append</mat-checkbox
-                >
-              </form>
-            </fieldset>
+                  <mat-checkbox
+                    [formControl]="autoAppend"
+                    matTooltip="Auto-append rows on overflow"
+                    >auto-append</mat-checkbox
+                  >
+                </form>
+              </fieldset>
+            </div>
 
             <!-- adder -->
-            <fieldset style="grid-area: adder">
-              <legend>adder</legend>
-              <form
-                [formGroup]="addForm"
-                class="form-row"
-                (submit)="onTypeAdd()"
-              >
-                <!-- addType -->
-                <mat-form-field>
-                  <mat-label>type</mat-label>
-                  <mat-select [formControl]="addType">
-                    <mat-optgroup label="rows">
-                      <mat-option value="row-0">front cover</mat-option>
-                      <mat-option value="row-1">front endleaf</mat-option>
-                      <mat-option value="row-2">body</mat-option>
-                      <mat-option value="row-3">back endleaf</mat-option>
-                      <mat-option value="row-4">back cover</mat-option>
-                    </mat-optgroup>
-                    <mat-optgroup label="columns">
-                      <mat-option value="col-q" [disabled]="qPresent"
-                        >quire</mat-option
-                      >
-                      <mat-option value="col-n">numbering</mat-option>
-                      <mat-option value="col-c">catchword</mat-option>
-                      <mat-option value="col-s">signature</mat-option>
-                      <mat-option value="col-r">register</mat-option>
-                    </mat-optgroup>
-                  </mat-select>
-                  @if ( $any(addType).errors?.required && (addType.dirty ||
-                  addType.touched) ) {
-                  <mat-error>type required</mat-error>
+            <div id="adder">
+              <fieldset>
+                <legend>adder</legend>
+                <form
+                  [formGroup]="addForm"
+                  class="form-row"
+                  (submit)="onTypeAdd()"
+                >
+                  <!-- addType -->
+                  <mat-form-field>
+                    <mat-label>type</mat-label>
+                    <mat-select [formControl]="addType">
+                      <mat-optgroup label="rows">
+                        <mat-option value="row-0">front cover</mat-option>
+                        <mat-option value="row-1">front endleaf</mat-option>
+                        <mat-option value="row-2">body</mat-option>
+                        <mat-option value="row-3">back endleaf</mat-option>
+                        <mat-option value="row-4">back cover</mat-option>
+                      </mat-optgroup>
+                      <mat-optgroup label="columns">
+                        <mat-option value="col-q" [disabled]="qPresent"
+                          >quire</mat-option
+                        >
+                        <mat-option value="col-n">numbering</mat-option>
+                        <mat-option value="col-c">catchword</mat-option>
+                        <mat-option value="col-s">signature</mat-option>
+                        <mat-option value="col-r">register</mat-option>
+                      </mat-optgroup>
+                    </mat-select>
+                    @if ( $any(addType).errors?.required && (addType.dirty ||
+                    addType.touched) ) {
+                    <mat-error>type required</mat-error>
+                    }
+                  </mat-form-field>
+
+                  <!-- addName -->
+                  @if (adderColumn) {
+                  <mat-form-field>
+                    <mat-label>name</mat-label>
+                    <input matInput [formControl]="addName" />
+                    @if ( $any(addName).errors?.required && (addName.dirty ||
+                    addName.touched) ) {
+                    <mat-error>name required</mat-error>
+                    } @if ( $any(addName).errors?.maxLength && (addName.dirty ||
+                    addName.touched) ) {
+                    <mat-error>name too long</mat-error>
+                    }
+                  </mat-form-field>
                   }
-                </mat-form-field>
 
-                <!-- addName -->
-                @if (adderColumn) {
-                <mat-form-field>
-                  <mat-label>name</mat-label>
-                  <input matInput [formControl]="addName" />
-                  @if ( $any(addName).errors?.required && (addName.dirty ||
-                  addName.touched) ) {
-                  <mat-error>name required</mat-error>
-                  } @if ( $any(addName).errors?.maxLength && (addName.dirty ||
-                  addName.touched) ) {
-                  <mat-error>name too long</mat-error>
+                  <!-- addCount (not for covers) -->
+                  @if ( !adderColumn && addType.value !== 'row-0' &&
+                  addType.value !== 'row-4' ) {
+                  <mat-form-field style="width: 6em">
+                    <mat-label>count</mat-label>
+                    <input
+                      matInput
+                      [formControl]="addCount"
+                      type="number"
+                      min="1"
+                    />
+                  </mat-form-field>
                   }
-                </mat-form-field>
-                }
 
-                <!-- addCount (not for covers) -->
-                @if ( !adderColumn && addType.value !== 'row-0' && addType.value
-                !== 'row-4' ) {
-                <mat-form-field style="width: 6em">
-                  <mat-label>count</mat-label>
-                  <input
-                    matInput
-                    [formControl]="addCount"
-                    type="number"
-                    min="1"
-                  />
-                </mat-form-field>
-                }
+                  <button
+                    mat-icon-button
+                    type="submit"
+                    [disabled]="addForm.invalid"
+                    matTooltip="Add the selected table element"
+                  >
+                    <mat-icon class="mat-primary">add_circle</mat-icon>
+                  </button>
 
-                <button
-                  mat-icon-button
-                  type="submit"
-                  [disabled]="addForm.invalid"
-                  matTooltip="Add the selected table element"
-                >
-                  <mat-icon class="mat-primary">add_circle</mat-icon>
-                </button>
-
-                <!-- trimming -->
-                <button
-                  type="button"
-                  mat-icon-button
-                  matTooltip="Trim table rows"
-                  (click)="onTrimRows()"
-                >
-                  <mat-icon class="mat-warn">delete_sweep</mat-icon>
-                </button>
-                <button
-                  type="button"
-                  mat-icon-button
-                  matTooltip="Trim table rows and columns"
-                  (click)="onTrimRowCols()"
-                >
-                  <mat-icon class="mat-warn">delete_forever</mat-icon>
-                </button>
-              </form>
-            </fieldset>
+                  <!-- trimming -->
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Trim table rows"
+                    (click)="onTrimRows()"
+                  >
+                    <mat-icon class="mat-warn">delete_sweep</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Trim table rows and columns"
+                    (click)="onTrimRowCols()"
+                  >
+                    <mat-icon class="mat-warn">delete_forever</mat-icon>
+                  </button>
+                </form>
+              </fieldset>
+            </div>
           </div>
 
           <!-- definition -->
@@ -380,6 +388,18 @@
               />
             </fieldset>
           </mat-expansion-panel>
+        </mat-tab>
+
+        <!-- NOTE -->
+        <mat-tab label="note">
+          <mat-form-field class="full-width">
+            <textarea
+              matInput
+              [formControl]="note"
+              rows="5"
+              placeholder="note"
+            ></textarea>
+          </mat-form-field>
         </mat-tab>
 
         <!-- HELP -->

@@ -60,6 +60,7 @@ export interface CodSheetLabelsPart extends Part {
   cDefinitions?: CodCColDefinition[];
   sDefinitions?: CodSColDefinition[];
   rDefinitions?: CodRColDefinition[];
+  note?: string;
 }
 
 /**
@@ -584,6 +585,9 @@ export const COD_SHEET_LABELS_PART_SCHEMA = {
           },
         ],
       },
+    },
+    note: {
+      type: 'string',
     },
   },
 };
