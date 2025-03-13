@@ -5,6 +5,7 @@ import {
   ElementRef,
   input,
   model,
+  OnDestroy,
   ViewChild,
 } from '@angular/core';
 import {
@@ -21,10 +22,13 @@ import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import { MatDialog } from '@angular/material/dialog';
 
 import { Flag, FlagSetBadgeComponent } from '@myrmidon/cadmus-ui-flag-set';
 
 import { CodLabelCell } from '../label-generator';
+import { CellFeaturesComponent } from '../cell-features/cell-features.component';
+import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 
 @Component({
   selector: 'cadmus-cod-label-cell',
@@ -43,7 +47,8 @@ import { CodLabelCell } from '../label-generator';
     FlagSetBadgeComponent,
   ],
 })
-export class CodLabelCellComponent {
+export class CodLabelCellComponent implements OnDestroy {
+  private _sub?: Subscription;
   /**
    * The cell to display and edit.
    */
@@ -62,13 +67,7 @@ export class CodLabelCellComponent {
   /**
    * The list of feature flags set for the current cell.
    */
-  public readonly cellFlags = computed<Flag[]>(() => {
-    return this.cell()?.features?.length
-      ? this.cell()!.features!.map((f) =>
-          this.featureFlags().find((ff) => ff.id === f)!
-        )
-      : [];
-  });
+  public cellFlags: Flag[] = [];
 
   @ViewChild('valueInput')
   public valueElement?: ElementRef;
@@ -78,21 +77,37 @@ export class CodLabelCellComponent {
   public editMode: 'none' | 'value' | 'note';
   public value: FormControl<string | null>;
   public note: FormControl<string | null>;
+  public features: FormControl<string[]>;
   public form: FormGroup;
 
-  constructor(formBuilder: FormBuilder) {
+  constructor(formBuilder: FormBuilder, public dialog: MatDialog) {
     this.editMode = 'none';
     // form
     this.value = formBuilder.control(null, Validators.maxLength(50));
     this.note = formBuilder.control(null, Validators.maxLength(500));
+    this.features = formBuilder.control([], { nonNullable: true });
     this.form = formBuilder.group({
       value: this.value,
       note: this.note,
+      features: this.features,
     });
 
     effect(() => {
       this.updateForm(this.cell());
     });
+
+    // when the features change, update their mapped flags
+    this._sub = this.features.valueChanges
+      .pipe(distinctUntilChanged(), debounceTime(300))
+      .subscribe(() => {
+        this.cellFlags = this.features.value.map(
+          (f) => this.featureFlags().find((ff) => ff.id === f)!
+        );
+      });
+  }
+
+  public ngOnDestroy(): void {
+    this._sub?.unsubscribe();
   }
 
   public editValue(): void {
@@ -100,6 +115,7 @@ export class CodLabelCellComponent {
       return;
     }
     this.editMode = 'value';
+    this.features.setValue(this.cell()?.features || []);
     setTimeout(() => {
       this.valueElement?.nativeElement.focus();
       this.valueElement?.nativeElement.select();
@@ -124,6 +140,8 @@ export class CodLabelCellComponent {
     }
     this.value.setValue(cell.value || null);
     this.note.setValue(cell.note || null);
+    this.features.setValue(cell.features || []);
+    this.form.markAsPristine();
   }
 
   private getCell(): CodLabelCell {
@@ -131,8 +149,31 @@ export class CodLabelCellComponent {
       rowId: this.cell()!.rowId,
       id: this.cell()!.id,
       value: this.value.value?.trim(),
+      features: this.features.value?.length ? this.features.value : undefined,
       note: this.note.value?.trim(),
     };
+  }
+
+  public editFeatures(): void {
+    if (!this.featureFlags().length) {
+      return;
+    }
+
+    const dialogRef = this.dialog.open(CellFeaturesComponent, {
+      height: '300px',
+      width: '400px',
+      data: {
+        flags: this.featureFlags(),
+        checkedIds: this.features.value,
+      },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.features.setValue(result);
+        this.features.markAsDirty();
+        this.features.updateValueAndValidity();
+      }
+    });
   }
 
   public saveEdit(): void {

@@ -179,8 +179,7 @@ graph LR;
   - `SheetLabelsPart`:
     - ➕ add `note` (`string`)
     - ➕ add asserted composite ID links to all col definitions.
-    - TODO: add to each column definition:
-      - ➕ add flagset features to all cols (quire break etc), one thesaurus per column type;
+    - ➕ add flagset features to all cols (quire break etc), one thesaurus per column type.
 
 - 2025-03-09:
   - ⚠️ breaking change because of migration to Cadmus shell V12.

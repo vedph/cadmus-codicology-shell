@@ -32,9 +32,18 @@
       <mat-icon>edit_note</mat-icon>
     </button>
     <!-- features -->
-    @if (cellFlags().length) {
-    <cadmus-flag-set-badge [flags]="cellFlags()" />
+    @if (featureFlags().length) {
+    <button
+      class="muted"
+      type="button"
+      mat-icon-button
+      matTooltip="Edit features"
+      (click)="editFeatures()"
+    >
+      <mat-icon>checklist</mat-icon>
+    </button>
     }
+    <cadmus-flag-set-badge [flags]="cellFlags" />
   </div>
   }
 

@@ -1,0 +1,20 @@
+<div id="content">
+  <h3>Features</h3>
+  <div mat-dialog-content>
+    <fieldset>
+      <cadmus-ui-flag-set
+        [flags]="flags"
+        [checkedIds]="checkedIds"
+        (checkedIdsChange)="onCheckedIdsChange($event)"
+      />
+    </fieldset>
+  </div>
+  <div id="actions" mat-dialog-actions>
+    <button type="button" mat-icon-button (click)="cancel()">
+      <mat-icon class="mat-warn">cancel</mat-icon>
+    </button>
+    <button type="submit" mat-icon-button (click)="save()">
+      <mat-icon class="mat-primary">check_circle</mat-icon>
+    </button>
+  </div>
+</div>

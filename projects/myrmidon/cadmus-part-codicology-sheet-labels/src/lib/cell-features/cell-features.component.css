@@ -1,0 +1,16 @@
+div#content {
+  padding: 8px;
+}
+div#actions {
+  display: flex;
+  justify-content: center;
+}
+h3 {
+  text-align: center;
+}
+fieldset {
+  margin: 8px 0;
+  border: 1px solid silver;
+  border-radius: 6px;
+  padding: 6px 12px;
+}
