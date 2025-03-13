@@ -54,6 +54,26 @@
     </mat-form-field>
   </div>
 
+  <!-- links -->
+  <div>
+    <fieldset>
+      <legend>links</legend>
+      <cadmus-refs-asserted-composite-ids
+        [idScopeEntries]="idScopeEntries()"
+        [idTagEntries]="idTagEntries()"
+        [assTagEntries]="assTagEntries()"
+        [refTypeEntries]="refTypeEntries()"
+        [refTagEntries]="refTagEntries()"
+        [pinByTypeMode]="pinByTypeMode()"
+        [canSwitchMode]="canSwitchMode()"
+        [canEditTarget]="canEditTarget()"
+        [internalDefault]="true"
+        [ids]="links.value"
+        (idsChange)="onLinkIdsChange($event)"
+      />
+    </fieldset>
+  </div>
+
   <div>
     <!-- note -->
     <mat-form-field class="long-text">

@@ -50,7 +50,9 @@ export class CodSheetLabelsPartFeatureComponent
       'doc-reference-types',
       'doc-reference-tags',
       'asserted-id-scopes',
-      'asserted-id-tags'
+      'asserted-id-tags',
+      'external-id-tags',
+      'external-id-scopes'
     ];
   }
 }

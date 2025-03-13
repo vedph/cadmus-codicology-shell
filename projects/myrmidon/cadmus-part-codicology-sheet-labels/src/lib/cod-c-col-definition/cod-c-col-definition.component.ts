@@ -17,6 +17,11 @@ import { MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 
+import {
+  AssertedCompositeId,
+  AssertedCompositeIdsComponent,
+} from '@myrmidon/cadmus-refs-asserted-ids';
+
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import { CodCColDefinition } from '../cod-sheet-labels-part';
@@ -38,6 +43,7 @@ import { CodCColDefinition } from '../cod-sheet-labels-part';
     MatIconButton,
     MatTooltip,
     MatIcon,
+    AssertedCompositeIdsComponent,
   ],
 })
 export class CodCColDefinitionComponent {
@@ -45,6 +51,24 @@ export class CodCColDefinitionComponent {
 
   // cod-catchwords-positions
   public readonly posEntries = input<ThesaurusEntry[]>();
+  // assertion-tags
+  public readonly assTagEntries = input<ThesaurusEntry[]>();
+  // doc-reference-types
+  public readonly refTypeEntries = input<ThesaurusEntry[]>();
+  // doc-reference-tags
+  public readonly refTagEntries = input<ThesaurusEntry[]>();
+  // external-id-tags
+  public readonly idTagEntries = input<ThesaurusEntry[]>();
+  // external-id-scopes
+  public readonly idScopeEntries = input<ThesaurusEntry[]>();
+
+  // pin link settings
+  // by-type: true/false
+  public readonly pinByTypeMode = input<boolean>();
+  // switch-mode: true/false
+  public readonly canSwitchMode = input<boolean>();
+  // edit-target: true/false
+  public readonly canEditTarget = input<boolean>();
 
   public readonly editorClose = output();
 
@@ -53,6 +77,7 @@ export class CodCColDefinitionComponent {
   public position: FormControl<string | null>;
   public isVertical: FormControl<boolean>;
   public decoration: FormControl<string | null>;
+  public links: FormControl<AssertedCompositeId[]>;
   public note: FormControl<string | null>;
   public form: FormGroup;
 
@@ -65,18 +90,26 @@ export class CodCColDefinitionComponent {
     ]);
     this.isVertical = formBuilder.control(false, { nonNullable: true });
     this.decoration = formBuilder.control(null, Validators.maxLength(1000));
+    this.links = formBuilder.control([], { nonNullable: true });
     this.note = formBuilder.control(null, Validators.maxLength(1000));
     this.form = formBuilder.group({
       rank: this.rank,
       position: this.position,
       isVertical: this.isVertical,
       decoration: this.decoration,
+      links: this.links,
       note: this.note,
     });
 
     effect(() => {
       this.updateForm(this.definition());
     });
+  }
+
+  public onLinkIdsChange(ids: AssertedCompositeId[]): void {
+    this.links.setValue(ids);
+    this.links.updateValueAndValidity();
+    this.links.markAsDirty();
   }
 
   private updateForm(model: CodCColDefinition | undefined): void {
@@ -90,6 +123,7 @@ export class CodCColDefinitionComponent {
     this.position.setValue(model.position);
     this.isVertical.setValue(model.isVertical ? true : false);
     this.decoration.setValue(model.decoration || null);
+    this.links.setValue(model.links || []);
     this.note.setValue(model.note || null);
     this.form.markAsPristine();
   }
@@ -101,6 +135,7 @@ export class CodCColDefinitionComponent {
       position: this.position.value?.trim() || '',
       isVertical: this.isVertical.value ? true : false,
       decoration: this.decoration.value?.trim(),
+      links: this.links.value || undefined,
       note: this.note.value?.trim(),
     };
   }

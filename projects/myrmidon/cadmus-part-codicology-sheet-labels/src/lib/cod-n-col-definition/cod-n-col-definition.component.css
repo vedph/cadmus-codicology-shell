@@ -18,3 +18,6 @@ fieldset {
   padding: 8px;
   border-radius: 6px;
 }
+legend {
+  color: silver;
+}

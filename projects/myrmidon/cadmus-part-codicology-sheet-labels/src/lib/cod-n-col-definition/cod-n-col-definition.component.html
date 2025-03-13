@@ -125,8 +125,28 @@
     }
   </div>
 
+  <!-- links -->
   <div>
-    <!-- note -->
+    <fieldset>
+      <legend>links</legend>
+      <cadmus-refs-asserted-composite-ids
+        [idScopeEntries]="idScopeEntries()"
+        [idTagEntries]="idTagEntries()"
+        [assTagEntries]="assTagEntries()"
+        [refTypeEntries]="refTypeEntries()"
+        [refTagEntries]="refTagEntries()"
+        [pinByTypeMode]="pinByTypeMode()"
+        [canSwitchMode]="canSwitchMode()"
+        [canEditTarget]="canEditTarget()"
+        [internalDefault]="true"
+        [ids]="links.value"
+        (idsChange)="onLinkIdsChange($event)"
+      />
+    </fieldset>
+  </div>
+
+  <!-- note -->
+  <div>
     <mat-form-field class="long-text">
       <mat-label>note</mat-label>
       <input matInput [formControl]="note" />

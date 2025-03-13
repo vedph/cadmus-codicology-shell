@@ -72,7 +72,8 @@ import { CellTypeColorPipe } from './cell-type-color.pipe';
  * cod-numbering-colors, cod-quiresig-systems,
  * cod-quiresig-positions, cod-endleaf-materials, chronotope-tags,
  * assertion-tags, doc-reference-types, doc-reference-tags,
- * asserted-id-scopes, asserted-id-tags (all optional).
+ * asserted-id-scopes, asserted-id-tags, external-id-tags,
+ * external-id-scopes (all optional).
  */
 @Component({
   selector: 'cadmus-cod-sheet-labels-part',
@@ -191,6 +192,10 @@ export class CodSheetLabelsPartComponent
   public assIdScopeEntries?: ThesaurusEntry[];
   // asserted-id-tags
   public assIdTagEntries?: ThesaurusEntry[];
+  // external-id-tags
+  public idTagEntries?: ThesaurusEntry[];
+  // external-id-scopes
+  public idScopeEntries?: ThesaurusEntry[];
 
   constructor(
     authService: AuthJwtService,
@@ -361,6 +366,18 @@ export class CodSheetLabelsPartComponent
       this.assIdTagEntries = thesauri[key].entries;
     } else {
       this.assIdTagEntries = undefined;
+    }
+    key = 'external-id-tags';
+    if (this.hasThesaurus(key)) {
+      this.idTagEntries = thesauri[key].entries;
+    } else {
+      this.idTagEntries = undefined;
+    }
+    key = 'external-id-scopes';
+    if (this.hasThesaurus(key)) {
+      this.idScopeEntries = thesauri[key].entries;
+    } else {
+      this.idScopeEntries = undefined;
     }
   }
 

@@ -16,6 +16,11 @@ import { MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 
+import {
+  AssertedCompositeId,
+  AssertedCompositeIdsComponent,
+} from '@myrmidon/cadmus-refs-asserted-ids';
+
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import { CodSColDefinition } from '../cod-sheet-labels-part';
@@ -36,6 +41,7 @@ import { CodSColDefinition } from '../cod-sheet-labels-part';
     MatIconButton,
     MatTooltip,
     MatIcon,
+    AssertedCompositeIdsComponent
   ],
 })
 export class CodSColDefinitionComponent {
@@ -45,6 +51,24 @@ export class CodSColDefinitionComponent {
   public readonly sysEntries = input<ThesaurusEntry[]>();
   // cod-quiresig-positions
   public readonly posEntries = input<ThesaurusEntry[]>();
+  // links:
+  // assertion-tags
+  public readonly assTagEntries = input<ThesaurusEntry[]>();
+  // doc-reference-types
+  public readonly refTypeEntries = input<ThesaurusEntry[]>();
+  // doc-reference-tags
+  public readonly refTagEntries = input<ThesaurusEntry[]>();
+  // external-id-tags
+  public readonly idTagEntries = input<ThesaurusEntry[]>();
+  // external-id-scopes
+  public readonly idScopeEntries = input<ThesaurusEntry[]>();
+  // pin link settings
+  // by-type: true/false
+  public readonly pinByTypeMode = input<boolean>();
+  // switch-mode: true/false
+  public readonly canSwitchMode = input<boolean>();
+  // edit-target: true/false
+  public readonly canEditTarget = input<boolean>();
 
   public readonly editorClose = output();
 
@@ -52,6 +76,7 @@ export class CodSColDefinitionComponent {
   public rank: FormControl<number>;
   public system: FormControl<string | null>;
   public position: FormControl<string | null>;
+  public links: FormControl<AssertedCompositeId[]>;
   public note: FormControl<string | null>;
   public form: FormGroup;
 
@@ -66,17 +91,25 @@ export class CodSColDefinitionComponent {
       Validators.required,
       Validators.maxLength(50),
     ]);
+    this.links = formBuilder.control([], { nonNullable: true });
     this.note = formBuilder.control(null, Validators.maxLength(1000));
     this.form = formBuilder.group({
       rank: this.rank,
       system: this.system,
       position: this.position,
+      links: this.links,
       note: this.note,
     });
 
     effect(() => {
       this.updateForm(this.definition());
     });
+  }
+
+  public onLinkIdsChange(ids: AssertedCompositeId[]): void {
+    this.links.setValue(ids);
+    this.links.updateValueAndValidity();
+    this.links.markAsDirty();
   }
 
   private updateForm(model: CodSColDefinition | undefined): void {
@@ -89,6 +122,7 @@ export class CodSColDefinitionComponent {
     this.rank.setValue(model.rank || 0);
     this.system.setValue(model.system);
     this.position.setValue(model.position);
+    this.links.setValue(model.links || []);
     this.note.setValue(model.note || null);
     this.form.markAsPristine();
   }
@@ -99,6 +133,7 @@ export class CodSColDefinitionComponent {
       rank: +this.rank.value || 0,
       system: this.system.value?.trim() || '',
       position: this.position.value?.trim() || '',
+      links: this.links.value?.length? this.links.value : undefined,
       note: this.note.value?.trim(),
     };
   }

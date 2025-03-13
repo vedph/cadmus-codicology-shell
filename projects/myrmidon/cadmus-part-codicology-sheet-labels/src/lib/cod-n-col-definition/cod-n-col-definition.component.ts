@@ -18,6 +18,10 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 
 import {
+  AssertedCompositeId,
+  AssertedCompositeIdsComponent,
+} from '@myrmidon/cadmus-refs-asserted-ids';
+import {
   HistoricalDateModel,
   HistoricalDateComponent,
 } from '@myrmidon/cadmus-refs-historical-date';
@@ -53,6 +57,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     MatIconButton,
     MatTooltip,
     MatIcon,
+    AssertedCompositeIdsComponent,
   ],
 })
 export class CodNColDefinitionComponent {
@@ -67,6 +72,25 @@ export class CodNColDefinitionComponent {
   // cod-numbering-colors
   public readonly clrEntries = input<ThesaurusEntry[]>();
 
+  // links:
+  // assertion-tags
+  public readonly assTagEntries = input<ThesaurusEntry[]>();
+  // doc-reference-types
+  public readonly refTypeEntries = input<ThesaurusEntry[]>();
+  // doc-reference-tags
+  public readonly refTagEntries = input<ThesaurusEntry[]>();
+  // external-id-tags
+  public readonly idTagEntries = input<ThesaurusEntry[]>();
+  // external-id-scopes
+  public readonly idScopeEntries = input<ThesaurusEntry[]>();
+  // pin link settings
+  // by-type: true/false
+  public readonly pinByTypeMode = input<boolean>();
+  // switch-mode: true/false
+  public readonly canSwitchMode = input<boolean>();
+  // edit-target: true/false
+  public readonly canEditTarget = input<boolean>();
+
   public readonly editorClose = output();
 
   public id: string;
@@ -79,6 +103,7 @@ export class CodNColDefinitionComponent {
   public colors: FormControl<string[]>;
   public hasDate: FormControl<boolean>;
   public date: FormControl<HistoricalDateModel | null>;
+  public links: FormControl<AssertedCompositeId[]>;
   public note: FormControl<string | null>;
   public form: FormGroup;
 
@@ -105,6 +130,7 @@ export class CodNColDefinitionComponent {
     this.colors = formBuilder.control([], { nonNullable: true });
     this.hasDate = formBuilder.control(false, { nonNullable: true });
     this.date = formBuilder.control(null);
+    this.links = formBuilder.control([], { nonNullable: true });
     this.note = formBuilder.control(null, Validators.maxLength(1000));
     this.form = formBuilder.group({
       rank: this.rank,
@@ -116,6 +142,7 @@ export class CodNColDefinitionComponent {
       colors: this.colors,
       hasDate: this.hasDate,
       date: this.date,
+      links: this.links,
       note: this.note,
     });
 
@@ -144,6 +171,7 @@ export class CodNColDefinitionComponent {
     this.colors.setValue(model.colors || []);
     this.hasDate.setValue(model.date ? true : false);
     this.date.setValue(model.date || null);
+    this.links.setValue(model.links || []);
     this.note.setValue(model.note || null);
     this.form.markAsPristine();
   }
@@ -159,6 +187,7 @@ export class CodNColDefinitionComponent {
       position: this.position.value?.trim() || '',
       colors: this.colors.value?.length ? this.colors.value : undefined,
       date: this.hasDate.value ? this.date.value || undefined : undefined,
+      links: this.links.value?.length ? this.links.value : undefined,
       note: this.note.value?.trim(),
     };
   }
@@ -173,6 +202,12 @@ export class CodNColDefinitionComponent {
     this.date.setValue(date);
     this.date.updateValueAndValidity();
     this.date.markAsDirty();
+  }
+
+  public onLinkIdsChange(ids: AssertedCompositeId[]): void {
+    this.links.setValue(ids);
+    this.links.updateValueAndValidity();
+    this.links.markAsDirty();
   }
 
   public cancel(): void {

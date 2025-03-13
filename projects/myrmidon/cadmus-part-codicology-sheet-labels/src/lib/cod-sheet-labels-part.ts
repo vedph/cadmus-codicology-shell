@@ -1,10 +1,12 @@
 import { Part } from '@myrmidon/cadmus-core';
 import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
+import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
 import { HistoricalDateModel } from '@myrmidon/cadmus-refs-historical-date';
 
 export interface CodColumn {
   id: string;
   value?: string;
+  features?: string[];
   note?: string;
 }
 
@@ -22,6 +24,7 @@ export interface CodEndleaf {
 export interface CodColDefinition {
   id: string;
   rank?: number;
+  links?: AssertedCompositeId[];
   note?: string;
 }
 
@@ -66,8 +69,7 @@ export interface CodSheetLabelsPart extends Part {
 /**
  * The type ID used to identify the CodSheetLabelsPart type.
  */
-export const COD_SHEET_LABELS_PART_TYPEID =
-  'it.vedph.codicology.sheet-labels';
+export const COD_SHEET_LABELS_PART_TYPEID = 'it.vedph.codicology.sheet-labels';
 
 /**
  * JSON schema for the CodSheetLabels part.
@@ -89,7 +91,7 @@ export const COD_SHEET_LABELS_PART_SCHEMA = {
     'creatorId',
     'timeModified',
     'userId',
-    'rows'
+    'rows',
   ],
   properties: {
     timeCreated: {
@@ -146,6 +148,12 @@ export const COD_SHEET_LABELS_PART_SCHEMA = {
                         },
                         value: {
                           type: 'string',
+                        },
+                        features: {
+                          type: 'array',
+                          items: {
+                            type: 'string',
+                          },
                         },
                         note: {
                           type: 'string',
@@ -367,7 +375,7 @@ export const COD_SHEET_LABELS_PART_SCHEMA = {
                 type: 'boolean',
               },
               isByScribe: {
-                type: 'boolean'
+                type: 'boolean',
               },
               system: {
                 type: 'string',
@@ -497,6 +505,27 @@ export const COD_SHEET_LABELS_PART_SCHEMA = {
                   },
                 },
               },
+              links: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  required: ['id', 'target'],
+                  properties: {
+                    id: {
+                      type: 'string',
+                    },
+                    target: {
+                      type: 'string',
+                    },
+                    tag: {
+                      type: 'string',
+                    },
+                    note: {
+                      type: 'string',
+                    },
+                  },
+                },
+              },
             },
           },
         ],
@@ -528,6 +557,27 @@ export const COD_SHEET_LABELS_PART_SCHEMA = {
               decoration: {
                 type: 'string',
               },
+              links: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  required: ['id', 'target'],
+                  properties: {
+                    id: {
+                      type: 'string',
+                    },
+                    target: {
+                      type: 'string',
+                    },
+                    tag: {
+                      type: 'string',
+                    },
+                    note: {
+                      type: 'string',
+                    },
+                  },
+                },
+              },
             },
           },
         ],
@@ -556,6 +606,27 @@ export const COD_SHEET_LABELS_PART_SCHEMA = {
               position: {
                 type: 'string',
               },
+              links: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  required: ['id', 'target'],
+                  properties: {
+                    id: {
+                      type: 'string',
+                    },
+                    target: {
+                      type: 'string',
+                    },
+                    tag: {
+                      type: 'string',
+                    },
+                    note: {
+                      type: 'string',
+                    },
+                  },
+                },
+              },
             },
           },
         ],
@@ -580,6 +651,27 @@ export const COD_SHEET_LABELS_PART_SCHEMA = {
               },
               position: {
                 type: 'string',
+              },
+              links: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  required: ['id', 'target'],
+                  properties: {
+                    id: {
+                      type: 'string',
+                    },
+                    target: {
+                      type: 'string',
+                    },
+                    tag: {
+                      type: 'string',
+                    },
+                    note: {
+                      type: 'string',
+                    },
+                  },
+                },
               },
             },
           },

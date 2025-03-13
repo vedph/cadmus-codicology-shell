@@ -176,6 +176,11 @@ graph LR;
     - ⚠️ change `rulingTechnique` (`string`) into `rulingTechniques` (`string[]`, flags). This is a breaking change, make tool to download and reinject.
     - UI: make `sample` not required.
   - `CodHandSign`: ➕ add `mufi` (`number`) for the corresponding MUFI code. This implies adding the corresponding brick `@myrmidon/cadmus-refs-mufi-lookup` and the MUFI service endpoint in `env.js`.
+  - `SheetLabelsPart`:
+    - ➕ add `note` (`string`)
+    - ➕ add asserted composite ID links to all col definitions.
+    - TODO: add to each column definition:
+      - ➕ add flagset features to all cols (quire break etc), one thesaurus per column type;
 
 - 2025-03-09:
   - ⚠️ breaking change because of migration to Cadmus shell V12.
