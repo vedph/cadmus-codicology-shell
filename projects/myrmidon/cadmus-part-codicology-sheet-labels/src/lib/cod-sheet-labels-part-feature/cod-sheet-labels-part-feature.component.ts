@@ -52,7 +52,12 @@ export class CodSheetLabelsPartFeatureComponent
       'asserted-id-scopes',
       'asserted-id-tags',
       'external-id-tags',
-      'external-id-scopes'
+      'external-id-scopes',
+      'cod-labels-col-q-features',
+      'cod-labels-col-n-features',
+      'cod-labels-col-c-features',
+      'cod-labels-col-s-features',
+      'cod-labels-col-r-features',
     ];
   }
 }

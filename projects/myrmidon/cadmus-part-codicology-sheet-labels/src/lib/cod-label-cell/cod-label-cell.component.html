@@ -1,14 +1,17 @@
 @if (cell()) {
 <div class="cell" [style.background-color]="color() || 'transparent'">
-  <!-- display -->
+  <!-- VIEW -->
   @if (editMode === 'none') {
   <div class="form-row-center">
+    <!-- cell value -->
     <span>{{ cell()?.value }}</span>
+    <!-- cell note -->
     @if (cell()?.note) {
     <span [matTooltip]="cell()!.note">
       <mat-icon>description</mat-icon>
     </span>
     }
+    <!-- edit value button -->
     <button
       class="muted"
       type="button"
@@ -18,6 +21,7 @@
     >
       <mat-icon class="mat-primary">edit</mat-icon>
     </button>
+    <!-- edit note button -->
     <button
       class="muted"
       type="button"
@@ -27,10 +31,15 @@
     >
       <mat-icon>edit_note</mat-icon>
     </button>
+    <!-- features -->
+    @if (cellFlags().length) {
+    <cadmus-flag-set-badge [flags]="cellFlags()" />
+    }
   </div>
   }
-  <!-- edit -->
-  @if (editMode !== 'none') {
+
+  <!-- EDIT -->
+  @else {
   <form [formGroup]="form" (submit)="saveEdit()" class="form-row">
     <!-- value -->
     @if (editMode === 'value') {

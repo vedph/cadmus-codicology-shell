@@ -37,6 +37,8 @@ import { deepCopy, FlatLookupPipe } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 
+import { Flag } from '@myrmidon/cadmus-ui-flag-set';
+
 import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
   EditedObject,
@@ -65,6 +67,14 @@ import { CodEndleafComponent } from '../cod-endleaf/cod-endleaf.component';
 import { CellAdapterPipe } from './cell-adapter.pipe';
 import { CellTypeColorPipe } from './cell-type-color.pipe';
 
+// for mapping col features thesauri to flags
+function entryToFlag(entry: ThesaurusEntry): Flag {
+  return {
+    id: entry.id,
+    label: entry.value,
+  };
+}
+
 /**
  * CodSheetLabels part editor component.
  * Thesauri: cod-catchwords-positions, cod-numbering-systems,
@@ -73,7 +83,9 @@ import { CellTypeColorPipe } from './cell-type-color.pipe';
  * cod-quiresig-positions, cod-endleaf-materials, chronotope-tags,
  * assertion-tags, doc-reference-types, doc-reference-tags,
  * asserted-id-scopes, asserted-id-tags, external-id-tags,
- * external-id-scopes (all optional).
+ * external-id-scopes, cod-labels-col-q-features,
+ * cod-labels-col-n-features, cod-labels-col-c-features,
+ * cod-labels-col-s-features, cod-labels-col-r-features (all optional).
  */
 @Component({
   selector: 'cadmus-cod-sheet-labels-part',
@@ -196,6 +208,23 @@ export class CodSheetLabelsPartComponent
   public idTagEntries?: ThesaurusEntry[];
   // external-id-scopes
   public idScopeEntries?: ThesaurusEntry[];
+  // cod-labels-col-q-features
+  public qFeatureEntries?: ThesaurusEntry[];
+  // cod-labels-col-n-features
+  public nFeatureEntries?: ThesaurusEntry[];
+  // cod-labels-col-c-features
+  public cFeatureEntries?: ThesaurusEntry[];
+  // cod-labels-col-s-features
+  public sFeatureEntries?: ThesaurusEntry[];
+  // cod-labels-col-r-features
+  public rFeatureEntries?: ThesaurusEntry[];
+
+  // flags
+  public qFeatureFlags?: Flag[];
+  public nFeatureFlags?: Flag[];
+  public cFeatureFlags?: Flag[];
+  public sFeatureFlags?: Flag[];
+  public rFeatureFlags?: Flag[];
 
   constructor(
     authService: AuthJwtService,
@@ -379,6 +408,46 @@ export class CodSheetLabelsPartComponent
     } else {
       this.idScopeEntries = undefined;
     }
+    key = 'cod-labels-col-q-features';
+    if (this.hasThesaurus(key)) {
+      this.qFeatureEntries = thesauri[key].entries;
+      this.qFeatureFlags = thesauri[key].entries?.map(entryToFlag);
+    } else {
+      this.qFeatureEntries = undefined;
+      this.qFeatureFlags = undefined;
+    }
+    key = 'cod-labels-col-n-features';
+    if (this.hasThesaurus(key)) {
+      this.nFeatureEntries = thesauri[key].entries;
+      this.qFeatureFlags = thesauri[key].entries?.map(entryToFlag);
+    } else {
+      this.nFeatureEntries = undefined;
+      this.qFeatureFlags = undefined;
+    }
+    key = 'cod-labels-col-c-features';
+    if (this.hasThesaurus(key)) {
+      this.cFeatureEntries = thesauri[key].entries;
+      this.cFeatureFlags = thesauri[key].entries?.map(entryToFlag);
+    } else {
+      this.cFeatureEntries = undefined;
+      this.cFeatureFlags = undefined;
+    }
+    key = 'cod-labels-col-s-features';
+    if (this.hasThesaurus(key)) {
+      this.sFeatureEntries = thesauri[key].entries;
+      this.sFeatureFlags = thesauri[key].entries?.map(entryToFlag);
+    } else {
+      this.sFeatureEntries = undefined;
+      this.sFeatureFlags = undefined
+    }
+    key = 'cod-labels-col-r-features';
+    if (this.hasThesaurus(key)) {
+      this.rFeatureEntries = thesauri[key].entries;
+      this.rFeatureFlags = thesauri[key].entries?.map(entryToFlag);
+    } else {
+      this.rFeatureEntries = undefined;
+      this.rFeatureFlags = undefined;
+    }
   }
 
   private updateForm(part?: CodSheetLabelsPart | null): void {
@@ -509,7 +578,7 @@ export class CodSheetLabelsPartComponent
 
   public onTrimRows(): void {
     this._dialogService
-      .confirm('Confirmation', `Trim rows?`)
+      .confirm('Confirmation', 'Trim rows?')
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
@@ -520,7 +589,7 @@ export class CodSheetLabelsPartComponent
 
   public onTrimRowCols(): void {
     this._dialogService
-      .confirm('Confirmation', `Trim rows and columns?`)
+      .confirm('Confirmation', 'Trim rows and columns?')
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
@@ -532,6 +601,25 @@ export class CodSheetLabelsPartComponent
   public onCellChange(cell: CodLabelCell): void {
     // cell was edited, update it
     this._table.updateCell(cell);
+  }
+
+  public getColFeatureFlags(cellId?: string): Flag[] {
+    if (!cellId?.length) {
+      return [];
+    }
+    switch (cellId.charAt(0)) {
+      case 'q':
+        return this.qFeatureFlags || [];
+      case 'n':
+        return this.nFeatureFlags || [];
+      case 'c':
+        return this.cFeatureFlags || [];
+      case 's':
+        return this.sFeatureFlags || [];
+      case 'r':
+        return this.rFeatureFlags || [];
+    }
+    return [];
   }
 
   //#region definitions

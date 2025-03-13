@@ -268,14 +268,17 @@
             </thead>
             @if (rows$ | async; as rows) {
             <tbody>
+              <!-- rows -->
               @for (r of rows; track r) {
               <tr>
                 <th>{{ r.id }}</th>
+                <!-- cols -->
                 @for (rc of r.columns; track rc) {
                 <td>
                   <cadmus-cod-label-cell
                     [color]="$any(rc.id | cellTypeColor)"
                     [cell]="$any(rc | cellAdapter : r.id)"
+                    [featureFlags]="getColFeatureFlags(rc.id)"
                     (cellChange)="onCellChange($event!)"
                   />
                 </td>

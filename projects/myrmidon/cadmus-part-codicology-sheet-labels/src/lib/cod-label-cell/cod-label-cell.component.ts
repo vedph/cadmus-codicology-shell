@@ -1,5 +1,6 @@
 import {
   Component,
+  computed,
   effect,
   ElementRef,
   input,
@@ -21,6 +22,8 @@ import { MatIconButton } from '@angular/material/button';
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 
+import { Flag, FlagSetBadgeComponent } from '@myrmidon/cadmus-ui-flag-set';
+
 import { CodLabelCell } from '../label-generator';
 
 @Component({
@@ -37,12 +40,35 @@ import { CodLabelCell } from '../label-generator';
     MatLabel,
     MatInput,
     MatError,
+    FlagSetBadgeComponent,
   ],
 })
 export class CodLabelCellComponent {
+  /**
+   * The cell to display and edit.
+   */
   public readonly cell = model<CodLabelCell>();
 
+  /**
+   * The color to use for the cell.
+   */
   public readonly color = input<string>();
+
+  /**
+   * The list of feature flags available for this cell.
+   */
+  public readonly featureFlags = input<Flag[]>([]);
+
+  /**
+   * The list of feature flags set for the current cell.
+   */
+  public readonly cellFlags = computed<Flag[]>(() => {
+    return this.cell()?.features?.length
+      ? this.cell()!.features!.map((f) =>
+          this.featureFlags().find((ff) => ff.id === f)!
+        )
+      : [];
+  });
 
   @ViewChild('valueInput')
   public valueElement?: ElementRef;
