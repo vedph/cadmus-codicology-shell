@@ -71,7 +71,8 @@ import { CellTypeColorPipe } from './cell-type-color.pipe';
  * cod-numbering-techniques, cod-numbering-positions,
  * cod-numbering-colors, cod-quiresig-systems,
  * cod-quiresig-positions, cod-endleaf-materials, chronotope-tags,
- * assertion-tags, doc-reference-types, doc-reference-tags.
+ * assertion-tags, doc-reference-types, doc-reference-tags,
+ * asserted-id-scopes, asserted-id-tags (all optional).
  */
 @Component({
   selector: 'cadmus-cod-sheet-labels-part',
@@ -159,32 +160,37 @@ export class CodSheetLabelsPartComponent
 
   // C-COL
   // cod-catchwords-positions
-  public poscEntries: ThesaurusEntry[] | undefined;
+  public poscEntries?: ThesaurusEntry[];
   // N-COL
   // cod-numbering-systems
-  public sysnEntries: ThesaurusEntry[] | undefined;
+  public sysnEntries?: ThesaurusEntry[];
   // cod-numbering-techniques
-  public techEntries: ThesaurusEntry[] | undefined;
+  public techEntries?: ThesaurusEntry[];
   // cod-numbering-positions
-  public posnEntries: ThesaurusEntry[] | undefined;
+  public posnEntries?: ThesaurusEntry[];
   // cod-numbering-colors
-  public clrEntries: ThesaurusEntry[] | undefined;
+  public clrEntries?: ThesaurusEntry[];
   // R/S-COL
   // cod-quiresig-systems
-  public syssEntries: ThesaurusEntry[] | undefined;
+  public syssEntries?: ThesaurusEntry[];
   // cod-quiresig-positions
-  public possEntries: ThesaurusEntry[] | undefined;
+  public possEntries?: ThesaurusEntry[];
   // ENDLEAF
   // cod-endleaf-materials
-  public matEntries: ThesaurusEntry[] | undefined;
+  public matEntries?: ThesaurusEntry[];
   // chronotope-tags
-  public ctTagEntries: ThesaurusEntry[] | undefined;
+  public ctTagEntries?: ThesaurusEntry[];
   // assertion-tags
-  public assTagEntries: ThesaurusEntry[] | undefined;
+  public assTagEntries?: ThesaurusEntry[];
   // doc-reference-types
-  public refTypeEntries: ThesaurusEntry[] | undefined;
+  public refTypeEntries?: ThesaurusEntry[];
   // doc-reference-tags
-  public refTagEntries: ThesaurusEntry[] | undefined;
+  public refTagEntries?: ThesaurusEntry[];
+  // LINKS
+  // asserted-id-scopes
+  public assIdScopeEntries?: ThesaurusEntry[];
+  // asserted-id-tags
+  public assIdTagEntries?: ThesaurusEntry[];
 
   constructor(
     authService: AuthJwtService,
@@ -343,6 +349,18 @@ export class CodSheetLabelsPartComponent
       this.refTagEntries = thesauri[key].entries;
     } else {
       this.refTagEntries = undefined;
+    }
+    key = 'asserted-id-scopes';
+    if (this.hasThesaurus(key)) {
+      this.assIdScopeEntries = thesauri[key].entries;
+    } else {
+      this.assIdScopeEntries = undefined;
+    }
+    key = 'asserted-id-tags';
+    if (this.hasThesaurus(key)) {
+      this.assIdTagEntries = thesauri[key].entries;
+    } else {
+      this.assIdTagEntries = undefined;
     }
   }
 
