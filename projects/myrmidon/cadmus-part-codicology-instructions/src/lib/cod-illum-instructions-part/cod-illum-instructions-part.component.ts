@@ -19,20 +19,21 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 
+import { FlatLookupPipe, NgxToolsValidators } from '@myrmidon/ngx-tools';
 import {
   CloseSaveButtonsComponent,
   EditedObject,
   ModelEditorComponentBase,
 } from '@myrmidon/cadmus-ui';
 import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
+import { DialogService } from '@myrmidon/ngx-mat-tools';
+import { CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
 
 import {
   COD_ILLUM_INSTRUCTIONS_PART_TYPEID,
   CodIllumInstruction,
   CodIllumInstructionsPart,
 } from '../cod-illum-instructions-part';
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
-import { DialogService } from '@myrmidon/ngx-mat-tools';
 
 /**
  * Illuminator instructions part editor component.
@@ -57,6 +58,8 @@ import { DialogService } from '@myrmidon/ngx-mat-tools';
     MatTooltipModule,
     // cadmus
     CloseSaveButtonsComponent,
+    FlatLookupPipe,
+    CodLocationRangePipe,
   ],
   templateUrl: './cod-illum-instructions-part.component.html',
   styleUrl: './cod-illum-instructions-part.component.css',
