@@ -25,6 +25,7 @@
     "@myrmidon/cadmus-part-codicology-decorations": "^11.0.0",
     "@myrmidon/cadmus-part-codicology-edits": "^11.0.0",
     "@myrmidon/cadmus-part-codicology-hands": "^11.0.0",
+    "@myrmidon/cadmus-part-codicology-instructions": "^0.0.1",
     "@myrmidon/cadmus-part-codicology-layouts": "^11.0.0",
     "@myrmidon/cadmus-part-codicology-material-dsc": "^11.0.0",
     "@myrmidon/cadmus-part-codicology-sheet-labels": "^11.0.0",
