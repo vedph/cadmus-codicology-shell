@@ -160,6 +160,7 @@ graph LR;
 
 ## History
 
+- 2025-03-14: adding illuminator instructions.
 - 2025-03-11: changes to models and corresponding UI for:
   - `CodDecorationElement`: ➕ add `tag` (`string`, optional thesaurus 📚 `cod-decoration-element-tags`).
   - `CodWatermark`:

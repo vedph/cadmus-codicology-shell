@@ -12,6 +12,7 @@
     "build-dec": "ng build @myrmidon/cadmus-part-codicology-decorations",
     "build-edt": "ng build @myrmidon/cadmus-part-codicology-edits",
     "build-hnd": "ng build @myrmidon/cadmus-part-codicology-hands",
+    "build-ins": "ng build @myrmidon/cadmus-part-codicology-instructions",
     "build-lbl": "ng build @myrmidon/cadmus-part-codicology-sheet-labels",
     "build-lay": "ng build @myrmidon/cadmus-part-codicology-layouts",
     "build-mat": "ng build @myrmidon/cadmus-part-codicology-material-dsc",
@@ -19,7 +20,7 @@
     "build-wat": "ng build @myrmidon/cadmus-part-codicology-watermarks",
     "build-pg": "ng build @myrmidon/cadmus-part-codicology-pg",
     "build-ui": "ng build @myrmidon/cadmus-codicology-ui",
-    "build-lib": "npm run build-ui && npm run build-bnd && npm run build-cnt && npm run build-dec && npm run build-edt && npm run build-hnd && npm run build-lbl && npm run build-lay && npm run build-mat && npm run build-shm && npm run build-wat && npm run build-pg"
+    "build-lib": "npm run build-ui && npm run build-bnd && npm run build-cnt && npm run build-dec && npm run build-edt && npm run build-hnd && npm run build-lbl && npm run build-lay && npm run build-mat && npm run build-shm && npm run build-wat && npm run build-pg && npm run build-ins"
   },
   "private": true,
   "dependencies": {
