@@ -160,7 +160,6 @@ graph LR;
 
 ## History
 
-- 2025-03-14: adding illuminator instructions.
 - 2025-03-11: changes to models and corresponding UI for:
   - `CodDecorationElement`: ➕ add `tag` (`string`, optional thesaurus 📚 `cod-decoration-element-tags`).
   - `CodWatermark`:
@@ -181,6 +180,8 @@ graph LR;
     - ➕ add `note` (`string`)
     - ➕ add asserted composite ID links to all col definitions.
     - ➕ add flagset features to all cols (quire break etc), one thesaurus per column type.
+  - `CodEditsPart`:
+    - ➕ add `position` (`string`)
 
 - 2025-03-09:
   - ⚠️ breaking change because of migration to Cadmus shell V12.

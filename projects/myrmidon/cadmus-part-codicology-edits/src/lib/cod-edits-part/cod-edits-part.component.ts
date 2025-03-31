@@ -49,7 +49,7 @@ import { CodEditEditorComponent } from '../cod-edit-editor/cod-edit-editor.compo
  * Thesauri: cod-edit-colors, cod-edit-techniques, cod-edit-types,
  * cod-edit-tags, cod-edit-languages, doc-reference-types,
  * doc-reference-tags, assertion-tags, external-id-tags,
- * external-id-scopes.
+ * external-id-scopes, cod-edit-positions.
  */
 @Component({
   selector: 'cadmus-cod-edits-part',
@@ -91,6 +91,8 @@ export class CodEditsPartComponent
   public typeEntries: ThesaurusEntry[] | undefined;
   // cod-edit-tags
   public tagEntries: ThesaurusEntry[] | undefined;
+  // cod-edit-positions
+  public posEntries: ThesaurusEntry[] | undefined;
   // cod-edit-languages
   public langEntries: ThesaurusEntry[] | undefined;
   // doc-reference-types
@@ -154,6 +156,12 @@ export class CodEditsPartComponent
       this.tagEntries = thesauri[key].entries;
     } else {
       this.tagEntries = undefined;
+    }
+    key = 'cod-edit-positions';
+    if (this.hasThesaurus(key)) {
+      this.posEntries = thesauri[key].entries;
+    } else {
+      this.posEntries = undefined;
     }
     key = 'cod-edit-languages';
     if (this.hasThesaurus(key)) {

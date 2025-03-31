@@ -42,6 +42,7 @@ export class CodEditsPartFeatureComponent
       'cod-edit-types',
       'cod-edit-tags',
       'cod-edit-languages',
+      'cod-edit-positions',
       'doc-reference-types',
       'doc-reference-tags',
       'assertion-tags',

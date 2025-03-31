@@ -83,6 +83,8 @@ export class CodEditEditorComponent {
   public readonly typeEntries = input<ThesaurusEntry[]>();
   // cod-edit-tags
   public readonly tagEntries = input<ThesaurusEntry[]>();
+  // cod-edit-positions
+  public readonly posEntries = input<ThesaurusEntry[]>();
   // cod-edit-languages
   public readonly langEntries = input<ThesaurusEntry[]>();
   // doc-reference-types
@@ -104,6 +106,7 @@ export class CodEditEditorComponent {
   public authorIds: FormControl<AssertedCompositeId[]>;
   public techniques: FormControl<string[]>;
   public ranges: FormControl<CodLocationRange[]>;
+  public position: FormControl<string | null>;
   public language: FormControl<string | null>;
   public hasDate: FormControl<boolean>;
   public date: FormControl<HistoricalDateModel | null>;
@@ -131,6 +134,7 @@ export class CodEditEditorComponent {
       validators: NgxToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
+    this.position = formBuilder.control(null, Validators.maxLength(50));
     this.language = formBuilder.control(null, Validators.maxLength(50));
     this.colors = formBuilder.control([], { nonNullable: true });
     this.hasDate = formBuilder.control(false, { nonNullable: true });
@@ -145,6 +149,7 @@ export class CodEditEditorComponent {
       authorIds: this.authorIds,
       techniques: this.techniques,
       ranges: this.ranges,
+      position: this.position,
       language: this.language,
       hasDate: this.hasDate,
       date: this.date,
@@ -179,6 +184,7 @@ export class CodEditEditorComponent {
     this.authorIds.setValue(model.authorIds || []);
     this.techniques.setValue(model.techniques || []);
     this.ranges.setValue(model.ranges || []);
+    this.position.setValue(model.position || null);
     this.language.setValue(model.language || null);
     this.hasDate.setValue(model.date ? true : false);
     this.date.setValue(model.date || null);
@@ -199,7 +205,8 @@ export class CodEditEditorComponent {
         : undefined,
       techniques: this.techniques.value,
       ranges: this.ranges.value,
-      language: this.language.value?.trim(),
+      position: this.position.value?.trim() || undefined,
+      language: this.language.value?.trim() || undefined,
       date: this.hasDate.value ? this.date.value || undefined : undefined,
       colors: this.colors.value,
       description: this.description.value?.trim(),

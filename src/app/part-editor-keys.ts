@@ -10,7 +10,6 @@ import { COD_MATERIAL_DSC_PART_TYPEID } from '../../projects/myrmidon/cadmus-par
 import { COD_SHEET_LABELS_PART_TYPEID } from '../../projects/myrmidon/cadmus-part-codicology-sheet-labels/src/public-api';
 import { COD_SHELFMARKS_PART_TYPEID } from '../../projects/myrmidon/cadmus-part-codicology-shelfmarks/src/public-api';
 import { COD_WATERMARKS_PART_TYPEID } from '../../projects/myrmidon/cadmus-part-codicology-watermarks/src/public-api';
-import { COD_ILLUM_INSTRUCTIONS_PART_TYPEID } from '../../projects/myrmidon/cadmus-part-codicology-instructions/src/public-api';
 
 const CODICOLOGY = 'codicology';
 
@@ -34,9 +33,6 @@ export const PART_EDITOR_KEYS: PartEditorKeys = {
     part: CODICOLOGY,
   },
   [COD_HANDS_PART_TYPEID]: {
-    part: CODICOLOGY,
-  },
-  [COD_ILLUM_INSTRUCTIONS_PART_TYPEID]: {
     part: CODICOLOGY,
   },
   [COD_LAYOUTS_PART_TYPEID]: {

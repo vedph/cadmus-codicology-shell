@@ -11,6 +11,7 @@ export interface CodEdit {
   authorIds?: AssertedCompositeId[];
   techniques?: string[];
   ranges: CodLocationRange[];
+  position?: string;
   language?: string;
   colors?: string[];
   date?: HistoricalDateModel;
@@ -273,6 +274,9 @@ export const COD_EDITS_PART_SCHEMA = {
                     },
                   ],
                 },
+              },
+              position: {
+                type: 'string',
               },
               language: {
                 type: 'string',
