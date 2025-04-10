@@ -4,7 +4,9 @@
       <div mat-card-avatar>
         <mat-icon>picture_in_picture</mat-icon>
       </div>
-      <mat-card-title>Bindings Part</mat-card-title>
+      <mat-card-title>{{
+        (modelName() | titlecase) || "Bindings Part"
+      }}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <div>
@@ -93,9 +95,7 @@
         [disabled]="!editedBinding"
       >
         <mat-expansion-panel-header>
-          <mat-panel-title>
-            #{{ editedIndex + 1 }}
-          </mat-panel-title>
+          <mat-panel-title> #{{ editedIndex + 1 }} </mat-panel-title>
         </mat-expansion-panel-header>
         <cadmus-cod-binding-editor
           [tagEntries]="tagEntries"

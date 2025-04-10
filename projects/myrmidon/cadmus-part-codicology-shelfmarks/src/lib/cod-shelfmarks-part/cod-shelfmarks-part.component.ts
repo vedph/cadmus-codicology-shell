@@ -7,6 +7,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { TitleCasePipe } from '@angular/common';
 import { take } from 'rxjs/operators';
 
 import {
@@ -61,6 +62,7 @@ import { CodShelfmarkEditorComponent } from '../cod-shelfmark-editor/cod-shelfma
     MatButton,
     MatIconButton,
     MatTooltip,
+    TitleCasePipe,
     CodShelfmarkEditorComponent,
     MatCardActions,
     CloseSaveButtonsComponent,

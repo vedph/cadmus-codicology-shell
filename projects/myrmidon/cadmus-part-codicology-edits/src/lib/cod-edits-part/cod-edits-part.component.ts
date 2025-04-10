@@ -8,6 +8,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { take } from 'rxjs/operators';
+import { TitleCasePipe } from '@angular/common';
 
 import {
   MatCard,
@@ -70,6 +71,7 @@ import { CodEditEditorComponent } from '../cod-edit-editor/cod-edit-editor.compo
     MatTooltip,
     CodEditEditorComponent,
     MatCardActions,
+    TitleCasePipe,
     CloseSaveButtonsComponent,
     EllipsisPipe,
     FlatLookupPipe,

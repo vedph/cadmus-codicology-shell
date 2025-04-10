@@ -7,6 +7,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { TitleCasePipe } from '@angular/common';
 import { take } from 'rxjs/operators';
 
 import {
@@ -65,6 +66,7 @@ import { CodWatermarkEditorComponent } from '../cod-watermark-editor/cod-waterma
     MatButton,
     MatIconButton,
     MatTooltip,
+    TitleCasePipe,
     CodWatermarkEditorComponent,
     MatCardActions,
     CloseSaveButtonsComponent,

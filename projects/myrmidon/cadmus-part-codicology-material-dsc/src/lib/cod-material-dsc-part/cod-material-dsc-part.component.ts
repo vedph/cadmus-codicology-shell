@@ -8,6 +8,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { take } from 'rxjs';
+import { TitleCasePipe } from '@angular/common';
 
 import {
   MatCard,
@@ -81,6 +82,7 @@ import { CodPalimpsestEditorComponent } from '../cod-palimpsest-editor/cod-palim
     CodPalimpsestEditorComponent,
     MatCardActions,
     CloseSaveButtonsComponent,
+    TitleCasePipe,
     FlatLookupPipe,
     HistoricalDatePipe,
     CodLocationRangePipe,

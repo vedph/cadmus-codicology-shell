@@ -8,7 +8,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, TitleCasePipe } from '@angular/common';
 import { Observable, take } from 'rxjs';
 
 import {
@@ -123,6 +123,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     CodEndleafComponent,
     MatCardActions,
     CloseSaveButtonsComponent,
+    TitleCasePipe,
     AsyncPipe,
     FlatLookupPipe,
     CellAdapterPipe,
@@ -438,7 +439,7 @@ export class CodSheetLabelsPartComponent
       this.sFeatureFlags = thesauri[key].entries?.map(entryToFlag);
     } else {
       this.sFeatureEntries = undefined;
-      this.sFeatureFlags = undefined
+      this.sFeatureFlags = undefined;
     }
     key = 'cod-labels-col-r-features';
     if (this.hasThesaurus(key)) {

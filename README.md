@@ -160,7 +160,9 @@ graph LR;
 
 ## History
 
-- 2025-04-10: updated Angular and packages.
+- 2025-04-10:
+  - updated Angular and packages.
+  - added `(modelName() | titlecase) || "ORIGINAL TITLE"` binding to the headers of all the part editor templates.
 - 2025-03-11: changes to models and corresponding UI for:
   - `CodDecorationElement`: ➕ add `tag` (`string`, optional thesaurus 📚 `cod-decoration-element-tags`).
   - `CodWatermark`:
