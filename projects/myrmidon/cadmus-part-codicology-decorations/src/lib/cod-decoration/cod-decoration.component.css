@@ -29,9 +29,13 @@ h3 {
   color: white;
 }
 fieldset {
+  margin: 8px 0;
   border: 1px solid silver;
   border-radius: 6px;
   padding: 6px 12px;
+}
+legend {
+  color: silver;
 }
 .toolbar-row {
   display: flex;

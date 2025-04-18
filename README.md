@@ -160,7 +160,9 @@ graph LR;
 
 ## History
 
-- 2025-04-18: added `refSign` and `references` to `CodDecorationElement`.
+- 2025-04-18:
+  - added `refSign` and `references` to `CodDecorationElement`.
+  - refactored computed entries and flags in decoration element editor to fix regressions.
 - 2025-04-10:
   - updated Angular and packages.
   - added `(modelName() | titlecase) || "ORIGINAL TITLE"` binding to the headers of all the part editor templates.

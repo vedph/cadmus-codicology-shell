@@ -209,7 +209,7 @@
       @for ( element of elements.value; track element; let i = $index; let first
       = $first; let last = $last) {
       <tr [class.selected]="editedElementIndex === i">
-        <td>
+        <td class="fit-width">
           <button
             type="button"
             mat-icon-button
@@ -260,25 +260,28 @@
 
   <!-- ELEMENT -->
   <mat-expansion-panel [disabled]="!editedElement" [expanded]="editedElement">
-    <cadmus-cod-decoration-element
-      [imgTypeEntries]="imgTypeEntries()"
-      [decElemPosEntries]="decElemPosEntries()"
-      [decElemFlagEntries]="decElemFlagEntries()"
-      [decElemTagEntries]="decElemTagEntries()"
-      [decElemTechEntries]="decElemTechEntries()"
-      [decElemToolEntries]="decElemToolEntries()"
-      [decElemTypeEntries]="decElemTypeEntries()"
-      [decElemColorEntries]="decElemColorEntries()"
-      [decElemTypolEntries]="decElemTypolEntries()"
-      [decTypeHiddenEntries]="decTypeHiddenEntries()"
-      [decElemGildingEntries]="decElemGildingEntries()"
-      [refTagEntries]="refTagEntries()"
-      [refTypeEntries]="refTypeEntries()"
-      [element]="editedElement"
-      [parentKeys]="parentKeys"
-      (elementChange)="onElementSave($event!)"
-      (editorClose)="editElement(null)"
-    />
+    <fieldset>
+      <legend>element</legend>
+      <cadmus-cod-decoration-element
+        [imgTypeEntries]="imgTypeEntries()"
+        [decElemPosEntries]="decElemPosEntries()"
+        [decElemFlagEntries]="decElemFlagEntries()"
+        [decElemTagEntries]="decElemTagEntries()"
+        [decElemTechEntries]="decElemTechEntries()"
+        [decElemToolEntries]="decElemToolEntries()"
+        [decElemTypeEntries]="decElemTypeEntries()"
+        [decElemColorEntries]="decElemColorEntries()"
+        [decElemTypolEntries]="decElemTypolEntries()"
+        [decTypeHiddenEntries]="decTypeHiddenEntries()"
+        [decElemGildingEntries]="decElemGildingEntries()"
+        [refTagEntries]="refTagEntries()"
+        [refTypeEntries]="refTypeEntries()"
+        [element]="editedElement"
+        [parentKeys]="parentKeys"
+        (elementChange)="onElementSave($event!)"
+        (editorClose)="editElement(null)"
+      />
+    </fieldset>
   </mat-expansion-panel>
 
   <!-- buttons -->
