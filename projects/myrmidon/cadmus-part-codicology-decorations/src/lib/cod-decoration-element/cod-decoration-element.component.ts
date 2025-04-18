@@ -1,12 +1,14 @@
 import {
   Component,
   effect,
+  computed,
   input,
   model,
   OnDestroy,
   OnInit,
   output,
   ViewChild,
+  signal,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -144,26 +146,45 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
   public note: FormControl<string | null>;
   public form: FormGroup;
 
-  // flags
-  public genFlags: Flag[] = [];
-  public typologyFlags: Flag[] = [];
-  public colorFlags: Flag[] = [];
-  public gildingFlags: Flag[] = [];
-  public techniqueFlags: Flag[] = [];
-  public toolFlags: Flag[] = [];
-  public positionFlags: Flag[] = [];
+  // flags are computed from filtered entries
+  public readonly genFlags = computed<Flag[]>(() => {
+    return this.elemFlagEntries()?.map(entryToFlag) || [];
+  });
+  public readonly typologyFlags = computed<Flag[]>(() => {
+    return this.elemTypolEntries()?.map(entryToFlag) || [];
+  });
+  public readonly colorFlags = computed<Flag[]>(() => {
+    return this.elemColorEntries()?.map(entryToFlag) || [];
+  });
+  public readonly gildingFlags = computed<Flag[]>(() => {
+    return this.elemGildingEntries()?.map(entryToFlag) || [];
+  });
+  public readonly techniqueFlags = computed<Flag[]>(() => {
+    return this.elemTechEntries()?.map(entryToFlag) || [];
+  });
+  public readonly toolFlags = computed<Flag[]>(() => {
+    return this.elemToolEntries()?.map(entryToFlag) || [];
+  });
+  public readonly positionFlags = computed<Flag[]>(() => {
+    return this.elemPosEntries()?.map(entryToFlag) || [];
+  });
 
   // doc-reference-types
   public readonly refTypeEntries = input<ThesaurusEntry[]>();
   // doc-reference-tags
   public readonly refTagEntries = input<ThesaurusEntry[]>();
-
   // cod-decoration-element-types (required). All the other thesauri
   // (except decTypeHiddenEntries) have their entries filtered
   // by the value selected from this thesaurus.
   public readonly decElemTypeEntries = input<ThesaurusEntry[]>();
   // cod-decoration-type-hidden
   public readonly decTypeHiddenEntries = input<ThesaurusEntry[]>();
+  // cod-image-types
+  public readonly imgTypeEntries = input<ThesaurusEntry[]>();
+  // cod-decoration-element-tags
+  public readonly decElemTagEntries = input<ThesaurusEntry[]>();
+
+  // type-dependent thesauri:
   // cod-decoration-element-flags
   public readonly decElemFlagEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-colors
@@ -176,21 +197,17 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
   public readonly decElemPosEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-tools
   public readonly decElemToolEntries = input<ThesaurusEntry[]>();
-  // cod-decoration-element-tags
-  public readonly decElemTagEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-typologies
   public readonly decElemTypolEntries = input<ThesaurusEntry[]>();
-  // cod-image-types
-  public readonly imgTypeEntries = input<ThesaurusEntry[]>();
 
-  // the filtered entries:
-  public elemFlagEntries: ThesaurusEntry[] | undefined;
-  public elemColorEntries: ThesaurusEntry[] | undefined;
-  public elemGildingEntries: ThesaurusEntry[] | undefined;
-  public elemTechniqueEntries: ThesaurusEntry[] | undefined;
-  public elemPositionEntries: ThesaurusEntry[] | undefined;
-  public elemToolEntries: ThesaurusEntry[] | undefined;
-  public elemTypolEntries: ThesaurusEntry[] | undefined;
+  // their filtered entries (set in adjustUI):
+  public readonly elemFlagEntries = signal<ThesaurusEntry[]>([]);
+  public readonly elemColorEntries = signal<ThesaurusEntry[]>([]);
+  public readonly elemGildingEntries = signal<ThesaurusEntry[]>([]);
+  public readonly elemTechEntries = signal<ThesaurusEntry[]>([]);
+  public readonly elemPosEntries = signal<ThesaurusEntry[]>([]);
+  public readonly elemToolEntries = signal<ThesaurusEntry[]>([]);
+  public readonly elemTypolEntries = signal<ThesaurusEntry[]>([]);
 
   public elemGildingFree?: boolean;
   public elemTechniqueFree?: boolean;
@@ -262,34 +279,6 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
 
     effect(() => {
       this.updateForm(this.element());
-    });
-
-    effect(() => {
-      this.genFlags = this.decElemFlagEntries()?.map(entryToFlag) || [];
-    });
-
-    effect(() => {
-      this.colorFlags = this.decElemColorEntries()?.map(entryToFlag) || [];
-    });
-
-    effect(() => {
-      this.gildingFlags = this.decElemGildingEntries()?.map(entryToFlag) || [];
-    });
-
-    effect(() => {
-      this.techniqueFlags = this.decElemTechEntries()?.map(entryToFlag) || [];
-    });
-
-    effect(() => {
-      this.positionFlags = this.decElemPosEntries()?.map(entryToFlag) || [];
-    });
-
-    effect(() => {
-      this.toolFlags = this.decElemToolEntries()?.map(entryToFlag) || [];
-    });
-
-    effect(() => {
-      this.typologyFlags = this.decElemTypolEntries()?.map(entryToFlag) || [];
     });
   }
 
@@ -384,6 +373,30 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
     this.subject.reset();
     this.lineHeight.reset();
     this.textRelation.reset();
+
+    // calculate filtered entries
+    this.elemFlagEntries.set(
+      this.getFilteredEntries(this.decElemFlagEntries(), this.type.value) || []
+    );
+    this.elemColorEntries.set(
+      this.getFilteredEntries(this.decElemColorEntries(), this.type.value) || []
+    );
+    this.elemGildingEntries.set(
+      this.getFilteredEntries(this.decElemGildingEntries(), this.type.value) ||
+        []
+    );
+    this.elemTechEntries.set(
+      this.getFilteredEntries(this.decElemTechEntries(), this.type.value) || []
+    );
+    this.elemPosEntries.set(
+      this.getFilteredEntries(this.decElemPosEntries(), this.type.value) || []
+    );
+    this.elemToolEntries.set(
+      this.getFilteredEntries(this.decElemToolEntries(), this.type.value) || []
+    );
+    this.elemTypolEntries.set(
+      this.getFilteredEntries(this.decElemTypolEntries(), this.type.value) || []
+    );
 
     // filter entries for multiple-selections
     this.flags.setValue(

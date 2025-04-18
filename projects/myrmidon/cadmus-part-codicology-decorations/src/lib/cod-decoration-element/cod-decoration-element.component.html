@@ -36,12 +36,12 @@
       </div>
 
       <!-- flags -->
-      @if (genFlags.length) {
+      @if (genFlags().length) {
       <div>
         <fieldset>
           <legend>features</legend>
           <cadmus-ui-flag-set
-            [flags]="genFlags"
+            [flags]="genFlags()"
             [checkedIds]="flags.value"
             (checkedIdsChange)="onGenIdsChange($event)"
           />
@@ -137,10 +137,10 @@
       </div>
       <!-- typologies -->
       <div>
-        <fieldset [hidden]="!typologyFlags.length || hidden?.typologies">
+        <fieldset [hidden]="!typologyFlags().length || hidden?.typologies">
           <legend>typologies</legend>
           <cadmus-ui-flag-set
-            [flags]="typologyFlags"
+            [flags]="typologyFlags()"
             [checkedIds]="typologies.value"
             (checkedIdsChange)="onTypologyIdsChange($event)"
           />
@@ -161,10 +161,10 @@
 
       <!-- colors -->
       <div>
-        <fieldset [hidden]="!colorFlags.length || hidden?.colors">
+        <fieldset [hidden]="!colorFlags().length || hidden?.colors">
           <legend>colors</legend>
           <cadmus-ui-flag-set
-            [flags]="colorFlags"
+            [flags]="colorFlags()"
             [checkedIds]="colors.value"
             (checkedIdsChange)="onColorIdsChange($event)"
           />
@@ -175,12 +175,12 @@
       <div>
         <fieldset
           [hidden]="
-            (!gildingFlags.length && !elemGildingFree) || hidden?.gildings
+            (!gildingFlags().length && !elemGildingFree) || hidden?.gildings
           "
         >
           <legend>gildings</legend>
           <cadmus-ui-flag-set
-            [flags]="gildingFlags"
+            [flags]="gildingFlags()"
             [allowCustom]="elemGildingFree || false"
             [checkedIds]="gildings.value"
             (checkedIdsChange)="onGildingIdsChange($event)"
@@ -192,12 +192,12 @@
       <div>
         <fieldset
           [hidden]="
-            (!techniqueFlags.length && !elemTechniqueFree) || hidden?.techniques
+            (!techniqueFlags().length && !elemTechniqueFree) || hidden?.techniques
           "
         >
           <legend>techniques</legend>
           <cadmus-ui-flag-set
-            [flags]="techniqueFlags"
+            [flags]="techniqueFlags()"
             [allowCustom]="elemTechniqueFree || false"
             [checkedIds]="techniques.value"
             (checkedIdsChange)="onTechniqueIdsChange($event)"
@@ -208,11 +208,11 @@
       <!-- tools -->
       <div>
         <fieldset
-          [hidden]="(!toolFlags.length && !elemToolFree) || hidden?.tools"
+          [hidden]="(!toolFlags().length && !elemToolFree) || hidden?.tools"
         >
           <legend>tools</legend>
           <cadmus-ui-flag-set
-            [flags]="toolFlags"
+            [flags]="toolFlags()"
             [allowCustom]="elemToolFree || false"
             [checkedIds]="tools.value"
             (checkedIdsChange)="onToolIdsChange($event)"
@@ -224,12 +224,12 @@
       <div>
         <fieldset
           [hidden]="
-            (!positionFlags.length && !elemPositionFree) || hidden?.positions
+            (!positionFlags().length && !elemPositionFree) || hidden?.positions
           "
         >
           <legend>positions</legend>
           <cadmus-ui-flag-set
-            [flags]="positionFlags"
+            [flags]="positionFlags()"
             [allowCustom]="elemPositionFree || false"
             [checkedIds]="positions.value"
             (checkedIdsChange)="onPositionIdsChange($event)"
