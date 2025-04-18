@@ -102,9 +102,21 @@
     <!-- TYPOLOGIES -->
     <mat-tab label="typologies">
       <div style="display: flex; gap: 8px">
+        <!-- refSign -->
+        <mat-form-field
+          style="flex: 0 0 auto; width: 6em"
+          [hidden]="hidden?.refSign"
+        >
+          <mat-label>ref.sign</mat-label>
+          <input matInput [formControl]="refSign" />
+          @if ($any(refSign).errors?.maxLength && (refSign.dirty ||
+          refSign.touched)) {
+          <mat-error>sign too long</mat-error>
+          }
+        </mat-form-field>
         <!-- lineHeight -->
         <mat-form-field
-          style="flex: 0 0 auto; width: 4em"
+          style="flex: 0 0 auto; width: 5em"
           [hidden]="hidden?.lineHeight"
         >
           <mat-label>ln.h</mat-label>
@@ -247,8 +259,18 @@
           (imagesChange)="onImagesChange($event)"
         />
       </div>
+      <!-- references -->
+      <fieldset>
+        <legend>references</legend>
+        <cadmus-refs-doc-references
+          [tagEntries]="refTagEntries()"
+          [typeEntries]="refTypeEntries()"
+          [references]="references.value"
+          (referencesChange)="onReferencesChange($event)"
+        />
+      </fieldset>
+      <!-- note -->
       <div>
-        <!-- note -->
         <mat-form-field class="long-text">
           <mat-label>note</mat-label>
           <textarea rows="2" matInput [formControl]="note"></textarea>

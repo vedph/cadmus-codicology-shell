@@ -40,6 +40,10 @@ import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 import { CodImage, CodImagesComponent } from '@myrmidon/cadmus-codicology-ui';
 
 import { CodDecorationElement } from '../cod-decorations-part';
+import {
+  DocReference,
+  DocReferencesComponent,
+} from '@myrmidon/cadmus-refs-doc-references';
 
 /**
  * List of hidden fields in decoration element component.
@@ -60,6 +64,7 @@ interface HiddenDecElemFields {
   positions?: boolean;
   lineHeight?: boolean;
   textRelation?: boolean;
+  refSign?: boolean;
 }
 
 function entryToFlag(entry: ThesaurusEntry): Flag {
@@ -93,6 +98,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     MatButton,
     FlatLookupPipe,
     CodImagesComponent,
+    DocReferencesComponent,
   ],
 })
 export class CodDecorationElementComponent implements OnInit, OnDestroy {
@@ -128,11 +134,13 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
   public techniques: FormControl<string[]>;
   public tools: FormControl<string[]>;
   public positions: FormControl<string[]>;
+  public refSign: FormControl<string | null>;
   public lineHeight: FormControl<number>;
   public textRelation: FormControl<string | null>;
   // description
   public description: FormControl<string | null>;
   public images: FormControl<CodImage[]>;
+  public references: FormControl<DocReference[]>;
   public note: FormControl<string | null>;
   public form: FormGroup;
 
@@ -144,6 +152,11 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
   public techniqueFlags: Flag[] = [];
   public toolFlags: Flag[] = [];
   public positionFlags: Flag[] = [];
+
+  // doc-reference-types
+  public readonly refTypeEntries = input<ThesaurusEntry[]>();
+  // doc-reference-tags
+  public readonly refTagEntries = input<ThesaurusEntry[]>();
 
   // cod-decoration-element-types (required). All the other thesauri
   // (except decTypeHiddenEntries) have their entries filtered
@@ -213,6 +226,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
     this.techniques = formBuilder.control([], { nonNullable: true });
     this.tools = formBuilder.control([], { nonNullable: true });
     this.positions = formBuilder.control([], { nonNullable: true });
+    this.refSign = formBuilder.control(null, Validators.maxLength(50));
     this.lineHeight = formBuilder.control(0, {
       validators: Validators.min(0),
       nonNullable: true,
@@ -220,6 +234,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
     this.textRelation = formBuilder.control(null, Validators.maxLength(100));
     this.description = formBuilder.control(null, Validators.maxLength(1000));
     this.images = formBuilder.control([], { nonNullable: true });
+    this.references = formBuilder.control([], { nonNullable: true });
     this.note = formBuilder.control(null, Validators.maxLength(500));
     this.form = formBuilder.group({
       key: this.key,
@@ -236,10 +251,12 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
       techniques: this.techniques,
       tools: this.tools,
       positions: this.positions,
+      refSign: this.refSign,
       lineHeight: this.lineHeight,
       textRelation: this.textRelation,
       description: this.description,
       images: this.images,
+      references: this.references,
       note: this.note,
     });
 
@@ -471,7 +488,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
     this.tools.setValue(element.tools || []);
     // positions
     this.positions.setValue(element.positions || []);
-
+    this.refSign.setValue(element.refSign || null);
     this.lineHeight.setValue(element.lineHeight || 0);
     this.textRelation.setValue(element.textRelation || null);
     // description
@@ -497,6 +514,8 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
     // general
     this.type.setValue(element.type, { emitEvent: false });
     this.tag.setValue(element.tag || null, { emitEvent: false });
+    this.references.setValue(element.references || []);
+
     setTimeout(() => {
       // let the UI adjust itself before setting type-dependent controls
       console.log('adjust UI from updateForm');
@@ -527,10 +546,14 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
       techniques: this.techniques.value,
       tools: this.tools.value,
       positions: this.positions.value,
+      refSign: this.refSign.value?.trim() || undefined,
       lineHeight: this.lineHeight.value,
       textRelation: this.textRelation.value?.trim(),
       description: this.description.value?.trim(),
       images: this.images.value?.length ? this.images.value : undefined,
+      references: this.references.value?.length
+        ? this.references.value
+        : undefined,
       note: this.note.value?.trim(),
     };
   }
@@ -608,6 +631,12 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
     this.positions.setValue(ids);
     this.positions.updateValueAndValidity();
     this.positions.markAsDirty();
+  }
+
+  public onReferencesChange(references: DocReference[]): void {
+    this.references.setValue(references);
+    this.references.updateValueAndValidity();
+    this.references.markAsDirty();
   }
 
   public cancel(): void {

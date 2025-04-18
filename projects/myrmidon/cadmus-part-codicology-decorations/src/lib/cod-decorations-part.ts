@@ -47,10 +47,12 @@ export interface CodDecorationElement {
   techniques?: string[];
   tools?: string[];
   positions?: string[];
+  refSign?: string;
   lineHeight?: number;
   textRelation?: string;
   description?: string;
   images?: CodImage[];
+  references?: DocReference[];
   note?: string;
 }
 
@@ -872,6 +874,9 @@ export const COD_DECORATIONS_PART_SCHEMA = {
                             ],
                           },
                         },
+                        refSign: {
+                          type: 'string',
+                        },
                         lineHeight: {
                           type: 'integer',
                         },
@@ -902,6 +907,31 @@ export const COD_DECORATIONS_PART_SCHEMA = {
                                     type: 'string',
                                   },
                                   copyright: {
+                                    type: 'string',
+                                  },
+                                },
+                              },
+                            ],
+                          },
+                        },
+                        references: {
+                          type: 'array',
+                          items: {
+                            anyOf: [
+                              {
+                                type: 'object',
+                                required: ['citation'],
+                                properties: {
+                                  type: {
+                                    type: 'string',
+                                  },
+                                  tag: {
+                                    type: 'string',
+                                  },
+                                  citation: {
+                                    type: 'string',
+                                  },
+                                  note: {
                                     type: 'string',
                                   },
                                 },
