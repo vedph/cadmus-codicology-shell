@@ -27,10 +27,6 @@ import {
   COD_HANDS_PART_TYPEID,
 } from '@myrmidon/cadmus-part-codicology-hands';
 import {
-  CodIllumInstructionsPartFeatureComponent,
-  COD_ILLUM_INSTRUCTIONS_PART_TYPEID,
-} from '@myrmidon/cadmus-part-codicology-instructions';
-import {
   CodLayoutsPartFeatureComponent,
   COD_LAYOUTS_PART_TYPEID,
 } from '@myrmidon/cadmus-part-codicology-layouts';
@@ -80,12 +76,6 @@ export const RouterModuleForChild = RouterModule.forChild([
     path: `${COD_HANDS_PART_TYPEID}/:pid`,
     pathMatch: 'full',
     component: CodHandsPartFeatureComponent,
-    canDeactivate: [PendingChangesGuard],
-  },
-  {
-    path: `${COD_ILLUM_INSTRUCTIONS_PART_TYPEID}/:pid`,
-    pathMatch: 'full',
-    component: CodIllumInstructionsPartFeatureComponent,
     canDeactivate: [PendingChangesGuard],
   },
   {

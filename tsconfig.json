@@ -22,9 +22,6 @@
       "@myrmidon/cadmus-part-codicology-hands": [
         "./dist/myrmidon/cadmus-part-codicology-hands"
       ],
-      "@myrmidon/cadmus-part-codicology-instructions": [
-        "./dist/myrmidon/cadmus-part-codicology-instructions"
-      ],
       "@myrmidon/cadmus-part-codicology-layouts": [
         "./dist/myrmidon/cadmus-part-codicology-layouts"
       ],
