@@ -160,6 +160,9 @@ graph LR;
 
 ## History
 
+### 11.0.1
+
+- 2025-04-21: versions updated and libraries pushed.
 - 2025-04-18:
   - added `refSign` and `references` to `CodDecorationElement`.
   - refactored computed entries and flags in decoration element editor to fix regressions.
