@@ -160,6 +160,12 @@ graph LR;
 
 ## History
 
+### 12.0.0
+
+- 2025-05-02:
+  - updated to ⚠️ migration V3.
+  - updated Angular.
+
 ### 11.0.1
 
 - 2025-04-21: versions updated and libraries pushed.
