@@ -39,6 +39,7 @@ import {
   COD_HANDS_PART_TYPEID,
 } from '../cod-hands-part';
 import { CodHandComponent } from '../cod-hand/cod-hand.component';
+import { TitleCasePipe } from '@angular/common';
 
 /**
  * CodHandsPart editor component.
@@ -68,6 +69,7 @@ import { CodHandComponent } from '../cod-hand/cod-hand.component';
     MatTooltip,
     CodHandComponent,
     MatCardActions,
+    TitleCasePipe,
     CloseSaveButtonsComponent,
   ],
 })

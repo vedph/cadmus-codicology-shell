@@ -103,6 +103,13 @@
       }
     </mat-form-field>
     }
+
+    <!-- canonicalRanges -->
+    <cadmus-cod-location
+      label="canonical ranges"
+      [location]="canonicalRanges.value"
+      (locationChange)="onRangeChange($event!)"
+    />
   </div>
 
   <fieldset>

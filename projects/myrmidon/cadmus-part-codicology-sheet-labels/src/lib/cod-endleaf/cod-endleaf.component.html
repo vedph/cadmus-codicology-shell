@@ -55,6 +55,17 @@
     (chronotopeChange)="onChronotopeChange($event)"
   />
 
+  <!-- note -->
+  <div>
+    <mat-form-field class="long-text">
+      <mat-label>note</mat-label>
+      <textarea rows="2" matInput [formControl]="note"></textarea>
+      @if ( $any(note).errors?.maxLength && (note.dirty || note.touched) ) {
+      <mat-error>note too long</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
   <!-- buttons -->
   <div>
     <button

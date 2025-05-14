@@ -28,6 +28,10 @@ import {
 import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  CodLocationComponent,
+  CodLocationRange,
+} from '@myrmidon/cadmus-cod-location';
 
 import { CodNColDefinition } from '../cod-sheet-labels-part';
 
@@ -58,6 +62,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     MatTooltip,
     MatIcon,
     AssertedCompositeIdsComponent,
+    CodLocationComponent,
   ],
 })
 export class CodNColDefinitionComponent {
@@ -103,6 +108,7 @@ export class CodNColDefinitionComponent {
   public colors: FormControl<string[]>;
   public hasDate: FormControl<boolean>;
   public date: FormControl<HistoricalDateModel | null>;
+  public canonicalRanges: FormControl<CodLocationRange[]>;
   public links: FormControl<AssertedCompositeId[]>;
   public note: FormControl<string | null>;
   public form: FormGroup;
@@ -130,6 +136,7 @@ export class CodNColDefinitionComponent {
     this.colors = formBuilder.control([], { nonNullable: true });
     this.hasDate = formBuilder.control(false, { nonNullable: true });
     this.date = formBuilder.control(null);
+    this.canonicalRanges = formBuilder.control([], { nonNullable: true });
     this.links = formBuilder.control([], { nonNullable: true });
     this.note = formBuilder.control(null, Validators.maxLength(1000));
     this.form = formBuilder.group({
@@ -142,6 +149,7 @@ export class CodNColDefinitionComponent {
       colors: this.colors,
       hasDate: this.hasDate,
       date: this.date,
+      canonicalRanges: this.canonicalRanges,
       links: this.links,
       note: this.note,
     });
@@ -171,6 +179,7 @@ export class CodNColDefinitionComponent {
     this.colors.setValue(model.colors || []);
     this.hasDate.setValue(model.date ? true : false);
     this.date.setValue(model.date || null);
+    this.canonicalRanges.setValue(model.canonicalRanges || []);
     this.links.setValue(model.links || []);
     this.note.setValue(model.note || null);
     this.form.markAsPristine();
@@ -187,6 +196,9 @@ export class CodNColDefinitionComponent {
       position: this.position.value?.trim() || '',
       colors: this.colors.value?.length ? this.colors.value : undefined,
       date: this.hasDate.value ? this.date.value || undefined : undefined,
+      canonicalRanges: this.canonicalRanges.value?.length
+        ? this.canonicalRanges.value
+        : undefined,
       links: this.links.value?.length ? this.links.value : undefined,
       note: this.note.value?.trim(),
     };
@@ -208,6 +220,12 @@ export class CodNColDefinitionComponent {
     this.links.setValue(ids);
     this.links.updateValueAndValidity();
     this.links.markAsDirty();
+  }
+
+  public onRangeChange(ranges: CodLocationRange[]): void {
+    this.canonicalRanges.setValue(ranges);
+    this.canonicalRanges.updateValueAndValidity();
+    this.canonicalRanges.markAsDirty();
   }
 
   public cancel(): void {

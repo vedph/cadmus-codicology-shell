@@ -1,3 +1,4 @@
+import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { Part } from '@myrmidon/cadmus-core';
 import { AssertedChronotope } from '@myrmidon/cadmus-refs-asserted-chronotope';
 import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
@@ -19,6 +20,7 @@ export interface CodEndleaf {
   location: string;
   material: string;
   chronotope?: AssertedChronotope;
+  note?: string;
 }
 
 export interface CodColDefinition {
@@ -36,6 +38,7 @@ export interface CodNColDefinition extends CodColDefinition {
   position: string;
   colors?: string[];
   date?: HistoricalDateModel;
+  canonicalRanges?: CodLocationRange[];
 }
 
 export interface CodCColDefinition extends CodColDefinition {
@@ -63,7 +66,6 @@ export interface CodSheetLabelsPart extends Part {
   cDefinitions?: CodCColDefinition[];
   sDefinitions?: CodSColDefinition[];
   rDefinitions?: CodRColDefinition[];
-  note?: string;
 }
 
 /**
@@ -347,6 +349,9 @@ export const COD_SHEET_LABELS_PART_SCHEMA = {
                       },
                     },
                   },
+                  note: {
+                    type: 'string',
+                  },
                 },
               },
             },
@@ -501,6 +506,24 @@ export const COD_SHEET_LABELS_PART_SCHEMA = {
                           ],
                         },
                       },
+                    },
+                  },
+                },
+              },
+              canonicalRanges: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  required: ['start', 'end'],
+                  properties: {
+                    start: {
+                      type: 'string',
+                    },
+                    end: {
+                      type: 'string',
+                    },
+                    note: {
+                      type: 'string',
                     },
                   },
                 },

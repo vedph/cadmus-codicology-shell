@@ -143,7 +143,6 @@ export class CodLayoutEditorComponent {
   ) {
     // form
     this.sampleRanges = _formBuilder.control([], {
-      validators: NgxToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
     this.ranges = _formBuilder.control([], {

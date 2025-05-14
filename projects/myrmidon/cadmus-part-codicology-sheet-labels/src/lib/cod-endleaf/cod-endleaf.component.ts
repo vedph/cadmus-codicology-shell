@@ -65,6 +65,7 @@ export class CodEndleafComponent {
   public location: FormControl<string | null>;
   public material: FormControl<string | null>;
   public chronotope: FormControl<AssertedChronotope | null>;
+  public note: FormControl<string | null>;
   public form: FormGroup;
 
   constructor(formBuilder: FormBuilder) {
@@ -77,10 +78,12 @@ export class CodEndleafComponent {
       Validators.maxLength(50),
     ]);
     this.chronotope = formBuilder.control(null);
+    this.note = formBuilder.control(null, Validators.maxLength(1000));
     this.form = formBuilder.group({
       location: this.location,
       material: this.material,
       chronotope: this.chronotope,
+      note: this.note,
     });
 
     effect(() => {
@@ -97,6 +100,7 @@ export class CodEndleafComponent {
     this.location.setValue(model.location);
     this.material.setValue(model.material);
     this.chronotope.setValue(model.chronotope || null);
+    this.note.setValue(model.note || null);
     this.form.markAsPristine();
   }
 
@@ -111,6 +115,7 @@ export class CodEndleafComponent {
       location: this.location.value?.trim() || '',
       material: this.material.value?.trim() || '',
       chronotope: this.chronotope.value || undefined,
+      note: this.note.value?.trim() || undefined,
     };
   }
 

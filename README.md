@@ -160,6 +160,15 @@ graph LR;
 
 ## History
 
+- 2025-05-15:
+  - updated Angular and packages.
+  - minor UI fixes.
+  - added `CodNColDefinition`.`canonicalRanges`.
+  - added `CodEndleaf.note`.
+  - removed `CodSheetLabelsPart.note`.
+
+Affected libraries: `@myrmidon/cadmus-part-codicology-contents`, `@myrmidon/cadmus-part-codicology-hands`, `@myrmidon/cadmus-part-codicology-layouts`, `@myrmidon/cadmus-part-codicology-sheet-labels`, `@myrmidon/cadmus-part-codicology-watermarks`.
+
 ### 12.0.0
 
 - 2025-05-02:
