@@ -477,7 +477,7 @@ export class CodSheetLabelsPartComponent
       return;
     }
     this._table.setRows(part.rows || []);
-    this.quireDsc = this.isQuireDscEmpty() ? undefined : part.quireDescription;
+    this.quireDsc = part.quireDescription;
     this.nDefs.setValue(part.nDefinitions || []);
     this.cDefs.setValue(part.cDefinitions || []);
     this.sDefs.setValue(part.sDefinitions || []);
@@ -508,7 +508,7 @@ export class CodSheetLabelsPartComponent
       COD_SHEET_LABELS_PART_TYPEID
     ) as CodSheetLabelsPart;
     part.rows = this._table.getRows();
-    part.quireDescription = this.quireDsc;
+    part.quireDescription = this.isQuireDscEmpty()? undefined : this.quireDsc;
     part.nDefinitions = this.nDefs.value?.length ? this.nDefs.value : undefined;
     part.cDefinitions = this.cDefs.value?.length ? this.cDefs.value : undefined;
     part.sDefinitions = this.sDefs.value?.length ? this.sDefs.value : undefined;
@@ -749,6 +749,7 @@ export class CodSheetLabelsPartComponent
 
   public saveQuireDsc(quireDsc: CodQuireDescription): void {
     this.quireDsc = quireDsc;
+    this.onColumnDefClose();
   }
 
   public onColumnDefClose(): void {

@@ -107,7 +107,7 @@ export class CodHandDescriptionComponent {
         key: 'n',
         label: 'note',
         maxLength: 1000,
-      }
+      },
     ];
     // form
     this.key = formBuilder.control(null, Validators.maxLength(100));
@@ -146,26 +146,26 @@ export class CodHandDescriptionComponent {
     this.key.setValue(model.key || null);
     this.dsc.setValue(model.description || null);
 
-    const map = new Map<string, string | null>();
+    const map: { [key: string]: string } = {};
     this.initials.setValue(model.initials || null);
     this.corrections.setValue(model.corrections || null);
     this.punctuation.setValue(model.punctuation || null);
     this.abbreviations.setValue(model.abbreviations || null);
 
     if (model.initials) {
-      map.set('i', model.initials);
+      map['i'] = model.initials;
     }
     if (model.corrections) {
-      map.set('c', model.corrections);
+      map['c'] = model.corrections;
     }
     if (model.punctuation) {
-      map.set('p', model.punctuation);
+      map['p'] = model.punctuation;
     }
     if (model.abbreviations) {
-      map.set('a', model.abbreviations);
+      map['a'] = model.abbreviations;
     }
     if (model.note) {
-      map.set('n', model.note);
+      map['n'] = model.note;
     }
     this.initialNoteSet = {
       definitions: this._noteDefs,

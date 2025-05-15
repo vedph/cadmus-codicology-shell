@@ -165,9 +165,11 @@ graph LR;
   - minor UI fixes.
   - added `CodNColDefinition`.`canonicalRanges`.
   - added `CodEndleaf.note`.
+  - added `CodSheetLabelsPart`.`quireDescription`.
   - removed `CodSheetLabelsPart.note`.
+  - updated `@myrmidon/cadmus-part-codicology-hands` after updating bricks (`NoteSet`).
 
-Affected libraries: `@myrmidon/cadmus-part-codicology-contents`, `@myrmidon/cadmus-part-codicology-hands`, `@myrmidon/cadmus-part-codicology-layouts`, `@myrmidon/cadmus-part-codicology-sheet-labels`, `@myrmidon/cadmus-part-codicology-watermarks`.
+Affected libraries: `@myrmidon/cadmus-part-codicology-contents`, `@myrmidon/cadmus-part-codicology-hands`, `@myrmidon/cadmus-part-codicology-layouts`, `@myrmidon/cadmus-part-codicology-sheet-labels`, `@myrmidon/cadmus-part-codicology-watermarks`, `@myrmidon/cadmus-part-codicology-hands`.
 
 ### 12.0.0
 
