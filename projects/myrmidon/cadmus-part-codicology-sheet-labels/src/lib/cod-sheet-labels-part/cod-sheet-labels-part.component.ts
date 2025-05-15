@@ -54,6 +54,7 @@ import {
   CodSColDefinition,
   CodSheetLabelsPart,
   COD_SHEET_LABELS_PART_TYPEID,
+  CodQuireDescription,
 } from '../cod-sheet-labels-part';
 import { CodLabelCell, LabelGenerator } from '../label-generator';
 import { CodRowType, CodRowViewModel, CodSheetTable } from '../cod-sheet-table';
@@ -66,6 +67,7 @@ import { CodEndleafComponent } from '../cod-endleaf/cod-endleaf.component';
 
 import { CellAdapterPipe } from './cell-adapter.pipe';
 import { CellTypeColorPipe } from './cell-type-color.pipe';
+import { CodQuireDescriptionComponent } from '../cod-quire-description/cod-quire-description.component';
 
 // for mapping col features thesauri to flags
 function entryToFlag(entry: ThesaurusEntry): Flag {
@@ -79,7 +81,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
  * CodSheetLabels part editor component.
  * Thesauri: cod-catchwords-positions, cod-numbering-systems,
  * cod-numbering-techniques, cod-numbering-positions,
- * cod-numbering-colors, cod-quiresig-systems,
+ * cod-numbering-colors, cod-quiresig-systems, cod-quire-features,
  * cod-quiresig-positions, cod-endleaf-materials, chronotope-tags,
  * assertion-tags, doc-reference-types, doc-reference-tags,
  * asserted-id-scopes, asserted-id-tags, external-id-tags,
@@ -128,6 +130,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     FlatLookupPipe,
     CellAdapterPipe,
     CellTypeColorPipe,
+    CodQuireDescriptionComponent,
   ],
 })
 export class CodSheetLabelsPartComponent
@@ -141,6 +144,8 @@ export class CodSheetLabelsPartComponent
   private _editedSDefIndex;
   private _editedRDefIndex;
 
+  public quireDsc?: CodQuireDescription;
+  public maxQuireNumber: number = 0;
   public editedNDef?: CodNColDefinition;
   public editedCDef?: CodCColDefinition;
   public editedSDef?: CodSColDefinition;
@@ -184,6 +189,8 @@ export class CodSheetLabelsPartComponent
   // cod-numbering-colors
   public clrEntries?: ThesaurusEntry[];
   // R/S-COL
+  // cod-quire-features
+  public quireFeatEntries?: ThesaurusEntry[];
   // cod-quiresig-systems
   public syssEntries?: ThesaurusEntry[];
   // cod-quiresig-positions
@@ -340,6 +347,12 @@ export class CodSheetLabelsPartComponent
     } else {
       this.clrEntries = undefined;
     }
+    key = 'cod-quire-features';
+    if (this.hasThesaurus(key)) {
+      this.quireFeatEntries = thesauri[key].entries;
+    } else {
+      this.quireFeatEntries = undefined;
+    }
     key = 'cod-quiresig-systems';
     if (this.hasThesaurus(key)) {
       this.syssEntries = thesauri[key].entries;
@@ -448,12 +461,23 @@ export class CodSheetLabelsPartComponent
     }
   }
 
+  private isQuireDscEmpty(): boolean {
+    return (
+      !this.quireDsc ||
+      (!this.quireDsc.features?.length &&
+        !this.quireDsc.note &&
+        (!this.quireDsc.scopedNotes ||
+          !Object.keys(this.quireDsc.scopedNotes).length))
+    );
+  }
+
   private updateForm(part?: CodSheetLabelsPart | null): void {
     if (!part) {
       this.form.reset();
       return;
     }
     this._table.setRows(part.rows || []);
+    this.quireDsc = this.isQuireDscEmpty() ? undefined : part.quireDescription;
     this.nDefs.setValue(part.nDefinitions || []);
     this.cDefs.setValue(part.cDefinitions || []);
     this.sDefs.setValue(part.sDefinitions || []);
@@ -484,6 +508,7 @@ export class CodSheetLabelsPartComponent
       COD_SHEET_LABELS_PART_TYPEID
     ) as CodSheetLabelsPart;
     part.rows = this._table.getRows();
+    part.quireDescription = this.quireDsc;
     part.nDefinitions = this.nDefs.value?.length ? this.nDefs.value : undefined;
     part.cDefinitions = this.cDefs.value?.length ? this.cDefs.value : undefined;
     part.sDefinitions = this.sDefs.value?.length ? this.sDefs.value : undefined;
@@ -647,6 +672,11 @@ export class CodSheetLabelsPartComponent
     this.closeAllDefEditors();
 
     switch (this.opColumn.value.charAt(0)) {
+      // quire
+      case 'q':
+        this.maxQuireNumber = this._table.getMaxQuireNumber();
+        this.editedDefId = 'q';
+        break;
       // numbering
       case 'n':
         const nDefs = this.nDefs.value as CodNColDefinition[];
@@ -715,6 +745,10 @@ export class CodSheetLabelsPartComponent
         this.editedDefId = rDef.id;
         break;
     }
+  }
+
+  public saveQuireDsc(quireDsc: CodQuireDescription): void {
+    this.quireDsc = quireDsc;
   }
 
   public onColumnDefClose(): void {

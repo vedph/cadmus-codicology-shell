@@ -198,6 +198,18 @@
               [style.background]="editedDefId?.charAt(0) | cellTypeColor"
               >column: {{ editedDefId }}</mat-expansion-panel-header
             >
+            <!-- Q -->
+            @if (editedDefId === 'q') {
+            <div>
+              <h3>quire</h3>
+              <cadmus-cod-quire-description
+                [featureEntries]="quireFeatEntries"
+                [description]="quireDsc"
+                [maxQuireNumber]="maxQuireNumber"
+                (descriptionChange)="saveQuireDsc($event!)"
+              />
+            </div>
+            }
             <!-- N -->
             @if (editedNDef) {
             <div>

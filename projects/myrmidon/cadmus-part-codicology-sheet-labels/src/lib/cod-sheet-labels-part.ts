@@ -23,6 +23,12 @@ export interface CodEndleaf {
   note?: string;
 }
 
+export interface CodQuireDescription {
+  features?: string[];
+  note?: string;
+  scopedNotes?: { [id: number]: string };
+}
+
 export interface CodColDefinition {
   id: string;
   rank?: number;
@@ -62,6 +68,7 @@ export interface CodRColDefinition extends CodColDefinition {
 export interface CodSheetLabelsPart extends Part {
   rows: CodRow[];
   endleaves?: CodEndleaf[];
+  quireDescription?: CodQuireDescription;
   nDefinitions?: CodNColDefinition[];
   cDefinitions?: CodCColDefinition[];
   sDefinitions?: CodSColDefinition[];
@@ -357,6 +364,26 @@ export const COD_SHEET_LABELS_PART_SCHEMA = {
             },
           },
         ],
+      },
+    },
+    quireDescription: {
+      type: 'object',
+      properties: {
+        features: {
+          type: 'array',
+          items: {
+            type: 'string',
+          },
+        },
+        note: {
+          type: 'string',
+        },
+        scopedNotes: {
+          type: 'object',
+          additionalProperties: {
+            type: 'string',
+          },
+        },
       },
     },
     nDefinitions: {

@@ -1,0 +1,26 @@
+fieldset {
+  border: 1px solid silver;
+  border-radius: 6px;
+  padding: 6px 12px;
+  margin: 8px 0;
+}
+.form-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.form-row * {
+  flex: 0 0 auto;
+}
+.long-text {
+  width: 100%;
+  max-width: 800px;
+}
+.set-scope {
+  background-color: darkgreen;
+  color: white;
+  padding: 6px;
+  border: 1px solid darkgreen;
+  border-radius: 6px;
+}

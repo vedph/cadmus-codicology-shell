@@ -661,4 +661,29 @@ export class CodSheetTable {
     }
     this._rows$.next(rows);
   }
+
+  /**
+   * Get the maximum quire number in the table.
+   * @returns The maximum quire number.
+   */
+  public getMaxQuireNumber(): number {
+    const rows = this._rows$.value;
+    let max = 0;
+    for (let i = 0; i < rows.length; i++) {
+      for (let j = 0; j < rows[i].columns.length; j++) {
+        const col = rows[i].columns[j];
+        if (col.id === 'q' && col.value) {
+          // q value is like 1.1/4, 1.2/4, etc.
+          const n = parseInt(
+            col.value.substring(0, col.value.indexOf('.')),
+            10
+          );
+          if (n > max) {
+            max = n;
+          }
+        }
+      }
+    }
+    return max;
+  }
 }

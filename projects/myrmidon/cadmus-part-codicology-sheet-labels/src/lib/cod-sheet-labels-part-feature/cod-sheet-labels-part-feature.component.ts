@@ -42,6 +42,7 @@ export class CodSheetLabelsPartFeatureComponent
       'cod-numbering-techniques',
       'cod-numbering-positions',
       'cod-numbering-colors',
+      'cod-quire-features',
       'cod-quiresig-systems',
       'cod-quiresig-positions',
       'cod-endleaf-materials',

@@ -3,6 +3,7 @@
  */
 
 export * from './lib/cell-features/cell-features.component';
+export * from './lib/cod-quire-description/cod-quire-description.component';
 export * from './lib/cod-sheet-labels-part';
 export * from './lib/cod-sheet-table';
 export * from './lib/cod-n-col-definition/cod-n-col-definition.component';
