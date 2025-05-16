@@ -503,12 +503,28 @@ export class CodSheetLabelsPartComponent
     this.updateForm(data?.value);
   }
 
+  private pruneQuireDescription(): CodQuireDescription | undefined {
+    const max = this._table.getMaxQuireNumber();
+    // remove all quire scoped notes with number > max
+    if (this.quireDsc?.scopedNotes) {
+      for (const key of Object.keys(this.quireDsc.scopedNotes)) {
+        const n = parseInt(key);
+        if (n > max) {
+          delete this.quireDsc.scopedNotes[n];
+        }
+      }
+    }
+    return this.quireDsc;
+  }
+
   protected getValue(): CodSheetLabelsPart {
     let part = this.getEditedPart(
       COD_SHEET_LABELS_PART_TYPEID
     ) as CodSheetLabelsPart;
     part.rows = this._table.getRows();
-    part.quireDescription = this.isQuireDscEmpty()? undefined : this.quireDsc;
+    part.quireDescription = this.isQuireDscEmpty()
+      ? undefined
+      : this.pruneQuireDescription();
     part.nDefinitions = this.nDefs.value?.length ? this.nDefs.value : undefined;
     part.cDefinitions = this.cDefs.value?.length ? this.cDefs.value : undefined;
     part.sDefinitions = this.sDefs.value?.length ? this.sDefs.value : undefined;
