@@ -160,6 +160,8 @@ graph LR;
 
 ## History
 
+- 2025-05-21: published `@myrmidon/cadmus-part-codicology-hands` and `@myrmidon/cadmus-part-codicology-sheet-labels`.
+
 ### 12.0.2
 
 - 2025-05-16: added pruning to quire description's scoped notes.
