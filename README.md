@@ -163,7 +163,7 @@ graph LR;
 - 2025-05-23:
   - pluralized label in ranges for palimpsest editor (`@myrmidon/cadmus-part-codicology-material-dsc`).
   - fixes to decoration element flags (`@myrmidon/cadmus-part-codicology-decorations`).
-  - fixes to sheet labels (cell features not saved in table).
+  - fixes to sheet labels (cell features not saved in table: `@myrmidon/cadmus-part-codicology-sheet-labels`).
 - 2025-05-21: published `@myrmidon/cadmus-part-codicology-hands` and `@myrmidon/cadmus-part-codicology-sheet-labels`.
 
 ### 12.0.2
