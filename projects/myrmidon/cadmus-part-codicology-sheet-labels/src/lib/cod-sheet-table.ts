@@ -147,6 +147,7 @@ export class CodSheetTable {
         for (let i = 0; i < r.columns?.length || 0; i++) {
           const ci = cols.findIndex((c) => c.id === r.columns[i].id);
           cols[ci].value = r.columns[i].value;
+          cols[ci].features = r.columns[i].features;
           cols[ci].note = r.columns[i].note;
         }
         return {
@@ -551,10 +552,13 @@ export class CodSheetTable {
         };
         const col = row.columns.find((c) => c.id === cells[0].id);
         col!.value = cells[i].value;
+        col!.features = cells[i].features;
         col!.note = cells[i].note;
         rows.splice(rowIndex, 0, row);
       } else {
         rows[rowIndex].columns[columnIndex].value = cells[i].value;
+        rows[rowIndex].columns[columnIndex].features =
+          cells[i].features;
         rows[rowIndex].columns[columnIndex].note = cells[i].note;
       }
 
