@@ -1,6 +1,5 @@
 import {
   Component,
-  computed,
   effect,
   ElementRef,
   input,
@@ -16,6 +15,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
@@ -28,7 +28,6 @@ import { Flag, FlagSetBadgeComponent } from '@myrmidon/cadmus-ui-flag-set';
 
 import { CodLabelCell } from '../label-generator';
 import { CellFeaturesComponent } from '../cell-features/cell-features.component';
-import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 
 @Component({
   selector: 'cadmus-cod-label-cell',
@@ -48,6 +47,7 @@ import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
   ],
 })
 export class CodLabelCellComponent implements OnDestroy {
+  private _dropNextUpdate = false
   private _sub?: Subscription;
   /**
    * The cell to display and edit.
@@ -93,6 +93,10 @@ export class CodLabelCellComponent implements OnDestroy {
     });
 
     effect(() => {
+      if (this._dropNextUpdate) {
+        this._dropNextUpdate = false;
+        return;
+      }
       this.updateForm(this.cell());
     });
 
@@ -172,6 +176,9 @@ export class CodLabelCellComponent implements OnDestroy {
         this.features.setValue(result);
         this.features.markAsDirty();
         this.features.updateValueAndValidity();
+        // save changes to cell
+        this._dropNextUpdate = true;
+        this.cell.set(this.getCell());
       }
     });
   }

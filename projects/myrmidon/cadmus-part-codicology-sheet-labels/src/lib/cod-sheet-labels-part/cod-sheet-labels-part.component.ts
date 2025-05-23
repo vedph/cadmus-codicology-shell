@@ -430,10 +430,10 @@ export class CodSheetLabelsPartComponent
     key = 'cod-labels-col-n-features';
     if (this.hasThesaurus(key)) {
       this.nFeatureEntries = thesauri[key].entries;
-      this.qFeatureFlags = thesauri[key].entries?.map(entryToFlag);
+      this.nFeatureFlags = thesauri[key].entries?.map(entryToFlag);
     } else {
       this.nFeatureEntries = undefined;
-      this.qFeatureFlags = undefined;
+      this.nFeatureFlags = undefined;
     }
     key = 'cod-labels-col-c-features';
     if (this.hasThesaurus(key)) {

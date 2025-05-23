@@ -366,6 +366,7 @@ export class CodSheetTable {
     cols.splice(colIndex, 1, {
       id: cell.id,
       value: cell.value,
+      features: cell.features,
       note: cell.note,
     });
     rows[rowIndex].columns = cols;

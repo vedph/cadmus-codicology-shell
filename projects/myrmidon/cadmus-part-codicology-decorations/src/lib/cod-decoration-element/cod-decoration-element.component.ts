@@ -399,23 +399,8 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
     );
 
     // filter entries for multiple-selections
-    this.flags.setValue(
-      (
-        this.getFilteredEntries(
-          this.decElemFlagEntries(),
-          this.type.value
-        )?.map(entryToFlag) || []
-      ).map((f) => f.id)
-    );
-
-    this.colors.setValue(
-      (
-        this.getFilteredEntries(
-          this.decElemColorEntries(),
-          this.type.value
-        )?.map(entryToFlag) || []
-      ).map((f) => f.id)
-    );
+    this.flags.setValue(this.element()?.flags || []);
+    this.colors.setValue(this.element()?.colors || []);
 
     // filter entries and set free for single-entry groups with "any.-"
     let entries = this.getFilteredEntries(
@@ -423,53 +408,30 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
       this.type.value
     );
     this.elemGildingFree = this.isFreeSet(entries);
-    this.gildings.setValue(
-      this.elemGildingFree
-        ? []
-        : (entries?.map(entryToFlag) || []).map((f) => f.id)
-    );
+    this.gildings.setValue(this.element()?.gildings || []);
 
     entries = this.getFilteredEntries(
       this.decElemTechEntries(),
       this.type.value
     );
     this.elemTechniqueFree = this.isFreeSet(entries);
-    this.techniques.setValue(
-      this.elemTechniqueFree
-        ? []
-        : (entries?.map(entryToFlag) || []).map((f) => f.id)
-    );
+    this.techniques.setValue(this.element()?.techniques || []);
 
     entries = this.getFilteredEntries(
       this.decElemPosEntries(),
       this.type.value
     );
     this.elemPositionFree = this.isFreeSet(entries);
-    this.positions.setValue(
-      this.elemPositionFree
-        ? []
-        : (entries?.map(entryToFlag) || []).map((f) => f.id)
-    );
+    this.positions.setValue(this.element()?.positions || []);
 
     entries = this.getFilteredEntries(
       this.decElemToolEntries(),
       this.type.value
     );
     this.elemToolFree = this.isFreeSet(entries);
-    this.tools.setValue(
-      this.elemToolFree
-        ? []
-        : (entries?.map(entryToFlag) || []).map((f) => f.id)
-    );
+    this.tools.setValue(this.element()?.tools || []);
 
-    this.typologies.setValue(
-      (
-        this.getFilteredEntries(
-          this.decElemTypolEntries(),
-          this.type.value
-        )?.map(entryToFlag) || []
-      ).map((f) => f.id)
-    );
+    this.typologies.setValue(this.element()?.typologies || []);
 
     // visibility
     this.updateVisibility();
