@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -23,7 +23,6 @@ import { CodLocationConverterComponent } from '../../projects/myrmidon/cadmus-pa
 @Component({
   selector: 'app-root',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     RouterModule,
     MatButtonModule,
@@ -34,8 +33,8 @@ import { CodLocationConverterComponent } from '../../projects/myrmidon/cadmus-pa
     MatToolbarModule,
     MatTooltipModule,
     GravatarPipe,
-    CodLocationConverterComponent,
-  ],
+    CodLocationConverterComponent
+],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })

@@ -160,6 +160,9 @@ graph LR;
 
 ## History
 
+- 2025-06-01: updated packages.
+- 2025-05-30: ⚠️ upgraded to Angular 20, bumping all the major versions to 12.
+
 ### 12.0.3
 
 - 2025-05-23:
