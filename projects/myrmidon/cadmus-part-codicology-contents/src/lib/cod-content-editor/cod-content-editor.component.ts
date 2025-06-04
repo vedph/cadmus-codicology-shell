@@ -9,39 +9,45 @@ import {
 } from '@angular/forms';
 import { take } from 'rxjs';
 
-import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { MatSelect } from '@angular/material/select';
-import { MatOption } from '@angular/material/core';
+// material
+import { MatButton, MatIconButton } from '@angular/material/button';
 import {
   MatExpansionPanel,
   MatExpansionPanelDescription,
   MatExpansionPanelHeader,
   MatExpansionPanelTitle,
 } from '@angular/material/expansion';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
 import { MatTooltip } from '@angular/material/tooltip';
 
+// myrmidon
 import {
   NgxToolsValidators,
   EllipsisPipe,
   FlatLookupPipe,
 } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
+
+// bricks
 import {
   AssertedCompositeId,
   AssertedCompositeIdComponent,
 } from '@myrmidon/cadmus-refs-asserted-ids';
-import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
-
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
   CodLocationRange,
   CodLocationComponent,
   CodLocationRangePipe,
 } from '@myrmidon/cadmus-cod-location';
+import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 
+// cadmus
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+
+// local
 import { CodContent, CodContentAnnotation } from '../cod-contents-part';
 import { CodContentAnnotationComponent } from '../cod-content-annotation/cod-content-annotation.component';
 
@@ -59,27 +65,30 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    MatFormField,
-    MatLabel,
-    MatInput,
+    // material
+    MatButton,
     MatError,
-    MatSelect,
-    MatOption,
-    FlagSetComponent,
     MatExpansionPanel,
+    MatExpansionPanelDescription,
     MatExpansionPanelHeader,
     MatExpansionPanelTitle,
-    MatExpansionPanelDescription,
-    MatButton,
+    MatFormField,
     MatIcon,
     MatIconButton,
+    MatInput,
+    MatLabel,
+    MatOption,
+    MatSelect,
     MatTooltip,
+    // myrmidon
     EllipsisPipe,
     FlatLookupPipe,
-    CodLocationRangePipe,
+    // bricks
     AssertedCompositeIdComponent,
     CodContentAnnotationComponent,
     CodLocationComponent,
+    CodLocationRangePipe,
+    FlagSetComponent,
   ],
 })
 export class CodContentEditorComponent {
@@ -125,7 +134,7 @@ export class CodContentEditorComponent {
   public incipit: FormControl<string | null>;
   public explicit: FormControl<string | null>;
   public states: FormControl<string[]>;
-  public annotations: FormControl<CodContentAnnotation[] | null>;
+  public annotations: FormControl<CodContentAnnotation[]>;
   public form: FormGroup;
 
   public editedAnnotation?: CodContentAnnotation;
@@ -194,12 +203,12 @@ export class CodContentEditorComponent {
     this.workId.setValue(content.workId || null);
     this.author.setValue(content.author || null);
     this.ranges.setValue(content.ranges || []);
-    this.states.setValue(content.states);
+    this.states.setValue(content.states || []);
     this.tag.setValue(content.tag || null);
     this.title.setValue(content.title || null);
     this.location.setValue(content.location || null);
     this.claimedAuthor.setValue(content.claimedAuthor || null);
-    this.claimedTitleRanges.setValue(content.claimedAuthorRanges || []);
+    this.claimedAuthorRanges.setValue(content.claimedAuthorRanges || []);
     this.claimedTitle.setValue(content.claimedTitle || null);
     this.claimedTitleRanges.setValue(content.claimedTitleRanges || []);
     this.note.setValue(content.note || null);
@@ -273,8 +282,9 @@ export class CodContentEditorComponent {
       explicit: '',
       text: '',
     };
-    this.annotations.setValue([...this.annotations.value!, annotation]);
-    this.editAnnotation(this.annotations.value!.length - 1);
+    const currentAnnotations = this.annotations.value || [];
+    this.annotations.setValue([...currentAnnotations, annotation]);
+    this.editAnnotation(currentAnnotations.length);
   }
 
   public editAnnotation(index: number): void {
@@ -283,13 +293,15 @@ export class CodContentEditorComponent {
       this.editedAnnotation = undefined;
     } else {
       this._editedAnnotationIndex = index;
-      this.editedAnnotation = this.annotations.value![index];
+      const annotations = this.annotations.value || [];
+      this.editedAnnotation = annotations[index];
     }
   }
 
   public onAnnotationSave(annotation: CodContentAnnotation): void {
+    const annotations = this.annotations.value || [];
     this.annotations.setValue(
-      this.annotations.value!.map((a: CodContentAnnotation, i: number) =>
+      annotations.map((a: CodContentAnnotation, i: number) =>
         i === this._editedAnnotationIndex ? annotation : a
       )
     );
@@ -306,9 +318,11 @@ export class CodContentEditorComponent {
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          const entries = [...this.annotations.value!];
+          const entries = [...(this.annotations.value || [])];
           entries.splice(index, 1);
           this.annotations.setValue(entries);
+          this.annotations.updateValueAndValidity();
+          this.annotations.markAsDirty();
         }
       });
   }
@@ -317,22 +331,30 @@ export class CodContentEditorComponent {
     if (index < 1) {
       return;
     }
-    const annotation = this.annotations.value![index];
-    const annotations = [...this.annotations.value!];
+    const annotationsArray = this.annotations.value || [];
+    if (index >= annotationsArray.length) return;
+
+    const annotation = annotationsArray[index];
+    const annotations = [...annotationsArray];
     annotations.splice(index, 1);
     annotations.splice(index - 1, 0, annotation);
     this.annotations.setValue(annotations);
+    this.annotations.updateValueAndValidity();
+    this.annotations.markAsDirty();
   }
 
   public moveAnnotationDown(index: number): void {
-    if (index + 1 >= this.annotations.value!.length) {
+    const annotationsArray = this.annotations.value || [];
+    if (index + 1 >= annotationsArray.length) {
       return;
     }
-    const annotation = this.annotations.value![index];
-    const annotations = [...this.annotations.value!];
+    const annotation = annotationsArray[index];
+    const annotations = [...annotationsArray];
     annotations.splice(index, 1);
     annotations.splice(index + 1, 0, annotation);
     this.annotations.setValue(annotations);
+    this.annotations.updateValueAndValidity();
+    this.annotations.markAsDirty();
   }
   //#endregion
 

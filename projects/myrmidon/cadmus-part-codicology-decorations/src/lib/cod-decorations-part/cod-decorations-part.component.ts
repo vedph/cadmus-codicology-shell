@@ -366,7 +366,7 @@ export class CodDecorationsPartComponent
   }
 
   public onDecorationSave(decoration: CodDecoration): void {
-    const decorations = [...this.decorations.value];
+    const decorations = [...(this.decorations.value || [])];
 
     if (this.editedIndex > -1) {
       decorations.splice(this.editedIndex, 1, decoration);
@@ -386,7 +386,7 @@ export class CodDecorationsPartComponent
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          const entries = [...this.decorations.value];
+          const entries = [...(this.decorations.value || [])];
           entries.splice(index, 1);
           this.decorations.setValue(entries);
           this.decorations.updateValueAndValidity();
@@ -399,8 +399,11 @@ export class CodDecorationsPartComponent
     if (index < 1) {
       return;
     }
-    const entry = this.decorations.value[index];
-    const entries = [...this.decorations.value];
+    const decorationsArray = this.decorations.value || [];
+    if (index >= decorationsArray.length) return;
+
+    const entry = decorationsArray[index];
+    const entries = [...decorationsArray];
     entries.splice(index, 1);
     entries.splice(index - 1, 0, entry);
     this.decorations.setValue(entries);
@@ -409,11 +412,12 @@ export class CodDecorationsPartComponent
   }
 
   public moveDecorationDown(index: number): void {
-    if (index + 1 >= this.decorations.value.length) {
+    const decorationsArray = this.decorations.value || [];
+    if (index + 1 >= decorationsArray.length) {
       return;
     }
-    const entry = this.decorations.value[index];
-    const entries = [...this.decorations.value];
+    const entry = decorationsArray[index];
+    const entries = [...decorationsArray];
     entries.splice(index, 1);
     entries.splice(index + 1, 0, entry);
     this.decorations.setValue(entries);

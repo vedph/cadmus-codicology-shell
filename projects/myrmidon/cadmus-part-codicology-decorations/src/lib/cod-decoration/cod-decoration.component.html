@@ -98,7 +98,7 @@
         <mat-icon>add_circle</mat-icon> artist
       </button>
     </div>
-    @if (artists.value.length) {
+    @if (artists.value && artists.value.length) {
     <table>
       <thead>
         <tr>
@@ -193,7 +193,7 @@
       <mat-icon>add_circle</mat-icon> element
     </button>
   </div>
-  @if (elements.value.length) {
+  @if (elements.value && elements.value.length) {
   <table>
     <thead>
       <tr>

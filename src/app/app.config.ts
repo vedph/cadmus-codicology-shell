@@ -1,8 +1,9 @@
 import {
   ApplicationConfig,
-  importProvidersFrom,
+  provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
 } from '@angular/core';
+import { importProvidersFrom } from '@angular/core';
 import {
   provideHttpClient,
   withInterceptors,
@@ -29,14 +30,15 @@ import {
 import { TxtEmojiCtePlugin } from '@myrmidon/cadmus-text-ed-txt';
 import { PROXY_INTERCEPTOR_OPTIONS } from '@myrmidon/cadmus-refs-lookup';
 
-import { routes } from './app.routes';
-
 import { INDEX_LOOKUP_DEFINITIONS } from './index-lookup-definitions';
 import { ITEM_BROWSER_KEYS } from './item-browser-keys';
 import { PART_EDITOR_KEYS } from './part-editor-keys';
 
+import { routes } from './app.routes';
+
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withViewTransitions()),
     provideAnimationsAsync(),

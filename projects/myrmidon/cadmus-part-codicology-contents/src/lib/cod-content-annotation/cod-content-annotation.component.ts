@@ -15,23 +15,29 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 
-import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
-import { MatSelect } from '@angular/material/select';
-import { MatOption } from '@angular/material/core';
-import { MatInput } from '@angular/material/input';
+// material
 import { MatIconButton } from '@angular/material/button';
-import { MatTooltip } from '@angular/material/tooltip';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
+import { MatTooltip } from '@angular/material/tooltip';
 
+// myrmidon
 import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+
+// bricks
 import {
   CodLocationRange,
   CodLocationComponent,
 } from '@myrmidon/cadmus-cod-location';
 import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 
+// cadmus
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
+// local
 import { CodContentAnnotation } from '../cod-contents-part';
 
 function entryToFlag(entry: ThesaurusEntry): Flag {
@@ -48,16 +54,18 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    MatFormField,
-    MatLabel,
-    MatSelect,
-    MatOption,
+    // material
     MatError,
-    MatInput,
-    CodLocationComponent,
-    MatIconButton,
-    MatTooltip,
+    MatFormField,
     MatIcon,
+    MatIconButton,
+    MatInput,
+    MatLabel,
+    MatOption,
+    MatSelect,
+    MatTooltip,
+    // bricks
+    CodLocationComponent,
     FlagSetComponent,
   ],
 })

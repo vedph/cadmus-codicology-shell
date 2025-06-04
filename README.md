@@ -1,6 +1,6 @@
 # Cadmus Codicology Shell
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.6.
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.0.
 
 The project is used as an incubator shell for developing and testing frontend Cadmus codicological components:
 
@@ -15,7 +15,7 @@ Per-library documentation:
 
 1. `npm run build-lib`; if you are going to use the libraries, publish them via `publish.bat`;
 2. remember to update version in `env.js`, then `ng build --configuration production`;
-3. `docker build . -t vedph2020/cadmus-codicology-shell:13.0.0 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
+3. `docker build . -t vedph2020/cadmus-codicology-shell:13.0.2 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
 
 ## Shell Architecture
 
@@ -159,6 +159,28 @@ graph LR;
 ```
 
 ## History
+
+### 13.0.3
+
+- 2025-06-04:
+  - rebased workspace to Angular 20.
+  - updated bricks to fix circular dependencies in asserted composite IDs.
+
+### 13.0.2
+
+- 2025-06-03: temptative fixes to (ensure non nullable arrays in the UI and `@if (someArrayCtl.value.length)` is first checked for `someArrayCtl.value`):
+  - `@myrmidon/cadmus-part-codicology-contents`
+  - `@myrmidon/cadmus-part-codicology-decorations`
+  - `@myrmidon/cadmus-part-codicology-edits`
+  - `@myrmidon/cadmus-part-codicology-hands`
+  - `@myrmidon/cadmus-part-codicology-watermarks`
+
+>Note: use `ng serve --configuration=production` to test for similar subtle issues.
+
+To build all for development:
+
+1. `npm run build-dev`
+2. `ng build --configuration=development`
 
 ### 13.0.0
 

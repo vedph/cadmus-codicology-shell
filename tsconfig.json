@@ -41,7 +41,6 @@
         "./dist/myrmidon/cadmus-part-codicology-watermarks"
       ]
     },
-    "outDir": "./dist/out-tsc",
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
@@ -49,17 +48,97 @@
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "isolatedModules": true,
-    "esModuleInterop": true,
     "experimentalDecorators": true,
-    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "module": "ES2022"
+    "module": "preserve"
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
+    "typeCheckHostBindings": true,
     "strictTemplates": true
-  }
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-codicology-ui/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-codicology-ui/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-bindings/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-bindings/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-contents/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-contents/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-decorations/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-decorations/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-edits/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-edits/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-hands/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-hands/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-layouts/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-layouts/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-material-dsc/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-material-dsc/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-sheet-labels/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-sheet-labels/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-shelfmarks/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-shelfmarks/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-watermarks/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-watermarks/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-pg/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-pg/tsconfig.spec.json"
+    }
+  ]
 }

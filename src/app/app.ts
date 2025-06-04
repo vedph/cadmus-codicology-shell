@@ -1,7 +1,6 @@
-
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { take } from 'rxjs/operators';
 
 import { MatButtonModule } from '@angular/material/button';
@@ -23,6 +22,7 @@ import { CodLocationConverterComponent } from '../../projects/myrmidon/cadmus-pa
 @Component({
   selector: 'app-root',
   imports: [
+    RouterOutlet,
     ReactiveFormsModule,
     RouterModule,
     MatButtonModule,
@@ -33,12 +33,12 @@ import { CodLocationConverterComponent } from '../../projects/myrmidon/cadmus-pa
     MatToolbarModule,
     MatTooltipModule,
     GravatarPipe,
-    CodLocationConverterComponent
-],
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+    CodLocationConverterComponent,
+  ],
+  templateUrl: './app.html',
+  styleUrl: './app.scss',
 })
-export class AppComponent implements OnInit {
+export class App implements OnInit {
   public user?: User;
   public logged?: boolean;
   public itemBrowsers?: ThesaurusEntry[];

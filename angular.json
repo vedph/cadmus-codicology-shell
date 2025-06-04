@@ -17,8 +17,6 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/cadmus-codicology-shell",
-            "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js", "@angular/localize/init"],
             "tsConfig": "tsconfig.app.json",
@@ -30,11 +28,11 @@
               }
             ],
             "styles": ["src/styles.scss"],
-            "scripts": [],
             "allowedCommonJsDependencies": ["webcola", "dagre"]
           },
           "configurations": {
             "production": {
+              "sourceMap": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -88,8 +86,7 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.scss"],
-            "scripts": []
+            "styles": ["src/styles.scss"]
           }
         }
       }
@@ -102,9 +99,6 @@
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
-          "options": {
-            "project": "projects/myrmidon/cadmus-codicology-ui/ng-package.json"
-          },
           "configurations": {
             "production": {
               "tsConfig": "projects/myrmidon/cadmus-codicology-ui/tsconfig.lib.prod.json"
@@ -132,9 +126,6 @@
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
-          "options": {
-            "project": "projects/myrmidon/cadmus-part-codicology-bindings/ng-package.json"
-          },
           "configurations": {
             "production": {
               "tsConfig": "projects/myrmidon/cadmus-part-codicology-bindings/tsconfig.lib.prod.json"
@@ -162,9 +153,6 @@
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
-          "options": {
-            "project": "projects/myrmidon/cadmus-part-codicology-contents/ng-package.json"
-          },
           "configurations": {
             "production": {
               "tsConfig": "projects/myrmidon/cadmus-part-codicology-contents/tsconfig.lib.prod.json"
@@ -192,9 +180,6 @@
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
-          "options": {
-            "project": "projects/myrmidon/cadmus-part-codicology-decorations/ng-package.json"
-          },
           "configurations": {
             "production": {
               "tsConfig": "projects/myrmidon/cadmus-part-codicology-decorations/tsconfig.lib.prod.json"
@@ -222,9 +207,6 @@
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
-          "options": {
-            "project": "projects/myrmidon/cadmus-part-codicology-edits/ng-package.json"
-          },
           "configurations": {
             "production": {
               "tsConfig": "projects/myrmidon/cadmus-part-codicology-edits/tsconfig.lib.prod.json"
@@ -252,9 +234,6 @@
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
-          "options": {
-            "project": "projects/myrmidon/cadmus-part-codicology-hands/ng-package.json"
-          },
           "configurations": {
             "production": {
               "tsConfig": "projects/myrmidon/cadmus-part-codicology-hands/tsconfig.lib.prod.json"
@@ -282,9 +261,6 @@
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
-          "options": {
-            "project": "projects/myrmidon/cadmus-part-codicology-layouts/ng-package.json"
-          },
           "configurations": {
             "production": {
               "tsConfig": "projects/myrmidon/cadmus-part-codicology-layouts/tsconfig.lib.prod.json"
@@ -312,9 +288,6 @@
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
-          "options": {
-            "project": "projects/myrmidon/cadmus-part-codicology-material-dsc/ng-package.json"
-          },
           "configurations": {
             "production": {
               "tsConfig": "projects/myrmidon/cadmus-part-codicology-material-dsc/tsconfig.lib.prod.json"
@@ -342,9 +315,6 @@
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
-          "options": {
-            "project": "projects/myrmidon/cadmus-part-codicology-sheet-labels/ng-package.json"
-          },
           "configurations": {
             "production": {
               "tsConfig": "projects/myrmidon/cadmus-part-codicology-sheet-labels/tsconfig.lib.prod.json"
@@ -372,9 +342,6 @@
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
-          "options": {
-            "project": "projects/myrmidon/cadmus-part-codicology-shelfmarks/ng-package.json"
-          },
           "configurations": {
             "production": {
               "tsConfig": "projects/myrmidon/cadmus-part-codicology-shelfmarks/tsconfig.lib.prod.json"
@@ -402,9 +369,6 @@
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
-          "options": {
-            "project": "projects/myrmidon/cadmus-part-codicology-watermarks/ng-package.json"
-          },
           "configurations": {
             "production": {
               "tsConfig": "projects/myrmidon/cadmus-part-codicology-watermarks/tsconfig.lib.prod.json"
@@ -432,9 +396,6 @@
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
-          "options": {
-            "project": "projects/myrmidon/cadmus-part-codicology-pg/ng-package.json"
-          },
           "configurations": {
             "production": {
               "tsConfig": "projects/myrmidon/cadmus-part-codicology-pg/tsconfig.lib.prod.json"
@@ -453,35 +414,6 @@
           }
         }
       }
-    }
-  },
-  "cli": {
-    "analytics": false
-  },
-  "schematics": {
-    "@schematics/angular:component": {
-      "type": "component"
-    },
-    "@schematics/angular:directive": {
-      "type": "directive"
-    },
-    "@schematics/angular:service": {
-      "type": "service"
-    },
-    "@schematics/angular:guard": {
-      "typeSeparator": "."
-    },
-    "@schematics/angular:interceptor": {
-      "typeSeparator": "."
-    },
-    "@schematics/angular:module": {
-      "typeSeparator": "."
-    },
-    "@schematics/angular:pipe": {
-      "typeSeparator": "."
-    },
-    "@schematics/angular:resolver": {
-      "typeSeparator": "."
     }
   }
 }

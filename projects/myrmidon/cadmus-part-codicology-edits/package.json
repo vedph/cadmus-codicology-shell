@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-edits",
-  "version": "12.0.0",
+  "version": "12.0.1",
   "description": "Cadmus codicology - edits.",
   "keywords": [
     "Cadmus"
@@ -28,5 +28,6 @@
   },
   "dependencies": {
     "tslib": "^2.3.0"
-  }
+  },
+  "sideEffects": false
 }

@@ -10,6 +10,8 @@ import {
 import { take } from 'rxjs/operators';
 import { TitleCasePipe } from '@angular/common';
 
+// material
+import { MatButton, MatIconButton } from '@angular/material/button';
 import {
   MatCard,
   MatCardHeader,
@@ -18,16 +20,19 @@ import {
   MatCardContent,
   MatCardActions,
 } from '@angular/material/card';
-import { MatIcon } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 
+// myrmidon
 import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
+
+// bricks
 import { CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
 
+// cadmus
 import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
   EditedObject,
@@ -35,6 +40,7 @@ import {
   CloseSaveButtonsComponent,
 } from '@myrmidon/cadmus-ui';
 
+// local
 import {
   CodContent,
   CodContentsPart,
@@ -56,21 +62,24 @@ import { CodContentEditorComponent } from '../cod-content-editor/cod-content-edi
   imports: [
     FormsModule,
     ReactiveFormsModule,
+    TitleCasePipe,
+    // material
+    MatButton,
     MatCard,
-    MatCardHeader,
+    MatCardActions,
     MatCardAvatar,
-    MatIcon,
+    MatCardHeader,
     MatCardTitle,
     MatCardContent,
     MatExpansionModule,
-    MatButton,
+    MatIcon,
     MatIconButton,
     MatTooltip,
-    CodContentEditorComponent,
-    MatCardActions,
-    CloseSaveButtonsComponent,
-    TitleCasePipe,
+    // bricks
     CodLocationRangePipe,
+    // cadmus
+    CodContentEditorComponent,
+    CloseSaveButtonsComponent,
   ],
 })
 export class CodContentsPartComponent

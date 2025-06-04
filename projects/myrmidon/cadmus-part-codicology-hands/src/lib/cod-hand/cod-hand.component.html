@@ -54,7 +54,7 @@
         <mat-icon>add_circle</mat-icon> description
       </button>
     </div>
-    @if (descriptions.value.length) {
+    @if (descriptions.value && descriptions.value.length) {
     <table>
       <thead>
         <tr>
@@ -145,7 +145,7 @@
         <mat-icon>add_circle</mat-icon> instance
       </button>
     </div>
-    @if (instances.value.length) {
+    @if (instances.value && instances.value.length) {
     <table>
       <thead>
         <tr>
@@ -247,7 +247,7 @@
         <mat-icon>add_circle</mat-icon> subscription
       </button>
     </div>
-    @if (subscriptions.value.length) {
+    @if (subscriptions.value && subscriptions.value.length) {
     <table>
       <thead>
         <tr>
