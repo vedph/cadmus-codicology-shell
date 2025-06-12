@@ -165,6 +165,7 @@ graph LR;
   - decorations: fixed `flatLookup` pipe usage in decoration editor element's type (`@myrmidon/cadmus-part-codicology-decorations`).
   - hands: fixed `flatLookup` pipe usage in hand's scripts (`@myrmidon/cadmus-part-codicology-hands`).
   - shelfmarks: added `flatLookup` pipe to binding's tag (`@myrmidon/cadmus-part-codicology-shelfmarks`).
+  - added more lookup definitions.
 
 ### 13.0.3
 
