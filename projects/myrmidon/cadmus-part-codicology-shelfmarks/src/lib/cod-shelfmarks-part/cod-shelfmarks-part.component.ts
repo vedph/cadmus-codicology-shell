@@ -23,7 +23,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { FlatLookupPipe, NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 
@@ -65,6 +65,7 @@ import { CodShelfmarkEditorComponent } from '../cod-shelfmark-editor/cod-shelfma
     TitleCasePipe,
     CodShelfmarkEditorComponent,
     MatCardActions,
+    FlatLookupPipe,
     CloseSaveButtonsComponent,
   ],
 })

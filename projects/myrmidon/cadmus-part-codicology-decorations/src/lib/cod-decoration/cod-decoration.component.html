@@ -182,107 +182,111 @@
   </mat-expansion-panel>
 
   <!-- elements -->
-  elements
-  <div>
-    <button
-      type="button"
-      mat-flat-button
-      class="mat-primary"
-      (click)="addElement()"
-    >
-      <mat-icon>add_circle</mat-icon> element
-    </button>
-  </div>
-  @if (elements.value && elements.value.length) {
-  <table>
-    <thead>
-      <tr>
-        <th></th>
-        <th>key</th>
-        <th>parent</th>
-        <th>type</th>
-        <th>subject</th>
-        <th>extent</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for ( element of elements.value; track element; let i = $index; let first
-      = $first; let last = $last) {
-      <tr [class.selected]="editedElementIndex === i">
-        <td class="fit-width">
-          <button
-            type="button"
-            mat-icon-button
-            matTooltip="Edit this element"
-            (click)="editElement(element, i)"
-          >
-            <mat-icon class="mat-primary">edit</mat-icon>
-          </button>
-          <button
-            type="button"
-            mat-icon-button
-            matTooltip="Move this element up"
-            [disabled]="first"
-            (click)="moveElementUp(i)"
-          >
-            <mat-icon>arrow_upward</mat-icon>
-          </button>
-          <button
-            type="button"
-            mat-icon-button
-            matTooltip="Move this element down"
-            [disabled]="last"
-            (click)="moveElementDown(i)"
-          >
-            <mat-icon>arrow_downward</mat-icon>
-          </button>
-          <button
-            type="button"
-            mat-icon-button
-            matTooltip="Delete this element"
-            (click)="removeElement(i)"
-          >
-            <mat-icon class="mat-warn">remove_circle</mat-icon>
-          </button>
-        </td>
-        <td>{{ element.key }}</td>
-        <td>{{ element.parentKey }}</td>
-        <td>
-          {{ element.type | flatLookup : decElemTypeEntries : "id" : "value" }}
-        </td>
-        <td>{{ element.subject }}</td>
-        <td>{{ element.ranges | codLocationRange }}</td>
-      </tr>
-      }
-    </tbody>
-  </table>
-  }
+  <fieldset>
+    <legend>elements</legend>
+    <div>
+      <button
+        type="button"
+        mat-flat-button
+        class="mat-primary"
+        (click)="addElement()"
+      >
+        <mat-icon>add_circle</mat-icon> element
+      </button>
+    </div>
+    @if (elements.value && elements.value.length) {
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>key</th>
+          <th>parent</th>
+          <th>type</th>
+          <th>subject</th>
+          <th>extent</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for ( element of elements.value; track element; let i = $index; let
+        first = $first; let last = $last) {
+        <tr [class.selected]="editedElementIndex === i">
+          <td class="fit-width">
+            <button
+              type="button"
+              mat-icon-button
+              matTooltip="Edit this element"
+              (click)="editElement(element, i)"
+            >
+              <mat-icon class="mat-primary">edit</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              matTooltip="Move this element up"
+              [disabled]="first"
+              (click)="moveElementUp(i)"
+            >
+              <mat-icon>arrow_upward</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              matTooltip="Move this element down"
+              [disabled]="last"
+              (click)="moveElementDown(i)"
+            >
+              <mat-icon>arrow_downward</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              matTooltip="Delete this element"
+              (click)="removeElement(i)"
+            >
+              <mat-icon class="mat-warn">remove_circle</mat-icon>
+            </button>
+          </td>
+          <td>{{ element.key }}</td>
+          <td>{{ element.parentKey }}</td>
+          <td>
+            {{
+              element.type | flatLookup : decElemTypeEntries() : "id" : "value"
+            }}
+          </td>
+          <td>{{ element.subject }}</td>
+          <td>{{ element.ranges | codLocationRange }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+    }
 
-  <!-- ELEMENT -->
-  <mat-expansion-panel [disabled]="!editedElement" [expanded]="editedElement">
-    <fieldset>
-      <legend>element</legend>
-      <cadmus-cod-decoration-element
-        [imgTypeEntries]="imgTypeEntries()"
-        [decElemPosEntries]="decElemPosEntries()"
-        [decElemFlagEntries]="decElemFlagEntries()"
-        [decElemTagEntries]="decElemTagEntries()"
-        [decElemTechEntries]="decElemTechEntries()"
-        [decElemToolEntries]="decElemToolEntries()"
-        [decElemTypeEntries]="decElemTypeEntries()"
-        [decElemColorEntries]="decElemColorEntries()"
-        [decElemTypolEntries]="decElemTypolEntries()"
-        [decTypeHiddenEntries]="decTypeHiddenEntries()"
-        [decElemGildingEntries]="decElemGildingEntries()"
-        [refTagEntries]="refTagEntries()"
-        [refTypeEntries]="refTypeEntries()"
-        [element]="editedElement"
-        [parentKeys]="parentKeys"
-        (elementChange)="onElementSave($event!)"
-        (editorClose)="editElement(null)"
-      />
-    </fieldset>
-  </mat-expansion-panel>
+    <!-- ELEMENT -->
+    <mat-expansion-panel [disabled]="!editedElement" [expanded]="editedElement">
+      <fieldset>
+        <legend>element</legend>
+        <cadmus-cod-decoration-element
+          [imgTypeEntries]="imgTypeEntries()"
+          [decElemPosEntries]="decElemPosEntries()"
+          [decElemFlagEntries]="decElemFlagEntries()"
+          [decElemTagEntries]="decElemTagEntries()"
+          [decElemTechEntries]="decElemTechEntries()"
+          [decElemToolEntries]="decElemToolEntries()"
+          [decElemTypeEntries]="decElemTypeEntries()"
+          [decElemColorEntries]="decElemColorEntries()"
+          [decElemTypolEntries]="decElemTypolEntries()"
+          [decTypeHiddenEntries]="decTypeHiddenEntries()"
+          [decElemGildingEntries]="decElemGildingEntries()"
+          [refTagEntries]="refTagEntries()"
+          [refTypeEntries]="refTypeEntries()"
+          [element]="editedElement"
+          [parentKeys]="parentKeys"
+          (elementChange)="onElementSave($event!)"
+          (editorClose)="editElement(null)"
+        />
+      </fieldset>
+    </mat-expansion-panel>
+  </fieldset>
 
   <!-- buttons -->
   <hr />

@@ -71,7 +71,7 @@
                 <mat-icon class="mat-warn">remove_circle</mat-icon>
               </button>
             </td>
-            <td>{{ entry.tag }}</td>
+            <td>{{ entry.tag | flatLookup : tagEntries : "id" : "value" }}</td>
             <td>{{ entry.city }}</td>
             <td>{{ entry.library }}</td>
             <td>{{ entry.fund }}</td>

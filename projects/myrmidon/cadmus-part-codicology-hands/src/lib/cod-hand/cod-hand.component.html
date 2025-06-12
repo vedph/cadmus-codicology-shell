@@ -196,7 +196,7 @@
           </td>
           <td>
             {{
-              instance.scripts[0] | flatLookup : scriptEntries : "id" : "value"
+              instance.scripts[0] | flatLookup : scriptEntries() : "id" : "value"
             }}
           </td>
           <td>{{ instance.ranges | codLocationRange }}</td>
