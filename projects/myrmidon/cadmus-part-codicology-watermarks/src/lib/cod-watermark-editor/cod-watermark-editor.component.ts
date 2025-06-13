@@ -79,14 +79,6 @@ export class CodWatermarkEditorComponent {
   // physical-size-units
   public readonly szUnitEntries = input<ThesaurusEntry[]>();
 
-  // pin link settings
-  // by-type: true/false
-  public readonly pinByTypeMode = input<boolean>();
-  // switch-mode: true/false
-  public readonly canSwitchMode = input<boolean>();
-  // edit-target: true/false
-  public readonly canEditTarget = input<boolean>();
-
   public editorClose = output();
 
   public name: FormControl<string | null>;

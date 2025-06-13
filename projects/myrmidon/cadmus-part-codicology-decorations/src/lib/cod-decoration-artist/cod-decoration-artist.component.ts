@@ -86,14 +86,6 @@ export class CodDecorationArtistComponent {
   // external-id-scopes
   public readonly idScopeEntries = input<ThesaurusEntry[]>();
 
-  // pin link settings
-  // by-type: true/false
-  public readonly pinByTypeMode = input<boolean>();
-  // switch-mode: true/false
-  public readonly canSwitchMode = input<boolean>();
-  // edit-target: true/false
-  public readonly canEditTarget = input<boolean>();
-
   public readonly editorClose = output();
 
   public eid: FormControl<string | null>;

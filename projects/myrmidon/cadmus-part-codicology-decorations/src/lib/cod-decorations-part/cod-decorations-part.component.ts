@@ -125,14 +125,6 @@ export class CodDecorationsPartComponent
   // external-id-scopes
   public idScopeEntries: ThesaurusEntry[] | undefined;
 
-  // pin links settings
-  // by-type: true/false
-  public pinByTypeMode?: boolean;
-  // switch-mode: true/false
-  public canSwitchMode?: boolean;
-  // edit-target: true/false
-  public canEditTarget?: boolean;
-
   public decorations: FormControl<CodDecoration[]>;
 
   constructor(
@@ -157,25 +149,6 @@ export class CodDecorationsPartComponent
     return formBuilder.group({
       decorations: this.decorations,
     });
-  }
-
-  /**
-   * Load settings from thesaurus entries.
-   *
-   * @param entries The thesaurus entries if any.
-   */
-  private loadSettings(entries?: ThesaurusEntry[]): void {
-    if (!entries?.length) {
-      this.pinByTypeMode = undefined;
-      this.canSwitchMode = undefined;
-      this.canEditTarget = undefined;
-    }
-    this.pinByTypeMode =
-      entries?.find((e) => e.id === 'by-type')?.value === 'true';
-    this.canSwitchMode =
-      entries?.find((e) => e.id === 'switch-mode')?.value === 'true';
-    this.canEditTarget =
-      entries?.find((e) => e.id === 'edit-target')?.value === 'true';
   }
 
   private updateThesauri(thesauri: ThesauriSet): void {
@@ -318,8 +291,6 @@ export class CodDecorationsPartComponent
     } else {
       this.idScopeEntries = undefined;
     }
-
-    this.loadSettings(thesauri['pin-link-settings']?.entries);
   }
 
   private updateForm(part?: CodDecorationsPart | null): void {
