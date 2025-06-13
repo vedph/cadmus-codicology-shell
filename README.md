@@ -160,7 +160,9 @@ graph LR;
 
 ## History
 
-- 2025-06-13: removed pin lookup settings (from thesauri), which was an obsoleted approach, and configured all the instances of asserted composite IDs components to have `canSwitchMode`=true and `canEditTarget`=true.
+- 2025-06-13:
+  - removed pin lookup settings (from thesauri), which was an obsoleted approach, and configured all the instances of asserted composite IDs components to have `canSwitchMode`=true and `canEditTarget`=true.
+  - updated Angular.
 - 2025-06-12:
   - bindings: added `flatLookup` pipe to binding's tag (`@myrmidon/cadmus-part-codicology-bindings`).
   - decorations: fixed `flatLookup` pipe usage in decoration editor element's type (`@myrmidon/cadmus-part-codicology-decorations`).
