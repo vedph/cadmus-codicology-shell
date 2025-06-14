@@ -15,7 +15,7 @@ Per-library documentation:
 
 1. `npm run build-lib`; if you are going to use the libraries, publish them via `publish.bat`;
 2. remember to update version in `env.js`, then `ng build --configuration production`;
-3. `docker build . -t vedph2020/cadmus-codicology-shell:13.0.3 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
+3. `docker build . -t vedph2020/cadmus-codicology-shell:13.0.4 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
 
 ## Shell Architecture
 
@@ -160,9 +160,11 @@ graph LR;
 
 ## History
 
+### 13.0.4
+
 - 2025-06-13:
   - removed pin lookup settings (from thesauri), which was an obsoleted approach, and configured all the instances of asserted composite IDs components to have `canSwitchMode`=true and `canEditTarget`=true.
-  - updated Angular.
+  - updated Angular and packages (fixes to size brick).
 - 2025-06-12:
   - bindings: added `flatLookup` pipe to binding's tag (`@myrmidon/cadmus-part-codicology-bindings`).
   - decorations: fixed `flatLookup` pipe usage in decoration editor element's type (`@myrmidon/cadmus-part-codicology-decorations`).
