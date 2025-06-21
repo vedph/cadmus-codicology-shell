@@ -160,6 +160,9 @@ graph LR;
 
 ## History
 
+- 2025-06-21: updated packages (fixes to bricks).
+- 2025-06-20: updated Angular and packages.
+
 ### 13.0.4
 
 - 2025-06-13:
