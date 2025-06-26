@@ -4,7 +4,7 @@
 
   // environment-dependent settings
   window.__env.apiUrl = "http://localhost:5152/api/";
-  window.__env.version = "13.0.4";
+  window.__env.version = "13.0.5";
   window.__env.thesImportEnabled = true;
   // MUFI
   window.__env.mufiUrl = "http://localhost:5152/api/";
