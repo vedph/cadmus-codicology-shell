@@ -1,63 +1,127 @@
-<mat-card appearance="outlined">
-  <mat-card-content>
-    <div id="container">
-      <div id="title">
-        <h2>Cadmus Codicology</h2>
-      </div>
-      <div id="image">
-        <img src="img/ms-600.png" width="400px" alt="Codicology" />
+<div class="home-container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <mat-icon class="hero-icon">auto_stories</mat-icon>
+        Cadmus Codicology
+      </h1>
+      <p class="hero-subtitle">
+        Codicological models for Cadmus
+      </p>
+      <div class="hero-image">
+        <img
+          src="img/ms-600.png"
+          alt="Medieval manuscript illustration"
+          class="manuscript-image"
+        />
       </div>
     </div>
-    <div>
-      <h2>References</h2>
-      <ul>
-        <li>
+  </section>
+
+  <!-- Auth Status -->
+  @if (!logged) {
+  <section class="auth-section">
+    <mat-card class="auth-card" appearance="outlined">
+      <mat-card-content>
+        <mat-icon class="auth-icon">lock</mat-icon>
+        <h3>Authentication Required</h3>
+        <p>Please log in to access the codicology tools and features.</p>
+        <button
+          type="button"
+          mat-raised-button
+          color="primary"
+          routerLink="/login"
+          class="login-button"
+        >
+          <mat-icon>login</mat-icon>
+          Login to Continue
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </section>
+  }
+
+  <!-- Content Grid -->
+  <section class="content-grid">
+    <!-- References Card -->
+    <mat-card class="content-card references-card" appearance="outlined">
+      <mat-card-header>
+        <mat-icon mat-card-avatar class="card-icon references-icon"
+          >description</mat-icon
+        >
+        <mat-card-title>Documentation</mat-card-title>
+        <mat-card-subtitle
+          >Guides and references</mat-card-subtitle
+        >
+      </mat-card-header>
+      <mat-card-content>
+        <div class="link-list">
           <a
-            rel="noopener"
             href="https://vedph.github.io/cadmus-doc/models/shared.html#codicology"
             target="_blank"
-            >Cadmus documentation</a
-          >
-        </li>
-        <li>
-          <a
             rel="noopener"
+            class="resource-link"
+          >
+            <mat-icon>book</mat-icon>
+            <span>Cadmus Documentation</span>
+            <mat-icon class="external-icon">open_in_new</mat-icon>
+          </a>
+          <a
             href="https://vedph.github.io/cadmus-doc/models/shared.html#codicology"
             target="_blank"
-            >models documentation</a
-          >
-        </li>
-      </ul>
-      <h2>Source Code</h2>
-      <ul>
-        <li>
-          <a
             rel="noopener"
+            class="resource-link"
+          >
+            <mat-icon>schema</mat-icon>
+            <span>Models Documentation</span>
+            <mat-icon class="external-icon">open_in_new</mat-icon>
+          </a>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Source Code Card -->
+    <mat-card class="content-card source-card" appearance="outlined">
+      <mat-card-header>
+        <mat-icon mat-card-avatar class="card-icon source-icon">code</mat-icon>
+        <mat-card-title>Source Code</mat-card-title>
+        <mat-card-subtitle>Open source repositories</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="link-list">
+          <a
             href="https://github.com/vedph/cadmus-codicology"
             target="_blank"
-            >models source code</a
-          >
-        </li>
-        <li>
-          <a
             rel="noopener"
+            class="resource-link"
+          >
+            <mat-icon>data_object</mat-icon>
+            <span>Models Source</span>
+            <mat-icon class="external-icon">open_in_new</mat-icon>
+          </a>
+          <a
             href="https://github.com/vedph/cadmus-codicology-api"
             target="_blank"
-            >API source code</a
-          >
-        </li>
-        <li>
-          <a
             rel="noopener"
+            class="resource-link"
+          >
+            <mat-icon>api</mat-icon>
+            <span>API Source</span>
+            <mat-icon class="external-icon">open_in_new</mat-icon>
+          </a>
+          <a
             href="https://github.com/vedph/cadmus-codicology-shell"
             target="_blank"
-            >shell source code</a
+            rel="noopener"
+            class="resource-link"
           >
-        </li>
-      </ul>
-    </div>
-    @if (!logged) {
-    <div id="login">Please <a routerLink="/login">login</a> to start.</div>
-    }
-  </mat-card-content>
-</mat-card>
+            <mat-icon>web</mat-icon>
+            <span>Shell Source</span>
+            <mat-icon class="external-icon">open_in_new</mat-icon>
+          </a>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </section>
+</div>

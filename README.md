@@ -15,7 +15,7 @@ Per-library documentation:
 
 1. `npm run build-lib`; if you are going to use the libraries, publish them via `publish.bat`;
 2. remember to update version in `env.js`, then `ng build --configuration production`;
-3. `docker build . -t vedph2020/cadmus-codicology-shell:13.0.5 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
+3. `docker build . -t vedph2020/cadmus-codicology-shell:13.0.6 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
 
 ## Shell Architecture
 
@@ -160,7 +160,11 @@ graph LR;
 
 ## History
 
-- 2025-06-27: updated packages (fixes to bricks).
+### 13.0.6
+
+- 2025-06-27:
+  - updated packages (fixes to bricks).
+  - better homepage.
 
 ### 13.0.5
 
