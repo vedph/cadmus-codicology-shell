@@ -160,6 +160,8 @@ graph LR;
 
 ## History
 
+- 2025-07-05: added `CodLayoutFormulaComponent` to `@myrmidon/cadmus-codicology-ui` (increasing its version number) and a corresponding demo page for it. This is going to replace the layout part formula editor UI, thus integrating it into a more generic and configurable formula.
+
 ### 13.0.6
 
 - 2025-06-27:

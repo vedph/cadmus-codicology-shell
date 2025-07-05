@@ -1,0 +1,143 @@
+<div>
+  <!-- formula -->
+  <div>
+    <mat-form-field class="long-text">
+      <mat-label>formula</mat-label>
+      <input matInput [formControl]="formulaCtl" />
+      @if ($any(formulaCtl).errors?.required && (formulaCtl.dirty ||
+      formulaCtl.touched)) {
+      <mat-error>formula required</mat-error>
+      } @if ($any(formulaCtl).errors?.maxLength && (formulaCtl.dirty ||
+      formulaCtl.touched)) {
+      <mat-error>formula too long</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <!-- viewer -->
+  <div id="viewer">
+    <cod-layout-view
+      [attr.formula]="formulaCtl.value"
+      style="width: 100%; height: 900px"
+    ></cod-layout-view>
+  </div>
+
+  <!-- dimensions -->
+  <div>
+    <fieldset>
+      <legend>
+        dimensions
+        <!-- import button -->
+        <button
+          type="button"
+          mat-icon-button
+          matTooltip="Import dimensions"
+          (click)="updateDimensionsFromFormula()"
+        >
+          <mat-icon>arrow_circle_down</mat-icon>
+        </button>
+        <!-- add button -->
+        <button
+          type="button"
+          mat-icon-button
+          matTooltip="Add dimension"
+          (click)="addDimension()"
+        >
+          <mat-icon>add</mat-icon>
+        </button>
+      </legend>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>dimension</th>
+            <th>value</th>
+            <th>unit</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (d of dimensionsCtl.value; track d; let i = $index; let first =
+          $first; let last = $last) {
+          <tr [class.selected]="d === edited">
+            <td class="fit-width">
+              <button
+                type="button"
+                mat-icon-button
+                color="primary"
+                matTooltip="Edit this dimension"
+                (click)="editDimension(d, i)"
+              >
+                <mat-icon class="mat-primary">edit</mat-icon>
+              </button>
+              <button
+                type="button"
+                mat-icon-button
+                matTooltip="Move this dimension up"
+                [disabled]="first"
+                (click)="moveDimensionUp(i)"
+              >
+                <mat-icon>arrow_upward</mat-icon>
+              </button>
+              <button
+                type="button"
+                mat-icon-button
+                matTooltip="Move this dimension down"
+                [disabled]="last"
+                (click)="moveDimensionDown(i)"
+              >
+                <mat-icon>arrow_downward</mat-icon>
+              </button>
+              <button
+                type="button"
+                mat-icon-button
+                color="warn"
+                matTooltip="Delete this dimension"
+                (click)="deleteDimension(i)"
+              >
+                <mat-icon class="mat-warn">remove_circle</mat-icon>
+              </button>
+            </td>
+            <td>{{ d.tag }}</td>
+            <td>{{ d.value }}</td>
+            <td>{{ d.unit }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      @if (edited) {
+      <fieldset>
+        <mat-expansion-panel [expanded]="edited" [disabled]="!edited">
+          <mat-expansion-panel-header>
+            <mat-panel-title>dimension #{{ editedIndex + 1 }}</mat-panel-title>
+          </mat-expansion-panel-header>
+          <cadmus-physical-dimension
+            [dimension]="edited"
+            (dimensionChange)="saveDimension($event!)"
+            (cancelEdit)="closeDimension()"
+          />
+        </mat-expansion-panel>
+      </fieldset>
+      }
+    </fieldset>
+  </div>
+
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      mat-icon-button
+      matTooltip="Discard changes"
+      (click)="cancel()"
+    >
+      <mat-icon class="mat-warn">clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      mat-icon-button
+      matTooltip="Accept changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon class="mat-primary">check_circle</mat-icon>
+    </button>
+  </div>
+</div>

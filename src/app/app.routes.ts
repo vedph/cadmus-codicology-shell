@@ -14,6 +14,7 @@ import { ManageUsersPageComponent } from './manage-users-page/manage-users-page.
 import { RegisterUserPageComponent } from './register-user-page/register-user-page.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { LoginPageComponent } from './login-page/login-page.component';
+import { FormulaDemoPageComponent } from './formula-demo-page/formula-demo-page';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -34,6 +35,10 @@ export const routes: Routes = [
     path: 'manage-users',
     component: ManageUsersPageComponent,
     canActivate: [AuthJwtAdminGuardService],
+  },
+  {
+    path: 'demo/formula',
+    component: FormulaDemoPageComponent,
   },
   // cadmus - items
   {
