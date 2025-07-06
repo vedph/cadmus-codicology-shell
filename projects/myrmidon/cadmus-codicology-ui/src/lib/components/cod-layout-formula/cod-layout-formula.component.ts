@@ -324,6 +324,8 @@ export class CodLayoutFormulaComponent {
     this.dimensionsCtl.markAsDirty();
     this.dimensionsCtl.updateValueAndValidity();
     this.closeDimension();
+
+    this.updateFormulaFromDimensions();
   }
 
   public deleteDimension(index: number): void {
@@ -339,6 +341,8 @@ export class CodLayoutFormulaComponent {
           this.dimensionsCtl.setValue(dimensions);
           this.dimensionsCtl.markAsDirty();
           this.dimensionsCtl.updateValueAndValidity();
+
+          this.updateFormulaFromDimensions();
         }
       });
   }
@@ -354,6 +358,8 @@ export class CodLayoutFormulaComponent {
     this.dimensionsCtl.setValue(dimensions);
     this.dimensionsCtl.markAsDirty();
     this.dimensionsCtl.updateValueAndValidity();
+
+    this.updateFormulaFromDimensions();
   }
 
   public moveDimensionDown(index: number): void {
@@ -367,6 +373,8 @@ export class CodLayoutFormulaComponent {
     this.dimensionsCtl.setValue(dimensions);
     this.dimensionsCtl.markAsDirty();
     this.dimensionsCtl.updateValueAndValidity();
+
+    this.updateFormulaFromDimensions();
   }
 
   private getData(): CodLayoutFormulaWithDimensions {
