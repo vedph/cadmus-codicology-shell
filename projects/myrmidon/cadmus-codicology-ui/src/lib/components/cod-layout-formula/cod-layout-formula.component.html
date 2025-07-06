@@ -12,11 +12,17 @@
       } @if ($any(formulaCtl).errors?.maxLength && (formulaCtl.dirty ||
       formulaCtl.touched)) {
       <mat-error>formula too long</mat-error>
-      } @if ($any(formulaCtl).errors?.formulaInvalid && (formulaCtl.dirty ||
+      } @if ($any(formulaCtl).errors?.formulaErrors && (formulaCtl.dirty ||
       formulaCtl.touched)) {
-      <mat-error>{{
-        $any(formulaCtl).errors?.formulaInvalid?.message
-      }}</mat-error>
+      <mat-error>
+        @for (e of $any(formulaCtl).errors!.formulaErrors!; track e; let
+        i=$index) {
+          @if (i > 0) {
+            <span>&#x25b3;</span>
+          }
+        <span>{{ e }}</span>
+        }
+      </mat-error>
       }
     </mat-form-field>
   </div>

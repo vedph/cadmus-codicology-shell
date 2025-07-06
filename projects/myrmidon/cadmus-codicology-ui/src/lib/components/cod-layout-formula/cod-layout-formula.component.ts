@@ -88,14 +88,11 @@ export class CodLayoutFormulaComponent {
       return null; // let required validator handle empty values
     }
 
-    const validationResult = this._formulaService.validateFormula(
-      control.value
-    );
-    if (validationResult) {
+    const errors = this._formulaService.validateFormula(control.value);
+    if (errors) {
       return {
-        formulaInvalid: {
-          message: validationResult,
-        },
+        // convert errors into array of error messages
+        formulaErrors: [...Object.keys(errors).map((k) => errors[k])],
       };
     }
 
