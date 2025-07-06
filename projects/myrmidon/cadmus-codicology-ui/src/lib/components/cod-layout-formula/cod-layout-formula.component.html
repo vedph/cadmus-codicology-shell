@@ -12,6 +12,11 @@
       } @if ($any(formulaCtl).errors?.maxLength && (formulaCtl.dirty ||
       formulaCtl.touched)) {
       <mat-error>formula too long</mat-error>
+      } @if ($any(formulaCtl).errors?.formulaInvalid && (formulaCtl.dirty ||
+      formulaCtl.touched)) {
+      <mat-error>{{
+        $any(formulaCtl).errors?.formulaInvalid?.message
+      }}</mat-error>
       }
     </mat-form-field>
   </div>

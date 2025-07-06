@@ -5,6 +5,9 @@ import {
   FormGroup,
   ReactiveFormsModule,
   Validators,
+  ValidatorFn,
+  AbstractControl,
+  ValidationErrors,
 } from '@angular/forms';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
@@ -74,6 +77,30 @@ export class CodLayoutFormulaComponent {
   public edited?: PhysicalDimension;
 
   /**
+   * Custom validator for formula validation using the formula service.
+   */
+  private formulaValidator: ValidatorFn = (
+    control: AbstractControl
+  ): ValidationErrors | null => {
+    if (!control.value) {
+      return null; // let required validator handle empty values
+    }
+
+    const validationResult = this._formulaService.validateFormula(
+      control.value
+    );
+    if (validationResult) {
+      return {
+        formulaInvalid: {
+          message: validationResult,
+        },
+      };
+    }
+
+    return null;
+  };
+
+  /**
    * The data to edit.
    */
   public readonly data = model<CodLayoutFormulaWithDimensions>();
@@ -86,7 +113,11 @@ export class CodLayoutFormulaComponent {
 
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
     this.formulaCtl = formBuilder.control(this.data()?.formula || '', {
-      validators: [Validators.required, Validators.maxLength(500)],
+      validators: [
+        Validators.required,
+        Validators.maxLength(500),
+        this.formulaValidator,
+      ],
       nonNullable: true,
     });
     this.dimensionsCtl = formBuilder.control(this.data()?.dimensions || [], {
@@ -106,6 +137,14 @@ export class CodLayoutFormulaComponent {
 
       // update the service
       this._formulaService = createLayoutFormulaService(this.data()?.prefix);
+
+      // update the formula control validators to use the new service
+      this.formulaCtl.setValidators([
+        Validators.required,
+        Validators.maxLength(500),
+        this.formulaValidator,
+      ]);
+      this.formulaCtl.updateValueAndValidity();
 
       // update the formula control
       const formula = this.data()?.formula;
