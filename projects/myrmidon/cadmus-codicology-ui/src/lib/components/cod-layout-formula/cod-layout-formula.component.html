@@ -25,15 +25,20 @@
   <div id="viewer">
     <cod-layout-view
       [attr.formula]="formulaCtl.value"
-      style="width: 100%; height: 900px"
+      style="width: 100%; height: 900px; border: 1px solid silver"
     ></cod-layout-view>
   </div>
 
   <!-- dimensions -->
   <div>
-    <fieldset>
-      <legend>
-        dimensions
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>dimensions</mat-panel-title>
+        <mat-panel-description>{{
+          dimensionsCtl.value.length
+        }}</mat-panel-description>
+      </mat-expansion-panel-header>
+      <div class="form-row">
         <!-- import button -->
         <button
           type="button"
@@ -52,7 +57,7 @@
         >
           <mat-icon>add</mat-icon>
         </button>
-      </legend>
+      </div>
       <table>
         <thead>
           <tr>
@@ -125,7 +130,7 @@
         </mat-expansion-panel>
       </fieldset>
       }
-    </fieldset>
+    </mat-expansion-panel>
   </div>
 
   <!-- buttons -->
