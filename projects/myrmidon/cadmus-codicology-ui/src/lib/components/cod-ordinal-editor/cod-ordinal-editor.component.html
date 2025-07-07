@@ -1,0 +1,33 @@
+<form [formGroup]="form" (submit)="save()" class="form-row">
+  <mat-form-field appearance="fill" class="nr">
+    <mat-label>value</mat-label>
+    <input matInput type="number" [formControl]="value" />
+  </mat-form-field>
+
+  <!-- warning -->
+  @if (value.value && ordinal()?.warnValues?.includes(value.value)) {
+  <span>
+    <mat-icon class="mat-warn">warning</mat-icon>
+  </span>
+  }
+
+  <!-- buttons -->
+  <div>
+    <button
+      type="button"
+      mat-icon-button
+      matTooltip="Discard changes"
+      (click)="cancel()"
+    >
+      <mat-icon class="mat-warn">clear</mat-icon>
+    </button>
+    <button
+      type="submit"
+      mat-icon-button
+      matTooltip="Accept changes"
+      [disabled]="form.invalid || form.pristine"
+    >
+      <mat-icon class="mat-primary">check_circle</mat-icon>
+    </button>
+  </div>
+</form>

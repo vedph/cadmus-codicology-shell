@@ -17,6 +17,9 @@ td.fit-width {
 tr.selected {
   background-color: #d0d0d0 !important;
 }
+td.vertical-center {
+  vertical-align: middle;
+}
 fieldset {
   border: 1px solid silver;
   border-radius: 6px;

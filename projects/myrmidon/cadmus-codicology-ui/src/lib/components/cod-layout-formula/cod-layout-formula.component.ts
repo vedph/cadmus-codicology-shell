@@ -1,4 +1,4 @@
-import { Component, effect, input, model, output } from '@angular/core';
+import { Component, effect, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -32,6 +32,11 @@ import {
   ITCodLayoutFormulaService,
 } from '@myrmidon/cod-layout-view';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
+
+import {
+  CodOrdinalEditorComponent,
+  CodOrdinalValue,
+} from '../cod-ordinal-editor/cod-ordinal-editor.component';
 
 /**
  * Codicological layout formula with dimensions.
@@ -69,6 +74,7 @@ interface OrderedPhysicalDimension extends PhysicalDimension {
     MatSelectModule,
     MatTooltipModule,
     PhysicalDimensionComponent,
+    CodOrdinalEditorComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './cod-layout-formula.component.html',
@@ -80,8 +86,13 @@ export class CodLayoutFormulaComponent {
   private _updatingForm = false;
   private _editedOrdinal = 0;
 
+  // the currently edited dimension
   public editedIndex = -1;
   public edited?: OrderedPhysicalDimension;
+
+  // the currently edited ordinal value
+  public editedOrdinalIndex = -1;
+  public editedOrdinalValue?: CodOrdinalValue;
 
   /**
    * Custom validator for formula validation using the formula service.
@@ -143,6 +154,7 @@ export class CodLayoutFormulaComponent {
         return;
       }
       this._updatingForm = true;
+      this.closeDimension();
 
       // update the service
       this._formulaService = createLayoutFormulaService(this.data()?.prefix);
@@ -462,6 +474,8 @@ export class CodLayoutFormulaComponent {
     this._editedOrdinal = 0;
     this.editedIndex = -1;
     this.edited = undefined;
+
+    this.closeOrdinal();
   }
 
   public saveDimension(dimension: PhysicalDimension): void {
@@ -487,6 +501,7 @@ export class CodLayoutFormulaComponent {
       .confirm('Confirmation', 'Delete Dimension?')
       .subscribe((yes: boolean | undefined) => {
         if (yes) {
+          this.closeOrdinal();
           if (this.editedIndex === index) {
             this.closeDimension();
           }
@@ -531,6 +546,43 @@ export class CodLayoutFormulaComponent {
     this.dimensionsCtl.updateValueAndValidity();
 
     this.updateFormulaFromDimensions();
+  }
+
+  public editOrdinal(index: number): void {
+    this.editedOrdinalIndex = index;
+    this.editedOrdinalValue = {
+      value: this.dimensionsCtl.value[index]?.ordinal || 0,
+      // max is the max ordinal value + 1
+      max: Math.max(...this.dimensionsCtl.value.map((f) => f.ordinal || 0)) + 1,
+      // warn values are all the distinct dimension ordinal values > 0
+      // except the current one
+      warnValues: Array.from(
+        new Set(
+          this.dimensionsCtl.value
+            .map((f) => f.ordinal)
+            .filter((o) => o > 0 && o !== this.editedOrdinalValue?.value)
+        )
+      ),
+    };
+  }
+
+  public saveOrdinal(ordinal: CodOrdinalValue): void {
+    if (this.editedOrdinalIndex < 0 || !this.editedOrdinalValue) {
+      return;
+    }
+
+    const dimensions = [...this.dimensionsCtl.value];
+    dimensions[this.editedOrdinalIndex].ordinal = ordinal.value;
+    this.dimensionsCtl.setValue(dimensions);
+    this.dimensionsCtl.markAsDirty();
+    this.dimensionsCtl.updateValueAndValidity();
+
+    this.closeOrdinal();
+  }
+
+  public closeOrdinal(): void {
+    this.editedOrdinalIndex = -1;
+    this.editedOrdinalValue = undefined;
   }
 
   private getData(): CodLayoutFormulaWithDimensions {

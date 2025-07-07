@@ -118,7 +118,25 @@
             <td>{{ d.tag }}</td>
             <td>{{ d.value }}</td>
             <td>{{ d.unit }}</td>
-            <td>{{ d.ordinal || "" }}</td>
+            <td class="vertical-center">
+              @if (editedOrdinalIndex === i) {
+              <cadmus-cod-ordinal-editor
+                [ordinal]="editedOrdinalValue"
+                (ordinalChange)="saveOrdinal($event!)"
+                (cancelEdit)="closeOrdinal()"
+              />
+              } @else {
+              {{ d.ordinal || "" }}
+              <button
+                type="button"
+                mat-icon-button
+                matTooltip="Edit ordinal"
+                (click)="editOrdinal(i)"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              }
+            </td>
           </tr>
           }
         </tbody>
