@@ -486,14 +486,43 @@ export class CodLayoutFormulaComponent {
 
   public saveDimension(dimension: PhysicalDimension): void {
     const entries = [...this.dimensionsCtl.value];
+    const dimensionWithOrdinal = { ...dimension, ordinal: this._editedOrdinal };
+
     if (this.editedIndex === -1) {
-      entries.push({ ...dimension, ordinal: this._editedOrdinal });
+      // adding a new dimension
+      // check if a dimension with the same tag already exists and remove it
+      const existingIndex = entries.findIndex(
+        (d) => d.tag === dimension.tag && d.tag
+      );
+      if (existingIndex !== -1) {
+        entries.splice(existingIndex, 1);
+      }
+      entries.push(dimensionWithOrdinal);
     } else {
-      entries.splice(this.editedIndex, 1, {
-        ...dimension,
-        ordinal: this._editedOrdinal,
-      });
+      // editing an existing dimension
+      const originalDimension = this.dimensionsCtl.value[this.editedIndex];
+      const originalTag = originalDimension?.tag;
+      const newTag = dimension.tag;
+
+      // if the tag changed, we need to handle potential duplicates
+      if (originalTag !== newTag) {
+        // remove any existing dimension with the new tag (to avoid duplicates)
+        const duplicateIndex = entries.findIndex(
+          (d, index) => d.tag === newTag && d.tag && index !== this.editedIndex
+        );
+        if (duplicateIndex !== -1) {
+          // if the duplicate is before our edited index, adjust the edited index
+          if (duplicateIndex < this.editedIndex) {
+            this.editedIndex--;
+          }
+          entries.splice(duplicateIndex, 1);
+        }
+      }
+
+      // replace the dimension at the edited index
+      entries.splice(this.editedIndex, 1, dimensionWithOrdinal);
     }
+
     this.dimensionsCtl.setValue(entries);
     this.dimensionsCtl.markAsDirty();
     this.dimensionsCtl.updateValueAndValidity();

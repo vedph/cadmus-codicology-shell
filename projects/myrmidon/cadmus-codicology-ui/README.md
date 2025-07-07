@@ -1,63 +1,26 @@
-# CadmusCodicologyUi
+# Cadmus Codicology UI
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.0.
 
-## Code scaffolding
+This library contains generic UI components for codicology libraries.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## CodLayoutFormulaComponent
 
-```bash
-ng generate component component-name
-```
+This component is used to enter a [codicological layout formula](https://github.com/vedph/cod-layout-view) of any supported type and possibly extract from it a set of dimensions (width, height, left margin, etc.). Thus, it deals with two data:
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+- the codicological formula (`string`).
+- a set of physical dimensions (`PhysicalDimension[]`).
 
-```bash
-ng generate --help
-```
+Once you have entered a formula, you can extract dimensions from it by clicking the import dimensions button. In this case, all the existing dimensions with the same name are overwritten with values from the formula, while new dimensions are added. All the dimensions extracted from a formula also have an ordinal number, which reflects their order of appearance in the formula syntax. Height and width always have ordinal 1 and 2 respectively.
 
-## Building
+You can edit dimensions as follows:
 
-To build the library, run:
+- rearrange extracted dimensions by editing their ordinals via the pen button next to the ordinal number. Using the arrows to move them up or down in the list also implies updating their ordinals.
+- edit any dimension, either extracted or not. You can change the value and also the tag, which implies creating a new dimension (or replacing one which already existed).
+- add new dimensions on your own, independently from the formula. These dimensions have no ordinal (or an ordinal equal to 0).
 
-```bash
-ng build cadmus-codicology-ui
-```
+>Note that you are not allowed to change a dimension's unit, because this is a parameter defined globally for the whole formula.
 
-This command will compile your project, and the build artifacts will be placed in the `dist/` directory.
+Whenever you edit a dimension extracted from a formula (whose ordinal is greater than 0), the formula is updated.
 
-### Publishing the Library
-
-Once the project is built, you can publish your library by following these steps:
-
-1. Navigate to the `dist` directory:
-   ```bash
-   cd dist/cadmus-codicology-ui
-   ```
-
-2. Run the `npm publish` command to publish your library to the npm registry:
-   ```bash
-   npm publish
-   ```
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Whenever you update the formula, either by typing or by editing dimensions, validation occurs. Apart from syntax, which is specific to each formula, validation also checks that the sum of the vertical spans is equal to the sheet height, and that the sum of the horizontal spans is equal to the sheet width.
