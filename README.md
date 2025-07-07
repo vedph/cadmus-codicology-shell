@@ -49,6 +49,7 @@ ng g library @myrmidon/cadmus-part-codicology-pg --prefix cadmus --force
 ```mermaid
 graph LR;
   cadmus-codicology-ui --> ngx-mat-tools
+  cadmus-codicology-ui --> cod-layout-view
   cadmus-codicology-ui --> cadmus-refs-lookup
   cadmus-codicology-ui --> cadmus-api
   cadmus-part-codicology-bindings --> ngx-tools
