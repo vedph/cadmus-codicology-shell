@@ -171,7 +171,7 @@ export class CodLayoutFormulaComponent {
       return;
     }
 
-    // sort spans by isHorizontal and then by label including height and width
+    // sort spans by label including height and width
     const spans = [
       {
         isHorizontal: false,
@@ -186,9 +186,6 @@ export class CodLayoutFormulaComponent {
       ...formula.spans,
     ];
     spans.sort((a, b) => {
-      if (a.isHorizontal !== b.isHorizontal) {
-        return a.isHorizontal ? -1 : 1;
-      }
       return (a.label || '').localeCompare(b.label || '');
     });
 
