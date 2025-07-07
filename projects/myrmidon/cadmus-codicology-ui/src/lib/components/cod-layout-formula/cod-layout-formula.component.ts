@@ -521,10 +521,20 @@ export class CodLayoutFormulaComponent {
       return;
     }
     this.closeDimension();
-    const dimension = this.dimensionsCtl.value[index];
     const dimensions = [...this.dimensionsCtl.value];
+    const currentDimension = dimensions[index];
+    const targetDimension = dimensions[index - 1];
+
+    // if both dimensions have ordinals (are formula-derived), swap their ordinals
+    if (currentDimension.ordinal > 0 && targetDimension.ordinal > 0) {
+      const tempOrdinal = currentDimension.ordinal;
+      currentDimension.ordinal = targetDimension.ordinal;
+      targetDimension.ordinal = tempOrdinal;
+    }
+
+    // swap positions in array
     dimensions.splice(index, 1);
-    dimensions.splice(index - 1, 0, dimension);
+    dimensions.splice(index - 1, 0, currentDimension);
     this.dimensionsCtl.setValue(dimensions);
     this.dimensionsCtl.markAsDirty();
     this.dimensionsCtl.updateValueAndValidity();
@@ -537,10 +547,20 @@ export class CodLayoutFormulaComponent {
       return;
     }
     this.closeDimension();
-    const dimension = this.dimensionsCtl.value[index];
     const dimensions = [...this.dimensionsCtl.value];
+    const currentDimension = dimensions[index];
+    const targetDimension = dimensions[index + 1];
+
+    // if both dimensions have ordinals (are formula-derived), swap their ordinals
+    if (currentDimension.ordinal > 0 && targetDimension.ordinal > 0) {
+      const tempOrdinal = currentDimension.ordinal;
+      currentDimension.ordinal = targetDimension.ordinal;
+      targetDimension.ordinal = tempOrdinal;
+    }
+
+    // swap positions in array
     dimensions.splice(index, 1);
-    dimensions.splice(index + 1, 0, dimension);
+    dimensions.splice(index + 1, 0, currentDimension);
     this.dimensionsCtl.setValue(dimensions);
     this.dimensionsCtl.markAsDirty();
     this.dimensionsCtl.updateValueAndValidity();

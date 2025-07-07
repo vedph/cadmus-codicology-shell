@@ -18,6 +18,7 @@
     "@angular/core": "^20.0.0",
     "@cisstech/nge": "^18.2.1",
     "@myrmidon/ngx-mat-tools": "^1.0.0",
+    "@myrmidon/cod-layout-view": "^1.1.1",
     "@myrmidon/cadmus-refs-lookup": "^9.0.1",
     "@myrmidon/cadmus-api": "^14.0.1"
   },
