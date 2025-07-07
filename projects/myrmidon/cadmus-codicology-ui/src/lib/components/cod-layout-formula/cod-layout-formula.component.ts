@@ -42,6 +42,10 @@ export interface CodLayoutFormulaWithDimensions {
   dimensions: PhysicalDimension[];
 }
 
+interface OrderedPhysicalDimension extends PhysicalDimension {
+  ordinal: number;
+}
+
 /**
  * A component to edit a layout formula and its dimensions.
  * It uses the `cod-layout-view` component to display the formula.
@@ -74,9 +78,10 @@ export class CodLayoutFormulaComponent {
   private _formulaService: CodLayoutFormulaService =
     new ITCodLayoutFormulaService();
   private _updatingForm = false;
+  private _editedOrdinal = 0;
 
   public editedIndex = -1;
-  public edited?: PhysicalDimension;
+  public edited?: OrderedPhysicalDimension;
 
   /**
    * Custom validator for formula validation using the formula service.
@@ -107,7 +112,7 @@ export class CodLayoutFormulaComponent {
   public readonly cancelEdit = output();
 
   public formulaCtl: FormControl<string>;
-  public dimensionsCtl: FormControl<PhysicalDimension[]>;
+  public dimensionsCtl: FormControl<OrderedPhysicalDimension[]>;
   public form: FormGroup;
 
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
@@ -119,9 +124,14 @@ export class CodLayoutFormulaComponent {
       ],
       nonNullable: true,
     });
-    this.dimensionsCtl = formBuilder.control(this.data()?.dimensions || [], {
-      nonNullable: true,
-    });
+    this.dimensionsCtl = formBuilder.control(
+      this.data()?.dimensions.map(
+        (d, i) => ({ ...d, ordinal: i + 3 } as OrderedPhysicalDimension)
+      ) || [],
+      {
+        nonNullable: true,
+      }
+    );
     this.form = formBuilder.group({
       formula: this.formulaCtl,
       dimensions: this.dimensionsCtl,
@@ -151,7 +161,83 @@ export class CodLayoutFormulaComponent {
       this.formulaCtl.markAsPristine();
 
       // update the dimensions control
-      const dimensions = this.data()?.dimensions || [];
+      const rawDimensions = this.data()?.dimensions || [];
+      const dimensions: OrderedPhysicalDimension[] = [];
+
+      if (rawDimensions.length > 0 && formula) {
+        // parse the current formula to determine which dimensions are formula-derived
+        const parsedFormula = this._formulaService.parseFormula(formula);
+        if (parsedFormula) {
+          // get all dimension tags
+          const allDimensionTags = rawDimensions
+            .map((d) => d.tag!)
+            .filter((tag) => tag);
+
+          // filter to get only formula-derived labels
+          const formulaLabels = new Set(
+            this._formulaService.filterFormulaLabels(
+              parsedFormula,
+              allDimensionTags
+            )
+          );
+
+          // assign ordinals based on formula structure
+          let heightOrdinal = 0;
+          let widthOrdinal = 0;
+          const spanOrdinals = new Map<string, number>();
+
+          // determine ordinals for formula-derived dimensions
+          if (
+            parsedFormula.height?.label &&
+            formulaLabels.has(parsedFormula.height.label)
+          ) {
+            heightOrdinal = 1;
+          }
+          if (
+            parsedFormula.width?.label &&
+            formulaLabels.has(parsedFormula.width.label)
+          ) {
+            widthOrdinal = 2;
+          }
+          if (parsedFormula.spans) {
+            let spanIndex = 0;
+            parsedFormula.spans.forEach((span) => {
+              if (span.label && formulaLabels.has(span.label)) {
+                spanOrdinals.set(span.label, 3 + spanIndex++);
+              }
+            });
+          }
+
+          // assign ordinals to dimensions
+          rawDimensions.forEach((d) => {
+            let ordinal = 0; // default for custom dimensions
+
+            if (d.tag && formulaLabels.has(d.tag)) {
+              // this is a formula-derived dimension
+              if (parsedFormula.height?.label === d.tag) {
+                ordinal = heightOrdinal;
+              } else if (parsedFormula.width?.label === d.tag) {
+                ordinal = widthOrdinal;
+              } else {
+                ordinal = spanOrdinals.get(d.tag) || 0;
+              }
+            }
+
+            dimensions.push({ ...d, ordinal } as OrderedPhysicalDimension);
+          });
+        } else {
+          // fallback: if formula can't be parsed, treat all as custom (ordinal 0)
+          rawDimensions.forEach((d) => {
+            dimensions.push({ ...d, ordinal: 0 } as OrderedPhysicalDimension);
+          });
+        }
+      } else {
+        // no dimensions or no formula, treat all as custom
+        rawDimensions.forEach((d) => {
+          dimensions.push({ ...d, ordinal: 0 } as OrderedPhysicalDimension);
+        });
+      }
+
       this.dimensionsCtl.setValue(dimensions, { emitEvent: false });
       this.dimensionsCtl.markAsPristine();
 
@@ -171,140 +257,209 @@ export class CodLayoutFormulaComponent {
       return;
     }
 
-    // sort spans by label including height and width
-    const spans = [
-      {
-        isHorizontal: false,
-        label: formula.height.label || 'height',
-        value: formula.height.value || 0,
-      },
-      {
-        isHorizontal: true,
-        label: formula.width.label || 'width',
-        value: formula.width.value || 0,
-      },
-      ...formula.spans,
-    ];
-    spans.sort((a, b) => {
-      return (a.label || '').localeCompare(b.label || '');
+    // collect all formula-derived labels
+    const formulaLabels = new Set<string>();
+    if (formula.height.label) formulaLabels.add(formula.height.label);
+    if (formula.width.label) formulaLabels.add(formula.width.label);
+    formula.spans.forEach((span) => {
+      if (span.label) formulaLabels.add(span.label);
     });
 
-    // add each span as a dimension replacing those with the same label
-    const dimensions = [...(this.dimensionsCtl.value || [])];
-
-    // remove all the dimensions whose tag is any of the formula's labels
-    const allDimensionTags = dimensions.map((d) => d.tag!);
-    const formulaLabels = new Set(
-      this._formulaService.filterFormulaLabels(formula, allDimensionTags)
-    );
-
-    // remove dimensions that are formula-derived
-    const filteredDimensions = dimensions.filter(
+    // start with existing dimensions, keeping only non-formula ones
+    const existingDimensions = [...(this.dimensionsCtl.value || [])];
+    const nonFormulaDimensions = existingDimensions.filter(
       (d) => !formulaLabels.has(d.tag!)
     );
 
-    for (const span of spans) {
-      const existingIndex = filteredDimensions.findIndex(
-        (d) => d.tag === span.label
-      );
-      if (existingIndex !== -1) {
-        filteredDimensions[existingIndex] = {
-          tag: span.label || '',
+    // add formula-derived dimensions
+    const newFormulaDimensions: OrderedPhysicalDimension[] = [];
+
+    // add height
+    if (formula.height.label) {
+      newFormulaDimensions.push({
+        tag: formula.height.label,
+        value: formula.height.value || 0,
+        unit: formula.unit || 'mm',
+        ordinal: 1,
+      });
+    }
+
+    // add width
+    if (formula.width.label) {
+      newFormulaDimensions.push({
+        tag: formula.width.label,
+        value: formula.width.value || 0,
+        unit: formula.unit || 'mm',
+        ordinal: 2,
+      });
+    }
+
+    // add spans
+    let i = 0;
+    formula.spans.forEach((span) => {
+      if (span.label) {
+        newFormulaDimensions.push({
+          tag: span.label,
           value: span.value || 0,
           unit: formula.unit || 'mm',
-        };
-      } else {
-        filteredDimensions.push({
-          tag: span.label || '',
-          value: span.value || 0,
-          unit: formula.unit || 'mm',
+          ordinal: 3 + i++,
         });
       }
-    }
-    this.dimensionsCtl.setValue(filteredDimensions, { emitEvent: false });
+    });
+
+    // combine non-formula dimensions with new formula dimensions
+    // formula dimensions maintain their ordinal order, non-formula dimensions have ordinal 0
+    const allDimensions = [...nonFormulaDimensions, ...newFormulaDimensions];
+    // sort by ordinal first (formula dimensions 1,2,3... then non-formula 0), then by tag
+    allDimensions.sort((a, b) => {
+      if (a.ordinal !== b.ordinal) {
+        return a.ordinal - b.ordinal;
+      }
+      return (a.tag || '').localeCompare(b.tag || '');
+    });
+
+    this.dimensionsCtl.setValue(allDimensions, { emitEvent: false });
     this.dimensionsCtl.markAsDirty();
     this.dimensionsCtl.updateValueAndValidity();
   }
 
   public updateFormulaFromDimensions(): void {
     // if there are no dimensions, do nothing
-    if (!this.dimensionsCtl.value.length) {
+    if (!this.dimensionsCtl.value?.length) {
       return;
     }
+
+    // store the original formula for comparison
+    const originalFormula = this.formulaCtl.value;
 
     // parse formula from its string value
-    const parsedFormula = this._formulaService.parseFormula(
-      this.formulaCtl.value
-    );
+    const parsedFormula = this._formulaService.parseFormula(originalFormula);
     if (!parsedFormula) {
+      console.warn('Failed to parse formula:', originalFormula);
       return;
     }
 
-    // get formula-related labels
-    const formulaLabels = new Set(
-      this._formulaService.filterFormulaLabels(
-        parsedFormula,
-        this.dimensionsCtl.value.map((d) => d.tag!)
-      )
+    // only work with formula-derived dimensions (ordinal > 0)
+    const formulaDimensions = this.dimensionsCtl.value.filter(
+      (d) => d.ordinal > 0
     );
+    if (formulaDimensions.length === 0) {
+      console.log('No formula-derived dimensions to update');
+      return;
+    }
 
-    // update formula's height, width, and spans where any dimension
-    // has a label matching the formula's labels
-    const dimensions = this.dimensionsCtl.value || [];
-    for (const dimension of dimensions.filter((d) =>
-      formulaLabels.has(d.tag!)
-    )) {
-      // height and width are special cases
-      if (dimension.tag === 'height') {
-        parsedFormula.height = {
-          label: dimension.tag || 'height',
-          value: dimension.value || 0,
-        };
-      } else if (dimension.tag === 'width') {
-        parsedFormula.width = {
-          label: dimension.tag || 'width',
-          value: dimension.value || 0,
-        };
-      } else {
-        // for other dimensions, update existing span or add new
-        const existingSpan = parsedFormula?.spans.find(
-          (span) => span.label === dimension.tag
+    // sort formula dimensions by ordinal to match original formula structure
+    formulaDimensions.sort((a, b) => a.ordinal - b.ordinal);
+
+    let hasChanges = false;
+
+    // update height if it exists (ordinal 1)
+    const heightDim = formulaDimensions.find((d) => d.ordinal === 1);
+    if (parsedFormula.height?.label && heightDim) {
+      if (heightDim.value !== parsedFormula.height.value) {
+        parsedFormula.height.value = heightDim.value || 0;
+        hasChanges = true;
+        console.log(
+          `Updated height ${parsedFormula.height.label}: ${heightDim.value}`
         );
-        if (existingSpan) {
-          existingSpan.value = dimension.value || 0;
-        } else {
-          parsedFormula?.spans.push({
-            label: dimension.tag || '',
-            value: dimension.value || 0,
-          });
-        }
       }
     }
 
-    // update the formula control value
-    const value = this._formulaService.buildFormula(parsedFormula);
-    if (value) {
-      this.formulaCtl.setValue(value, { emitEvent: false });
+    // update width if it exists (ordinal 2)
+    const widthDim = formulaDimensions.find((d) => d.ordinal === 2);
+    if (parsedFormula.width?.label && widthDim) {
+      if (widthDim.value !== parsedFormula.width.value) {
+        parsedFormula.width.value = widthDim.value || 0;
+        hasChanges = true;
+        console.log(
+          `Updated width ${parsedFormula.width.label}: ${widthDim.value}`
+        );
+      }
+    }
+
+    // update spans using ordinal-based mapping (ordinal 3+)
+    if (parsedFormula.spans) {
+      const spanDimensions = formulaDimensions.filter((d) => d.ordinal >= 3);
+
+      // create ordinal to dimension map for spans
+      const ordinalToDimension = new Map<number, OrderedPhysicalDimension>();
+      spanDimensions.forEach((dim) => {
+        ordinalToDimension.set(dim.ordinal, dim);
+      });
+
+      parsedFormula.spans = parsedFormula.spans.map((span, index) => {
+        if (span.label) {
+          // find the dimension with the corresponding ordinal (3 + index)
+          const expectedOrdinal = 3 + index;
+          const spanDim = ordinalToDimension.get(expectedOrdinal);
+
+          if (spanDim && spanDim.value !== span.value) {
+            hasChanges = true;
+            console.log(
+              `Updated span ${span.label} (ordinal ${expectedOrdinal}): ${spanDim.value}`
+            );
+            return {
+              ...span, // preserve all span properties
+              value: spanDim.value || 0,
+            };
+          }
+        }
+        return span;
+      });
+    }
+
+    // only rebuild if there are actual changes
+    if (!hasChanges) {
+      console.log(
+        'No changes detected in formula-derived dimensions, skipping formula update'
+      );
+      return;
+    }
+
+    console.log(
+      'Updated parsed formula:',
+      JSON.stringify(parsedFormula, null, 2)
+    );
+
+    // rebuild and update the formula control value
+    const newFormulaValue = this._formulaService.buildFormula(parsedFormula);
+    console.log('Rebuilt formula:', newFormulaValue);
+
+    if (newFormulaValue && newFormulaValue !== originalFormula) {
+      // validate the new formula before applying it
+      const reParseTest = this._formulaService.parseFormula(newFormulaValue);
+      if (!reParseTest) {
+        console.error('Rebuilt formula failed to parse, reverting');
+        return;
+      }
+
+      this.formulaCtl.setValue(newFormulaValue, { emitEvent: false });
       this.formulaCtl.markAsDirty();
       this.formulaCtl.updateValueAndValidity();
+      console.log('Formula updated successfully');
+    } else if (!newFormulaValue) {
+      console.error('Failed to rebuild formula from parsed structure');
     }
   }
 
   public addDimension(): void {
-    const entry: PhysicalDimension = {
+    const entry: OrderedPhysicalDimension = {
       tag: '',
       value: 0,
       unit: 'mm',
+      ordinal: 0,
     };
     this.editDimension(entry, -1);
   }
 
-  public editDimension(entry: PhysicalDimension, index: number): void {
+  public editDimension(entry: OrderedPhysicalDimension, index: number): void {
+    this._editedOrdinal = entry.ordinal;
     this.editedIndex = index;
     this.edited = entry;
   }
 
   public closeDimension(): void {
+    this._editedOrdinal = 0;
     this.editedIndex = -1;
     this.edited = undefined;
   }
@@ -312,9 +467,12 @@ export class CodLayoutFormulaComponent {
   public saveDimension(dimension: PhysicalDimension): void {
     const entries = [...this.dimensionsCtl.value];
     if (this.editedIndex === -1) {
-      entries.push(dimension);
+      entries.push({ ...dimension, ordinal: this._editedOrdinal });
     } else {
-      entries.splice(this.editedIndex, 1, dimension);
+      entries.splice(this.editedIndex, 1, {
+        ...dimension,
+        ordinal: this._editedOrdinal,
+      });
     }
     this.dimensionsCtl.setValue(entries);
     this.dimensionsCtl.markAsDirty();
@@ -347,6 +505,7 @@ export class CodLayoutFormulaComponent {
     if (index < 1) {
       return;
     }
+    this.closeDimension();
     const dimension = this.dimensionsCtl.value[index];
     const dimensions = [...this.dimensionsCtl.value];
     dimensions.splice(index, 1);
@@ -362,6 +521,7 @@ export class CodLayoutFormulaComponent {
     if (index + 1 >= this.dimensionsCtl.value.length) {
       return;
     }
+    this.closeDimension();
     const dimension = this.dimensionsCtl.value[index];
     const dimensions = [...this.dimensionsCtl.value];
     dimensions.splice(index, 1);
