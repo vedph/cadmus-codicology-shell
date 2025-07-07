@@ -445,9 +445,15 @@ export class CodLayoutFormulaComponent {
         return;
       }
 
+      // set the value without emitting events initially to avoid recursive updates
       this.formulaCtl.setValue(newFormulaValue, { emitEvent: false });
       this.formulaCtl.markAsDirty();
+      this.formulaCtl.markAsTouched(); // ensure validation errors show
       this.formulaCtl.updateValueAndValidity();
+
+      // force validation state update by triggering value change detection
+      this.formulaCtl.setValue(newFormulaValue, { emitEvent: true });
+
       console.log('Formula updated successfully');
     } else if (!newFormulaValue) {
       console.error('Failed to rebuild formula from parsed structure');
