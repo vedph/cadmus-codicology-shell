@@ -11,16 +11,18 @@ This component is used to enter a [codicological layout formula](https://github.
 - the codicological formula (`string`).
 - a set of physical dimensions (`PhysicalDimension[]`).
 
+To enter the formula, just type or paste it in its textbox. Whenever you update the formula (also when editing dimensions), validation occurs. Apart from syntax, which is specific to each formula, validation also checks that the sum of the vertical spans is equal to the sheet height, and that the sum of the horizontal spans is equal to the sheet width.
+
 Once you have entered a formula, you can extract dimensions from it by clicking the import dimensions button. In this case, all the existing dimensions with the same name are overwritten with values from the formula, while new dimensions are added. All the dimensions extracted from a formula also have an ordinal number, which reflects their order of appearance in the formula syntax. Height and width always have ordinal 1 and 2 respectively.
 
 You can edit dimensions as follows:
 
-- rearrange extracted dimensions by editing their ordinals via the pen button next to the ordinal number. Using the arrows to move them up or down in the list also implies updating their ordinals.
 - edit any dimension, either extracted or not. You can change the value and also the tag, which implies creating a new dimension (or replacing one which already existed).
-- add new dimensions on your own, independently from the formula. These dimensions have no ordinal (or an ordinal equal to 0).
+- rearrange extracted dimensions by editing their ordinals via the pen button next to the ordinal number. Using the arrows to move them up or down in the list also implies updating their ordinals.
+- add new dimensions on your own, independently from the formula. These dimensions have no ordinal (or an ordinal equal to 0). Should you want to manually add a formula-related dimension (for instance to update the formula from dimensions later), just add a new dimension, name it accordingly, and then set its ordinal so that it is positioned exactly where the formula expects it.
 
->Note that you are not allowed to change a dimension's unit, because this is a parameter defined globally for the whole formula.
+>Note that when editing dimensions you are not allowed to change the dimension's unit (mm), because this is a parameter defined globally for the whole formula.
 
 Whenever you edit a dimension extracted from a formula (whose ordinal is greater than 0), the formula is updated.
 
-Whenever you update the formula, either by typing or by editing dimensions, validation occurs. Apart from syntax, which is specific to each formula, validation also checks that the sum of the vertical spans is equal to the sheet height, and that the sum of the horizontal spans is equal to the sheet width.
+The test page in the shell app allows you to use this component in a mock environment, where you edit the formula with its dimensions, and then get the corresponding data displayed in JSON format.
