@@ -1,4 +1,4 @@
-import { Component, effect, model, output } from '@angular/core';
+import { Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -37,6 +37,7 @@ import {
   CodOrdinalEditorComponent,
   CodOrdinalValue,
 } from '../cod-ordinal-editor/cod-ordinal-editor.component';
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 /**
  * Codicological layout formula with dimensions.
@@ -85,15 +86,6 @@ export class CodLayoutFormulaComponent {
     new ITCodLayoutFormulaService();
   private _updatingForm = false;
   private _editedOrdinal = 0;
-
-  // the currently edited dimension
-  public editedIndex = -1;
-  public edited?: OrderedPhysicalDimension;
-
-  // the currently edited ordinal value
-  public editedOrdinalIndex = -1;
-  public editedOrdinalValue?: CodOrdinalValue;
-
   /**
    * Custom validator for formula validation using the formula service.
    */
@@ -115,11 +107,35 @@ export class CodLayoutFormulaComponent {
     return null;
   };
 
+  // the currently edited dimension
+  public editedIndex = -1;
+  public edited?: OrderedPhysicalDimension;
+
+  // the currently edited ordinal value
+  public editedOrdinalIndex = -1;
+  public editedOrdinalValue?: CodOrdinalValue;
+
   /**
    * The data to edit.
    */
   public readonly data = model<CodLayoutFormulaWithDimensions>();
 
+  /**
+   * Thesaurus entries for physical-size-units.
+   */
+  public readonly unitEntries = input<ThesaurusEntry[]>([
+    { id: 'mm', value: 'mm' },
+    { id: 'cm', value: 'cm' },
+  ]);
+
+  /**
+   * Thesaurus entries for physical-size-dim-tags.
+   */
+  public readonly tagEntries = input<ThesaurusEntry[]>();
+
+  /**
+   * An output to signal that the user has requested to cancel the edit.
+   */
   public readonly cancelEdit = output();
 
   public formulaCtl: FormControl<string>;

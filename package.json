@@ -46,7 +46,7 @@
     "@myrmidon/cadmus-item-editor": "^14.0.0",
     "@myrmidon/cadmus-item-list": "^14.0.0",
     "@myrmidon/cadmus-item-search": "^14.0.0",
-    "@myrmidon/cadmus-mat-physical-size": "^9.0.7",
+    "@myrmidon/cadmus-mat-physical-size": "^9.0.8",
     "@myrmidon/cadmus-mat-physical-state": "^9.0.0",
     "@myrmidon/cadmus-part-general-pg": "^14.0.0",
     "@myrmidon/cadmus-part-general-ui": "^13.0.0",

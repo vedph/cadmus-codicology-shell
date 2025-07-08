@@ -6,6 +6,22 @@ This library contains generic UI components for codicology libraries.
 
 ## CodLayoutFormulaComponent
 
+- 🔑 `CodLayoutFormulaComponent`
+- 🚩 `cadmus-cod-layout-formula`
+- ▶️ input:
+  - `data` (`CodLayoutFormulaWithDimensions`)
+  - `unitEntries` (`ThesaurusEntry[] | undefined`) for 📚 `physical-size-units`. Defaults to `mm` and `cm` if not specified.
+  - `tagEntries` (`ThesaurusEntry[] | undefined`) for 📚 `physical-size-dim-tags`.
+- 🔥 output:
+  - `dataChange` (`CodLayoutFormulaWithDimensions`)
+  - `cancelEdit`
+
+Data is of type `CodLayoutFormulaWithDimensions`, coupling a formula with its dimensions:
+
+- prefix (`IT` or `BO`)
+- formula (`string`)
+- dimensions (`PhysicalDimension[]`)
+
 This component is used to enter a [codicological layout formula](https://github.com/vedph/cod-layout-view) of any supported type and possibly extract from it a set of dimensions (width, height, left margin, etc.). Thus, it deals with two data:
 
 - the codicological formula (`string`).

@@ -161,6 +161,8 @@ graph LR;
 
 ## History
 
+- 2025-07-08: disable unit in layout formula dimension editor.
+
 ### 13.0.7
 
 - 2025-07-07: updated packages.

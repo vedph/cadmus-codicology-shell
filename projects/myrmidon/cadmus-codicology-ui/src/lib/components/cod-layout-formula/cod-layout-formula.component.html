@@ -149,7 +149,9 @@
           </mat-expansion-panel-header>
           <cadmus-physical-dimension
             [dimension]="edited"
-            [staticUnit]="true"
+            [unitEntries]="unitEntries()"
+            [tagEntries]="tagEntries()"
+            [unitDisabled]="true"
             (dimensionChange)="saveDimension($event!)"
             (cancelEdit)="closeDimension()"
           />
