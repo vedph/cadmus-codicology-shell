@@ -195,9 +195,9 @@ export class CodLayoutFormulaComponent {
 
       if (rawDimensions.length > 0 && formula) {
         // parse the current formula to determine which dimensions are formula-derived
-        let parsedFormula: CodLayoutFormula | null = null;
+        let parsedFormula: CodLayoutFormula | null | undefined = null;
         try {
-          parsedFormula = this._formulaService.parseFormula(formula);
+          parsedFormula = this._formulaService.parseFormula(formula)?.result;
         } catch (error) {
           console.warn('Error parsing formula:', formula, error);
         }
@@ -286,9 +286,11 @@ export class CodLayoutFormulaComponent {
     }
 
     // parse the formula and get the spans
-    let formula: CodLayoutFormula | null;
+    let formula: CodLayoutFormula | null | undefined;
     try {
-      formula = this._formulaService.parseFormula(this.formulaCtl.value);
+      formula = this._formulaService.parseFormula(
+        this.formulaCtl.value
+      )?.result;
       if (!formula?.width || !formula?.height || !formula?.spans?.length) {
         return;
       }
@@ -373,9 +375,10 @@ export class CodLayoutFormulaComponent {
     const originalFormula = this.formulaCtl.value;
 
     // parse formula from its string value
-    let parsedFormula: CodLayoutFormula | null;
+    let parsedFormula: CodLayoutFormula | null | undefined;
     try {
-      parsedFormula = this._formulaService.parseFormula(originalFormula);
+      parsedFormula =
+        this._formulaService.parseFormula(originalFormula)?.result;
       if (!parsedFormula) {
         console.warn('Failed to parse formula:', originalFormula);
         return;
