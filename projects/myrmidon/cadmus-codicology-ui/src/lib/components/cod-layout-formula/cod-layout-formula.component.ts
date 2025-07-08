@@ -27,6 +27,7 @@ import {
   PhysicalDimensionComponent,
 } from '@myrmidon/cadmus-mat-physical-size';
 import {
+  CodLayoutFormula,
   CodLayoutFormulaService,
   createLayoutFormulaService,
   ITCodLayoutFormulaService,
@@ -194,7 +195,12 @@ export class CodLayoutFormulaComponent {
 
       if (rawDimensions.length > 0 && formula) {
         // parse the current formula to determine which dimensions are formula-derived
-        const parsedFormula = this._formulaService.parseFormula(formula);
+        let parsedFormula: CodLayoutFormula | null = null;
+        try {
+          parsedFormula = this._formulaService.parseFormula(formula);
+        } catch (error) {
+          console.warn('Error parsing formula:', formula, error);
+        }
         if (parsedFormula) {
           // get all dimension tags
           const allDimensionTags = rawDimensions
@@ -280,8 +286,14 @@ export class CodLayoutFormulaComponent {
     }
 
     // parse the formula and get the spans
-    const formula = this._formulaService.parseFormula(this.formulaCtl.value);
-    if (!formula?.width || !formula?.height || !formula?.spans?.length) {
+    let formula: CodLayoutFormula | null;
+    try {
+      formula = this._formulaService.parseFormula(this.formulaCtl.value);
+      if (!formula?.width || !formula?.height || !formula?.spans?.length) {
+        return;
+      }
+    } catch (error) {
+      console.warn('Error parsing formula:', this.formulaCtl.value, error);
       return;
     }
 
@@ -361,9 +373,15 @@ export class CodLayoutFormulaComponent {
     const originalFormula = this.formulaCtl.value;
 
     // parse formula from its string value
-    const parsedFormula = this._formulaService.parseFormula(originalFormula);
-    if (!parsedFormula) {
-      console.warn('Failed to parse formula:', originalFormula);
+    let parsedFormula: CodLayoutFormula | null;
+    try {
+      parsedFormula = this._formulaService.parseFormula(originalFormula);
+      if (!parsedFormula) {
+        console.warn('Failed to parse formula:', originalFormula);
+        return;
+      }
+    } catch (error) {
+      console.warn('Error parsing formula:', originalFormula);
       return;
     }
 
@@ -455,10 +473,14 @@ export class CodLayoutFormulaComponent {
 
     if (newFormulaValue && newFormulaValue !== originalFormula) {
       // validate the new formula before applying it
-      const reParseTest = this._formulaService.parseFormula(newFormulaValue);
-      if (!reParseTest) {
-        console.error('Rebuilt formula failed to parse, reverting');
-        return;
+      try {
+        const reParseTest = this._formulaService.parseFormula(newFormulaValue);
+        if (!reParseTest) {
+          console.error('Rebuilt formula failed to parse, reverting');
+          return;
+        }
+      } catch (error) {
+        console.error('Error validating rebuilt formula:', error);
       }
 
       // set the value without emitting events initially to avoid recursive updates

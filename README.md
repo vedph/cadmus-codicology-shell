@@ -161,7 +161,9 @@ graph LR;
 
 ## History
 
-- 2025-07-08: disable unit in layout formula dimension editor.
+- 2025-07-08:
+  - disable unit in layout formula dimension editor.
+  - wrap `parseFormula` in try block.
 
 ### 13.0.7
 
