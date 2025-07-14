@@ -161,6 +161,12 @@ graph LR;
 
 ## History
 
+- 2025-07-14:
+  - updated Angular.
+  - updated packages and installed NPM packages for them (`force.graph`, `three.js`).
+  - updated all libraries to import `EditedObject` from `@myrmidon/cadmus-core` rather than from `@myrmidon/cadmus-ui`. TODO: library version numbers will be updated once we have completed this session of changes.
+  - add height/width to update measures from formula in layout formula editor.
+
 ### 13.0.8
 
 - 2025-07-08:

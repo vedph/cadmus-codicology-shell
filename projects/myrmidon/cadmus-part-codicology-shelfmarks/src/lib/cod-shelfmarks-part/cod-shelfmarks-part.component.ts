@@ -27,9 +27,12 @@ import { FlatLookupPipe, NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 
-import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
+  ThesauriSet,
+  ThesaurusEntry,
   EditedObject,
+} from '@myrmidon/cadmus-core';
+import {
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
 } from '@myrmidon/cadmus-ui';

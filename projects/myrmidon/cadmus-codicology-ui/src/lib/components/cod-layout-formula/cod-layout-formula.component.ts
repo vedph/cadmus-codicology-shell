@@ -291,7 +291,7 @@ export class CodLayoutFormulaComponent {
       formula = this._formulaService.parseFormula(
         this.formulaCtl.value
       )?.result;
-      if (!formula?.width || !formula?.height || !formula?.spans?.length) {
+      if (!formula?.width || !formula?.height) {
         return;
       }
     } catch (error) {
@@ -301,11 +301,13 @@ export class CodLayoutFormulaComponent {
 
     // collect all formula-derived labels
     const formulaLabels = new Set<string>();
-    if (formula.height.label) formulaLabels.add(formula.height.label);
-    if (formula.width.label) formulaLabels.add(formula.width.label);
-    formula.spans.forEach((span) => {
-      if (span.label) formulaLabels.add(span.label);
-    });
+    formulaLabels.add(formula.height.label || 'height');
+    formulaLabels.add(formula.width.label || 'width');
+    if (formula.spans) {
+      formula.spans.forEach((span) => {
+        if (span.label) formulaLabels.add(span.label);
+      });
+    }
 
     // start with existing dimensions, keeping only non-formula ones
     const existingDimensions = [...(this.dimensionsCtl.value || [])];
@@ -317,37 +319,35 @@ export class CodLayoutFormulaComponent {
     const newFormulaDimensions: OrderedPhysicalDimension[] = [];
 
     // add height
-    if (formula.height.label) {
-      newFormulaDimensions.push({
-        tag: formula.height.label,
-        value: formula.height.value || 0,
-        unit: formula.unit || 'mm',
-        ordinal: 1,
-      });
-    }
+    newFormulaDimensions.push({
+      tag: formula.height.label || 'height',
+      value: formula.height.value || 0,
+      unit: formula.unit || 'mm',
+      ordinal: 1,
+    });
 
     // add width
-    if (formula.width.label) {
-      newFormulaDimensions.push({
-        tag: formula.width.label,
-        value: formula.width.value || 0,
-        unit: formula.unit || 'mm',
-        ordinal: 2,
-      });
-    }
+    newFormulaDimensions.push({
+      tag: formula.width.label || 'width',
+      value: formula.width.value || 0,
+      unit: formula.unit || 'mm',
+      ordinal: 2,
+    });
 
     // add spans
-    let i = 0;
-    formula.spans.forEach((span) => {
-      if (span.label) {
-        newFormulaDimensions.push({
-          tag: span.label,
-          value: span.value || 0,
-          unit: formula.unit || 'mm',
-          ordinal: 3 + i++,
-        });
-      }
-    });
+    if (formula.spans) {
+      let i = 0;
+      formula.spans.forEach((span) => {
+        if (span.label) {
+          newFormulaDimensions.push({
+            tag: span.label,
+            value: span.value || 0,
+            unit: formula.unit || 'mm',
+            ordinal: 3 + i++,
+          });
+        }
+      });
+    }
 
     // combine non-formula dimensions with new formula dimensions
     // formula dimensions maintain their ordinal order, non-formula dimensions have ordinal 0

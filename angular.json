@@ -28,7 +28,12 @@
               }
             ],
             "styles": ["src/styles.scss"],
-            "allowedCommonJsDependencies": ["webcola", "dagre"]
+            "allowedCommonJsDependencies": [
+              "webcola",
+              "dagre",
+              "ngraph.graph",
+              "ngraph.forcelayout"
+            ]
           },
           "configurations": {
             "production": {

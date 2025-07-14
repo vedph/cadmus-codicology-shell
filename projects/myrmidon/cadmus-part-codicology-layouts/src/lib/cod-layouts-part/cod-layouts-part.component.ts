@@ -31,9 +31,12 @@ import {
   CodLocationRangePipe,
 } from '@myrmidon/cadmus-cod-location';
 
-import { ThesauriSet, ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
-  EditedObject,
+  ThesauriSet,
+  ThesaurusEntry,
+  EditedObject
+} from '@myrmidon/cadmus-core';
+import {
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
 } from '@myrmidon/cadmus-ui';
