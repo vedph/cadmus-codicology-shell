@@ -51,8 +51,7 @@ import { CodLayoutEditorComponent } from '../cod-layout-editor/cod-layout-editor
 /**
  * CodLayoutsPart editor component.
  * Thesauri: cod-layout-tags, cod-layout-ruling-techniques, cod-layout-derolez,
- * cod-layout-prickings, decorated-count-ids, decorated-count-tags,
- * physical-size-dim-tags, physical-size-units.
+ * cod-layout-prickings, decorated-count-ids, decorated-count-tags.
  */
 @Component({
   selector: 'cadmus-cod-layouts-part',
@@ -99,10 +98,6 @@ export class CodLayoutsPartComponent
   public cntIdEntries: ThesaurusEntry[] | undefined;
   // decorated-count-tags
   public cntTagEntries: ThesaurusEntry[] | undefined;
-  // physical-size-dim-tags
-  public szDimTagEntries: ThesaurusEntry[] | undefined;
-  // physical-size-units
-  public szUnitEntries: ThesaurusEntry[] | undefined;
 
   public entries: FormControl<CodLayout[]>;
 
@@ -166,18 +161,6 @@ export class CodLayoutsPartComponent
       this.cntTagEntries = thesauri[key].entries;
     } else {
       this.cntTagEntries = undefined;
-    }
-    key = 'physical-size-dim-tags';
-    if (this.hasThesaurus(key)) {
-      this.szDimTagEntries = thesauri[key].entries;
-    } else {
-      this.szDimTagEntries = undefined;
-    }
-    key = 'physical-size-units';
-    if (this.hasThesaurus(key)) {
-      this.szUnitEntries = thesauri[key].entries;
-    } else {
-      this.szUnitEntries = undefined;
     }
   }
 

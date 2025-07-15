@@ -6,6 +6,7 @@ import { DecoratedCount } from '@myrmidon/cadmus-refs-decorated-counts';
 export interface CodLayout {
   sample?: CodLocation;
   ranges: CodLocationRange[];
+  formula?: string;
   dimensions?: PhysicalDimension[];
   rulingTechniques?: string[];
   derolez?: string;
@@ -198,6 +199,9 @@ export const COD_LAYOUTS_PART_SCHEMA = {
                     },
                   ],
                 },
+              },
+              formula: {
+                type: 'string',
               },
               dimensions: {
                 type: 'array',
