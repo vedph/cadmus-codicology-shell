@@ -6,8 +6,8 @@ import {
 import { importProvidersFrom } from '@angular/core';
 import {
   provideHttpClient,
+  withFetch,
   withInterceptors,
-  withJsonpSupport,
 } from '@angular/common/http';
 import { provideRouter, withViewTransitions } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -42,10 +42,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withViewTransitions()),
     provideAnimationsAsync(),
-    provideHttpClient(
-      withJsonpSupport(),
-      withInterceptors([authJwtInterceptor])
-    ),
+    provideHttpClient(withFetch(), withInterceptors([authJwtInterceptor])),
     provideNativeDateAdapter(),
     importProvidersFrom(NgeMonacoModule.forRoot({})),
     importProvidersFrom(NgeMarkdownModule),

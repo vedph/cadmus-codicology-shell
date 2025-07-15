@@ -8,10 +8,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import {
-  DocReference,
-  DocReferencesComponent,
-} from '@myrmidon/cadmus-refs-doc-references';
+import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
 
 import { debounceTime, take } from 'rxjs';
 
@@ -34,6 +31,7 @@ import {
   AssertedCompositeIdsComponent,
 } from '@myrmidon/cadmus-refs-asserted-ids';
 import { CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
+import { LookupDocReferencesComponent } from '@myrmidon/cadmus-refs-lookup';
 
 import {
   CodHand,
@@ -68,7 +66,7 @@ import { CodHandSubscriptionComponent } from '../cod-hand-subscription/cod-hand-
     CodHandDescriptionComponent,
     CodHandInstanceComponent,
     CodHandSubscriptionComponent,
-    DocReferencesComponent,
+    LookupDocReferencesComponent,
     FlatLookupPipe,
     CodLocationRangePipe,
   ],

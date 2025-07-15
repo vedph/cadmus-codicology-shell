@@ -42,10 +42,8 @@ import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 import { CodImage, CodImagesComponent } from '@myrmidon/cadmus-codicology-ui';
 
 import { CodDecorationElement } from '../cod-decorations-part';
-import {
-  DocReference,
-  DocReferencesComponent,
-} from '@myrmidon/cadmus-refs-doc-references';
+import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
+import { LookupDocReferencesComponent } from '@myrmidon/cadmus-refs-lookup';
 
 /**
  * List of hidden fields in decoration element component.
@@ -100,7 +98,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     MatButton,
     FlatLookupPipe,
     CodImagesComponent,
-    DocReferencesComponent,
+    LookupDocReferencesComponent,
   ],
 })
 export class CodDecorationElementComponent implements OnInit, OnDestroy {

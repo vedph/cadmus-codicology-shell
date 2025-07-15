@@ -22,10 +22,8 @@ import {
   CodLocationRange,
   CodLocationComponent,
 } from '@myrmidon/cadmus-cod-location';
-import {
-  DocReference,
-  DocReferencesComponent,
-} from '@myrmidon/cadmus-refs-doc-references';
+import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
+import { LookupDocReferencesComponent } from '@myrmidon/cadmus-refs-lookup';
 import {
   HistoricalDateModel,
   HistoricalDateComponent,
@@ -66,7 +64,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     FlagSetComponent,
     MatCheckbox,
     HistoricalDateComponent,
-    DocReferencesComponent,
+    LookupDocReferencesComponent,
     MatIconButton,
     MatTooltip,
     MatIcon,

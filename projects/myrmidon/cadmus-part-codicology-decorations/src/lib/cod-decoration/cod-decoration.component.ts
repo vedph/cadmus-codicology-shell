@@ -26,10 +26,8 @@ import {
   AssertedChronotope,
   AssertedChronotopeSetComponent,
 } from '@myrmidon/cadmus-refs-asserted-chronotope';
-import {
-  DocReference,
-  DocReferencesComponent,
-} from '@myrmidon/cadmus-refs-doc-references';
+import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
+import { LookupDocReferencesComponent } from '@myrmidon/cadmus-refs-lookup';
 import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 import { CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
 
@@ -93,7 +91,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     MatExpansionPanelTitle,
     MatIcon,
     AssertedChronotopeSetComponent,
-    DocReferencesComponent,
+    LookupDocReferencesComponent,
     MatButton,
     MatIconButton,
     MatTooltip,
