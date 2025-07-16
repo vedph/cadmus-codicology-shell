@@ -162,6 +162,7 @@ graph LR;
 ## History
 
 - 2025-07-16:
+  - added mock citation configurations to allow testing doc references.
   - `@myrmidon/cadmus-codicology-ui`:
     - fixed ordinals for height/width in layout formula component.
     - fixed update dimensions from formula.
