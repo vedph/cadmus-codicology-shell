@@ -306,23 +306,12 @@ export class CodLayoutFormulaComponent {
       return;
     }
 
-    // collect all formula-derived labels
-    const formulaLabels = new Set<string>();
-    formulaLabels.add(formula.height.label || 'height');
-    formulaLabels.add(formula.width.label || 'width');
-    if (formula.spans) {
-      formula.spans.forEach((span) => {
-        if (span.label) formulaLabels.add(span.label);
-      });
-    }
-
-    // start with existing dimensions, keeping only non-formula ones
-    const existingDimensions = [...(this.dimensionsCtl.value || [])];
-    const nonFormulaDimensions = existingDimensions.filter(
-      (d) => !formulaLabels.has(d.tag!)
+    // collect non-formula dimensions (those with ordinal 0)
+    const nonFormulaDimensions = this.dimensionsCtl.value.filter(
+      (d) => !d.ordinal
     );
 
-    // add formula-derived dimensions
+    // extract dimensions from formula height, width, and spans
     const newFormulaDimensions: OrderedPhysicalDimension[] = [];
 
     // add height
@@ -359,6 +348,7 @@ export class CodLayoutFormulaComponent {
     // combine non-formula dimensions with new formula dimensions
     // formula dimensions maintain their ordinal order, non-formula dimensions have ordinal 0
     const allDimensions = [...nonFormulaDimensions, ...newFormulaDimensions];
+
     // sort by ordinal first (formula dimensions 1,2,3... then non-formula 0), then by tag
     allDimensions.sort((a, b) => {
       if (a.ordinal !== b.ordinal) {
@@ -367,6 +357,7 @@ export class CodLayoutFormulaComponent {
       return (a.tag || '').localeCompare(b.tag || '');
     });
 
+    // update the dimensions control with the new dimensions
     this.dimensionsCtl.setValue(allDimensions, { emitEvent: false });
     this.dimensionsCtl.markAsDirty();
     this.dimensionsCtl.updateValueAndValidity();
