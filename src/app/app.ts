@@ -11,13 +11,20 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { EnvService } from '@myrmidon/ngx-tools';
+import { EnvService, RamStorageService } from '@myrmidon/ngx-tools';
 import { AuthJwtService, GravatarPipe, User } from '@myrmidon/auth-jwt-login';
 
 import { Thesaurus, ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { AppRepository } from '@myrmidon/cadmus-state';
+import {
+  CIT_SCHEME_SERVICE_SETTINGS_KEY,
+  CitMappedValues,
+  CitSchemeSettings,
+  MapFormatter,
+} from '@myrmidon/cadmus-refs-citation';
 
 import { CodLocationConverterComponent } from '../../projects/myrmidon/cadmus-part-codicology-sheet-labels/src/public-api';
+import { DC_SCHEME, OD_SCHEME } from './cit-schemes';
 
 @Component({
   selector: 'app-root',
@@ -51,11 +58,39 @@ export class App implements OnInit {
     private _authService: AuthJwtService,
     private _repository: AppRepository,
     private _router: Router,
+    storage: RamStorageService, // for citations
     formBuilder: FormBuilder,
     env: EnvService
   ) {
     this.version = env.get('version');
     this.snavToggle = formBuilder.control(false, { nonNullable: true });
+    this.configureCitationService(storage);
+  }
+
+  private configureCitationService(storage: RamStorageService): void {
+    // custom formatters: agl formatter for Odyssey
+    const aglFormatter = new MapFormatter();
+    const aglMap: CitMappedValues = {};
+    for (let n = 0x3b1; n <= 0x3c9; n++) {
+      // skip final sigma
+      if (n === 0x3c2) {
+        continue;
+      }
+      aglMap[String.fromCharCode(n)] = n - 0x3b0;
+    }
+    aglFormatter.configure(aglMap);
+
+    // store settings via service
+    storage.store(CIT_SCHEME_SERVICE_SETTINGS_KEY, {
+      formats: {},
+      schemes: {
+        dc: DC_SCHEME,
+        od: OD_SCHEME,
+      },
+      formatters: {
+        agl: aglFormatter,
+      },
+    } as CitSchemeSettings);
   }
 
   ngOnInit(): void {
