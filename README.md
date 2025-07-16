@@ -161,6 +161,9 @@ graph LR;
 
 ## History
 
+- 2025-07-16:
+  - `@myrmidon/cadmus-codicology-ui`: fixed ordinals for height/width in layout formula component.
+
 ### 13.0.10
 
 - 2025-07-15:

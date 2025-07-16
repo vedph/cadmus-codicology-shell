@@ -49,19 +49,32 @@ export interface CodLayoutFormulaWithDimensions {
   dimensions: PhysicalDimension[];
 }
 
+/**
+ * Ordered physical dimension.
+ * This extends PhysicalDimension with an ordinal property.
+ */
 interface OrderedPhysicalDimension extends PhysicalDimension {
   ordinal: number;
 }
 
 /**
  * A component to edit a layout formula and its dimensions.
- * It uses the `cod-layout-view` component to display the formula.
- * When the user requests to import the formula dimensions,
+ * This uses the `cod-layout-view` web component to display
+ * the formula.
+ * When the user requests to import formula dimensions,
  * it parses the formula and adds the dimensions to the list,
  * replacing those with the same label.
  * Conversely, when the user changes dimensions and requests to
  * update the formula, it generates a new formula from the old one
- * and the dimensions.
+ * and the dimensions. To generate the formula, the component needs
+ * to add the ordinal number to each dimension, so that it can
+ * process them in order. These ordinals are stored in the
+ * OrderedPhysicalDimension interface, which extends
+ * PhysicalDimension with an ordinal property. The ordinal is
+ * an artifact used only within the boundaries of this component
+ * and is not stored in the data model. Those dimensions not
+ * derived from the formula have ordinal 0, and height and width
+ * dimensions have ordinals 1 and 2, respectively.
  */
 @Component({
   selector: 'cadmus-cod-layout-formula',
@@ -144,6 +157,7 @@ export class CodLayoutFormulaComponent {
   public form: FormGroup;
 
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
+    // formula
     this.formulaCtl = formBuilder.control(this.data()?.formula || '', {
       validators: [
         Validators.required,
@@ -152,6 +166,7 @@ export class CodLayoutFormulaComponent {
       ],
       nonNullable: true,
     });
+    // dimensions
     this.dimensionsCtl = formBuilder.control(
       this.data()?.dimensions.map(
         (d, i) => ({ ...d, ordinal: i + 3 } as OrderedPhysicalDimension)
@@ -160,20 +175,23 @@ export class CodLayoutFormulaComponent {
         nonNullable: true,
       }
     );
+    // form
     this.form = formBuilder.group({
       formula: this.formulaCtl,
       dimensions: this.dimensionsCtl,
     });
 
-    // when data changes, update service and controls
+    // when data changes, update service and form
     effect(() => {
       if (this._updatingForm) {
         return;
       }
       this._updatingForm = true;
+
+      // close any open dimension or ordinal editors
       this.closeDimension();
 
-      // update the service
+      // update the formula service
       this._formulaService = createLayoutFormulaService(this.data()?.prefix);
 
       // update the formula control validators to use the new service
@@ -193,6 +211,7 @@ export class CodLayoutFormulaComponent {
       const rawDimensions = this.data()?.dimensions || [];
       const dimensions: OrderedPhysicalDimension[] = [];
 
+      // if there are dimensions and a formula, we need to determine ordinals
       if (rawDimensions.length > 0 && formula) {
         // parse the current formula to determine which dimensions are formula-derived
         let parsedFormula: CodLayoutFormula | null | undefined = null;
@@ -201,8 +220,9 @@ export class CodLayoutFormulaComponent {
         } catch (error) {
           console.warn('Error parsing formula:', formula, error);
         }
+        // only proceed if the formula was parsed successfully
         if (parsedFormula) {
-          // get all dimension tags
+          // get all dimensions tags
           const allDimensionTags = rawDimensions
             .map((d) => d.tag!)
             .filter((tag) => tag);
@@ -214,26 +234,13 @@ export class CodLayoutFormulaComponent {
               allDimensionTags
             )
           );
+          formulaLabels.add('height');
+          formulaLabels.add('width');
 
           // assign ordinals based on formula structure
-          let heightOrdinal = 0;
-          let widthOrdinal = 0;
           const spanOrdinals = new Map<string, number>();
 
-          // determine ordinals for formula-derived dimensions
-          if (
-            parsedFormula.height?.label &&
-            formulaLabels.has(parsedFormula.height.label)
-          ) {
-            heightOrdinal = 1;
-          }
-          if (
-            parsedFormula.width?.label &&
-            formulaLabels.has(parsedFormula.width.label)
-          ) {
-            widthOrdinal = 2;
-          }
-          if (parsedFormula.spans) {
+          if (parsedFormula.spans?.length) {
             let spanIndex = 0;
             parsedFormula.spans.forEach((span) => {
               if (span.label && formulaLabels.has(span.label)) {
@@ -248,10 +255,10 @@ export class CodLayoutFormulaComponent {
 
             if (d.tag && formulaLabels.has(d.tag)) {
               // this is a formula-derived dimension
-              if (parsedFormula.height?.label === d.tag) {
-                ordinal = heightOrdinal;
-              } else if (parsedFormula.width?.label === d.tag) {
-                ordinal = widthOrdinal;
+              if (parsedFormula.height?.label || 'height' === d.tag) {
+                ordinal = 1;
+              } else if (parsedFormula.width?.label || 'width' === d.tag) {
+                ordinal = 2;
               } else {
                 ordinal = spanOrdinals.get(d.tag) || 0;
               }
@@ -701,6 +708,7 @@ export class CodLayoutFormulaComponent {
     }
 
     const data = this.getData();
+    this._updatingForm = true;
     this.data.set(data);
 
     if (pristine) {
