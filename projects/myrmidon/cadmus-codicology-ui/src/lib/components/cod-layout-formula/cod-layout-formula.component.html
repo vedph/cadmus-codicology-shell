@@ -4,9 +4,8 @@
     <mat-form-field class="long-text">
       <mat-label>formula</mat-label>
       <input matInput [formControl]="formulaCtl" />
-      @if (data()?.prefix) {
-      <mat-hint>{{ data()!.prefix }}</mat-hint>
-      } @if ($any(formulaCtl).errors?.required && (formulaCtl.dirty ||
+      <mat-hint>{{ hint() }}</mat-hint>
+      @if ($any(formulaCtl).errors?.required && (formulaCtl.dirty ||
       formulaCtl.touched)) {
       <mat-error>formula required</mat-error>
       } @if ($any(formulaCtl).errors?.maxLength && (formulaCtl.dirty ||

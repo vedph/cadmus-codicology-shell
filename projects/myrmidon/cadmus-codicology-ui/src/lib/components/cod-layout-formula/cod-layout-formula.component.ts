@@ -1,4 +1,4 @@
-import { Component, effect, input, model, output } from '@angular/core';
+import { Component, computed, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -34,11 +34,12 @@ import {
 } from '@myrmidon/cod-layout-view';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+
 import {
   CodOrdinalEditorComponent,
   CodOrdinalValue,
 } from '../cod-ordinal-editor/cod-ordinal-editor.component';
-import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 /**
  * Codicological layout formula with dimensions.
@@ -133,6 +134,13 @@ export class CodLayoutFormulaComponent {
    * The data to edit.
    */
   public readonly data = model<CodLayoutFormulaWithDimensions>();
+
+  /**
+   * The hint for the current formula service.
+   */
+  public readonly hint = computed<string|undefined>(() => {
+    return this._formulaService?.hint;
+  });
 
   /**
    * Thesaurus entries for physical-size-units.
