@@ -162,6 +162,8 @@ graph LR;
 
 ## History
 
+- 2025-07-17: `@myrmidon/cadmus-codicology-ui`: added suffix button to formula control and updated version number.
+
 ### 13.0.11
 
 - 2025-07-17: `@myrmidon/cadmus-part-codicology-contents`: added citation picker to contents part editor.
