@@ -77,7 +77,7 @@
     </mat-form-field>
 
     <!-- location -->
-    <mat-form-field style="width: 6em">
+    <mat-form-field>
       <mat-label>location</mat-label>
       <input matInput [formControl]="location" />
       @if ( $any(location).errors?.maxLength && (location.dirty ||
@@ -85,6 +85,17 @@
       <mat-error>location too long</mat-error>
       }
     </mat-form-field>
+
+    @if (citSchemeService) {
+    <button
+      mat-icon-button
+      type="button"
+      (click)="pickCitation()"
+      matTooltip="Pick a citation"
+    >
+      <mat-icon>sms</mat-icon>
+    </button>
+    }
   </div>
 
   <div class="form-row">

@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-contents",
-  "version": "13.0.0",
+  "version": "13.0.1",
   "description": "Cadmus codicology - contents.",
   "keywords": [
     "Cadmus"
@@ -20,6 +20,7 @@
     "@myrmidon/ngx-mat-tools": "^1.0.0",
     "@myrmidon/cadmus-cod-location": "^9.0.1",
     "@myrmidon/cadmus-refs-asserted-ids": "^10.0.6",
+    "@myrmidon/cadmus-refs-citation": "^1.0.1",
     "@myrmidon/cadmus-ui-flag-set": "^9.0.1",
     "@myrmidon/cadmus-state": "^14.0.0",
     "@myrmidon/cadmus-ui": "^14.0.0",

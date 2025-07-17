@@ -1,4 +1,12 @@
-import { Component, effect, input, model, output } from '@angular/core';
+import {
+  Component,
+  effect,
+  input,
+  model,
+  Optional,
+  output,
+  signal,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -10,6 +18,7 @@ import {
 import { take } from 'rxjs';
 
 // material
+import { MatDialog } from '@angular/material/dialog';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import {
   MatExpansionPanel,
@@ -43,6 +52,7 @@ import {
   CodLocationRangePipe,
 } from '@myrmidon/cadmus-cod-location';
 import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
+import { Citation, CitSchemeService } from '@myrmidon/cadmus-refs-citation';
 
 // cadmus
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
@@ -50,6 +60,7 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 // local
 import { CodContent, CodContentAnnotation } from '../cod-contents-part';
 import { CodContentAnnotationComponent } from '../cod-content-annotation/cod-content-annotation.component';
+import { CitationPickerComponent } from '../citation-picker/citation-picker.component';
 
 function entryToFlag(entry: ThesaurusEntry): Flag {
   return {
@@ -117,7 +128,9 @@ export class CodContentEditorComponent {
   // external-id-scopes
   public readonly idScopeEntries = input<ThesaurusEntry[]>();
 
-  public editorClose = output();
+  public readonly editorClose = output();
+
+  public readonly lastPickedCitation = signal<Citation | undefined>(undefined);
 
   public eid: FormControl<string | null>;
   public workId: FormControl<AssertedCompositeId | null>;
@@ -142,7 +155,13 @@ export class CodContentEditorComponent {
   // flags
   public stateFlags: Flag[] = [];
 
-  constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
+  constructor(
+    formBuilder: FormBuilder,
+    private _dialogService: DialogService,
+    private _dialog: MatDialog,
+    @Optional()
+    public citSchemeService?: CitSchemeService
+  ) {
     this._editedAnnotationIndex = -1;
 
     // form
@@ -217,6 +236,25 @@ export class CodContentEditorComponent {
     this.annotations.setValue(content.annotations || []);
 
     this.form.markAsPristine();
+  }
+
+  public pickCitation(): void {
+    if (!this.citSchemeService) {
+      return;
+    }
+    const dialogRef = this._dialog.open(CitationPickerComponent, {
+      data: {
+        title: 'Pick Citation',
+        payload: this.lastPickedCitation(),
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.lastPickedCitation.set(result);
+        this.location.setValue(this.citSchemeService!.toString(result));
+      }
+    });
   }
 
   private getModel(): CodContent {

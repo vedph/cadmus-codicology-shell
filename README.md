@@ -15,7 +15,7 @@ Per-library documentation:
 
 1. `npm run build-lib`; if you are going to use the libraries, publish them via `publish.bat`;
 2. remember to update version in `env.js`, then `ng build --configuration production`;
-3. `docker build . -t vedph2020/cadmus-codicology-shell:13.0.10 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
+3. `docker build . -t vedph2020/cadmus-codicology-shell:13.0.11 -t vedph2020/cadmus-codicology-shell:latest` (replace with the current version).
 
 ## Shell Architecture
 
@@ -62,6 +62,7 @@ graph LR;
   cadmus-part-codicology-contents --> ngx-tools
   cadmus-part-codicology-contents --> ngx-mat-tools
   cadmus-part-codicology-contents --> cadmus-cod-location
+  cadmus-part-codicology-contents --> cadmus-refs-citation
   cadmus-part-codicology-contents --> cadmus-refs-asserted-ids
   cadmus-part-codicology-contents --> cadmus-ui-flag-set
   cadmus-part-codicology-contents --> cadmus-state
@@ -161,6 +162,9 @@ graph LR;
 
 ## History
 
+### 13.0.11
+
+- 2025-07-17: `@myrmidon/cadmus-part-codicology-contents`: added citation picker to contents part editor.
 - 2025-07-16:
   - added mock citation configurations to allow testing doc references.
   - `@myrmidon/cadmus-codicology-ui`:
