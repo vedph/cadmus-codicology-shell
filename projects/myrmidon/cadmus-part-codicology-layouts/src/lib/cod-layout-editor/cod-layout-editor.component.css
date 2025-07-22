@@ -21,7 +21,7 @@ div#container {
   display: grid;
   grid-template-rows: auto;
   grid-template-columns: 1fr auto;
-  grid-template-areas: "editor figure";
+  grid-template-areas: "editor formula";
   gap: 8px;
   margin-top: 8px;
 }
@@ -31,11 +31,12 @@ div#container {
   border-radius: 6px;
   padding: 6px;
 }
-#figure {
-  grid-area: figure;
+#formula {
+  grid-area: formula;
   border: 1px solid silver;
   border-radius: 6px;
   padding: 6px;
+  min-width: 800px;
 }
 #fig-container {
   display: flex;
@@ -48,6 +49,6 @@ div#container {
     grid-template-columns: 1fr;
     grid-template-areas:
       "editor"
-      "figure";
+      "formula";
   }
 }

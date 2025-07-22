@@ -252,7 +252,15 @@ export class CodContentEditorComponent {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.lastPickedCitation.set(result);
-        this.location.setValue(this.citSchemeService!.toString(result));
+        const citation = this.citSchemeService!.toString(result);
+
+        // append the new citation to location preceded by ; and space
+        let location = this.location.value?.trim() || '';
+        if (location && !location.endsWith(';')) {
+          location += '; ';
+        }
+        location += citation;
+        this.location.setValue(location);
       }
     });
   }

@@ -162,6 +162,9 @@ graph LR;
 
 ## History
 
+- 2025-07-22:
+  - `@myrmidon/cadmus-codicology-layouts`: wider formula pane.
+  - `@myrmidon/cadmus-codicology-contents`: append citation to location.
 - 2025-07-17: `@myrmidon/cadmus-codicology-ui`: added suffix button to formula control and updated version number.
 
 ### 13.0.11
