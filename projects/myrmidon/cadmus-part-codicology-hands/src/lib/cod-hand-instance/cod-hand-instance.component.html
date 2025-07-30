@@ -107,7 +107,7 @@
   <fieldset>
     <legend>typologies</legend>
     <cadmus-ui-flag-set
-      [flags]="typologyFlags"
+      [flags]="typologyFlags()"
       [checkedIds]="typologies.value"
       (checkedIdsChange)="onTypologyIdsChange($event)"
     />
@@ -117,7 +117,7 @@
   <fieldset>
     <legend>colors</legend>
     <cadmus-ui-flag-set
-      [flags]="colorFlags"
+      [flags]="colorFlags()"
       [checkedIds]="colors.value"
       (checkedIdsChange)="onColorIdsChange($event)"
     />

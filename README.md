@@ -162,6 +162,8 @@ graph LR;
 
 ## History
 
+- 2025-07-30: use computed signals rather than properties for hand instance editor flags (`@myrmidon/cadmus-part-codicology-hands`).
+
 ### 13.0.12
 
 - 2025-07-22:

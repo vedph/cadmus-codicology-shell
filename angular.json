@@ -420,5 +420,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

@@ -1,10 +1,16 @@
-import { Component, effect, input, model, output } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  input,
+  model,
+  output,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
   FormGroup,
   FormsModule,
-  MaxLengthValidator,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -104,8 +110,12 @@ export class CodHandInstanceComponent {
   public form: FormGroup;
 
   // flags
-  public typologyFlags: Flag[] = [];
-  public colorFlags: Flag[] = [];
+  public readonly typologyFlags = computed(
+    () => this.typeEntries()?.map(entryToFlag) || []
+  );
+  public readonly colorFlags = computed(
+    () => this.colorEntries()?.map(entryToFlag) || []
+  );
 
   constructor(formBuilder: FormBuilder) {
     // form
@@ -144,14 +154,6 @@ export class CodHandInstanceComponent {
 
     effect(() => {
       this.updateForm(this.instance());
-    });
-
-    effect(() => {
-      this.typologyFlags = this.typeEntries()?.map(entryToFlag) || [];
-    });
-
-    effect(() => {
-      this.colorFlags = this.colorEntries()?.map(entryToFlag) || [];
     });
   }
 
