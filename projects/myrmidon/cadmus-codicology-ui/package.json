@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-codicology-ui",
-  "version": "13.0.2",
+  "version": "13.0.3",
   "description": "Cadmus codicology - general UI components.",
   "keywords": [
     "Cadmus"
@@ -19,8 +19,8 @@
     "@cisstech/nge": "^18.2.1",
     "@myrmidon/ngx-mat-tools": "^1.0.0",
     "@myrmidon/cod-layout-view": "^2.0.1",
-    "@myrmidon/cadmus-refs-lookup": "^10.0.1",
-    "@myrmidon/cadmus-api": "^14.0.2"
+    "@myrmidon/cadmus-refs-lookup": "^10.0.2",
+    "@myrmidon/cadmus-api": "^14.0.3"
   },
   "dependencies": {
     "tslib": "^2.3.0"

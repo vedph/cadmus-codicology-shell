@@ -162,6 +162,9 @@ graph LR;
 
 ## History
 
+- 2025-08-02:
+  - updated peer dependencies in `@myrmidon/cadmus-part-codicology-ui`, `@myrmidon/cadmus-part-codicology-layouts`.
+
 ### 13.0.13
 
 - 2025-07-30:

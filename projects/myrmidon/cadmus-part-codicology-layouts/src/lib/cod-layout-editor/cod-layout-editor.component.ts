@@ -43,6 +43,7 @@ import {
 import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 
 import { CodLayout } from '../cod-layouts-part';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 function entryToFlag(entry: ThesaurusEntry): Flag {
   return {
@@ -110,7 +111,7 @@ export class CodLayoutEditorComponent {
   public note: FormControl<string | null>;
   public form: FormGroup;
 
-  constructor(formBuilder: FormBuilder) {
+  constructor(formBuilder: FormBuilder, private _snackbar: MatSnackBar) {
     // form
     this.sampleRanges = formBuilder.control([], {
       nonNullable: true,
@@ -182,6 +183,7 @@ export class CodLayoutEditorComponent {
     };
 
     this.formulaWithDimensions.set(cleanedData);
+    this._snackbar.open('Formula updated', 'OK', { duration: 2000 });
   }
 
   private getLayout(): CodLayout {
