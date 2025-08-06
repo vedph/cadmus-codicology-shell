@@ -35,7 +35,7 @@
           @for ( entry of shelfmarks.value; track entry; let i = $index; let
           first = $first; let last = $last) {
           <tr [class.selected]="i === editedIndex">
-            <td>
+            <td class="fit-width">
               <button
                 type="button"
                 mat-icon-button
