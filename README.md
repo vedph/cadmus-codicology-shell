@@ -162,6 +162,7 @@ graph LR;
 
 ## History
 
+- 2025-08-24: updated Angular and packages.
 - 2025-08-06: fit first column to width in shelfmarks part editor (`@myrmidon/cadmus-part-codicology-shelfmarks`).
 - 2025-08-02:
   - updated peer dependencies in `@myrmidon/cadmus-part-codicology-ui`, `@myrmidon/cadmus-part-codicology-layouts`.
