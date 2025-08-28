@@ -162,7 +162,9 @@ graph LR;
 
 ## History
 
-- 2025-08-28: fit width for buttons column in bindings (`@myrmidon/cadmus-part-codicology-bindings`).
+- 2025-08-28:
+  - fit width for buttons column in bindings (`@myrmidon/cadmus-part-codicology-bindings`).
+  - updated Angular.
 - 2025-08-24: updated Angular and packages.
 - 2025-08-06: fit first column to width in shelfmarks part editor (`@myrmidon/cadmus-part-codicology-shelfmarks`).
 - 2025-08-02:
