@@ -115,7 +115,7 @@
   <fieldset>
     <legend>colors</legend>
     <cadmus-ui-flag-set
-      [flags]="colorFlags"
+      [flags]="colorFlags()"
       [checkedIds]="colors.value"
       (checkedIdsChange)="onColorIdsChange($event)"
     />

@@ -129,7 +129,7 @@
                   </mat-form-field>
 
                   <!-- addName -->
-                  @if (adderColumn) {
+                  @if (adderColumn()) {
                   <mat-form-field>
                     <mat-label>name</mat-label>
                     <input matInput [formControl]="addName" />
@@ -144,7 +144,7 @@
                   }
 
                   <!-- addCount (not for covers) -->
-                  @if ( !adderColumn && addType.value !== 'row-0' &&
+                  @if ( !adderColumn() && addType.value !== 'row-0' &&
                   addType.value !== 'row-4' ) {
                   <mat-form-field style="width: 6em">
                     <mat-label>count</mat-label>
@@ -191,36 +191,36 @@
           <!-- definition -->
           <mat-expansion-panel
             class="def-pane"
-            [expanded]="editedDefId"
-            [disabled]="!editedDefId"
+            [expanded]="editedDefId()"
+            [disabled]="!editedDefId()"
           >
             <mat-expansion-panel-header
-              [style.background]="editedDefId?.charAt(0) | cellTypeColor"
-              >column: {{ editedDefId }}</mat-expansion-panel-header
+              [style.background]="editedDefId()?.charAt(0) | cellTypeColor"
+              >column: {{ editedDefId() }}</mat-expansion-panel-header
             >
             <!-- Q -->
-            @if (editedDefId === 'q') {
+            @if (editedDefId() === 'q') {
             <div>
               <h3>quire</h3>
               <cadmus-cod-quire-description
-                [featureEntries]="quireFeatEntries"
-                [description]="quireDsc"
-                [maxQuireNumber]="maxQuireNumber"
+                [featureEntries]="quireFeatEntries()"
+                [description]="quireDsc()"
+                [maxQuireNumber]="maxQuireNumber()"
                 (descriptionChange)="saveQuireDsc($event!)"
                 (descriptionCancel)="onColumnDefClose()"
               />
             </div>
             }
             <!-- N -->
-            @if (editedNDef) {
+            @if (editedNDef()) {
             <div>
               <h3>numbering</h3>
               <cadmus-cod-n-col-definition
-                [clrEntries]="clrEntries"
-                [posEntries]="posnEntries"
-                [sysEntries]="sysnEntries"
-                [techEntries]="techEntries"
-                [definition]="editedNDef"
+                [clrEntries]="clrEntries()"
+                [posEntries]="posnEntries()"
+                [sysEntries]="sysnEntries()"
+                [techEntries]="techEntries()"
+                [definition]="editedNDef()"
                 (definitionChange)="onEditedNDefChange($event!)"
                 (editorClose)="onColumnDefClose()"
               />
@@ -228,12 +228,12 @@
             }
 
             <!-- C -->
-            @if (editedCDef) {
+            @if (editedCDef()) {
             <div>
               <h3>catchword</h3>
               <cadmus-cod-c-col-definition
-                [posEntries]="poscEntries"
-                [definition]="editedCDef"
+                [posEntries]="poscEntries()"
+                [definition]="editedCDef()"
                 (definitionChange)="onEditedCDefChange($event!)"
                 (editorClose)="onColumnDefClose()"
               />
@@ -241,13 +241,13 @@
             }
 
             <!-- S -->
-            @if (editedSDef) {
+            @if (editedSDef()) {
             <div>
               <h3>signature</h3>
               <cadmus-cod-s-col-definition
-                [posEntries]="possEntries"
-                [sysEntries]="syssEntries"
-                [definition]="editedSDef"
+                [posEntries]="possEntries()"
+                [sysEntries]="syssEntries()"
+                [definition]="editedSDef()"
                 (definitionChange)="onEditedSDefChange($event!)"
                 (editorClose)="onColumnDefClose()"
               />
@@ -255,12 +255,12 @@
             }
 
             <!-- R -->
-            @if (editedRDef) {
+            @if (editedRDef()) {
             <div>
               <h3>register signature</h3>
               <cadmus-cod-r-col-definition
-                [posEntries]="possEntries"
-                [definition]="editedRDef"
+                [posEntries]="possEntries()"
+                [definition]="editedRDef()"
                 (definitionChange)="onEditedRDefChange($event!)"
                 (editorClose)="onColumnDefClose()"
               />
@@ -331,7 +331,7 @@
               @for ( endleaf of endleaves.value; track endleaf; let i = $index;
               let first = $first; let last = $last) {
               <tr>
-                <td>
+                <td class="fit-width">
                   <button
                     type="button"
                     mat-icon-button
@@ -378,7 +378,7 @@
                 <td>{{ endleaf.location }}</td>
                 <td>
                   {{
-                    endleaf.material | flatLookup : matEntries : "id" : "value"
+                    endleaf.material | flatLookup : matEntries() : "id" : "value"
                   }}
                 </td>
               </tr>
@@ -388,19 +388,19 @@
           }
 
           <mat-expansion-panel
-            [expanded]="editedEndleaf"
-            [disabled]="!editedEndleaf"
+            [expanded]="editedEndleaf()"
+            [disabled]="!editedEndleaf()"
           >
             <mat-expansion-panel-header>endleaf</mat-expansion-panel-header>
             <fieldset>
               <cadmus-cod-endleaf
-                [matEntries]="matEntries"
-                [ctTagEntries]="ctTagEntries"
-                [assTagEntries]="assTagEntries"
-                [refTagEntries]="refTagEntries"
-                [refTypeEntries]="refTypeEntries"
-                [locations]="endleafRowIds"
-                [endleaf]="editedEndleaf"
+                [matEntries]="matEntries()"
+                [ctTagEntries]="ctTagEntries()"
+                [assTagEntries]="assTagEntries()"
+                [refTagEntries]="refTagEntries()"
+                [refTypeEntries]="refTypeEntries()"
+                [locations]="endleafRowIds()"
+                [endleaf]="editedEndleaf()"
                 (endleafChange)="onEndleafSave($event!)"
                 (editorClose)="editEndleaf(null)"
               />

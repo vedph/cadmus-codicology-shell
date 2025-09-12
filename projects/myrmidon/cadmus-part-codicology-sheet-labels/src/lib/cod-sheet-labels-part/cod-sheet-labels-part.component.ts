@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -147,19 +147,20 @@ export class CodSheetLabelsPartComponent
   private _editedSDefIndex;
   private _editedRDefIndex;
 
-  public quireDsc?: CodQuireDescription;
-  public maxQuireNumber: number = 0;
-  public editedNDef?: CodNColDefinition;
-  public editedCDef?: CodCColDefinition;
-  public editedSDef?: CodSColDefinition;
-  public editedRDef?: CodRColDefinition;
-  public editedDefId?: string;
-  public editedEndleaf: CodEndleaf | undefined;
+  public readonly quireDsc = signal<CodQuireDescription | undefined>(undefined);
+  public readonly maxQuireNumber = signal<number>(0);
+  public readonly editedNDef = signal<CodNColDefinition | undefined>(undefined);
+  public readonly editedCDef = signal<CodCColDefinition | undefined>(undefined);
+  public readonly editedSDef = signal<CodSColDefinition | undefined>(undefined);
+  public readonly editedRDef = signal<CodRColDefinition | undefined>(undefined);
+  public readonly editedDefId = signal<string | undefined>(undefined);
+  public readonly editedEndleaf = signal<CodEndleaf | undefined>(undefined);
 
   public columns$: Observable<string[]>;
   public rows$: Observable<CodRowViewModel[]>;
-  public endleafRowIds: string[];
-  public qPresent: boolean;
+
+  public readonly endleafRowIds = signal<string[]>([]);
+  public readonly qPresent = signal<boolean>(false);
 
   public opColumn: FormControl<string | null>;
   public opAction: FormControl<string | null>;
@@ -169,7 +170,8 @@ export class CodSheetLabelsPartComponent
   public addName: FormControl<string | null>;
   public addCount: FormControl<number>;
   public addForm: FormGroup;
-  public adderColumn: boolean;
+
+  public readonly adderColumn = signal<boolean>(false);
 
   public nDefs: FormControl<CodNColDefinition[]>;
   public cDefs: FormControl<CodCColDefinition[]>;
@@ -181,60 +183,98 @@ export class CodSheetLabelsPartComponent
 
   // C-COL
   // cod-catchwords-positions
-  public poscEntries?: ThesaurusEntry[];
+  public readonly poscEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // N-COL
   // cod-numbering-systems
-  public sysnEntries?: ThesaurusEntry[];
+  public readonly sysnEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-numbering-techniques
-  public techEntries?: ThesaurusEntry[];
+  public readonly techEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-numbering-positions
-  public posnEntries?: ThesaurusEntry[];
+  public readonly posnEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-numbering-colors
-  public clrEntries?: ThesaurusEntry[];
+  public readonly clrEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // R/S-COL
   // cod-quire-features
-  public quireFeatEntries?: ThesaurusEntry[];
+  public readonly quireFeatEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined
+  );
   // cod-quiresig-systems
-  public syssEntries?: ThesaurusEntry[];
+  public readonly syssEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-quiresig-positions
-  public possEntries?: ThesaurusEntry[];
+  public readonly possEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // ENDLEAF
   // cod-endleaf-materials
-  public matEntries?: ThesaurusEntry[];
+  public readonly matEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // chronotope-tags
-  public ctTagEntries?: ThesaurusEntry[];
+  public readonly ctTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined
+  );
   // assertion-tags
-  public assTagEntries?: ThesaurusEntry[];
+  public readonly assTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined
+  );
   // doc-reference-types
-  public refTypeEntries?: ThesaurusEntry[];
+  public readonly refTypeEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined
+  );
   // doc-reference-tags
-  public refTagEntries?: ThesaurusEntry[];
+  public readonly refTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined
+  );
   // LINKS
   // asserted-id-scopes
-  public assIdScopeEntries?: ThesaurusEntry[];
+  public readonly assIdScopeEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined
+  );
   // asserted-id-tags
-  public assIdTagEntries?: ThesaurusEntry[];
+  public readonly assIdTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined
+  );
   // external-id-tags
-  public idTagEntries?: ThesaurusEntry[];
+  public readonly idTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined
+  );
   // external-id-scopes
-  public idScopeEntries?: ThesaurusEntry[];
+  public readonly idScopeEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined
+  );
   // cod-labels-col-q-features
-  public qFeatureEntries?: ThesaurusEntry[];
+  public readonly qFeatureEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined
+  );
   // cod-labels-col-n-features
-  public nFeatureEntries?: ThesaurusEntry[];
+  public readonly nFeatureEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined
+  );
   // cod-labels-col-c-features
-  public cFeatureEntries?: ThesaurusEntry[];
+  public readonly cFeatureEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined
+  );
   // cod-labels-col-s-features
-  public sFeatureEntries?: ThesaurusEntry[];
+  public readonly sFeatureEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined
+  );
   // cod-labels-col-r-features
-  public rFeatureEntries?: ThesaurusEntry[];
+  public readonly rFeatureEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined
+  );
 
   // flags
-  public qFeatureFlags?: Flag[];
-  public nFeatureFlags?: Flag[];
-  public cFeatureFlags?: Flag[];
-  public sFeatureFlags?: Flag[];
-  public rFeatureFlags?: Flag[];
+  public readonly qFeatureFlags = computed<Flag[]>(() => {
+    return this.qFeatureEntries()?.map(entryToFlag) ?? [];
+  });
+  public readonly nFeatureFlags = computed<Flag[]>(() => {
+    return this.nFeatureEntries()?.map(entryToFlag) ?? [];
+  });
+  public readonly cFeatureFlags = computed<Flag[]>(() => {
+    return this.cFeatureEntries()?.map(entryToFlag) ?? [];
+  });
+  public readonly sFeatureFlags = computed<Flag[]>(() => {
+    return this.sFeatureEntries()?.map(entryToFlag) ?? [];
+  });
+  public readonly rFeatureFlags = computed<Flag[]>(() => {
+    return this.rFeatureEntries()?.map(entryToFlag) ?? [];
+  });
 
   constructor(
     authService: AuthJwtService,
@@ -247,9 +287,6 @@ export class CodSheetLabelsPartComponent
 
     this.columns$ = this._table.columnIds$;
     this.rows$ = this._table.rows$;
-    this.endleafRowIds = [];
-    this.adderColumn = false;
-    this.qPresent = false;
 
     this._editedNDefIndex = -1;
     this._editedCDefIndex = -1;
@@ -293,16 +330,16 @@ export class CodSheetLabelsPartComponent
     super.ngOnInit();
 
     this.rows$.subscribe((rows) => {
-      this.endleafRowIds = [
+      this.endleafRowIds.set([
         ...new Set(
           rows
             .filter((r) => r.id.startsWith('('))
             .map((r) => r.id.replace(/[rv]\)/, ')'))
         ),
-      ];
+      ]);
     });
     this.addType.valueChanges.subscribe((v) => {
-      this.adderColumn = v && (v as string).startsWith('col') ? true : false;
+      this.adderColumn.set(v && (v as string).startsWith('col') ? true : false);
     });
     this.autoAppend.valueChanges.subscribe((v) => {
       this._table.overflowDropping = v ? false : true;
@@ -322,155 +359,145 @@ export class CodSheetLabelsPartComponent
   private updateThesauri(thesauri: ThesauriSet): void {
     let key = 'cod-catchwords-positions';
     if (this.hasThesaurus(key)) {
-      this.poscEntries = thesauri[key].entries;
+      this.poscEntries.set(thesauri[key].entries);
     } else {
-      this.poscEntries = undefined;
+      this.poscEntries.set(undefined);
     }
     key = 'cod-numbering-systems';
     if (this.hasThesaurus(key)) {
-      this.sysnEntries = thesauri[key].entries;
+      this.sysnEntries.set(thesauri[key].entries);
     } else {
-      this.sysnEntries = undefined;
+      this.sysnEntries.set(undefined);
     }
     key = 'cod-numbering-techniques';
     if (this.hasThesaurus(key)) {
-      this.techEntries = thesauri[key].entries;
+      this.techEntries.set(thesauri[key].entries);
     } else {
-      this.techEntries = undefined;
+      this.techEntries.set(undefined);
     }
     key = 'cod-numbering-positions';
     if (this.hasThesaurus(key)) {
-      this.posnEntries = thesauri[key].entries;
+      this.posnEntries.set(thesauri[key].entries);
     } else {
-      this.posnEntries = undefined;
+      this.posnEntries.set(undefined);
     }
     key = 'cod-numbering-colors';
     if (this.hasThesaurus(key)) {
-      this.clrEntries = thesauri[key].entries;
+      this.clrEntries.set(thesauri[key].entries);
     } else {
-      this.clrEntries = undefined;
+      this.clrEntries.set(undefined);
     }
     key = 'cod-quire-features';
     if (this.hasThesaurus(key)) {
-      this.quireFeatEntries = thesauri[key].entries;
+      this.quireFeatEntries.set(thesauri[key].entries);
     } else {
-      this.quireFeatEntries = undefined;
+      this.quireFeatEntries.set(undefined);
     }
     key = 'cod-quiresig-systems';
     if (this.hasThesaurus(key)) {
-      this.syssEntries = thesauri[key].entries;
+      this.syssEntries.set(thesauri[key].entries);
     } else {
-      this.syssEntries = undefined;
+      this.syssEntries.set(undefined);
     }
     key = 'cod-quiresig-positions';
     if (this.hasThesaurus(key)) {
-      this.possEntries = thesauri[key].entries;
+      this.possEntries.set(thesauri[key].entries);
     } else {
-      this.possEntries = undefined;
+      this.possEntries.set(undefined);
     }
     key = 'cod-endleaf-materials';
     if (this.hasThesaurus(key)) {
-      this.matEntries = thesauri[key].entries;
+      this.matEntries.set(thesauri[key].entries);
     } else {
-      this.matEntries = undefined;
+      this.matEntries.set(undefined);
     }
     key = 'chronotope-tags';
     if (this.hasThesaurus(key)) {
-      this.ctTagEntries = thesauri[key].entries;
+      this.ctTagEntries.set(thesauri[key].entries);
     } else {
-      this.ctTagEntries = undefined;
+      this.ctTagEntries.set(undefined);
     }
     key = 'assertion-tags';
     if (this.hasThesaurus(key)) {
-      this.assTagEntries = thesauri[key].entries;
+      this.assTagEntries.set(thesauri[key].entries);
     } else {
-      this.assTagEntries = undefined;
+      this.assTagEntries.set(undefined);
     }
     key = 'doc-reference-types';
     if (this.hasThesaurus(key)) {
-      this.refTypeEntries = thesauri[key].entries;
+      this.refTypeEntries.set(thesauri[key].entries);
     } else {
-      this.refTypeEntries = undefined;
+      this.refTypeEntries.set(undefined);
     }
     key = 'doc-reference-tags';
     if (this.hasThesaurus(key)) {
-      this.refTagEntries = thesauri[key].entries;
+      this.refTagEntries.set(thesauri[key].entries);
     } else {
-      this.refTagEntries = undefined;
+      this.refTagEntries.set(undefined);
     }
     key = 'asserted-id-scopes';
     if (this.hasThesaurus(key)) {
-      this.assIdScopeEntries = thesauri[key].entries;
+      this.assIdScopeEntries.set(thesauri[key].entries);
     } else {
-      this.assIdScopeEntries = undefined;
+      this.assIdScopeEntries.set(undefined);
     }
     key = 'asserted-id-tags';
     if (this.hasThesaurus(key)) {
-      this.assIdTagEntries = thesauri[key].entries;
+      this.assIdTagEntries.set(thesauri[key].entries);
     } else {
-      this.assIdTagEntries = undefined;
+      this.assIdTagEntries.set(undefined);
     }
     key = 'external-id-tags';
     if (this.hasThesaurus(key)) {
-      this.idTagEntries = thesauri[key].entries;
+      this.idTagEntries.set(thesauri[key].entries);
     } else {
-      this.idTagEntries = undefined;
+      this.idTagEntries.set(undefined);
     }
     key = 'external-id-scopes';
     if (this.hasThesaurus(key)) {
-      this.idScopeEntries = thesauri[key].entries;
+      this.idScopeEntries.set(thesauri[key].entries);
     } else {
-      this.idScopeEntries = undefined;
+      this.idScopeEntries.set(undefined);
     }
     key = 'cod-labels-col-q-features';
     if (this.hasThesaurus(key)) {
-      this.qFeatureEntries = thesauri[key].entries;
-      this.qFeatureFlags = thesauri[key].entries?.map(entryToFlag);
+      this.qFeatureEntries.set(thesauri[key].entries);
     } else {
-      this.qFeatureEntries = undefined;
-      this.qFeatureFlags = undefined;
+      this.qFeatureEntries.set(undefined);
     }
     key = 'cod-labels-col-n-features';
     if (this.hasThesaurus(key)) {
-      this.nFeatureEntries = thesauri[key].entries;
-      this.nFeatureFlags = thesauri[key].entries?.map(entryToFlag);
+      this.nFeatureEntries.set(thesauri[key].entries);
     } else {
-      this.nFeatureEntries = undefined;
-      this.nFeatureFlags = undefined;
+      this.nFeatureEntries.set(undefined);
     }
     key = 'cod-labels-col-c-features';
     if (this.hasThesaurus(key)) {
-      this.cFeatureEntries = thesauri[key].entries;
-      this.cFeatureFlags = thesauri[key].entries?.map(entryToFlag);
+      this.cFeatureEntries.set(thesauri[key].entries);
     } else {
-      this.cFeatureEntries = undefined;
-      this.cFeatureFlags = undefined;
+      this.cFeatureEntries.set(undefined);
     }
     key = 'cod-labels-col-s-features';
     if (this.hasThesaurus(key)) {
-      this.sFeatureEntries = thesauri[key].entries;
-      this.sFeatureFlags = thesauri[key].entries?.map(entryToFlag);
+      this.sFeatureEntries.set(thesauri[key].entries);
     } else {
-      this.sFeatureEntries = undefined;
-      this.sFeatureFlags = undefined;
+      this.sFeatureEntries.set(undefined);
     }
     key = 'cod-labels-col-r-features';
     if (this.hasThesaurus(key)) {
-      this.rFeatureEntries = thesauri[key].entries;
-      this.rFeatureFlags = thesauri[key].entries?.map(entryToFlag);
+      this.rFeatureEntries.set(thesauri[key].entries);
     } else {
-      this.rFeatureEntries = undefined;
-      this.rFeatureFlags = undefined;
+      this.rFeatureEntries.set(undefined);
     }
   }
 
   private isQuireDscEmpty(): boolean {
     return (
-      !this.quireDsc ||
-      (!this.quireDsc.features?.length &&
-        !this.quireDsc.note &&
-        (!this.quireDsc.scopedNotes ||
-          !Object.keys(this.quireDsc.scopedNotes).length))
+      !this.quireDsc() ||
+      (!this.quireDsc()?.features?.length &&
+        !this.quireDsc()?.note &&
+        (!this.quireDsc()?.scopedNotes ||
+          !Object.keys(this.quireDsc()?.scopedNotes || {}).length))
     );
   }
 
@@ -480,7 +507,7 @@ export class CodSheetLabelsPartComponent
       return;
     }
     this._table.setRows(part.rows || []);
-    this.quireDsc = part.quireDescription;
+    this.quireDsc.set(part.quireDescription);
     this.nDefs.setValue(part.nDefinitions || []);
     this.cDefs.setValue(part.cDefinitions || []);
     this.sDefs.setValue(part.sDefinitions || []);
@@ -488,7 +515,7 @@ export class CodSheetLabelsPartComponent
     this.endleaves.setValue(part.endleaves || []);
 
     // other values in UI
-    this.qPresent = this._table.hasColumn('q');
+    this.qPresent.set(this._table.hasColumn('q'));
     if (!this.addType.value) {
       this.addType.setValue('row-2');
     }
@@ -508,16 +535,19 @@ export class CodSheetLabelsPartComponent
 
   private pruneQuireDescription(): CodQuireDescription | undefined {
     const max = this._table.getMaxQuireNumber();
+
     // remove all quire scoped notes with number > max
-    if (this.quireDsc?.scopedNotes) {
-      for (const key of Object.keys(this.quireDsc.scopedNotes)) {
+    const quireDsc = {...this.quireDsc()};
+    if (quireDsc?.scopedNotes) {
+      for (const key of Object.keys(quireDsc.scopedNotes || {})) {
         const n = parseInt(key);
         if (n > max) {
-          delete this.quireDsc.scopedNotes[n];
+          delete quireDsc.scopedNotes![n];
         }
       }
     }
-    return this.quireDsc;
+    this.quireDsc.set(quireDsc);
+    return this.quireDsc();
   }
 
   protected getValue(): CodSheetLabelsPart {
@@ -596,7 +626,7 @@ export class CodSheetLabelsPartComponent
         (this.addName.value ? '.' + this.addName.value : '');
       this._table.addColumn(id);
       if (id.charAt(0) === 'q') {
-        this.qPresent = true;
+        this.qPresent.set(true);
       }
       setTimeout(() => this.opColumn.setValue(id), 200);
     }
@@ -649,15 +679,15 @@ export class CodSheetLabelsPartComponent
     }
     switch (cellId.charAt(0)) {
       case 'q':
-        return this.qFeatureFlags || [];
+        return this.qFeatureFlags() || [];
       case 'n':
-        return this.nFeatureFlags || [];
+        return this.nFeatureFlags() || [];
       case 'c':
-        return this.cFeatureFlags || [];
+        return this.cFeatureFlags() || [];
       case 's':
-        return this.sFeatureFlags || [];
+        return this.sFeatureFlags() || [];
       case 'r':
-        return this.rFeatureFlags || [];
+        return this.rFeatureFlags() || [];
     }
     return [];
   }
@@ -668,18 +698,18 @@ export class CodSheetLabelsPartComponent
   }
 
   private closeAllDefEditors(): void {
-    this.editedDefId = undefined;
+    this.editedDefId.set(undefined);
 
-    this.editedNDef = undefined;
+    this.editedNDef.set(undefined);
     this._editedNDefIndex = -1;
 
-    this.editedCDef = undefined;
+    this.editedCDef.set(undefined);
     this._editedCDefIndex = -1;
 
-    this.editedSDef = undefined;
+    this.editedSDef.set(undefined);
     this._editedSDefIndex = -1;
 
-    this.editedRDef = undefined;
+    this.editedRDef.set(undefined);
     this._editedRDefIndex = -1;
   }
 
@@ -693,8 +723,8 @@ export class CodSheetLabelsPartComponent
     switch (this.opColumn.value.charAt(0)) {
       // quire
       case 'q':
-        this.maxQuireNumber = this._table.getMaxQuireNumber();
-        this.editedDefId = 'q';
+        this.maxQuireNumber.set(this._table.getMaxQuireNumber());
+        this.editedDefId.set('q');
         break;
       // numbering
       case 'n':
@@ -704,15 +734,15 @@ export class CodSheetLabelsPartComponent
           nDef = {
             id: this.opColumn.value,
             rank: 0,
-            system: this.getDefaultEntryId(this.sysnEntries),
-            technique: this.getDefaultEntryId(this.techEntries),
-            position: this.getDefaultEntryId(this.posnEntries),
+            system: this.getDefaultEntryId(this.sysnEntries()),
+            technique: this.getDefaultEntryId(this.techEntries()),
+            position: this.getDefaultEntryId(this.posnEntries()),
           };
         } else {
           this._editedNDefIndex = nDefs.indexOf(nDef);
         }
-        this.editedNDef = nDef;
-        this.editedDefId = nDef.id;
+        this.editedNDef.set(nDef);
+        this.editedDefId.set(nDef.id);
         break;
       // catchword
       case 'c':
@@ -722,13 +752,13 @@ export class CodSheetLabelsPartComponent
           cDef = {
             id: this.opColumn.value,
             rank: 0,
-            position: this.getDefaultEntryId(this.poscEntries),
+            position: this.getDefaultEntryId(this.poscEntries()),
           };
         } else {
           this._editedCDefIndex = cDefs.indexOf(cDef);
         }
-        this.editedCDef = cDef;
-        this.editedDefId = cDef.id;
+        this.editedCDef.set(cDef);
+        this.editedDefId.set(cDef.id);
         break;
       // signature
       case 's':
@@ -738,14 +768,14 @@ export class CodSheetLabelsPartComponent
           sDef = {
             id: this.opColumn.value,
             rank: 0,
-            system: this.getDefaultEntryId(this.syssEntries),
-            position: this.getDefaultEntryId(this.possEntries),
+            system: this.getDefaultEntryId(this.syssEntries()),
+            position: this.getDefaultEntryId(this.possEntries()),
           };
         } else {
           this._editedSDefIndex = sDefs.indexOf(sDef);
         }
-        this.editedSDef = sDef;
-        this.editedDefId = sDef.id;
+        this.editedSDef.set(sDef);
+        this.editedDefId.set(sDef.id);
         break;
       // register signature
       case 'r':
@@ -755,19 +785,19 @@ export class CodSheetLabelsPartComponent
           rDef = {
             id: this.opColumn.value,
             rank: 0,
-            position: this.getDefaultEntryId(this.possEntries),
+            position: this.getDefaultEntryId(this.possEntries()),
           };
         } else {
           this._editedRDefIndex = rDefs.indexOf(rDef);
         }
-        this.editedRDef = rDef;
-        this.editedDefId = rDef.id;
+        this.editedRDef.set(rDef);
+        this.editedDefId.set(rDef.id);
         break;
     }
   }
 
   public saveQuireDsc(quireDsc: CodQuireDescription): void {
-    this.quireDsc = quireDsc;
+    this.quireDsc.set(quireDsc);
     this.onColumnDefClose();
   }
 
@@ -832,17 +862,17 @@ export class CodSheetLabelsPartComponent
   public addEndleaf(): void {
     this.editEndleaf({
       location: '',
-      material: this.matEntries?.length ? this.matEntries[0].id : '',
+      material: this.matEntries()?.length ? this.matEntries()![0].id : '',
     });
   }
 
   public editEndleaf(endleaf: CodEndleaf | null, index = -1): void {
     if (!endleaf) {
       this._editedEndleafIndex = -1;
-      this.editedEndleaf = undefined;
+      this.editedEndleaf.set(undefined);
     } else {
       this._editedEndleafIndex = index;
-      this.editedEndleaf = endleaf;
+      this.editedEndleaf.set(endleaf);
     }
   }
 

@@ -5,6 +5,7 @@ import {
   input,
   model,
   OnDestroy,
+  signal,
   ViewChild,
 } from '@angular/core';
 import {
@@ -67,7 +68,7 @@ export class CodLabelCellComponent implements OnDestroy {
   /**
    * The list of feature flags set for the current cell.
    */
-  public cellFlags: Flag[] = [];
+  public readonly cellFlags = signal<Flag[]>([]);
 
   @ViewChild('valueInput')
   public valueElement?: ElementRef;
@@ -104,9 +105,9 @@ export class CodLabelCellComponent implements OnDestroy {
     this._sub = this.features.valueChanges
       .pipe(distinctUntilChanged(), debounceTime(300))
       .subscribe(() => {
-        this.cellFlags = this.features.value.map(
+        this.cellFlags.set(this.features.value.map(
           (f) => this.featureFlags().find((ff) => ff.id === f)!
-        );
+        ));
       });
   }
 

@@ -3,8 +3,8 @@
   <div mat-dialog-content>
     <fieldset>
       <cadmus-ui-flag-set
-        [flags]="flags"
-        [checkedIds]="checkedIds"
+        [flags]="flags()"
+        [checkedIds]="checkedIds()"
         (checkedIdsChange)="onCheckedIdsChange($event)"
       />
     </fieldset>

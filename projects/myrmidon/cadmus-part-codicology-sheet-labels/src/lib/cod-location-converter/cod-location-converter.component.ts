@@ -1,4 +1,4 @@
-import { Component, effect, input, Input, model, OnInit } from '@angular/core';
+import { Component, effect, input, Input, model, OnInit, signal } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -63,8 +63,8 @@ export class CodLocationConverterComponent implements OnInit {
   private _locFrozen?: boolean;
   private _labFrozen?: boolean;
 
-  public loading?: boolean;
-  public baseFilter?: any;
+  public readonly loading = signal<boolean>(false);
+  public readonly baseFilter = signal<any>(undefined);
 
   public system: FormControl<string | null>;
   public autoCopy: FormControl<boolean>;
@@ -112,9 +112,9 @@ export class CodLocationConverterComponent implements OnInit {
     });
 
     effect(() => {
-      this.baseFilter = this.facetId()
+      this.baseFilter.set(this.facetId()
         ? { facetId: this.facetId() }
-        : undefined;
+        : undefined);
     });
   }
 
@@ -172,7 +172,7 @@ export class CodLocationConverterComponent implements OnInit {
       this.resetForm();
       return;
     }
-    this.loading = true;
+    this.loading.set(true);
     this._itemService
       .getPartFromTypeAndRole(item.id, COD_SHEET_LABELS_PART_TYPEID)
       .pipe(take(1))
@@ -185,10 +185,10 @@ export class CodLocationConverterComponent implements OnInit {
             return;
           }
           this._converter.setRows(p.rows);
-          this.loading = false;
+          this.loading.set(false);
         },
         error: (error) => {
-          this.loading = false;
+          this.loading.set(false);
           console.error(
             'Error loading labels part for item ' + item!.id,
             error

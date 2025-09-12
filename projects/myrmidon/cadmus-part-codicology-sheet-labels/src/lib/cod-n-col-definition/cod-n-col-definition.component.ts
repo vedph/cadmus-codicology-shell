@@ -1,4 +1,11 @@
-import { Component, effect, input, model, output } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  input,
+  model,
+  output,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -107,7 +114,9 @@ export class CodNColDefinitionComponent {
   public form: FormGroup;
 
   // flags
-  public colorFlags: Flag[] = [];
+  public readonly colorFlags = computed<Flag[]>(
+    () => this.clrEntries()?.map(entryToFlag) || []
+  );
 
   constructor(formBuilder: FormBuilder) {
     this.id = '';
@@ -148,11 +157,8 @@ export class CodNColDefinitionComponent {
     });
 
     effect(() => {
-      this.updateForm(this.definition());
-    });
-
-    effect(() => {
-      this.colorFlags = this.clrEntries()?.map(entryToFlag) || [];
+      const definition = this.definition();
+      this.updateForm(definition);
     });
   }
 

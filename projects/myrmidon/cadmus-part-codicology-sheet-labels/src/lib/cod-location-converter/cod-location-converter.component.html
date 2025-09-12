@@ -1,13 +1,13 @@
 @if (user$ | async) {
 <form [formGroup]="form">
-  @if (loading) {
+  @if (loading()) {
   <mat-progress-bar mode="indeterminate" />
   }
   <!-- item -->
   <cadmus-refs-lookup
     [service]="lookupService"
     [item]="item"
-    [baseFilter]="baseFilter"
+    [baseFilter]="baseFilter()"
     label="item"
     (itemChange)="onItemChange($event)"
   />

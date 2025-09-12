@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
@@ -20,8 +20,8 @@ export interface CellFeaturesData {
   styleUrl: './cell-features.component.css',
 })
 export class CellFeaturesComponent {
-  public flags: Flag[] = [];
-  public checkedIds: string[] = [];
+  public readonly flags = signal<Flag[]>([]);
+  public readonly checkedIds = signal<string[]>([]);
 
   constructor(
     public dialogRef: MatDialogRef<CellFeaturesData>,
@@ -29,12 +29,12 @@ export class CellFeaturesComponent {
   ) {}
 
   public ngOnInit(): void {
-    this.flags = this.config?.flags || [];
-    this.checkedIds = this.config?.checkedIds || [];
+    this.flags.set(this.config?.flags || []);
+    this.checkedIds.set(this.config?.checkedIds || []);
   }
 
   public onCheckedIdsChange(ids: string[]): void {
-    this.checkedIds = ids;
+    this.checkedIds.set(ids);
   }
 
   public cancel(): void {
@@ -42,6 +42,6 @@ export class CellFeaturesComponent {
   }
 
   public save(): void {
-    this.dialogRef.close(this.checkedIds);
+    this.dialogRef.close(this.checkedIds());
   }
 }
