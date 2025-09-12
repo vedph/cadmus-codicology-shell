@@ -54,3 +54,6 @@ legend {
 .form-row * {
   flex: 0 0 auto;
 }
+.panel {
+  margin: 4px 0;
+}

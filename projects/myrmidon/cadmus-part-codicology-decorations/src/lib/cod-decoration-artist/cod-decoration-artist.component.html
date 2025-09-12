@@ -142,9 +142,9 @@
         }
       </tbody>
     </table>
-    <mat-expansion-panel [expanded]="editedStyle" [disabled]="!editedStyle">
+    <mat-expansion-panel [expanded]="editedStyle()" [disabled]="!editedStyle()">
       <mat-expansion-panel-header
-        >style {{ editedStyle?.name }}</mat-expansion-panel-header
+        >style {{ editedStyle()?.name }}</mat-expansion-panel-header
       >
       <cadmus-cod-decoration-artist-style
         [ctTagEntries]="ctTagEntries()"

@@ -43,7 +43,7 @@
   </mat-form-field>
 
   <!-- chronotopes -->
-  <mat-expansion-panel>
+  <mat-expansion-panel class="panel">
     <mat-expansion-panel-header>
       <mat-panel-title
         ><mat-icon style="margin-right: 8px; color: #24a524"
@@ -63,7 +63,7 @@
   </mat-expansion-panel>
 
   <!-- references -->
-  <mat-expansion-panel>
+  <mat-expansion-panel class="panel">
     <mat-expansion-panel-header>
       <mat-panel-title
         ><mat-icon style="margin-right: 8px; color: #bb3d6c"
@@ -82,7 +82,7 @@
   </mat-expansion-panel>
 
   <!-- artists -->
-  <mat-expansion-panel>
+  <mat-expansion-panel class="panel">
     <mat-expansion-panel-header>
       <mat-panel-title
         ><mat-icon style="margin-right: 8px; color: #ddcd41">palette</mat-icon>
@@ -158,8 +158,11 @@
         }
       </tbody>
     </table>
-    }
-    <mat-expansion-panel [expanded]="editedArtist()" [disabled]="!editedArtist()">
+    } @if (editedArtist()) {
+    <mat-expansion-panel
+      [expanded]="editedArtist()"
+      [disabled]="!editedArtist()"
+    >
       <mat-expansion-panel-header>
         <mat-panel-title>artist {{ editedArtist()?.name }}</mat-panel-title>
       </mat-expansion-panel-header>
@@ -177,6 +180,7 @@
         (editorClose)="editArtist(null)"
       />
     </mat-expansion-panel>
+    }
   </mat-expansion-panel>
 
   <!-- elements -->
@@ -260,7 +264,10 @@
     }
 
     <!-- ELEMENT -->
-    <mat-expansion-panel [disabled]="!editedElement()" [expanded]="editedElement()">
+    <mat-expansion-panel
+      [disabled]="!editedElement()"
+      [expanded]="editedElement()"
+    >
       <fieldset>
         <legend>element</legend>
         <cadmus-cod-decoration-element
