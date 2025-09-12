@@ -100,8 +100,8 @@
       <tbody>
         @for ( s of styles.value || []; track s; let i = $index; let first =
         $first; let last = $last) {
-        <tr [class.selected]="editedStyleIndex === i">
-          <td>
+        <tr [class.selected]="editedStyleIndex() === i">
+          <td class="fit-width">
             <button
               mat-icon-button
               type="button"

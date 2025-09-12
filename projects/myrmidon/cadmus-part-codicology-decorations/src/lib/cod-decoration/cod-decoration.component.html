@@ -26,7 +26,7 @@
   <fieldset>
     <legend>features</legend>
     <cadmus-ui-flag-set
-      [flags]="decFlags"
+      [flags]="decFlags()"
       [checkedIds]="flags.value"
       (checkedIdsChange)="onFlagIdsChange($event)"
     />
@@ -112,8 +112,8 @@
       <tbody>
         @for ( artist of artists.value; track artist; let i = $index; let first
         = $first; let last = $last) {
-        <tr [class.selected]="editedArtistIndex === i">
-          <td>
+        <tr [class.selected]="editedArtistIndex() === i">
+          <td class="fit-width">
             <button
               type="button"
               mat-icon-button
@@ -159,9 +159,9 @@
       </tbody>
     </table>
     }
-    <mat-expansion-panel [expanded]="editedArtist" [disabled]="!editedArtist">
+    <mat-expansion-panel [expanded]="editedArtist()" [disabled]="!editedArtist()">
       <mat-expansion-panel-header>
-        <mat-panel-title>artist {{ editedArtist?.name }}</mat-panel-title>
+        <mat-panel-title>artist {{ editedArtist()?.name }}</mat-panel-title>
       </mat-expansion-panel-header>
       <cadmus-cod-decoration-artist
         [idScopeEntries]="idScopeEntries()"
@@ -172,7 +172,7 @@
         [ctTagEntries]="ctTagEntries()"
         [artTypeEntries]="artTypeEntries()"
         [artStyleEntries]="artStyleEntries()"
-        [artist]="editedArtist"
+        [artist]="editedArtist()"
         (artistChange)="onArtistSave($event!)"
         (editorClose)="editArtist(null)"
       />
@@ -207,7 +207,7 @@
       <tbody>
         @for ( element of elements.value; track element; let i = $index; let
         first = $first; let last = $last) {
-        <tr [class.selected]="editedElementIndex === i">
+        <tr [class.selected]="editedElementIndex() === i">
           <td class="fit-width">
             <button
               type="button"
@@ -260,7 +260,7 @@
     }
 
     <!-- ELEMENT -->
-    <mat-expansion-panel [disabled]="!editedElement" [expanded]="editedElement">
+    <mat-expansion-panel [disabled]="!editedElement()" [expanded]="editedElement()">
       <fieldset>
         <legend>element</legend>
         <cadmus-cod-decoration-element
@@ -277,8 +277,8 @@
           [decElemGildingEntries]="decElemGildingEntries()"
           [refTagEntries]="refTagEntries()"
           [refTypeEntries]="refTypeEntries()"
-          [element]="editedElement"
-          [parentKeys]="parentKeys"
+          [element]="editedElement()"
+          [parentKeys]="parentKeys()"
           (elementChange)="onElementSave($event!)"
           (editorClose)="editElement(null)"
         />

@@ -207,15 +207,15 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
   public readonly elemToolEntries = signal<ThesaurusEntry[]>([]);
   public readonly elemTypolEntries = signal<ThesaurusEntry[]>([]);
 
-  public elemGildingFree?: boolean;
-  public elemTechniqueFree?: boolean;
-  public elemPositionFree?: boolean;
-  public elemToolFree?: boolean;
+  public readonly elemGildingFree = signal<boolean | undefined>(undefined);
+  public readonly elemTechniqueFree = signal<boolean | undefined>(undefined);
+  public readonly elemPositionFree = signal<boolean | undefined>(undefined);
+  public readonly elemToolFree = signal<boolean | undefined>(undefined);
 
   // this object has a property for each control
   // to be hidden, having the same name of the control
   // and value=true.
-  public hidden?: HiddenDecElemFields;
+  public readonly hidden = signal<HiddenDecElemFields | undefined>(undefined);
 
   constructor(formBuilder: FormBuilder) {
     this.key = formBuilder.control(null, [
@@ -276,7 +276,8 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
     });
 
     effect(() => {
-      this.updateForm(this.element());
+      const element = this.element();
+      this.updateForm(element);
     });
   }
 
@@ -318,7 +319,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
         hidden[n] = true;
       });
     }
-    this.hidden = hidden;
+    this.hidden.set(hidden);
     console.log('hidden: ' + JSON.stringify(this.hidden));
   }
 
@@ -405,28 +406,28 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
       this.decElemGildingEntries(),
       this.type.value
     );
-    this.elemGildingFree = this.isFreeSet(entries);
+    this.elemGildingFree.set(this.isFreeSet(entries));
     this.gildings.setValue(this.element()?.gildings || []);
 
     entries = this.getFilteredEntries(
       this.decElemTechEntries(),
       this.type.value
     );
-    this.elemTechniqueFree = this.isFreeSet(entries);
+    this.elemTechniqueFree.set(this.isFreeSet(entries));
     this.techniques.setValue(this.element()?.techniques || []);
 
     entries = this.getFilteredEntries(
       this.decElemPosEntries(),
       this.type.value
     );
-    this.elemPositionFree = this.isFreeSet(entries);
+    this.elemPositionFree.set(this.isFreeSet(entries));
     this.positions.setValue(this.element()?.positions || []);
 
     entries = this.getFilteredEntries(
       this.decElemToolEntries(),
       this.type.value
     );
-    this.elemToolFree = this.isFreeSet(entries);
+    this.elemToolFree.set(this.isFreeSet(entries));
     this.tools.setValue(this.element()?.tools || []);
 
     this.typologies.setValue(this.element()?.typologies || []);
@@ -620,6 +621,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
     if (this.form.invalid) {
       return;
     }
-    this.element.set(this.getElement());
+    const element = this.getElement();
+    this.element.set(element);
   }
 }

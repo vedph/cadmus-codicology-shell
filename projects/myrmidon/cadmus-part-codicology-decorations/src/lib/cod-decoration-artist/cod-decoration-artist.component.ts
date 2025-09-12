@@ -1,4 +1,4 @@
-import { Component, effect, input, model, output } from '@angular/core';
+import { Component, effect, input, model, output, signal } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -39,6 +39,7 @@ import {
   CodDecorationArtistStyle,
 } from '../cod-decorations-part';
 import { CodDecorationArtistStyleComponent } from '../cod-decoration-artist-style/cod-decoration-artist-style.component';
+import { deepCopy } from '@myrmidon/ngx-tools';
 
 @Component({
   selector: 'cadmus-cod-decoration-artist',
@@ -65,8 +66,6 @@ import { CodDecorationArtistStyleComponent } from '../cod-decoration-artist-styl
   ],
 })
 export class CodDecorationArtistComponent {
-  public editedStyleIndex: number;
-
   public readonly artist = model<CodDecorationArtist>();
 
   // cod-decoration-artist-types
@@ -97,10 +96,12 @@ export class CodDecorationArtistComponent {
   public note: FormControl<string | null>;
   public form: FormGroup;
 
-  public editedStyle?: CodDecorationArtistStyle;
+  public readonly editedStyleIndex = signal<number>(-1);
+  public readonly editedStyle = signal<CodDecorationArtistStyle | undefined>(
+    undefined
+  );
 
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
-    this.editedStyleIndex = -1;
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.type = formBuilder.control(null, [
@@ -193,19 +194,19 @@ export class CodDecorationArtistComponent {
 
   public editStyle(style: CodDecorationArtistStyle | null, index = -1): void {
     if (!style) {
-      this.editedStyleIndex = -1;
-      this.editedStyle = undefined;
+      this.editedStyleIndex.set(-1);
+      this.editedStyle.set(undefined);
     } else {
-      this.editedStyleIndex = index;
-      this.editedStyle = style;
+      this.editedStyleIndex.set(index);
+      this.editedStyle.set(deepCopy(style));
     }
   }
 
   public onStyleSave(style: CodDecorationArtistStyle): void {
     const styles = [...this.styles.value];
 
-    if (this.editedStyleIndex > -1) {
-      styles.splice(this.editedStyleIndex, 1, style);
+    if (this.editedStyleIndex() > -1) {
+      styles.splice(this.editedStyleIndex(), 1, style);
     } else {
       styles.push(style);
     }

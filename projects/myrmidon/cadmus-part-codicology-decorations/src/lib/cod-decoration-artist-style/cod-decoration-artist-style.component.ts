@@ -1,14 +1,4 @@
-import {
-  Component,
-  effect,
-  EventEmitter,
-  input,
-  Input,
-  model,
-  OnInit,
-  output,
-  Output,
-} from '@angular/core';
+import { Component, effect, input, model, OnInit, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,

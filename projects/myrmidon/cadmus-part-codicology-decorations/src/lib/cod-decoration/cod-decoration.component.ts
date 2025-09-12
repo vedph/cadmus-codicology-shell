@@ -1,4 +1,4 @@
-import { Component, effect, input, model, output } from '@angular/core';
+import { Component, computed, effect, input, model, output, signal } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -20,7 +20,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 
-import { FlatLookupPipe } from '@myrmidon/ngx-tools';
+import { deepCopy, FlatLookupPipe } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import {
   AssertedChronotope,
@@ -159,12 +159,12 @@ export class CodDecorationComponent {
   public elements: FormControl<CodDecorationElement[]>;
   public form: FormGroup;
 
-  public editedElementIndex: number;
-  public editedElement: CodDecorationElement | undefined;
-  public parentKeys: string[];
+  public readonly editedElementIndex = signal<number>(-1);
+  public readonly editedElement = signal<CodDecorationElement | undefined>(undefined);
+  public readonly parentKeys = signal<string[]>([]);
 
-  public editedArtistIndex: number;
-  public editedArtist?: CodDecorationArtist;
+  public readonly editedArtistIndex = signal<number>(-1);
+  public readonly editedArtist = signal<CodDecorationArtist | undefined>(undefined);
 
   public editorOptions = {
     theme: 'vs-light',
@@ -175,12 +175,11 @@ export class CodDecorationComponent {
   };
 
   // flags
-  public decFlags: Flag[] = [];
+  public readonly decFlags = computed<Flag[]>(() => {
+    return this.decFlagEntries()?.map(entryToFlag) || [];
+  });
 
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
-    this.editedElementIndex = -1;
-    this.parentKeys = [];
-    this.editedArtistIndex = -1;
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.name = formBuilder.control(null, [
@@ -205,11 +204,8 @@ export class CodDecorationComponent {
     });
 
     effect(() => {
-      this.updateForm(this.decoration());
-    });
-
-    effect(() => {
-      this.decFlags = this.decFlagEntries()?.map(entryToFlag) || [];
+      const decoration = this.decoration();
+      this.updateForm(decoration);
     });
   }
 
@@ -280,30 +276,30 @@ export class CodDecorationComponent {
 
   public editElement(element: CodDecorationElement | null, index = -1): void {
     if (!element) {
-      this.editedElementIndex = -1;
-      this.editedElement = undefined;
+      this.editedElementIndex.set(-1);
+      this.editedElement.set(undefined);
     } else {
-      this.editedElementIndex = index;
-      this.editedElement = element;
+      this.editedElementIndex.set(index);
+      this.editedElement.set(deepCopy(element));
     }
   }
 
   private updateParentKeys(): void {
     if (!this.elements.value?.length) {
-      this.parentKeys = [];
+      this.parentKeys.set([]);
       return;
     }
     let keys: string[] = this.elements.value.map(
       (e: CodDecorationElement) => e.key!
     );
-    this.parentKeys = [...new Set(keys)].sort();
+    this.parentKeys.set([...new Set(keys)].sort());
   }
 
   public onElementSave(element: CodDecorationElement): void {
     const elements = [...this.elements.value];
 
-    if (this.editedElementIndex > -1) {
-      elements.splice(this.editedElementIndex, 1, element);
+    if (this.editedElementIndex() > -1) {
+      elements.splice(this.editedElementIndex(), 1, element);
     } else {
       elements.push(element);
     }
@@ -368,19 +364,19 @@ export class CodDecorationComponent {
 
   public editArtist(artist: CodDecorationArtist | null, index = -1): void {
     if (!artist) {
-      this.editedArtistIndex = -1;
-      this.editedArtist = undefined;
+      this.editedArtistIndex.set(-1);
+      this.editedArtist.set(undefined);
     } else {
-      this.editedArtistIndex = index;
-      this.editedArtist = artist;
+      this.editedArtistIndex.set(index);
+      this.editedArtist.set(deepCopy(artist));
     }
   }
 
   public onArtistSave(artist: CodDecorationArtist): void {
     const artists = [...this.artists.value];
 
-    if (this.editedArtistIndex > -1) {
-      artists.splice(this.editedArtistIndex, 1, artist);
+    if (this.editedArtistIndex() > -1) {
+      artists.splice(this.editedArtistIndex(), 1, artist);
     } else {
       artists.push(artist);
     }
