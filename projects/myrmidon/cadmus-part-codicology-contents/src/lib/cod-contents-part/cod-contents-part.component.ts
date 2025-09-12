@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -25,7 +25,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 
 // myrmidon
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { deepCopy, NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 
@@ -89,8 +89,8 @@ export class CodContentsPartComponent
   extends ModelEditorComponentBase<CodContentsPart>
   implements OnInit
 {
-  public editedIndex: number;
-  public editedContent?: CodContent;
+  public readonly editedIndex = signal<number>(-1);
+  public readonly editedContent = signal<CodContent | undefined>(undefined);
 
   // cod-content-states
   public stateEntries?: ThesaurusEntry[];
@@ -121,7 +121,6 @@ export class CodContentsPartComponent
     private _dialogService: DialogService
   ) {
     super(authService, formBuilder);
-    this.editedIndex = -1;
     // form
     this.contents = formBuilder.control([], {
       validators: NgxToolsValidators.strictMinLengthValidator(1),
@@ -237,19 +236,19 @@ export class CodContentsPartComponent
 
   public editContent(content: CodContent | null, index = -1): void {
     if (!content) {
-      this.editedIndex = -1;
-      this.editedContent = undefined;
+      this.editedIndex.set(-1);
+      this.editedContent.set(undefined);
     } else {
-      this.editedIndex = index;
-      this.editedContent = content;
+      this.editedIndex.set(index);
+      this.editedContent.set(deepCopy(content));
     }
   }
 
   public onContentSave(content: CodContent): void {
     const contents = [...this.contents.value];
 
-    if (this.editedIndex > -1) {
-      contents.splice(this.editedIndex, 1, content);
+    if (this.editedIndex() > -1) {
+      contents.splice(this.editedIndex(), 1, content);
     } else {
       contents.push(content);
     }

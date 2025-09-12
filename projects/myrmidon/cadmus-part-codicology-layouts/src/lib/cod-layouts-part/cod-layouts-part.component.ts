@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -21,7 +21,7 @@ import {
 import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { deepCopy, NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { MatExpansionModule } from '@angular/material/expansion';
 
 import { DialogService } from '@myrmidon/ngx-mat-tools';
@@ -34,7 +34,7 @@ import {
 import {
   ThesauriSet,
   ThesaurusEntry,
-  EditedObject
+  EditedObject,
 } from '@myrmidon/cadmus-core';
 import {
   ModelEditorComponentBase,
@@ -82,9 +82,8 @@ export class CodLayoutsPartComponent
   extends ModelEditorComponentBase<CodLayoutsPart>
   implements OnInit
 {
-  private _editedIndex: number;
-
-  public editedLayout: CodLayout | undefined;
+  public readonly editedIndex = signal<number>(-1);
+  public readonly editedLayout = signal<CodLayout | undefined>(undefined);
 
   // cod-layout-tags
   public tagEntries: ThesaurusEntry[] | undefined;
@@ -107,7 +106,6 @@ export class CodLayoutsPartComponent
     private _dialogService: DialogService
   ) {
     super(authService, formBuilder);
-    this._editedIndex = -1;
     // form
     this.entries = formBuilder.control([], {
       validators: NgxToolsValidators.strictMinLengthValidator(1),
@@ -199,19 +197,19 @@ export class CodLayoutsPartComponent
 
   public editLayout(layout: CodLayout | null, index = -1): void {
     if (!layout) {
-      this._editedIndex = -1;
-      this.editedLayout = undefined;
+      this.editedIndex.set(-1);
+      this.editedLayout.set(undefined);
     } else {
-      this._editedIndex = index;
-      this.editedLayout = layout;
+      this.editedIndex.set(index);
+      this.editedLayout.set(deepCopy(layout));
     }
   }
 
-  public onLayoutSave(layout: CodLayout): void {
+  public onLayoutChange(layout: CodLayout): void {
     const layouts = [...this.entries.value];
 
-    if (this._editedIndex > -1) {
-      layouts.splice(this._editedIndex, 1, layout);
+    if (this.editedIndex() > -1) {
+      layouts.splice(this.editedIndex(), 1, layout);
     } else {
       layouts.push(layout);
     }

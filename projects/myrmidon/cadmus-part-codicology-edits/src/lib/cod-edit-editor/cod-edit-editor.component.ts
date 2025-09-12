@@ -1,4 +1,4 @@
-import { Component, effect, input, model, output } from '@angular/core';
+import { Component, computed, effect, input, model, output, signal } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -115,8 +115,12 @@ export class CodEditEditorComponent {
   public form: FormGroup;
 
   // flags
-  public colorFlags: Flag[] = [];
-  public techniqueFlags: Flag[] = [];
+  public readonly colorFlags = computed<Flag[]>(() => {
+    return this.colorEntries()?.map(entryToFlag) || [];
+  });
+  public readonly techniqueFlags = computed<Flag[]>(() => {
+    return this.techEntries()?.map(entryToFlag) || [];
+  });
 
   constructor(formBuilder: FormBuilder) {
     // form
@@ -158,42 +162,36 @@ export class CodEditEditorComponent {
     });
 
     effect(() => {
-      this.updateForm(this.edit());
-    });
-
-    effect(() => {
-      this.colorFlags = this.colorEntries()?.map(entryToFlag) || [];
-    });
-
-    effect(() => {
-      this.techniqueFlags = this.techEntries()?.map(entryToFlag) || [];
+      const edit = this.edit();
+      console.log('input edit', edit);
+      this.updateForm(edit);
     });
   }
 
-  private updateForm(model: CodEdit | undefined): void {
-    if (!model) {
+  private updateForm(edit: CodEdit | undefined): void {
+    if (!edit) {
       this.form.reset();
       return;
     }
 
-    this.eid.setValue(model.eid || null);
-    this.type.setValue(model.type);
-    this.tag.setValue(model.tag || null);
-    this.authorIds.setValue(model.authorIds || []);
-    this.techniques.setValue(model.techniques || []);
-    this.ranges.setValue(model.ranges || []);
-    this.position.setValue(model.position || null);
-    this.language.setValue(model.language || null);
-    this.hasDate.setValue(model.date ? true : false);
-    this.date.setValue(model.date || null);
-    this.colors.setValue(model.colors || []);
-    this.description.setValue(model.description || null);
-    this.text.setValue(model.text || null);
-    this.references.setValue(model.references || []);
+    this.eid.setValue(edit.eid || null);
+    this.type.setValue(edit.type);
+    this.tag.setValue(edit.tag || null);
+    this.authorIds.setValue(edit.authorIds || []);
+    this.techniques.setValue(edit.techniques || []);
+    this.ranges.setValue(edit.ranges || []);
+    this.position.setValue(edit.position || null);
+    this.language.setValue(edit.language || null);
+    this.hasDate.setValue(edit.date ? true : false);
+    this.date.setValue(edit.date || null);
+    this.colors.setValue(edit.colors || []);
+    this.description.setValue(edit.description || null);
+    this.text.setValue(edit.text || null);
+    this.references.setValue(edit.references || []);
     this.form.markAsPristine();
   }
 
-  private getModel(): CodEdit {
+  private getEdit(): CodEdit {
     return {
       eid: this.eid.value?.trim(),
       type: this.type.value?.trim() || '',
@@ -259,6 +257,6 @@ export class CodEditEditorComponent {
     if (this.form.invalid) {
       return;
     }
-    this.edit.set(this.getModel());
+    this.edit.set(this.getEdit());
   }
 }

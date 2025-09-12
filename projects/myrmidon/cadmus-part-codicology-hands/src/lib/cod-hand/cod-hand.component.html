@@ -35,7 +35,7 @@
   </fieldset>
 
   <!-- descriptions -->
-  <mat-expansion-panel>
+  <mat-expansion-panel class="panel">
     <mat-expansion-panel-header>
       <mat-panel-title>
         <mat-icon class="hdr-icon" style="color: #afd8ff">description</mat-icon>
@@ -67,7 +67,7 @@
       <tbody>
         @for ( description of descriptions.value; track description; let i =
         $index; let first = $first; let last = $last) {
-        <tr>
+        <tr [class.selected]="i === editedDscIndex()">
           <td class="fit-width">
             <button
               type="button"
@@ -111,22 +111,23 @@
         }
       </tbody>
     </table>
-    }
-    <mat-expansion-panel [expanded]="editedDsc" [disabled]="!editedDsc">
+    } @if (editedDsc()) {
+    <mat-expansion-panel [expanded]="editedDsc()" [disabled]="!editedDsc()">
       <mat-expansion-panel-header
-        >description #{{ editedDscIndex + 1 }}</mat-expansion-panel-header
+        >description #{{ editedDscIndex() + 1 }}</mat-expansion-panel-header
       >
       <cadmus-cod-hand-description
         [sgnTypeEntries]="sgnTypeEntries()"
-        [description]="editedDsc"
-        (descriptionChange)="onDescriptionSave($event!)"
+        [description]="editedDsc()"
+        (descriptionChange)="onDescriptionChange($event!)"
         (editorClose)="editDescription(null)"
       />
     </mat-expansion-panel>
+    }
   </mat-expansion-panel>
 
   <!-- instances -->
-  <mat-expansion-panel>
+  <mat-expansion-panel class="panel">
     <mat-expansion-panel-header>
       <mat-panel-title>
         <mat-icon class="hdr-icon" style="color: #fbc4ff">back_hand</mat-icon>
@@ -158,7 +159,7 @@
       <tbody>
         @for ( instance of instances.value; track instance; let i = $index; let
         first = $first; let last = $last) {
-        <tr>
+        <tr [class.selected]="i === editedIstIndex()">
           <td class="fit-width">
             <button
               type="button"
@@ -197,7 +198,8 @@
           </td>
           <td>
             {{
-              instance.scripts[0] | flatLookup : scriptEntries() : "id" : "value"
+              instance.scripts[0]
+                | flatLookup : scriptEntries() : "id" : "value"
             }}
           </td>
           <td>{{ instance.ranges | codLocationRange }}</td>
@@ -205,10 +207,10 @@
         }
       </tbody>
     </table>
-    }
-    <mat-expansion-panel [expanded]="editedIst" [disabled]="!editedIst">
+    } @if (editedIst()) {
+    <mat-expansion-panel [expanded]="editedIst()" [disabled]="!editedIst()">
       <mat-expansion-panel-header
-        >instance #{{ editedIstIndex + 1 }}</mat-expansion-panel-header
+        >instance #{{ editedIstIndex() + 1 }}</mat-expansion-panel-header
       >
       <cadmus-cod-hand-instance
         [typeEntries]="typeEntries()"
@@ -219,16 +221,17 @@
         [scriptEntries]="scriptEntries()"
         [imgTypeEntries]="imgTypeEntries()"
         [refTypeEntries]="refTypeEntries()"
-        [instance]="editedIst"
+        [instance]="editedIst()"
         [dscKeys]="dscKeys"
-        (instanceChange)="onInstanceSave($event!)"
+        (instanceChange)="onInstanceChange($event!)"
         (editorClose)="editInstance(null)"
       />
     </mat-expansion-panel>
+    }
   </mat-expansion-panel>
 
   <!-- subscriptions -->
-  <mat-expansion-panel>
+  <mat-expansion-panel class="panel">
     <mat-expansion-panel-header>
       <mat-panel-title>
         <mat-icon class="hdr-icon" style="color: #ffaa7f">bookmark</mat-icon>
@@ -260,7 +263,7 @@
       <tbody>
         @for ( subscription of subscriptions.value; track subscription; let i =
         $index; let first = $first; let last = $last) {
-        <tr>
+        <tr [class.selected]="i === editedSubIndex()">
           <td class="fit-width">
             <button
               type="button"
@@ -308,22 +311,23 @@
         }
       </tbody>
     </table>
-    }
-    <mat-expansion-panel [expanded]="editedSub" [disabled]="!editedSub">
+    } @if (editedSub()) {
+    <mat-expansion-panel [expanded]="editedSub()" [disabled]="!editedSub()">
       <mat-expansion-panel-header
-        >subscription #{{ editedSubIndex + 1 }}</mat-expansion-panel-header
+        >subscription #{{ editedSubIndex() + 1 }}</mat-expansion-panel-header
       >
       <cadmus-cod-hand-subscription
         [langEntries]="subLangEntries()"
-        [subscription]="editedSub"
-        (subscriptionChange)="onSubscriptionSave($event!)"
+        [subscription]="editedSub()"
+        (subscriptionChange)="onSubscriptionChange($event!)"
         (editorClose)="editSubscription(null)"
       />
     </mat-expansion-panel>
+    }
   </mat-expansion-panel>
 
   <!-- references -->
-  <mat-expansion-panel>
+  <mat-expansion-panel class="panel">
     <mat-expansion-panel-header>
       <mat-panel-title>
         <mat-icon class="hdr-icon" style="color: #a7f9b5"

@@ -78,7 +78,9 @@ export class CodHandSubscriptionComponent {
     });
 
     effect(() => {
-      this.updateForm(this.subscription());
+      const subscription =  this.subscription();
+      console.log('input subscription', subscription);
+      this.updateForm(subscription);
     });
   }
 
@@ -119,6 +121,7 @@ export class CodHandSubscriptionComponent {
     if (this.form.invalid) {
       return;
     }
-    this.subscription.set(this.getSubscription());
+    const subscription = this.getSubscription();
+    this.subscription.set(subscription);
   }
 }

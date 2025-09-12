@@ -34,7 +34,7 @@
         <tbody>
           @for ( entry of shelfmarks.value; track entry; let i = $index; let
           first = $first; let last = $last) {
-          <tr [class.selected]="i === editedIndex">
+          <tr [class.selected]="i === editedIndex()">
             <td class="fit-width">
               <button
                 type="button"
@@ -80,19 +80,19 @@
           }
         </tbody>
       </table>
-      } @if (editedShelfmark) {
+      } @if (editedShelfmark()) {
       <mat-expansion-panel
-        [expanded]="editedShelfmark"
-        [disabled]="!editedShelfmark"
+        [expanded]="editedShelfmark()"
+        [disabled]="!editedShelfmark()"
       >
         <mat-expansion-panel-header>
-          <mat-panel-title> #{{ editedIndex + 1 }} </mat-panel-title>
+          <mat-panel-title> #{{ editedIndex() + 1 }} </mat-panel-title>
         </mat-expansion-panel-header>
         <cadmus-cod-shelfmark-editor
           [tagEntries]="tagEntries"
           [libEntries]="libEntries"
-          [shelfmark]="editedShelfmark"
-          (shelfmarkChange)="onShelfmarkSave($event!)"
+          [shelfmark]="editedShelfmark()"
+          (shelfmarkChange)="onShelfmarkChange($event!)"
           (editorClose)="editShelfmark(null)"
         />
       </mat-expansion-panel>

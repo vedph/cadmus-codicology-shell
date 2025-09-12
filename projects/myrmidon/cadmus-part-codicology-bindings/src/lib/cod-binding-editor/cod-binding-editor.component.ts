@@ -1,4 +1,11 @@
-import { Component, effect, input, model, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  input,
+  model,
+  output,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -29,6 +36,7 @@ import {
 } from '@myrmidon/cadmus-refs-asserted-chronotope';
 
 import { CodBinding } from '../cod-bindings-part';
+import { deepCopy } from '@myrmidon/ngx-tools';
 
 @Component({
   selector: 'cadmus-cod-binding-editor',
@@ -50,6 +58,7 @@ import { CodBinding } from '../cod-bindings-part';
     MatTooltip,
     MatIcon,
   ],
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CodBindingEditorComponent {
   public readonly binding = model<CodBinding>();
@@ -112,27 +121,29 @@ export class CodBindingEditorComponent {
     });
 
     effect(() => {
-      this.updateForm(this.binding());
+      const binding = this.binding();
+      console.log('input binding', binding);
+      this.updateForm(binding);
     });
   }
 
-  private updateForm(model: CodBinding | undefined): void {
-    if (!model) {
+  private updateForm(binding: CodBinding | undefined): void {
+    if (!binding) {
       this.form.reset();
       return;
     }
 
-    this.tag.setValue(model.tag || null);
-    this.coverMaterial.setValue(model.coverMaterial);
-    this.boardMaterial.setValue(model.boardMaterial);
-    this.description.setValue(model.description || null);
-    this.size.setValue(model.size || null);
-    this.hasSize.setValue(model.size ? true : false);
-    this.chronotope.setValue(model.chronotope || null);
+    this.tag.setValue(binding.tag || null);
+    this.coverMaterial.setValue(binding.coverMaterial);
+    this.boardMaterial.setValue(binding.boardMaterial);
+    this.description.setValue(binding.description || null);
+    this.size.setValue(deepCopy(binding.size) || null);
+    this.hasSize.setValue(binding.size ? true : false);
+    this.chronotope.setValue(binding.chronotope || null);
     this.form.markAsPristine();
   }
 
-  private getModel(): CodBinding {
+  private getBinding(): CodBinding {
     return {
       tag: this.tag.value?.trim(),
       coverMaterial: this.coverMaterial.value?.trim() || '',
@@ -161,6 +172,7 @@ export class CodBindingEditorComponent {
     if (this.form.invalid) {
       return;
     }
-    this.binding.set(this.getModel());
+    const binding = this.getBinding();
+    this.binding.set(binding);
   }
 }

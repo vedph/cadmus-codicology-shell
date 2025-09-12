@@ -20,6 +20,9 @@ tr.selected {
 .hdr-icon {
   margin-right: 8px;
 }
+.panel {
+  margin: 4px 0;
+}
 .toolbar-row {
   display: flex;
   align-items: center;

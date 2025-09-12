@@ -4,11 +4,11 @@ import {
   METADATA_PART_TYPEID,
 } from '@myrmidon/cadmus-part-general-ui';
 
-import { COD_DECORATIONS_PART_TYPEID } from '../../projects/myrmidon/cadmus-part-codicology-decorations/src/public-api';
-import { COD_EDITS_PART_TYPEID } from '../../projects/myrmidon/cadmus-part-codicology-edits/src/public-api';
-import { COD_CONTENTS_PART_TYPEID } from '../../projects/myrmidon/cadmus-part-codicology-contents/src/public-api';
-import { COD_MATERIAL_DSC_PART_TYPEID } from '../../projects/myrmidon/cadmus-part-codicology-material-dsc/src/public-api';
-import { COD_HANDS_PART_TYPEID } from '../../projects/myrmidon/cadmus-part-codicology-hands/src/public-api';
+import { COD_DECORATIONS_PART_TYPEID } from '@myrmidon/cadmus-part-codicology-decorations';
+import { COD_EDITS_PART_TYPEID } from '@myrmidon/cadmus-part-codicology-edits';
+import { COD_CONTENTS_PART_TYPEID } from '@myrmidon/cadmus-part-codicology-contents';
+import { COD_MATERIAL_DSC_PART_TYPEID } from '@myrmidon/cadmus-part-codicology-material-dsc';
+import { COD_HANDS_PART_TYPEID } from '@myrmidon/cadmus-part-codicology-hands';
 
 export const INDEX_LOOKUP_DEFINITIONS: IndexLookupDefinitions = {
   // item's metadata

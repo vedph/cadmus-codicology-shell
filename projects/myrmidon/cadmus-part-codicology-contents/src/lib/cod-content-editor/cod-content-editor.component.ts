@@ -103,8 +103,6 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   ],
 })
 export class CodContentEditorComponent {
-  private _editedAnnotationIndex: number;
-
   public readonly content = model<CodContent>();
 
   // cod-content-states
@@ -150,7 +148,10 @@ export class CodContentEditorComponent {
   public annotations: FormControl<CodContentAnnotation[]>;
   public form: FormGroup;
 
-  public editedAnnotation?: CodContentAnnotation;
+  public readonly editedAnnotation = signal<CodContentAnnotation | undefined>(
+    undefined
+  );
+  public readonly editedIndex = signal<number>(-1);
 
   // flags
   public stateFlags: Flag[] = [];
@@ -162,8 +163,6 @@ export class CodContentEditorComponent {
     @Optional()
     public citSchemeService?: CitSchemeService
   ) {
-    this._editedAnnotationIndex = -1;
-
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.workId = formBuilder.control(null);
@@ -204,7 +203,9 @@ export class CodContentEditorComponent {
     });
 
     effect(() => {
-      this.updateForm(this.content());
+      const content = this.content();
+      console.log('input content', content);
+      this.updateForm(content);
     });
 
     effect(() => {
@@ -265,7 +266,7 @@ export class CodContentEditorComponent {
     });
   }
 
-  private getModel(): CodContent {
+  private getContent(): CodContent {
     return {
       eid: this.eid.value?.trim(),
       workId: this.workId.value || undefined,
@@ -335,12 +336,12 @@ export class CodContentEditorComponent {
 
   public editAnnotation(index: number): void {
     if (index < 0) {
-      this._editedAnnotationIndex = -1;
-      this.editedAnnotation = undefined;
+      this.editedIndex.set(-1);
+      this.editedAnnotation.set(undefined);
     } else {
-      this._editedAnnotationIndex = index;
+      this.editedIndex.set(index);
       const annotations = this.annotations.value || [];
-      this.editedAnnotation = annotations[index];
+      this.editedAnnotation.set(annotations[index]);
     }
   }
 
@@ -348,7 +349,7 @@ export class CodContentEditorComponent {
     const annotations = this.annotations.value || [];
     this.annotations.setValue(
       annotations.map((a: CodContentAnnotation, i: number) =>
-        i === this._editedAnnotationIndex ? annotation : a
+        i === this.editedIndex() ? annotation : a
       )
     );
     this.editAnnotation(-1);
@@ -412,6 +413,7 @@ export class CodContentEditorComponent {
     if (this.form.invalid) {
       return;
     }
-    this.content.set(this.getModel());
+    const content = this.getContent();
+    this.content.set(content);
   }
 }

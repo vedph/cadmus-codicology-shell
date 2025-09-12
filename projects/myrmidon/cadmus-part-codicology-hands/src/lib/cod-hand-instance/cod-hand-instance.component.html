@@ -4,7 +4,7 @@
     <fieldset class="form-row">
       <!-- picker -->
       <legend>script(s)</legend>
-      <div>
+      <div class="form-row">
         @if (scriptEntries()?.length) {
         <mat-form-field>
           <mat-label>script</mat-label>
@@ -13,16 +13,18 @@
             <mat-option [value]="e">{{ e.value }}</mat-option>
             }
           </mat-select>
+          <mat-hint>script to add</mat-hint>
         </mat-form-field>
         }
         <button
           type="button"
-          mat-flat-button
+          mat-icon-button
           class="mat-primary"
           [disabled]="!script.value"
           (click)="addScript()"
+          matTooltip="Add selected script to list"
         >
-          <mat-icon>add_circle</mat-icon> script
+          <mat-icon>playlist_add</mat-icon>
         </button>
       </div>
       <!-- list of scripts -->
@@ -72,7 +74,7 @@
     </fieldset>
 
     <!-- rank -->
-    <mat-form-field style="width: 4em">
+    <mat-form-field style="width: 5em">
       <mat-label>rank</mat-label>
       <input matInput [formControl]="rank" type="number" min="0" />
     </mat-form-field>

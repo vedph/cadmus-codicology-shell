@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -23,7 +23,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { deepCopy, NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 import { CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
@@ -80,8 +80,8 @@ export class CodWatermarksPartComponent
   extends ModelEditorComponentBase<CodWatermarksPart>
   implements OnInit
 {
-  public editedIndex: number;
-  public editedWatermark: CodWatermark | undefined;
+  public readonly editedIndex = signal<number>(-1);
+  public readonly editedWatermark = signal<CodWatermark | undefined>(undefined);
 
   // asserted-id-tags
   public idTagEntries: ThesaurusEntry[] | undefined;
@@ -110,7 +110,6 @@ export class CodWatermarksPartComponent
     private _dialogService: DialogService
   ) {
     super(authService, formBuilder);
-    this.editedIndex = -1;
     // form
     this.watermarks = formBuilder.control([], {
       nonNullable: true,
@@ -220,19 +219,19 @@ export class CodWatermarksPartComponent
 
   public editWatermark(watermark: CodWatermark | null, index = -1): void {
     if (!watermark) {
-      this.editedIndex = -1;
-      this.editedWatermark = undefined;
+      this.editedIndex.set(-1);
+      this.editedWatermark.set(undefined);
     } else {
-      this.editedIndex = index;
-      this.editedWatermark = watermark;
+      this.editedIndex.set(index);
+      this.editedWatermark.set(deepCopy(watermark));
     }
   }
 
-  public onWatermarkSave(watermark: CodWatermark): void {
+  public onWatermarkChange(watermark: CodWatermark): void {
     const watermarks = [...this.watermarks.value];
 
-    if (this.editedIndex > -1) {
-      watermarks.splice(this.editedIndex, 1, watermark);
+    if (this.editedIndex() > -1) {
+      watermarks.splice(this.editedIndex(), 1, watermark);
     } else {
       watermarks.push(watermark);
     }

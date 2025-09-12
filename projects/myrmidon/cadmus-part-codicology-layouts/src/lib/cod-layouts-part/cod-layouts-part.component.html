@@ -32,7 +32,7 @@
         <tbody>
           @for ( entry of entries.value; track entry; let i = $index; let first
           = $first; let last = $last) {
-          <tr [class.selected]="editedLayout === entry">
+          <tr [class.selected]="editedIndex() === i">
             <td class="fit-width">
               <button
                 type="button"
@@ -76,11 +76,11 @@
           }
         </tbody>
       </table>
-      } @if (editedLayout) {
-      <mat-expansion-panel [expanded]="editedLayout" [disabled]="!editedLayout">
+      } @if (editedLayout()) {
+      <mat-expansion-panel [expanded]="editedLayout()" [disabled]="!editedLayout()">
         <mat-expansion-panel-header>
           <mat-panel-title>
-            {{ editedLayout.sample | codLocation }}
+            {{ editedLayout()?.sample | codLocation }}
           </mat-panel-title>
         </mat-expansion-panel-header>
         <cadmus-cod-layout-editor
@@ -90,8 +90,8 @@
           [prkEntries]="prkEntries"
           [cntIdEntries]="cntIdEntries"
           [cntTagEntries]="cntTagEntries"
-          [layout]="editedLayout"
-          (layoutChange)="onLayoutSave($event!)"
+          [layout]="editedLayout()"
+          (layoutChange)="onLayoutChange($event!)"
           (editorClose)="editLayout(null)"
         />
       </mat-expansion-panel>

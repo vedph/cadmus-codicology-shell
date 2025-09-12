@@ -36,7 +36,7 @@
             <tbody>
               @for ( hand of hands.value; track hand; let i = $index; let first
               = $first; let last = $last) {
-              <tr>
+              <tr [class.selected]="i === editedIndex()">
                 <td class="fit-width">
                   <button
                     type="button"
@@ -85,7 +85,7 @@
           }
         </mat-tab>
 
-        @if (editedHand) {
+        @if (editedHand()) {
         <mat-tab label="hand">
           <cadmus-cod-hand
             [typeEntries]="typeEntries"
@@ -100,8 +100,8 @@
             [subLangEntries]="subLangEntries"
             [idTagEntries]="idTagEntries"
             [idScopeEntries]="idScopeEntries"
-            [hand]="editedHand"
-            (handChange)="onHandSave($event!)"
+            [hand]="editedHand()"
+            (handChange)="onHandChange($event!)"
             (editorClose)="onHandClose()"
           />
         </mat-tab>

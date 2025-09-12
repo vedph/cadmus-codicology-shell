@@ -115,16 +115,18 @@
   </div>
 
   <!-- chronotope -->
-  <h3>chronotope</h3>
   <div>
-    <cadmus-refs-asserted-chronotope
-      [tagEntries]="ctTagEntries()"
-      [assTagEntries]="assTagEntries()"
-      [refTagEntries]="refTagEntries()"
-      [refTypeEntries]="refTypeEntries()"
-      [chronotope]="chronotope.value || undefined"
-      (chronotopeChange)="onChronotopeChange($event)"
-    />
+    <fieldset>
+      <legend>chronotope</legend>
+      <cadmus-refs-asserted-chronotope
+        [tagEntries]="ctTagEntries()"
+        [assTagEntries]="assTagEntries()"
+        [refTagEntries]="refTagEntries()"
+        [refTypeEntries]="refTypeEntries()"
+        [chronotope]="chronotope.value || undefined"
+        (chronotopeChange)="onChronotopeChange($event)"
+      />
+    </fieldset>
   </div>
 
   <!-- buttons -->

@@ -150,7 +150,7 @@ export class CodContentAnnotationComponent {
     this.form.markAsPristine();
   }
 
-  private getModel(): CodContentAnnotation {
+  private getAnnotation(): CodContentAnnotation {
     return {
       type: this.type.value?.trim() || '',
       range: this.ranges.value.length ? this.ranges.value[0] : (null as any),
@@ -189,6 +189,6 @@ export class CodContentAnnotationComponent {
     if (this.form.invalid) {
       return;
     }
-    this.annotation.set(this.getModel());
+    this.annotation.set(this.getAnnotation());
   }
 }

@@ -19,7 +19,7 @@
           <mat-icon>add_circle</mat-icon> binding
         </button>
       </div>
-      @if (entries.value.length) {
+      @if (bindings.value.length) {
       <table>
         <thead>
           <tr>
@@ -27,14 +27,15 @@
             <th>tag</th>
             <th>cover</th>
             <th>board</th>
+            <th>size</th>
             <th>place</th>
             <th>date</th>
           </tr>
         </thead>
         <tbody>
-          @for ( entry of entries.value; track entry; let i = $index; let first
+          @for ( entry of bindings.value; track entry; let i = $index; let first
           = $first; let last = $last) {
-          <tr [class.selected]="i === editedIndex">
+          <tr [class.selected]="i === editedIndex()">
             <td class="fit-width">
               <button
                 type="button"
@@ -82,6 +83,7 @@
                 entry.boardMaterial | flatLookup : boardEntries : "id" : "value"
               }}
             </td>
+            <td>{{ entry.size | physicalSize }}</td>
             <td>{{ entry.chronotope.place?.value }}</td>
             <td>{{ entry.chronotope.date | historicalDate }}</td>
             <td></td>
@@ -89,13 +91,13 @@
           }
         </tbody>
       </table>
-      } @if (editedBinding) {
+      } @if (editedBinding()) {
       <mat-expansion-panel
-        [expanded]="editedBinding"
-        [disabled]="!editedBinding"
+        [expanded]="editedBinding()"
+        [disabled]="!editedBinding()"
       >
         <mat-expansion-panel-header>
-          <mat-panel-title> #{{ editedIndex + 1 }} </mat-panel-title>
+          <mat-panel-title> #{{ editedIndex() + 1 }} </mat-panel-title>
         </mat-expansion-panel-header>
         <cadmus-cod-binding-editor
           [tagEntries]="tagEntries"
@@ -108,8 +110,8 @@
           [szTagEntries]="szTagEntries"
           [szDimTagEntries]="szDimTagEntries"
           [szUnitEntries]="szUnitEntries"
-          [binding]="editedBinding"
-          (bindingChange)="onBindingSave($event!)"
+          [binding]="editedBinding()"
+          (bindingChange)="onBindingChange($event!)"
           (editorClose)="editBinding(null)"
         />
       </mat-expansion-panel>

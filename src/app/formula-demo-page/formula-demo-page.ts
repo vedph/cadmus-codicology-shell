@@ -6,7 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import {
   CodLayoutFormulaComponent,
   CodLayoutFormulaWithDimensions,
-} from '../../../projects/myrmidon/cadmus-codicology-ui/src/public-api';
+} from '@myrmidon/cadmus-codicology-ui';
 
 @Component({
   selector: 'app-formula-demo-page',

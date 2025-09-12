@@ -1,5 +1,5 @@
 import { KeyValue } from '@angular/common';
-import { Component, effect, input, model, output } from '@angular/core';
+import { Component, effect, input, model, output, signal } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -32,6 +32,7 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import { CodHandDescription, CodHandSign } from '../cod-hands-part';
 import { CodHandSignComponent } from '../cod-hand-sign/cod-hand-sign.component';
+import { deepCopy } from '@myrmidon/ngx-tools';
 
 @Component({
   selector: 'cadmus-cod-hand-description',
@@ -75,12 +76,11 @@ export class CodHandDescriptionComponent {
   public signs: FormControl<CodHandSign[]>;
   public form: FormGroup;
 
-  public initialNoteSet?: NoteSet;
-  public editedSign?: CodHandSign;
-  public editedSignIndex;
+  public readonly initialNoteSet = signal<NoteSet | undefined>(undefined);
+  public readonly editedSign = signal<CodHandSign | undefined>(undefined);
+  public readonly editedSignIndex = signal(-1);
 
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
-    this.editedSignIndex = -1;
     this._noteDefs = [
       {
         key: 'i',
@@ -130,16 +130,18 @@ export class CodHandDescriptionComponent {
     });
 
     effect(() => {
-      this.updateForm(this.description());
+      const description = this.description();
+      console.log('input description', description);
+      this.updateForm(description);
     });
   }
 
   private updateForm(model: CodHandDescription | undefined): void {
     if (!model) {
       this.form.reset();
-      this.initialNoteSet = {
+      this.initialNoteSet.set({
         definitions: this._noteDefs,
-      };
+      });
       return;
     }
 
@@ -167,16 +169,16 @@ export class CodHandDescriptionComponent {
     if (model.note) {
       map['n'] = model.note;
     }
-    this.initialNoteSet = {
+    this.initialNoteSet.set({
       definitions: this._noteDefs,
       notes: map,
-    };
+    });
 
     this.signs.setValue(model.signs || []);
     this.form.markAsPristine();
   }
 
-  private getModel(): CodHandDescription {
+  private getDescription(): CodHandDescription {
     return {
       key: this.key.value?.trim(),
       description: this.dsc.value?.trim(),
@@ -229,18 +231,18 @@ export class CodHandDescriptionComponent {
 
   public editSign(sign: CodHandSign | null, index = -1): void {
     if (!sign) {
-      this.editedSignIndex = -1;
-      this.editedSign = undefined;
+      this.editedSignIndex.set(-1);
+      this.editedSign.set(undefined);
     } else {
-      this.editedSignIndex = index;
-      this.editedSign = sign;
+      this.editedSignIndex.set(index);
+      this.editedSign.set(deepCopy(sign));
     }
   }
 
-  public onSignSave(sign: CodHandSign): void {
+  public onSignChange(sign: CodHandSign): void {
     const signs = [...this.signs.value];
-    if (this.editedSignIndex > -1) {
-      signs.splice(this.editedSignIndex, 1, sign);
+    if (this.editedSignIndex() > -1) {
+      signs.splice(this.editedSignIndex(), 1, sign);
     } else {
       signs.push(sign);
     }
@@ -300,6 +302,7 @@ export class CodHandDescriptionComponent {
     if (this.form.invalid) {
       return;
     }
-    this.description.set(this.getModel());
+    const description = this.getDescription();
+    this.description.set(description);
   }
 }

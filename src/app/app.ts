@@ -23,7 +23,8 @@ import {
   MapFormatter,
 } from '@myrmidon/cadmus-refs-citation';
 
-import { CodLocationConverterComponent } from '../../projects/myrmidon/cadmus-part-codicology-sheet-labels/src/public-api';
+import { CodLocationConverterComponent } from '@myrmidon/cadmus-part-codicology-sheet-labels';
+
 import { DC_SCHEME, OD_SCHEME } from './cit-schemes';
 
 @Component({

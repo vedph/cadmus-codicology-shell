@@ -15,7 +15,12 @@ import {
   Validators,
 } from '@angular/forms';
 
-import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import {
+  MatFormField,
+  MatLabel,
+  MatError,
+  MatHint,
+} from '@angular/material/form-field';
 import { MatSelect } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
 import { MatButton, MatIconButton } from '@angular/material/button';
@@ -54,10 +59,10 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     FormsModule,
     ReactiveFormsModule,
     MatFormField,
+    MatHint,
     MatLabel,
     MatSelect,
     MatOption,
-    MatButton,
     MatIcon,
     MatIconButton,
     MatTooltip,
@@ -153,7 +158,9 @@ export class CodHandInstanceComponent {
     });
 
     effect(() => {
-      this.updateForm(this.instance());
+      const instance = this.instance();
+      console.log('input instance', instance);
+      this.updateForm(instance);
     });
   }
 
@@ -185,7 +192,7 @@ export class CodHandInstanceComponent {
     this.form.markAsPristine();
   }
 
-  private getModel(): CodHandInstance {
+  private getInstance(): CodHandInstance {
     return {
       scripts: this.scripts.value.map((e) => e.id),
       rank: this.rank.value ? +this.rank.value : 0,
@@ -284,6 +291,7 @@ export class CodHandInstanceComponent {
     if (this.form.invalid) {
       return;
     }
-    this.instance.set(this.getModel());
+    const instance = this.getInstance();
+    this.instance.set(instance);
   }
 }

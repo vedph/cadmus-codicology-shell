@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -29,7 +29,7 @@ import {
   MatExpansionPanelTitle,
 } from '@angular/material/expansion';
 
-import { NgxToolsValidators, FlatLookupPipe } from '@myrmidon/ngx-tools';
+import { NgxToolsValidators, FlatLookupPipe, deepCopy } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 import { HistoricalDatePipe } from '@myrmidon/cadmus-refs-historical-date';
@@ -95,10 +95,10 @@ export class CodMaterialDscPartComponent
   extends ModelEditorComponentBase<CodMaterialDscPart>
   implements OnInit
 {
-  public editedUtIndex: number;
-  public editedPsIndex: number;
-  public editedUt: CodUnit | undefined;
-  public editedPs: CodPalimpsest | undefined;
+  public readonly editedUt = signal<CodUnit | undefined>(undefined);
+  public readonly editedUtIndex = signal<number>(-1);
+  public readonly editedPs = signal<CodPalimpsest | undefined>(undefined);
+  public readonly editedPsIndex = signal<number>(-1);
 
   public units: FormControl<CodUnit[]>;
   public palimpsests: FormControl<CodPalimpsest[]>;
@@ -126,8 +126,6 @@ export class CodMaterialDscPartComponent
     private _dialogService: DialogService
   ) {
     super(authService, formBuilder);
-    this.editedUtIndex = -1;
-    this.editedPsIndex = -1;
     // form
     this.units = formBuilder.control([], {
       validators: NgxToolsValidators.strictMinLengthValidator(1),
@@ -240,23 +238,23 @@ export class CodMaterialDscPartComponent
   }
 
   public editUnit(unit: CodUnit | null, index = -1): void {
-    this.editedPsIndex = -1;
-    this.editedPs = undefined;
+    this.editedPsIndex.set(-1);
+    this.editedPs.set(undefined);
 
     if (!unit) {
-      this.editedUtIndex = -1;
-      this.editedUt = undefined;
+      this.editedUtIndex.set(-1);
+      this.editedUt.set(undefined);
     } else {
-      this.editedUtIndex = index;
-      this.editedUt = unit;
+      this.editedUtIndex.set(index);
+      this.editedUt.set(deepCopy(unit));
     }
   }
 
-  public onUnitSave(unit: CodUnit): void {
+  public onUnitChange(unit: CodUnit): void {
     const units = [...this.units.value];
 
-    if (this.editedUtIndex > -1) {
-      units.splice(this.editedUtIndex, 1, unit);
+    if (this.editedUtIndex() > -1) {
+      units.splice(this.editedUtIndex(), 1, unit);
     } else {
       units.push(unit);
     }
@@ -317,23 +315,23 @@ export class CodMaterialDscPartComponent
   }
 
   public editPalimpsest(palimpsest: CodPalimpsest | null, index = -1): void {
-    this.editedUtIndex = -1;
-    this.editedUt = undefined;
+    this.editedUtIndex.set(-1);
+    this.editedUt.set(undefined);
 
     if (!palimpsest) {
-      this.editedPsIndex = -1;
-      this.editedPs = undefined;
+      this.editedPsIndex.set(-1);
+      this.editedPs.set(undefined);
     } else {
-      this.editedPsIndex = index;
-      this.editedPs = palimpsest;
+      this.editedPsIndex.set(index);
+      this.editedPs.set(deepCopy(palimpsest));
     }
   }
 
-  public onPalimpsestSave(palimpsest: CodPalimpsest): void {
+  public onPalimpsestChange(palimpsest: CodPalimpsest): void {
     const palimpsests = [...this.palimpsests.value];
 
-    if (this.editedPsIndex > -1) {
-      palimpsests.splice(this.editedPsIndex, 1, palimpsest);
+    if (this.editedPsIndex() > -1) {
+      palimpsests.splice(this.editedPsIndex(), 1, palimpsest);
     } else {
       palimpsests.push(palimpsest);
     }

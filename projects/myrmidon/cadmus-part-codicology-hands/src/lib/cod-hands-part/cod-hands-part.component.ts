@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -7,6 +7,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { TitleCasePipe } from '@angular/common';
 import { take } from 'rxjs/operators';
 
 import {
@@ -22,7 +23,7 @@ import { MatTabGroup, MatTab } from '@angular/material/tabs';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { deepCopy, NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 
@@ -42,7 +43,6 @@ import {
   COD_HANDS_PART_TYPEID,
 } from '../cod-hands-part';
 import { CodHandComponent } from '../cod-hand/cod-hand.component';
-import { TitleCasePipe } from '@angular/common';
 
 /**
  * CodHandsPart editor component.
@@ -80,10 +80,9 @@ export class CodHandsPartComponent
   extends ModelEditorComponentBase<CodHandsPart>
   implements OnInit
 {
-  private _editedIndex: number;
-
-  public tabIndex: number;
-  public editedHand: CodHand | undefined;
+  public readonly tabIndex = signal<number>(0);
+  public readonly editedIndex = signal<number>(-1);
+  public readonly editedHand = signal<CodHand | undefined>(undefined);
 
   // thesauri from description:
   // cod-hand-sign-types
@@ -122,8 +121,6 @@ export class CodHandsPartComponent
     private _dialogService: DialogService
   ) {
     super(authService, formBuilder);
-    this._editedIndex = -1;
-    this.tabIndex = 0;
     // form
     this.hands = formBuilder.control([], {
       validators: NgxToolsValidators.strictMinLengthValidator(1),
@@ -246,17 +243,17 @@ export class CodHandsPartComponent
   }
 
   public editHand(hand: CodHand | null, index = -1): void {
-    this._editedIndex = index;
-    this.editedHand = hand || undefined;
+    this.editedIndex.set(index);
+    this.editedHand.set(hand ? deepCopy(hand) : undefined);
     setTimeout(() => {
-      this.tabIndex = hand ? 1 : 0;
+      this.tabIndex.set(hand ? 1 : 0);
     });
   }
 
-  public onHandSave(hand: CodHand): void {
+  public onHandChange(hand: CodHand): void {
     const hands = [...this.hands.value];
-    if (this._editedIndex > -1) {
-      hands.splice(this._editedIndex, 1, hand);
+    if (this.editedIndex() > -1) {
+      hands.splice(this.editedIndex(), 1, hand);
     } else {
       hands.push(hand);
     }

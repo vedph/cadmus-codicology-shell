@@ -23,7 +23,7 @@
     <legend>notes</legend>
     <!-- notes -->
     <cadmus-ui-note-set
-      [set]="initialNoteSet!"
+      [set]="initialNoteSet()!"
       (noteChange)="onNoteChange($event!)"
     />
   </fieldset>
@@ -52,8 +52,8 @@
       <tbody>
         @for ( sign of signs.value; track sign; let i = $index; let first =
         $first; let last = $last) {
-        <tr>
-          <td>
+        <tr [class.selected]="i === editedSignIndex()">
+          <td class="fit-width">
             <button
               type="button"
               mat-icon-button
@@ -99,17 +99,19 @@
     }
 
     <!-- edited sign -->
-    <mat-expansion-panel [disabled]="!editedSign" [expanded]="editedSign">
+    @if (editedSign()) {
+    <mat-expansion-panel [disabled]="!editedSign()" [expanded]="editedSign()">
       <mat-expansion-panel-header
-        >sign #{{ editedSignIndex + 1 }}</mat-expansion-panel-header
+        >sign #{{ editedSignIndex() + 1 }}</mat-expansion-panel-header
       >
       <cadmus-cod-hand-sign
         [typeEntries]="sgnTypeEntries()"
-        [sign]="editedSign"
-        (signChange)="onSignSave($event!)"
+        [sign]="editedSign()"
+        (signChange)="onSignChange($event!)"
         (editorClose)="editSign(null)"
       />
     </mat-expansion-panel>
+    }
   </div>
 
   <!-- buttons -->

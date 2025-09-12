@@ -32,7 +32,7 @@
         <tbody>
           @for ( entry of contents.value; track entry; let i = $index; let first
           = $first; let last = $last) {
-          <tr [class.selected]="editedIndex === i">
+          <tr [class.selected]="editedIndex() === i">
             <td class="fit-width">
               <button
                 type="button"
@@ -76,13 +76,13 @@
           }
         </tbody>
       </table>
-      } @if (editedContent) {
+      } @if (editedContent()) {
       <mat-expansion-panel
-        [expanded]="editedContent"
-        [disabled]="!editedContent"
+        [expanded]="editedContent()"
+        [disabled]="!editedContent()"
       >
         <mat-expansion-panel-header>
-          <mat-panel-title> #{{ editedIndex + 1 }} </mat-panel-title>
+          <mat-panel-title> #{{ editedIndex() + 1 }} </mat-panel-title>
         </mat-expansion-panel-header>
         <cadmus-cod-content-editor
           [tagEntries]="tagEntries"
@@ -90,7 +90,7 @@
           [annFeatureEntries]="annFeatureEntries"
           [annLangEntries]="annLangEntries"
           [annTypeEntries]="annTypeEntries"
-          [content]="editedContent"
+          [content]="editedContent()"
           (contentChange)="onContentSave($event!)"
           (editorClose)="editContent(null)"
         >

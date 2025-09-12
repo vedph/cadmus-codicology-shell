@@ -99,7 +99,9 @@ export class CodHandSignComponent {
     });
 
     effect(() => {
-      this.updateForm(this.sign());
+      const sign = this.sign();
+      console.log('input sign', sign);
+      this.updateForm(sign);
     });
   }
 
@@ -161,6 +163,7 @@ export class CodHandSignComponent {
     if (this.form.invalid) {
       return;
     }
-    this.sign.set(this.getSign());
+    const sign = this.getSign();
+    this.sign.set(sign);
   }
 }

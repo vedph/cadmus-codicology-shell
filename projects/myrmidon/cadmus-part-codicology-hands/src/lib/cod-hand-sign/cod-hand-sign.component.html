@@ -45,27 +45,31 @@
   </div>
 
   <!-- MUFI -->
-  <div class="form-row">
-    <!-- MUFI lookup -->
-    <cadmus-refs-lookup
-      [service]="lookupService"
-      [item]="mufi.value"
-      label="MUFI"
-      (itemChange)="onMufiItemChange($event)"
-    />
-    <!-- svg -->
-    @if (mufi.value?.svg) {
-    <div id="glyph-box">
-      <div
-        [innerHTML]="
-          mufi.value?.svg || ''
-            | replaceString : 'rgb(64,101,101)' : 'rgb(68,76,255)' : false
-            | safeHtml
-        "
-      ></div>
+  <fieldset>
+    <legend>MUFI</legend>
+    <div class="form-row">
+      <!-- MUFI lookup -->
+      <cadmus-refs-lookup
+        [service]="lookupService"
+        [item]="mufi.value"
+        label="MUFI"
+        (itemChange)="onMufiItemChange($event)"
+      />
+      <!-- svg -->
+      @if (mufi.value?.svg) {
+      <div id="glyph-box">
+        <div
+          [innerHTML]="
+            mufi.value?.svg || ''
+              | replaceString : 'rgb(64,101,101)' : 'rgb(68,76,255)' : false
+              | safeHtml
+          "
+        ></div>
+      </div>
+      }
     </div>
-    }
-  </div>
+  </fieldset>
+
   <!-- comment -->
   @if (mufi.value?.comment) {
   <div id="glyph-comment">{{ mufi.value!.comment }}</div>

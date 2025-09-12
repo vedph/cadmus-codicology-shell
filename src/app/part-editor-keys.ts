@@ -1,15 +1,15 @@
 import { PartEditorKeys } from '@myrmidon/cadmus-core';
 
-import { COD_BINDINGS_PART_TYPEID } from '../../projects/myrmidon/cadmus-part-codicology-bindings/src/public-api';
-import { COD_CONTENTS_PART_TYPEID } from '../../projects/myrmidon/cadmus-part-codicology-contents/src/public-api';
-import { COD_DECORATIONS_PART_TYPEID } from '../../projects/myrmidon/cadmus-part-codicology-decorations/src/public-api';
-import { COD_EDITS_PART_TYPEID } from '../../projects/myrmidon/cadmus-part-codicology-edits/src/public-api';
-import { COD_HANDS_PART_TYPEID } from '../../projects/myrmidon/cadmus-part-codicology-hands/src/public-api';
-import { COD_LAYOUTS_PART_TYPEID } from '../../projects/myrmidon/cadmus-part-codicology-layouts/src/public-api';
-import { COD_MATERIAL_DSC_PART_TYPEID } from '../../projects/myrmidon/cadmus-part-codicology-material-dsc/src/public-api';
-import { COD_SHEET_LABELS_PART_TYPEID } from '../../projects/myrmidon/cadmus-part-codicology-sheet-labels/src/public-api';
-import { COD_SHELFMARKS_PART_TYPEID } from '../../projects/myrmidon/cadmus-part-codicology-shelfmarks/src/public-api';
-import { COD_WATERMARKS_PART_TYPEID } from '../../projects/myrmidon/cadmus-part-codicology-watermarks/src/public-api';
+import { COD_BINDINGS_PART_TYPEID } from '@myrmidon/cadmus-part-codicology-bindings';
+import { COD_CONTENTS_PART_TYPEID } from '@myrmidon/cadmus-part-codicology-contents';
+import { COD_DECORATIONS_PART_TYPEID } from '@myrmidon/cadmus-part-codicology-decorations';
+import { COD_EDITS_PART_TYPEID } from '@myrmidon/cadmus-part-codicology-edits';
+import { COD_HANDS_PART_TYPEID } from '@myrmidon/cadmus-part-codicology-hands';
+import { COD_LAYOUTS_PART_TYPEID } from '@myrmidon/cadmus-part-codicology-layouts';
+import { COD_MATERIAL_DSC_PART_TYPEID } from '@myrmidon/cadmus-part-codicology-material-dsc';
+import { COD_SHEET_LABELS_PART_TYPEID } from '@myrmidon/cadmus-part-codicology-sheet-labels';
+import { COD_SHELFMARKS_PART_TYPEID } from '@myrmidon/cadmus-part-codicology-shelfmarks';
+import { COD_WATERMARKS_PART_TYPEID } from '@myrmidon/cadmus-part-codicology-watermarks';
 
 const CODICOLOGY = 'codicology';
 

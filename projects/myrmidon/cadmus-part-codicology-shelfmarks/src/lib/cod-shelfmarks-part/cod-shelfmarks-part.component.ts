@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -23,7 +23,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 
-import { FlatLookupPipe, NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { deepCopy, FlatLookupPipe, NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 
@@ -76,8 +76,8 @@ export class CodShelfmarksPartComponent
   extends ModelEditorComponentBase<CodShelfmarksPart>
   implements OnInit
 {
-  public editedIndex: number;
-  public editedShelfmark: CodShelfmark | undefined;
+  public readonly editedIndex = signal<number>(-1);
+  public readonly editedShelfmark = signal<CodShelfmark | undefined>(undefined);
 
   // cod-shelfmark-tags
   public tagEntries: ThesaurusEntry[] | undefined;
@@ -92,7 +92,6 @@ export class CodShelfmarksPartComponent
     private _dialogService: DialogService
   ) {
     super(authService, formBuilder);
-    this.editedIndex = -1;
     // form
     this.shelfmarks = formBuilder.control([], {
       nonNullable: true,
@@ -162,19 +161,19 @@ export class CodShelfmarksPartComponent
 
   public editShelfmark(shelfmark: CodShelfmark | null, index = -1): void {
     if (!shelfmark) {
-      this.editedIndex = -1;
-      this.editedShelfmark = undefined;
+      this.editedIndex.set(-1);
+      this.editedShelfmark.set(undefined);
     } else {
-      this.editedIndex = index;
-      this.editedShelfmark = shelfmark;
+      this.editedIndex.set(index);
+      this.editedShelfmark.set(deepCopy(shelfmark));
     }
   }
 
-  public onShelfmarkSave(shelfmark: CodShelfmark): void {
+  public onShelfmarkChange(shelfmark: CodShelfmark): void {
     const shelfmarks = [...this.shelfmarks.value];
 
-    if (this.editedIndex > -1) {
-      shelfmarks.splice(this.editedIndex, 1, shelfmark);
+    if (this.editedIndex() > -1) {
+      shelfmarks.splice(this.editedIndex(), 1, shelfmark);
     } else {
       shelfmarks.push(shelfmark);
     }

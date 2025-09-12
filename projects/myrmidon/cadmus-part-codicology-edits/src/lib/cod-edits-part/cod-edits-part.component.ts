@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -27,6 +27,7 @@ import {
   NgxToolsValidators,
   EllipsisPipe,
   FlatLookupPipe,
+  deepCopy,
 } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
@@ -85,8 +86,8 @@ export class CodEditsPartComponent
   extends ModelEditorComponentBase<CodEditsPart>
   implements OnInit
 {
-  public editedIndex: number;
-  public editedEdit: CodEdit | undefined;
+  public readonly editedIndex = signal<number>(-1);
+  public readonly editedEdit = signal<CodEdit | undefined>(undefined);
 
   // cod-edit-colors
   public colorEntries: ThesaurusEntry[] | undefined;
@@ -119,7 +120,6 @@ export class CodEditsPartComponent
     private _dialogService: DialogService
   ) {
     super(authService, formBuilder);
-    this.editedIndex = -1;
     // form
     this.edits = formBuilder.control([], {
       validators: NgxToolsValidators.strictMinLengthValidator(1),
@@ -240,19 +240,19 @@ export class CodEditsPartComponent
 
   public editEdit(edit: CodEdit | null, index = -1): void {
     if (!edit) {
-      this.editedIndex = -1;
-      this.editedEdit = undefined;
+      this.editedIndex.set(-1);
+      this.editedEdit.set(undefined);
     } else {
-      this.editedIndex = index;
-      this.editedEdit = edit;
+      this.editedIndex.set(index);
+      this.editedEdit.set(deepCopy(edit));
     }
   }
 
-  public onEditSave(edit: CodEdit): void {
+  public onEditChange(edit: CodEdit): void {
     const edits = [...this.edits.value];
 
-    if (this.editedIndex > -1) {
-      edits.splice(this.editedIndex, 1, edit);
+    if (this.editedIndex() > -1) {
+      edits.splice(this.editedIndex(), 1, edit);
     } else {
       edits.push(edit);
     }

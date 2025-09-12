@@ -258,15 +258,15 @@
     }
 
     <mat-expansion-panel
-      [expanded]="editedAnnotation"
-      [disabled]="!editedAnnotation"
+      [expanded]="editedAnnotation()"
+      [disabled]="!editedAnnotation()"
     >
       <mat-expansion-panel-header>annotation</mat-expansion-panel-header>
       <cadmus-cod-content-annotation
         [typeEntries]="annTypeEntries()"
         [featureEntries]="annFeatureEntries()"
         [langEntries]="annLangEntries()"
-        [annotation]="editedAnnotation"
+        [annotation]="editedAnnotation()"
         (annotationChange)="onAnnotationSave($event!)"
         (editorClose)="onAnnotationClose()"
       />

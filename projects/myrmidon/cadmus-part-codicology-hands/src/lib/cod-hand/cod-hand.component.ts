@@ -1,4 +1,4 @@
-import { Component, effect, input, model, OnInit, output } from '@angular/core';
+import { Component, effect, input, model, OnInit, output, signal } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -25,7 +25,7 @@ import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 
 import { DialogService } from '@myrmidon/ngx-mat-tools';
-import { NgxToolsValidators, FlatLookupPipe } from '@myrmidon/ngx-tools';
+import { NgxToolsValidators, FlatLookupPipe, deepCopy } from '@myrmidon/ngx-tools';
 import {
   AssertedCompositeId,
   AssertedCompositeIdsComponent,
@@ -115,21 +115,18 @@ export class CodHandComponent implements OnInit {
   public references: FormControl<DocReference[]>;
   public form: FormGroup;
 
-  public editedDscIndex: number;
-  public editedDsc?: CodHandDescription;
+  public readonly editedDscIndex = signal<number>(-1);
+  public readonly editedDsc = signal<CodHandDescription | undefined>(undefined);
 
-  public editedIstIndex: number;
-  public editedIst?: CodHandInstance;
+  public readonly editedIstIndex = signal<number>(-1);
+  public readonly editedIst = signal<CodHandInstance | undefined>(undefined);
 
-  public editedSubIndex: number;
-  public editedSub?: CodHandSubscription;
+  public readonly editedSubIndex = signal<number>(-1);
+  public readonly editedSub = signal<CodHandSubscription | undefined>(undefined);
 
   public dscKeys: string[];
 
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
-    this.editedDscIndex = -1;
-    this.editedIstIndex = -1;
-    this.editedSubIndex = -1;
     this.dscKeys = [];
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
@@ -153,7 +150,9 @@ export class CodHandComponent implements OnInit {
     });
 
     effect(() => {
-      this.updateForm(this.hand());
+      const hand = this.hand();
+      console.log('input hand', hand);
+      this.updateForm(hand);
     });
   }
 
@@ -224,18 +223,18 @@ export class CodHandComponent implements OnInit {
     index = -1
   ): void {
     if (!description) {
-      this.editedDscIndex = -1;
-      this.editedDsc = undefined;
+      this.editedDscIndex.set(-1);
+      this.editedDsc.set(undefined);
     } else {
-      this.editedDscIndex = index;
-      this.editedDsc = description;
+      this.editedDscIndex.set(index);
+      this.editedDsc.set(deepCopy(description));
     }
   }
 
-  public onDescriptionSave(dsc: CodHandDescription): void {
+  public onDescriptionChange(dsc: CodHandDescription): void {
     const descriptions = [...this.descriptions.value];
-    if (this.editedDscIndex > -1) {
-      descriptions.splice(this.editedDscIndex, 1, dsc);
+    if (this.editedDscIndex() > -1) {
+      descriptions.splice(this.editedDscIndex(), 1, dsc);
     } else {
       descriptions.push(dsc);
     }
@@ -299,18 +298,18 @@ export class CodHandComponent implements OnInit {
 
   public editInstance(instance: CodHandInstance | null, index = -1): void {
     if (!instance) {
-      this.editedIstIndex = -1;
-      this.editedIst = undefined;
+      this.editedIstIndex.set(-1);
+      this.editedIst.set(undefined);
     } else {
-      this.editedIstIndex = index;
-      this.editedIst = instance;
+      this.editedIstIndex.set(index);
+      this.editedIst.set(deepCopy(instance));
     }
   }
 
-  public onInstanceSave(instance: CodHandInstance): void {
+  public onInstanceChange(instance: CodHandInstance): void {
     const instances = [...this.instances.value];
-    if (this.editedIstIndex > -1) {
-      instances.splice(this.editedIstIndex, 1, instance);
+    if (this.editedIstIndex() > -1) {
+      instances.splice(this.editedIstIndex(), 1, instance);
     } else {
       instances.push(instance);
     }
@@ -377,18 +376,18 @@ export class CodHandComponent implements OnInit {
     index = -1
   ): void {
     if (!subscription) {
-      this.editedSubIndex = -1;
-      this.editedSub = undefined;
+      this.editedSubIndex.set(-1);
+      this.editedSub.set(undefined);
     } else {
-      this.editedSubIndex = index;
-      this.editedSub = subscription;
+      this.editedSubIndex.set(index);
+      this.editedSub.set(deepCopy(subscription));
     }
   }
 
-  public onSubscriptionSave(subscription: CodHandSubscription): void {
+  public onSubscriptionChange(subscription: CodHandSubscription): void {
     const subscriptions = [...this.subscriptions.value];
-    if (this.editedSubIndex > -1) {
-      subscriptions.splice(this.editedSubIndex, 1, subscription);
+    if (this.editedSubIndex() > -1) {
+      subscriptions.splice(this.editedSubIndex(), 1, subscription);
     } else {
       subscriptions.push(subscription);
     }
@@ -454,6 +453,7 @@ export class CodHandComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    this.hand.set(this.getHand());
+    const hand = this.getHand();
+    this.hand.set(hand);
   }
 }

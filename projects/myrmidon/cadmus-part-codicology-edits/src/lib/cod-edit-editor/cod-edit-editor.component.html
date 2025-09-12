@@ -87,7 +87,7 @@
     <fieldset>
       <legend>techniques</legend>
       <cadmus-ui-flag-set
-        [flags]="techniqueFlags"
+        [flags]="techniqueFlags()"
         [checkedIds]="techniques.value"
         (checkedIdsChange)="onTechniqueIdsChange($event)"
       />
@@ -156,7 +156,7 @@
   <fieldset>
     <legend>colors</legend>
     <cadmus-ui-flag-set
-      [flags]="colorFlags"
+      [flags]="colorFlags()"
       [checkedIds]="colors.value"
       (checkedIdsChange)="onColorIdsChange($event)"
     />

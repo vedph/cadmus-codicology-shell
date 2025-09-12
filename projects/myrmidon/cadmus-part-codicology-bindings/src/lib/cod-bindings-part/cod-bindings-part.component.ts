@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -23,7 +23,11 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 
-import { NgxToolsValidators, FlatLookupPipe } from '@myrmidon/ngx-tools';
+import {
+  NgxToolsValidators,
+  FlatLookupPipe,
+  deepCopy,
+} from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 import { HistoricalDatePipe } from '@myrmidon/cadmus-refs-historical-date';
@@ -31,7 +35,7 @@ import { HistoricalDatePipe } from '@myrmidon/cadmus-refs-historical-date';
 import {
   ThesauriSet,
   ThesaurusEntry,
-  EditedObject
+  EditedObject,
 } from '@myrmidon/cadmus-core';
 import {
   ModelEditorComponentBase,
@@ -44,6 +48,7 @@ import {
   COD_BINDINGS_PART_TYPEID,
 } from '../cod-bindings-part';
 import { CodBindingEditorComponent } from '../cod-binding-editor/cod-binding-editor.component';
+import { PhysicalSizePipe } from '@myrmidon/cadmus-mat-physical-size';
 
 /**
  * CodBindingsPart editor component.
@@ -74,14 +79,15 @@ import { CodBindingEditorComponent } from '../cod-binding-editor/cod-binding-edi
     TitleCasePipe,
     FlatLookupPipe,
     HistoricalDatePipe,
+    PhysicalSizePipe,
   ],
 })
 export class CodBindingsPartComponent
   extends ModelEditorComponentBase<CodBindingsPart>
   implements OnInit
 {
-  public editedIndex: number;
-  public editedBinding: CodBinding | undefined;
+  public readonly editedIndex = signal<number>(-1);
+  public readonly editedBinding = signal<CodBinding | undefined>(undefined);
 
   // cod-binding-tags
   public tagEntries: ThesaurusEntry[] | undefined;
@@ -104,7 +110,7 @@ export class CodBindingsPartComponent
   // physical-size-units
   public szUnitEntries: ThesaurusEntry[] | undefined;
 
-  public entries: FormControl<CodBinding[]>;
+  public bindings: FormControl<CodBinding[]>;
 
   constructor(
     authService: AuthJwtService,
@@ -112,9 +118,9 @@ export class CodBindingsPartComponent
     private _dialogService: DialogService
   ) {
     super(authService, formBuilder);
-    this.editedIndex = -1;
+    this.editedIndex.set(-1);
     // form
-    this.entries = formBuilder.control([], {
+    this.bindings = formBuilder.control([], {
       validators: NgxToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
@@ -126,7 +132,7 @@ export class CodBindingsPartComponent
 
   protected buildForm(formBuilder: FormBuilder): FormGroup | UntypedFormGroup {
     return formBuilder.group({
-      entries: this.entries,
+      entries: this.bindings,
     });
   }
 
@@ -198,7 +204,7 @@ export class CodBindingsPartComponent
       this.form.reset();
       return;
     }
-    this.entries.setValue(part.bindings || []);
+    this.bindings.setValue(part.bindings || []);
     this.form.markAsPristine();
   }
 
@@ -214,7 +220,7 @@ export class CodBindingsPartComponent
 
   protected getValue(): CodBindingsPart {
     let part = this.getEditedPart(COD_BINDINGS_PART_TYPEID) as CodBindingsPart;
-    part.bindings = this.entries.value || [];
+    part.bindings = this.bindings.value || [];
     return part;
   }
 
@@ -228,23 +234,24 @@ export class CodBindingsPartComponent
 
   public editBinding(binding: CodBinding | null, index = -1): void {
     if (!binding) {
-      this.editedIndex = -1;
-      this.editedBinding = undefined;
+      this.editedIndex.set(-1);
+      this.editedBinding.set(undefined);
     } else {
-      this.editedIndex = index;
-      this.editedBinding = binding;
+      this.editedIndex.set(index);
+      this.editedBinding.set(deepCopy(binding));
     }
   }
 
-  public onBindingSave(binding: CodBinding): void {
-    const bindings = [...this.entries.value];
-    if (this.editedIndex > -1) {
-      bindings.splice(this.editedIndex, 1, binding);
+  public onBindingChange(binding: CodBinding): void {
+    const bindings = [...this.bindings.value];
+    if (this.editedIndex() > -1) {
+      bindings.splice(this.editedIndex(), 1, binding);
     } else {
       bindings.push(binding);
     }
-
-    this.entries.setValue(bindings);
+    this.bindings.setValue(bindings);
+    this.bindings.updateValueAndValidity();
+    this.bindings.markAsDirty();
     this.editBinding(null);
   }
 
@@ -254,9 +261,11 @@ export class CodBindingsPartComponent
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          const entries = [...this.entries.value];
+          const entries = [...this.bindings.value];
           entries.splice(index, 1);
-          this.entries.setValue(entries);
+          this.bindings.setValue(entries);
+          this.bindings.updateValueAndValidity();
+          this.bindings.markAsDirty();
         }
       });
   }
@@ -265,21 +274,25 @@ export class CodBindingsPartComponent
     if (index < 1) {
       return;
     }
-    const entry = this.entries.value[index];
-    const entries = [...this.entries.value];
+    const entry = this.bindings.value[index];
+    const entries = [...this.bindings.value];
     entries.splice(index, 1);
     entries.splice(index - 1, 0, entry);
-    this.entries.setValue(entries);
+    this.bindings.setValue(entries);
+    this.bindings.updateValueAndValidity();
+    this.bindings.markAsDirty();
   }
 
   public moveBindingDown(index: number): void {
-    if (index + 1 >= this.entries.value.length) {
+    if (index + 1 >= this.bindings.value.length) {
       return;
     }
-    const entry = this.entries.value[index];
-    const entries = [...this.entries.value];
+    const entry = this.bindings.value[index];
+    const entries = [...this.bindings.value];
     entries.splice(index, 1);
     entries.splice(index + 1, 0, entry);
-    this.entries.setValue(entries);
+    this.bindings.setValue(entries);
+    this.bindings.updateValueAndValidity();
+    this.bindings.markAsDirty();
   }
 }

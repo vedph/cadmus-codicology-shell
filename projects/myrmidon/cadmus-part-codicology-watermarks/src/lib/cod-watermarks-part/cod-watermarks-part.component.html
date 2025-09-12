@@ -32,7 +32,7 @@
         <tbody>
           @for ( entry of watermarks.value; track entry; let i = $index; let
           first = $first; let last = $last) {
-          <tr [class.selected]="editedIndex === i">
+          <tr [class.selected]="editedIndex() === i">
             <td class="fit-width">
               <button
                 type="button"
@@ -76,14 +76,14 @@
           }
         </tbody>
       </table>
-      } @if (editedWatermark) {
+      } @if (editedWatermark()) {
       <mat-expansion-panel
-        [expanded]="editedWatermark"
-        [disabled]="!editedWatermark"
+        [expanded]="editedWatermark()"
+        [disabled]="!editedWatermark()"
       >
         <mat-expansion-panel-header>
           <mat-panel-title>
-            #{{ editedIndex + 1 }} {{ editedWatermark.name }}
+            #{{ editedIndex() + 1 }} {{ editedWatermark()?.name }}
           </mat-panel-title>
         </mat-expansion-panel-header>
         <cadmus-cod-watermark-editor
@@ -95,8 +95,8 @@
           [szTagEntries]="szTagEntries"
           [szDimTagEntries]="szDimTagEntries"
           [szUnitEntries]="szUnitEntries"
-          [watermark]="editedWatermark"
-          (watermarkChange)="onWatermarkSave($event!)"
+          [watermark]="editedWatermark()"
+          (watermarkChange)="onWatermarkChange($event!)"
           (editorClose)="editWatermark(null)"
         />
       </mat-expansion-panel>

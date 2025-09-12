@@ -41,3 +41,12 @@ div#glyph-comment {
   border-radius: 6px;
   padding: 4px;
 }
+fieldset {
+  border: 1px solid silver;
+  border-radius: 6px;
+  padding: 6px;
+  margin: 8px 0;
+}
+legend {
+  color: silver;
+}

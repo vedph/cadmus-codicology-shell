@@ -9,192 +9,197 @@
       }}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <h3>Units</h3>
-      <div>
-        <button
-          type="button"
-          mat-flat-button
-          class="mat-primary"
-          (click)="addUnit()"
-        >
-          <mat-icon>add_circle</mat-icon> unit
-        </button>
-      </div>
-      @if (units.value.length) {
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>extent</th>
-            <th>material</th>
-            <th>place/date</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for ( unit of units.value; track unit; let i = $index; let first =
-          $first; let last = $last) {
-          <tr [class.selected]="editedUtIndex === i">
-            <td class="fit-width">
-              <button
-                type="button"
-                mat-icon-button
-                matTooltip="Edit this unit"
-                (click)="editUnit(unit, i)"
-              >
-                <mat-icon class="mat-primary">edit</mat-icon>
-              </button>
-              <button
-                type="button"
-                mat-icon-button
-                matTooltip="Move this unit up"
-                [disabled]="first"
-                (click)="moveUnitUp(i)"
-              >
-                <mat-icon>arrow_upward</mat-icon>
-              </button>
-              <button
-                type="button"
-                mat-icon-button
-                matTooltip="Move this unit down"
-                [disabled]="last"
-                (click)="moveUnitDown(i)"
-              >
-                <mat-icon>arrow_downward</mat-icon>
-              </button>
-              <button
-                type="button"
-                mat-icon-button
-                matTooltip="Delete this unit"
-                (click)="deleteUnit(i)"
-              >
-                <mat-icon class="mat-warn">remove_circle</mat-icon>
-              </button>
-            </td>
-            <td>{{ unit.ranges | codLocationRange }}</td>
-            <td>
-              {{
-                unit.material | flatLookup : materialEntries : "id" : "value"
-              }}
-            </td>
-            <td>{{ unit.chronotopes?.length || 0 }}</td>
-          </tr>
-          }
-        </tbody>
-      </table>
-      }
-
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title> Palimpsests </mat-panel-title>
-          <mat-panel-description>{{
-            palimpsests.value.length
-          }}</mat-panel-description>
-        </mat-expansion-panel-header>
+      <!-- units -->
+      <section>
         <div>
           <button
             type="button"
             mat-flat-button
             class="mat-primary"
-            (click)="addPalimpsest()"
+            (click)="addUnit()"
           >
-            <mat-icon>add_circle</mat-icon> palimpsest
+            <mat-icon>add_circle</mat-icon> unit
           </button>
         </div>
-        @if (palimpsests.value.length) {
+        @if (units.value.length) {
         <table>
           <thead>
             <tr>
               <th></th>
               <th>extent</th>
-              <th>place</th>
-              <th>date</th>
+              <th>material</th>
+              <th>place/date</th>
             </tr>
           </thead>
           <tbody>
-            @for ( entry of palimpsests.value; track entry; let i = $index; let
-            first = $first; let last = $last) {
-            <tr [class.selected]="editedPsIndex === i">
+            @for ( unit of units.value; track unit; let i = $index; let first =
+            $first; let last = $last) {
+            <tr [class.selected]="editedUtIndex() === i">
               <td class="fit-width">
                 <button
                   type="button"
                   mat-icon-button
-                  matTooltip="Edit this palimpsest"
-                  (click)="editPalimpsest(entry, i)"
+                  matTooltip="Edit this unit"
+                  (click)="editUnit(unit, i)"
                 >
                   <mat-icon class="mat-primary">edit</mat-icon>
                 </button>
                 <button
                   type="button"
                   mat-icon-button
-                  matTooltip="Move this palimpsest up"
+                  matTooltip="Move this unit up"
                   [disabled]="first"
-                  (click)="movePalimpsestUp(i)"
+                  (click)="moveUnitUp(i)"
                 >
                   <mat-icon>arrow_upward</mat-icon>
                 </button>
                 <button
                   type="button"
                   mat-icon-button
-                  matTooltip="Move this palimpsest down"
+                  matTooltip="Move this unit down"
                   [disabled]="last"
-                  (click)="movePalimpsestDown(i)"
+                  (click)="moveUnitDown(i)"
                 >
                   <mat-icon>arrow_downward</mat-icon>
                 </button>
                 <button
                   type="button"
                   mat-icon-button
-                  matTooltip="Delete this palimpsest"
-                  (click)="deletePalimpsest(i)"
+                  matTooltip="Delete this unit"
+                  (click)="deleteUnit(i)"
                 >
                   <mat-icon class="mat-warn">remove_circle</mat-icon>
                 </button>
               </td>
-              <td>{{ entry.ranges | codLocationRange }}</td>
-              <td>{{ entry.chronotope?.place?.value }}</td>
-              <td>{{ entry.chronotope?.date | historicalDate }}</td>
+              <td>{{ unit.ranges | codLocationRange }}</td>
+              <td>
+                {{
+                  unit.material | flatLookup : materialEntries : "id" : "value"
+                }}
+              </td>
+              <td>{{ unit.chronotopes?.length || 0 }}</td>
             </tr>
             }
           </tbody>
         </table>
+        } @if (editedUt()) {
+        <mat-expansion-panel [expanded]="editedUt()" [disabled]="!editedUt()">
+          <mat-expansion-panel-header>
+            <mat-panel-title> #{{ editedUtIndex() + 1 }} </mat-panel-title>
+          </mat-expansion-panel-header>
+          <cadmus-cod-unit-editor
+            [tagEntries]="tagEntries"
+            [materialEntries]="materialEntries"
+            [formatEntries]="formatEntries"
+            [stateEntries]="stateEntries"
+            [ctTagEntries]="ctTagEntries"
+            [assTagEntries]="assTagEntries"
+            [refTypeEntries]="refTypeEntries"
+            [refTagEntries]="refTagEntries"
+            [unit]="editedUt()"
+            (unitChange)="onUnitChange($event!)"
+            (editorClose)="editUnit(null)"
+          />
+        </mat-expansion-panel>
         }
-      </mat-expansion-panel>
+      </section>
 
-      @if (editedUt) {
-      <mat-expansion-panel [expanded]="editedUt" [disabled]="!editedUt">
-        <mat-expansion-panel-header>
-          <mat-panel-title> #{{ editedUtIndex + 1 }} </mat-panel-title>
-        </mat-expansion-panel-header>
-        <cadmus-cod-unit-editor
-          [tagEntries]="tagEntries"
-          [materialEntries]="materialEntries"
-          [formatEntries]="formatEntries"
-          [stateEntries]="stateEntries"
-          [ctTagEntries]="ctTagEntries"
-          [assTagEntries]="assTagEntries"
-          [refTypeEntries]="refTypeEntries"
-          [refTagEntries]="refTagEntries"
-          [unit]="editedUt"
-          (unitChange)="onUnitSave($event!)"
-          (editorClose)="editUnit(null)"
-        />
-      </mat-expansion-panel>
-      } @if (editedPs) {
-      <mat-expansion-panel [expanded]="editedPs" [disabled]="!editedPs">
-        <mat-expansion-panel-header>
-          <mat-panel-title> #{{ editedPsIndex + 1 }} </mat-panel-title>
-        </mat-expansion-panel-header>
-        <cadmus-cod-palimpsest-editor
-          [ctTagEntries]="ctTagEntries"
-          [assTagEntries]="assTagEntries"
-          [refTagEntries]="refTagEntries"
-          [refTypeEntries]="refTypeEntries"
-          [palimpsest]="editedPs"
-          (palimpsestChange)="onPalimpsestSave($event!)"
-          (editorClose)="editPalimpsest(null)"
-        />
-      </mat-expansion-panel>
-      }
+      <!-- palimpsests -->
+      <section>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title> Palimpsests </mat-panel-title>
+            <mat-panel-description>{{
+              palimpsests.value.length
+            }}</mat-panel-description>
+          </mat-expansion-panel-header>
+          <div>
+            <button
+              type="button"
+              mat-flat-button
+              class="mat-primary"
+              (click)="addPalimpsest()"
+            >
+              <mat-icon>add_circle</mat-icon> palimpsest
+            </button>
+          </div>
+          @if (palimpsests.value.length) {
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>extent</th>
+                <th>place</th>
+                <th>date</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for ( entry of palimpsests.value; track entry; let i = $index;
+              let first = $first; let last = $last) {
+              <tr [class.selected]="editedPsIndex() === i">
+                <td class="fit-width">
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Edit this palimpsest"
+                    (click)="editPalimpsest(entry, i)"
+                  >
+                    <mat-icon class="mat-primary">edit</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Move this palimpsest up"
+                    [disabled]="first"
+                    (click)="movePalimpsestUp(i)"
+                  >
+                    <mat-icon>arrow_upward</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Move this palimpsest down"
+                    [disabled]="last"
+                    (click)="movePalimpsestDown(i)"
+                  >
+                    <mat-icon>arrow_downward</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Delete this palimpsest"
+                    (click)="deletePalimpsest(i)"
+                  >
+                    <mat-icon class="mat-warn">remove_circle</mat-icon>
+                  </button>
+                </td>
+                <td>{{ entry.ranges | codLocationRange }}</td>
+                <td>{{ entry.chronotope?.place?.value }}</td>
+                <td>{{ entry.chronotope?.date | historicalDate }}</td>
+              </tr>
+              }
+            </tbody>
+          </table>
+          }
+        </mat-expansion-panel>
+
+        @if (editedPs()) {
+        <mat-expansion-panel [expanded]="editedPs()" [disabled]="!editedPs()">
+          <mat-expansion-panel-header>
+            <mat-panel-title> #{{ editedPsIndex() + 1 }} </mat-panel-title>
+          </mat-expansion-panel-header>
+          <cadmus-cod-palimpsest-editor
+            [ctTagEntries]="ctTagEntries"
+            [assTagEntries]="assTagEntries"
+            [refTagEntries]="refTagEntries"
+            [refTypeEntries]="refTypeEntries"
+            [palimpsest]="editedPs()"
+            (palimpsestChange)="onPalimpsestChange($event!)"
+            (editorClose)="editPalimpsest(null)"
+          />
+        </mat-expansion-panel>
+        }
+      </section>
     </mat-card-content>
     <mat-card-actions>
       <cadmus-close-save-buttons
