@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-material-dsc",
-  "version": "13.0.1",
+  "version": "14.0.0",
   "description": "Cadmus codicology - material description.",
   "keywords": [
     "Cadmus"
@@ -19,7 +19,7 @@
     "@angular/material": "^20.0.0",
     "@myrmidon/ngx-tools": "^2.0.0",
     "@myrmidon/cadmus-cod-location": "^9.0.2",
-    "@myrmidon/cadmus-refs-asserted-chronotope": "^10.0.3",
+    "@myrmidon/cadmus-refs-asserted-chronotope": "^10.0.4",
     "@myrmidon/cadmus-refs-historical-date": "^9.0.2",
     "@myrmidon/cadmus-state": "^14.0.0",
     "@myrmidon/cadmus-ui": "^14.0.0",

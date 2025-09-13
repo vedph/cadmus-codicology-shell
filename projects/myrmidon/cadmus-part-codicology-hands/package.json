@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-hands",
-  "version": "13.0.2",
+  "version": "14.0.0",
   "description": "Cadmus codicology - hands.",
   "keywords": [
     "Cadmus"
@@ -30,7 +30,7 @@
     "@myrmidon/cadmus-state": "^14.0.0",
     "@myrmidon/cadmus-ui": "^14.0.0",
     "@myrmidon/cadmus-ui-pg": "^15.0.0",
-    "@myrmidon/cadmus-codicology-ui": "^13.0.3"
+    "@myrmidon/cadmus-codicology-ui": "^14.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"

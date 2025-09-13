@@ -27,91 +27,94 @@
       (noteChange)="onNoteChange($event!)"
     />
   </fieldset>
-  <div style="margin-top: 6px">
+  <div>
     <!-- signs -->
-    <div>
-      <button
-        type="button"
-        mat-flat-button
-        class="mat-primary"
-        (click)="addSign()"
-      >
-        <mat-icon>add_circle</mat-icon> sign
-      </button>
-    </div>
-    @if (signs.value && signs.value.length) {
-    <table>
-      <thead>
-        <tr>
-          <th></th>
-          <th>EID</th>
-          <th>type</th>
-          <th>location</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for ( sign of signs.value; track sign; let i = $index; let first =
-        $first; let last = $last) {
-        <tr [class.selected]="i === editedSignIndex()">
-          <td class="fit-width">
-            <button
-              type="button"
-              mat-icon-button
-              matTooltip="Edit this sign"
-              (click)="editSign(sign, i)"
-            >
-              <mat-icon class="mat-primary">edit</mat-icon>
-            </button>
-            <button
-              type="button"
-              mat-icon-button
-              matTooltip="Move this sign up"
-              [disabled]="first"
-              (click)="moveSignUp(i)"
-            >
-              <mat-icon>arrow_upward</mat-icon>
-            </button>
-            <button
-              type="button"
-              mat-icon-button
-              matTooltip="Move this sign down"
-              [disabled]="last"
-              (click)="moveSignDown(i)"
-            >
-              <mat-icon>arrow_downward</mat-icon>
-            </button>
-            <button
-              type="button"
-              mat-icon-button
-              matTooltip="Delete this sign"
-              (click)="deleteSign(i)"
-            >
-              <mat-icon class="mat-warn">remove_circle</mat-icon>
-            </button>
-          </td>
-          <td>{{ sign.eid }}</td>
-          <td>{{ sign.type }}</td>
-          <td>{{ sign.sampleLocation | codLocation }}</td>
-        </tr>
-        }
-      </tbody>
-    </table>
-    }
+    <fieldset>
+      <legend>signs</legend>
+      <div>
+        <button
+          type="button"
+          mat-flat-button
+          class="mat-primary"
+          (click)="addSign()"
+        >
+          <mat-icon>add_circle</mat-icon> sign
+        </button>
+      </div>
+      @if (signs.value && signs.value.length) {
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>EID</th>
+            <th>type</th>
+            <th>location</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for ( sign of signs.value; track sign; let i = $index; let first =
+          $first; let last = $last) {
+          <tr [class.selected]="i === editedSignIndex()">
+            <td class="fit-width">
+              <button
+                type="button"
+                mat-icon-button
+                matTooltip="Edit this sign"
+                (click)="editSign(sign, i)"
+              >
+                <mat-icon class="mat-primary">edit</mat-icon>
+              </button>
+              <button
+                type="button"
+                mat-icon-button
+                matTooltip="Move this sign up"
+                [disabled]="first"
+                (click)="moveSignUp(i)"
+              >
+                <mat-icon>arrow_upward</mat-icon>
+              </button>
+              <button
+                type="button"
+                mat-icon-button
+                matTooltip="Move this sign down"
+                [disabled]="last"
+                (click)="moveSignDown(i)"
+              >
+                <mat-icon>arrow_downward</mat-icon>
+              </button>
+              <button
+                type="button"
+                mat-icon-button
+                matTooltip="Delete this sign"
+                (click)="deleteSign(i)"
+              >
+                <mat-icon class="mat-warn">remove_circle</mat-icon>
+              </button>
+            </td>
+            <td>{{ sign.eid }}</td>
+            <td>{{ sign.type }}</td>
+            <td>{{ sign.sampleLocation | codLocation }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      }
 
-    <!-- edited sign -->
-    @if (editedSign()) {
-    <mat-expansion-panel [disabled]="!editedSign()" [expanded]="editedSign()">
-      <mat-expansion-panel-header
-        >sign #{{ editedSignIndex() + 1 }}</mat-expansion-panel-header
-      >
-      <cadmus-cod-hand-sign
-        [typeEntries]="sgnTypeEntries()"
-        [sign]="editedSign()"
-        (signChange)="onSignChange($event!)"
-        (editorClose)="editSign(null)"
-      />
-    </mat-expansion-panel>
-    }
+      <!-- edited sign -->
+      @if (editedSign()) {
+      <mat-expansion-panel [disabled]="!editedSign()" [expanded]="editedSign()">
+        <mat-expansion-panel-header
+          >sign #{{ editedSignIndex() + 1 }}</mat-expansion-panel-header
+        >
+        <cadmus-cod-hand-sign
+          [typeEntries]="sgnTypeEntries()"
+          [sign]="editedSign()"
+          (signChange)="onSignChange($event!)"
+          (editorClose)="editSign(null)"
+        />
+      </mat-expansion-panel>
+      }
+    </fieldset>
   </div>
 
   <!-- buttons -->

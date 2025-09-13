@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-pg",
-  "version": "13.0.0",
+  "version": "14.0.0",
   "description": "Cadmus codicology - wrappers for part editors.",
   "keywords": [
     "Cadmus"
@@ -20,16 +20,16 @@
     "@myrmidon/cadmus-state": "^14.0.0",
     "@myrmidon/cadmus-ui": "^14.0.0",
     "@myrmidon/cadmus-ui-pg": "^15.0.0",
-    "@myrmidon/cadmus-part-codicology-bindings": "^13.0.0",
-    "@myrmidon/cadmus-part-codicology-contents": "^13.0.0",
-    "@myrmidon/cadmus-part-codicology-decorations": "^13.0.0",
-    "@myrmidon/cadmus-part-codicology-edits": "^13.0.0",
-    "@myrmidon/cadmus-part-codicology-hands": "^13.0.0",
-    "@myrmidon/cadmus-part-codicology-layouts": "^13.0.0",
-    "@myrmidon/cadmus-part-codicology-material-dsc": "^13.0.0",
-    "@myrmidon/cadmus-part-codicology-sheet-labels": "^13.0.0",
-    "@myrmidon/cadmus-part-codicology-shelfmarks": "^13.0.0",
-    "@myrmidon/cadmus-part-codicology-watermarks": "^13.0.0"
+    "@myrmidon/cadmus-part-codicology-bindings": "^14.0.0",
+    "@myrmidon/cadmus-part-codicology-contents": "^14.0.0",
+    "@myrmidon/cadmus-part-codicology-decorations": "^14.0.0",
+    "@myrmidon/cadmus-part-codicology-edits": "^14.0.0",
+    "@myrmidon/cadmus-part-codicology-hands": "^14.0.0",
+    "@myrmidon/cadmus-part-codicology-layouts": "^14.0.0",
+    "@myrmidon/cadmus-part-codicology-material-dsc": "^14.0.0",
+    "@myrmidon/cadmus-part-codicology-sheet-labels": "^14.0.0",
+    "@myrmidon/cadmus-part-codicology-shelfmarks": "^14.0.0",
+    "@myrmidon/cadmus-part-codicology-watermarks": "^14.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"

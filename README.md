@@ -162,9 +162,12 @@ graph LR;
 
 ## History
 
+### 14.0.0
+
+- 2025-09-13: completed refactoring and bumped to next major version 14. There is no breaking changes, but the implementation now relies on bricks using `OnPush`, which might introduce subtle issues when using them.
 - 2025-09-12:
   - updated to `OnPush`-based bricks.
-  - refactoring libraries so that whenever an object is being passed to a child component, it must be deeply cloned to ensure change detection by reference. This is a consequence of adopting `OnPush`-based bricks.
+  - refactoring libraries so that whenever an object is being passed to a child component, it must be _deeply_ cloned to ensure change detection by reference. This is a consequence of adopting `OnPush`-based bricks.
   - refactored imports to exclude local projects path in demo app.
 - 2025-08-28:
   - fit width for buttons column in bindings (`@myrmidon/cadmus-part-codicology-bindings`).
