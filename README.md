@@ -164,6 +164,7 @@ graph LR;
 
 ### 14.0.0
 
+- 2025-09-15: updated packages.
 - 2025-09-13: completed refactoring and bumped to next major version 14. There is no breaking changes, but the implementation now relies on bricks using `OnPush`, which might introduce subtle issues when using them.
 - 2025-09-12:
   - updated to `OnPush`-based bricks.
