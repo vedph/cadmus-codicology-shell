@@ -1,7 +1,4 @@
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Routes } from '@angular/router';
 
 // cadmus
 import { PendingChangesGuard } from '@myrmidon/cadmus-core';
@@ -47,7 +44,7 @@ import {
   COD_WATERMARKS_PART_TYPEID,
 } from '@myrmidon/cadmus-part-codicology-watermarks';
 
-export const RouterModuleForChild = RouterModule.forChild([
+export const CADMUS_PART_CODICOLOGY_PG_ROUTES: Routes = [
   {
     path: `${COD_BINDINGS_PART_TYPEID}/:pid`,
     pathMatch: 'full',
@@ -108,17 +105,4 @@ export const RouterModuleForChild = RouterModule.forChild([
     component: CodWatermarksPartFeatureComponent,
     canDeactivate: [PendingChangesGuard],
   },
-]);
-
-@NgModule({
-  declarations: [],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    // Cadmus
-    RouterModuleForChild,
-  ],
-  exports: [],
-})
-export class CadmusPartCodicologyPgModule {}
+];
