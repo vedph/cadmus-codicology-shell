@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-hands",
-  "version": "14.0.0",
+  "version": "14.0.1",
   "description": "Cadmus codicology - hands.",
   "keywords": [
     "Cadmus"
@@ -20,17 +20,17 @@
     "@myrmidon/ngx-tools": "^2.0.0",
     "@myrmidon/cadmus-cod-location": "^9.0.2",
     "@myrmidon/cadmus-mat-physical-size": "^9.0.10",
-    "@myrmidon/cadmus-refs-asserted-chronotope": "^10.0.3",
-    "@myrmidon/cadmus-refs-asserted-ids": "^10.0.9",
+    "@myrmidon/cadmus-refs-asserted-chronotope": "^10.0.4",
+    "@myrmidon/cadmus-refs-asserted-ids": "^10.0.10",
     "@myrmidon/cadmus-refs-doc-references": "^10.0.2",
     "@myrmidon/cadmus-refs-historical-date": "^9.0.2",
     "@myrmidon/cadmus-refs-lookup": "^10.0.3",
     "@myrmidon/cadmus-ui-flag-set": "^9.0.2",
     "@myrmidon/cadmus-ui-note-set": "^10.0.1",
     "@myrmidon/cadmus-state": "^14.0.0",
-    "@myrmidon/cadmus-ui": "^14.0.0",
-    "@myrmidon/cadmus-ui-pg": "^15.0.0",
-    "@myrmidon/cadmus-codicology-ui": "^14.0.0"
+    "@myrmidon/cadmus-ui": "^15.0.0",
+    "@myrmidon/cadmus-ui-pg": "^16.0.0",
+    "@myrmidon/cadmus-codicology-ui": "^13.0.3"
   },
   "dependencies": {
     "tslib": "^2.3.0"

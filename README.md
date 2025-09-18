@@ -164,7 +164,9 @@ graph LR;
 
 ### 14.0.1
 
-- 2025-09-18: refactored codicology pg library to drop legacy module (`@myrmidon/cadmus-part-codicology-pg` 14.0.1).
+- 2025-09-18:
+  - refactored codicology pg library to drop legacy module (`@myrmidon/cadmus-part-codicology-pg` 14.0.1).
+  - updated peer dependencies in all libraries.
 
 ### 14.0.0
 

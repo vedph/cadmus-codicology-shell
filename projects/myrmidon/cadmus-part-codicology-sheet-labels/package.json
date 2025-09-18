@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-sheet-labels",
-  "version": "14.0.0",
+  "version": "14.0.1",
   "description": "Cadmus codicology - sheet labels.",
   "keywords": [
     "Cadmus"
@@ -26,9 +26,9 @@
     "@myrmidon/cadmus-ui-flag-set": "^9.0.2",
     "@myrmidon/cadmus-refs-lookup": "^10.0.3",
     "@myrmidon/cadmus-state": "^14.0.0",
-    "@myrmidon/cadmus-ui": "^14.0.0",
-    "@myrmidon/cadmus-ui-pg": "^15.0.0",
-    "@myrmidon/cadmus-codicology-ui": "^14.0.0"
+    "@myrmidon/cadmus-ui": "^15.0.0",
+    "@myrmidon/cadmus-ui-pg": "^16.0.0",
+    "@myrmidon/cadmus-codicology-ui": "^13.0.3"
   },
   "dependencies": {
     "tslib": "^2.3.0"

@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-bindings",
-  "version": "14.0.0",
+  "version": "14.0.1",
   "description": "Cadmus codicology - bindings.",
   "keywords": [
     "Cadmus"
@@ -22,8 +22,8 @@
     "@myrmidon/cadmus-refs-asserted-chronotope": "^10.0.4",
     "@myrmidon/cadmus-refs-historical-date": "^9.0.2",
     "@myrmidon/cadmus-state": "^14.0.0",
-    "@myrmidon/cadmus-ui": "^14.0.0",
-    "@myrmidon/cadmus-ui-pg": "^15.0.0"
+    "@myrmidon/cadmus-ui": "^15.0.0",
+    "@myrmidon/cadmus-ui-pg": "^16.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
