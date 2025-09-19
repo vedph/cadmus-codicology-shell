@@ -35,6 +35,24 @@
         />
       </div>
 
+      <!-- links -->
+      <div>
+        <fieldset>
+          <legend>links</legend>
+          <cadmus-refs-asserted-composite-ids
+            [idScopeEntries]="idScopeEntries()"
+            [idTagEntries]="idTagEntries()"
+            [assTagEntries]="assTagEntries()"
+            [refTypeEntries]="refTypeEntries()"
+            [refTagEntries]="refTagEntries()"
+            [canSwitchMode]="true"
+            [canEditTarget]="true"
+            [ids]="links.value"
+            (idsChange)="onLinksChange($event)"
+          />
+        </fieldset>
+      </div>
+
       <!-- flags -->
       @if (genFlags().length) {
       <div>
@@ -175,7 +193,7 @@
       <div>
         <fieldset
           [hidden]="
-            (!gildingFlags().length && !(elemGildingFree())) || hidden()?.gildings
+            (!gildingFlags().length && !elemGildingFree()) || hidden()?.gildings
           "
         >
           <legend>gildings</legend>
@@ -192,7 +210,8 @@
       <div>
         <fieldset
           [hidden]="
-            (!techniqueFlags().length && !(elemTechniqueFree())) || hidden()?.techniques
+            (!techniqueFlags().length && !elemTechniqueFree()) ||
+            hidden()?.techniques
           "
         >
           <legend>techniques</legend>
@@ -224,7 +243,8 @@
       <div>
         <fieldset
           [hidden]="
-            (!positionFlags().length && !elemPositionFree()) || hidden()?.positions
+            (!positionFlags().length && !elemPositionFree()) ||
+            hidden()?.positions
           "
         >
           <legend>positions</legend>

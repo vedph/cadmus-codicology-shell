@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-decorations",
-  "version": "14.0.1",
+  "version": "14.0.2",
   "description": "Cadmus codicology - decorations.",
   "keywords": [
     "Cadmus"
@@ -32,7 +32,7 @@
     "@myrmidon/cadmus-state": "^14.0.0",
     "@myrmidon/cadmus-ui": "^15.0.0",
     "@myrmidon/cadmus-ui-pg": "^16.0.0",
-    "@myrmidon/cadmus-codicology-ui": "^13.0.3"
+    "@myrmidon/cadmus-codicology-ui": "^13.0.4"
   },
   "dependencies": {
     "tslib": "^2.3.0"

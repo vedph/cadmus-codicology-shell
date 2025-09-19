@@ -39,6 +39,7 @@ export interface CodDecorationElement {
   tag?: string;
   flags: string[];
   ranges: CodLocationRange[];
+  links?: AssertedCompositeId[];
   instanceCount?: number;
   typologies?: string[];
   subject?: string;
@@ -800,6 +801,92 @@ export const COD_DECORATIONS_PART_SCHEMA = {
                                 },
                               },
                             ],
+                          },
+                        },
+                        links: {
+                          type: 'array',
+                          items: {
+                            type: 'object',
+                            default: {},
+                            required: ['target'],
+                            properties: {
+                              target: {
+                                type: 'object',
+                                required: ['gid', 'label'],
+                                properties: {
+                                  gid: {
+                                    type: 'string',
+                                  },
+                                  label: {
+                                    type: 'string',
+                                  },
+                                  itemId: {
+                                    type: 'string',
+                                  },
+                                  partId: {
+                                    type: 'string',
+                                  },
+                                  partTypeId: {
+                                    type: 'string',
+                                  },
+                                  roleId: {
+                                    type: 'string',
+                                  },
+                                  name: {
+                                    type: 'string',
+                                  },
+                                  value: {
+                                    type: 'string',
+                                  },
+                                },
+                              },
+                              scope: {
+                                type: 'string',
+                              },
+                              tag: {
+                                type: 'string',
+                              },
+                              assertion: {
+                                type: 'object',
+                                required: ['rank'],
+                                properties: {
+                                  tag: {
+                                    type: 'string',
+                                  },
+                                  rank: {
+                                    type: 'integer',
+                                  },
+                                  note: {
+                                    type: 'string',
+                                  },
+                                  references: {
+                                    type: 'array',
+                                    items: {
+                                      anyOf: [
+                                        {
+                                          type: 'object',
+                                          required: ['citation'],
+                                          properties: {
+                                            type: {
+                                              type: 'string',
+                                            },
+                                            tag: {
+                                              type: 'string',
+                                            },
+                                            citation: {
+                                              type: 'string',
+                                            },
+                                            note: {
+                                              type: 'string',
+                                            },
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                },
+                              },
+                            },
                           },
                         },
                         key: {

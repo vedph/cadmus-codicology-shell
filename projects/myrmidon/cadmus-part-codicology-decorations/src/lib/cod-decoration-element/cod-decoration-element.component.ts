@@ -38,6 +38,10 @@ import {
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
+import {
+  AssertedCompositeId,
+  AssertedCompositeIdsComponent,
+} from '@myrmidon/cadmus-refs-asserted-ids';
 
 import { CodImage, CodImagesComponent } from '@myrmidon/cadmus-codicology-ui';
 
@@ -99,6 +103,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     FlatLookupPipe,
     CodImagesComponent,
     LookupDocReferencesComponent,
+    AssertedCompositeIdsComponent,
   ],
 })
 export class CodDecorationElementComponent implements OnInit, OnDestroy {
@@ -125,6 +130,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
   public tag: FormControl<string | null>;
   public flags: FormControl<string[]>;
   public ranges: FormControl<CodLocationRange[]>;
+  public links: FormControl<AssertedCompositeId[]>;
   public instanceCount: FormControl<number>;
   // typologies
   public typologies: FormControl<string[]>;
@@ -181,6 +187,12 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
   public readonly imgTypeEntries = input<ThesaurusEntry[]>();
   // cod-decoration-element-tags
   public readonly decElemTagEntries = input<ThesaurusEntry[]>();
+  // assertion-tags
+  public readonly assTagEntries = input<ThesaurusEntry[]>();
+  // external-id-tags
+  public readonly idTagEntries = input<ThesaurusEntry[]>();
+  // external-id-scopes
+  public readonly idScopeEntries = input<ThesaurusEntry[]>();
 
   // type-dependent thesauri:
   // cod-decoration-element-flags
@@ -233,6 +245,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
     this.tag = formBuilder.control(null, Validators.maxLength(50));
     this.flags = formBuilder.control([], { nonNullable: true });
     this.ranges = formBuilder.control([], { nonNullable: true });
+    this.links = formBuilder.control([], { nonNullable: true });
     this.instanceCount = formBuilder.control(0, { nonNullable: true });
     this.typologies = formBuilder.control([], { nonNullable: true });
     this.subject = formBuilder.control(null, Validators.maxLength(100));
@@ -259,6 +272,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
       flags: this.flags,
       instanceCount: this.instanceCount,
       ranges: this.ranges,
+      links: this.links,
       typologies: this.typologies,
       subject: this.subject,
       colors: this.colors,
@@ -445,6 +459,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
     this.instanceCount.setValue(element.instanceCount || 0);
 
     this.ranges.setValue(element.ranges);
+    this.links.setValue(element.links || []);
 
     this.flags.setValue(element.flags || []);
 
@@ -512,6 +527,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
       tag: this.tag.value?.trim(),
       flags: this.flags.value,
       ranges: this.ranges.value || [],
+      links: this.links.value?.length ? this.links.value : undefined,
       instanceCount: this.instanceCount.value || 0,
       typologies: this.typologies.value,
       subject: this.subject.value?.trim(),
@@ -530,6 +546,12 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
         : undefined,
       note: this.note.value?.trim(),
     };
+  }
+
+  public onLinksChange(ids: AssertedCompositeId[]): void {
+    this.links.setValue(ids || []);
+    this.links.updateValueAndValidity();
+    this.links.markAsDirty();
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
