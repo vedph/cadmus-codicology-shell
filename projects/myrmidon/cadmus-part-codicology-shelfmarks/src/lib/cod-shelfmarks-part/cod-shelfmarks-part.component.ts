@@ -23,7 +23,11 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 
-import { deepCopy, FlatLookupPipe, NgxToolsValidators } from '@myrmidon/ngx-tools';
+import {
+  deepCopy,
+  FlatLookupPipe,
+  NgxToolsValidators,
+} from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 
@@ -46,7 +50,8 @@ import { CodShelfmarkEditorComponent } from '../cod-shelfmark-editor/cod-shelfma
 
 /**
  * CodShelfmarksPart editor component.
- * Thesauri: cod-shelfmark-tags, cod-shelfmark-libraries (all optional).
+ * Thesauri: cod-shelfmark-tags, cod-shelfmark-cities,
+ * cod-shelfmark-libraries (all optional).
  */
 @Component({
   selector: 'cadmus-cod-shelfmarks-part',
@@ -80,9 +85,11 @@ export class CodShelfmarksPartComponent
   public readonly editedShelfmark = signal<CodShelfmark | undefined>(undefined);
 
   // cod-shelfmark-tags
-  public tagEntries: ThesaurusEntry[] | undefined;
+  public readonly tagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  // cod-shelfmark-cities
+  public readonly cityEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-shelfmark-libraries
-  public libEntries: ThesaurusEntry[] | undefined;
+  public readonly libEntries = signal<ThesaurusEntry[] | undefined>(undefined);
 
   public shelfmarks: FormControl<CodShelfmark[]>;
 
@@ -112,15 +119,21 @@ export class CodShelfmarksPartComponent
   private updateThesauri(thesauri: ThesauriSet): void {
     let key = 'cod-shelfmark-tags';
     if (this.hasThesaurus(key)) {
-      this.tagEntries = thesauri[key].entries;
+      this.tagEntries.set(thesauri[key].entries);
     } else {
-      this.tagEntries = undefined;
+      this.tagEntries.set(undefined);
+    }
+    key = 'cod-shelfmark-cities';
+    if (this.hasThesaurus(key)) {
+      this.cityEntries.set(thesauri[key].entries);
+    } else {
+      this.cityEntries.set(undefined);
     }
     key = 'cod-shelfmark-libraries';
     if (this.hasThesaurus(key)) {
-      this.libEntries = thesauri[key].entries;
+      this.libEntries.set(thesauri[key].entries);
     } else {
-      this.libEntries = undefined;
+      this.libEntries.set(undefined);
     }
   }
 
@@ -153,8 +166,8 @@ export class CodShelfmarksPartComponent
 
   public addShelfmark(): void {
     this.editShelfmark({
-      city: '',
-      library: this.libEntries?.length ? this.libEntries[0].id : '',
+      city: this.cityEntries?.length ? this.cityEntries()![0].id : '',
+      library: this.libEntries?.length ? this.libEntries()![0].id : '',
       location: '',
     });
   }
@@ -165,7 +178,7 @@ export class CodShelfmarksPartComponent
       this.editedShelfmark.set(undefined);
     } else {
       this.editedIndex.set(index);
-      this.editedShelfmark.set(deepCopy(shelfmark));
+      this.editedShelfmark.set(structuredClone(shelfmark));
     }
   }
 

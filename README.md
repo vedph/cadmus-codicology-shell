@@ -162,7 +162,9 @@ graph LR;
 
 ## History
 
-- 2025-10-14: updated Angular and packages.
+- 2025-10-14:
+  - added cities thesaurus to shelfmarks.
+  - updated Angular and packages.
 
 ### 14.0.1
 

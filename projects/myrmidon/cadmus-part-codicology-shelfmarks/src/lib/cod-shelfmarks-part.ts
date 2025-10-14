@@ -5,10 +5,10 @@ import { Part } from '@myrmidon/cadmus-core';
  */
 export interface CodShelfmark {
   tag?: string;
-  city: string;
-  library: string;
+  city?: string;
+  library?: string;
   fund?: string;
-  location: string;
+  location?: string;
 }
 
 /**
@@ -82,7 +82,6 @@ export const COD_SHELFMARKS_PART_SCHEMA = {
         anyOf: [
           {
             type: 'object',
-            required: ['city', 'library', 'location'],
             properties: {
               tag: {
                 type: 'string',

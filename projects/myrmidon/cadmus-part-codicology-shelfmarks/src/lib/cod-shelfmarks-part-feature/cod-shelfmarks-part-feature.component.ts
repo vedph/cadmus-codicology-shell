@@ -36,6 +36,10 @@ export class CodShelfmarksPartFeatureComponent
   }
 
   protected override getReqThesauriIds(): string[] {
-    return ['cod-shelfmark-tags', 'cod-shelfmark-libraries'];
+    return [
+      'cod-shelfmark-tags',
+      'cod-shelfmark-cities',
+      'cod-shelfmark-libraries',
+    ];
   }
 }

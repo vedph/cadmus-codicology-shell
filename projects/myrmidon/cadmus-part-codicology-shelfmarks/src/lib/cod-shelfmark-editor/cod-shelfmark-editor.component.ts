@@ -43,6 +43,8 @@ export class CodShelfmarkEditorComponent {
 
   // cod-shelfmark-tags
   public readonly tagEntries = input<ThesaurusEntry[]>();
+  // cod-shelfmark-cities
+  public readonly cityEntries = input<ThesaurusEntry[]>();
   // cod-shelfmark-libraries
   public readonly libEntries = input<ThesaurusEntry[]>();
 
@@ -57,16 +59,10 @@ export class CodShelfmarkEditorComponent {
 
   constructor(formBuilder: FormBuilder) {
     this.tag = formBuilder.control(null, Validators.maxLength(50));
-    this.city = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
-    this.library = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
-    this.fund = formBuilder.control(null, Validators.maxLength(50));
-    this.location = formBuilder.control(null, Validators.maxLength(50));
+    this.city = formBuilder.control(null, Validators.maxLength(100));
+    this.library = formBuilder.control(null, Validators.maxLength(100));
+    this.fund = formBuilder.control(null, Validators.maxLength(100));
+    this.location = formBuilder.control(null, Validators.maxLength(100));
 
     this.form = formBuilder.group({
       tag: this.tag,
@@ -88,20 +84,20 @@ export class CodShelfmarkEditorComponent {
     }
 
     this.tag.setValue(model.tag || null);
-    this.city.setValue(model.city);
-    this.library.setValue(model.library);
+    this.city.setValue(model.city || null);
+    this.library.setValue(model.library || null);
     this.fund.setValue(model.fund || null);
-    this.location.setValue(model.location);
+    this.location.setValue(model.location || null);
     this.form.markAsPristine();
   }
 
   private getModel(): CodShelfmark {
     return {
-      tag: this.tag.value?.trim(),
-      city: this.city.value?.trim() || '',
-      library: this.library.value?.trim() || '',
-      fund: this.fund.value?.trim(),
-      location: this.location.value?.trim() || '',
+      tag: this.tag.value?.trim() || undefined,
+      city: this.city.value?.trim() || undefined,
+      library: this.library.value?.trim() || undefined,
+      fund: this.fund.value?.trim() || undefined,
+      location: this.location.value?.trim() || undefined,
     };
   }
 
