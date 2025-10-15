@@ -104,14 +104,8 @@ export class CodDecorationArtistComponent {
   constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
-    this.type = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
-    this.name = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(100),
-    ]);
+    this.type = formBuilder.control(null, Validators.maxLength(50));
+    this.name = formBuilder.control(null, Validators.maxLength(100));
     this.ids = formBuilder.control([], { nonNullable: true });
     this.styles = formBuilder.control([], { nonNullable: true });
     // space-delimited text

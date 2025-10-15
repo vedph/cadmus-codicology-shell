@@ -1,8 +1,8 @@
 <form [formGroup]="form" (submit)="save()">
-  <div style="display: flex; gap: 8px; align-items: center">
+  <div class="form-row">
     <!-- type (bound) -->
     @if (artTypeEntries()?.length) {
-    <mat-form-field style="flex: 0 0 auto">
+    <mat-form-field>
       <mat-label>type</mat-label>
       <mat-select [formControl]="type">
         @for (e of artTypeEntries(); track e.id) {
@@ -16,7 +16,7 @@
     }
     <!-- type (free) -->
     @else {
-    <mat-form-field style="flex: 0 0 auto">
+    <mat-form-field>
       <mat-label>type</mat-label>
       <input matInput [formControl]="type" />
       @if ($any(type).errors?.required && (type.dirty || type.touched)) {

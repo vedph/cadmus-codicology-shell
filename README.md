@@ -162,6 +162,7 @@ graph LR;
 
 ## History
 
+- 2025-10-15: artist name and type not required. This allows just using a link instead of embedding data at the decoration level for those projects using artist items or external artists.
 - 2025-10-14:
   - added cities thesaurus to shelfmarks.
   - updated Angular and packages.

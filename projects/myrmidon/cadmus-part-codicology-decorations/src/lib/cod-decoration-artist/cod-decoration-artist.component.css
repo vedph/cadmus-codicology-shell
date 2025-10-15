@@ -26,3 +26,12 @@ td.fit-width {
 tr.selected {
   background-color: #d0d0d0 !important;
 }
+.form-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.form-row * {
+  flex: 0 0 auto;
+}
