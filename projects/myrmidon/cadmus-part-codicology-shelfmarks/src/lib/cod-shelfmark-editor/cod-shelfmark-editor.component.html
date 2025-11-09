@@ -42,10 +42,10 @@
     </mat-form-field>
     }
   </div>
-  <div class="form-row">
+  <div>
     <!-- library (bound) -->
     @if (libEntries()?.length) {
-    <mat-form-field>
+    <mat-form-field class="long-text">
       <mat-label>library</mat-label>
       <mat-select [formControl]="library">
         @for (e of libEntries(); track e.id) {
@@ -56,7 +56,7 @@
     }
     <!-- library (free) -->
     @else {
-    <mat-form-field>
+    <mat-form-field class="long-text">
       <mat-label>library</mat-label>
       <input matInput [formControl]="library" />
       @if ( $any(library).errors?.maxLength && (library.dirty ||
@@ -65,7 +65,8 @@
       }
     </mat-form-field>
     }
-
+  </div>
+  <div class="form-row">
     <!-- fund -->
     <mat-form-field>
       <mat-label>fund</mat-label>

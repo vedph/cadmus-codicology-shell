@@ -48,10 +48,18 @@ import {
 } from '../cod-shelfmarks-part';
 import { CodShelfmarkEditorComponent } from '../cod-shelfmark-editor/cod-shelfmark-editor.component';
 
+interface CodShelfmarksPartSettings {
+  cityFromLibPattern?: string;
+}
+
 /**
  * CodShelfmarksPart editor component.
  * Thesauri: cod-shelfmark-tags, cod-shelfmark-cities,
  * cod-shelfmark-libraries (all optional).
+ * Settings: cityFromLibPattern (optional) - a regular expression pattern
+ * used to extract the city from the library name. In this case, city will be
+ * disabled in the shelfmark editor and it will be extracted from the library
+ * when selected.
  */
 @Component({
   selector: 'cadmus-cod-shelfmarks-part',
@@ -91,6 +99,16 @@ export class CodShelfmarksPartComponent
   // cod-shelfmark-libraries
   public readonly libEntries = signal<ThesaurusEntry[] | undefined>(undefined);
 
+  /**
+   * This contains the regular expression pattern (when specified in settings)
+   * used to extract the city from the library name. In this case, city will be
+   * disabled in the shelfmark editor and it will be extracted from the library
+   * when selected.
+   * For instance, you might set this to `\(([^)]+)\)$` to extract the city
+   * from library names like "Marciana (Venice)" or "Nazionale (Florence)".
+   */
+  public readonly cityFromLibPattern = signal<string | undefined>(undefined);
+
   public shelfmarks: FormControl<CodShelfmark[]>;
 
   constructor(
@@ -106,8 +124,19 @@ export class CodShelfmarksPartComponent
     });
   }
 
-  public override ngOnInit(): void {
+  public override async ngOnInit(): Promise<void> {
     super.ngOnInit();
+
+    // load settings for this part
+    if (this._appRepository) {
+      const settings = await this._appRepository.getSettingFor(
+          COD_SHELFMARKS_PART_TYPEID,
+          this.identity()?.roleId || undefined
+        ) as CodShelfmarksPartSettings | null;
+      if (settings) {
+        this.cityFromLibPattern.set(settings.cityFromLibPattern);
+      }
+    }
   }
 
   protected buildForm(formBuilder: FormBuilder): FormGroup | UntypedFormGroup {
