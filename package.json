@@ -22,6 +22,7 @@
     "build-lib": "npm run build-ui && npm run build-bnd && npm run build-cnt && npm run build-dec && npm run build-edt && npm run build-hnd && npm run build-lbl && npm run build-lay && npm run build-mat && npm run build-shm && npm run build-wat && npm run build-pg"
   },
   "private": true,
+  "packageManager": "pnpm@10.23.0",
   "dependencies": {
     "@angular/animations": "^20.3.10",
     "@angular/cdk": "^20.2.12",
@@ -111,5 +112,13 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "ng-packagr": "^20.3.0",
     "typescript": "~5.9.2"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-win32-arm64-msvc": "^4.53.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "rollup": "npm:@rollup/wasm-node"
+    }
   }
 }

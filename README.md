@@ -162,6 +162,9 @@ graph LR;
 
 ## History
 
+- 2025-11-23:
+  - ⚠️ upgraded to Angular 21.
+  - migrated to `pnpm`.
 - 2025-11-09:
   - updated Angular and packages.
   - added settings to shelfmarks to extract city from library if requested.
