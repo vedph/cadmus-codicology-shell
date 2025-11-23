@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+
 import { Subject, takeUntil } from 'rxjs';
 
 import { MatCardModule } from '@angular/material/card';
@@ -12,12 +12,11 @@ import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 @Component({
   selector: 'cadmus-home',
   imports: [
-    CommonModule,
     RouterModule,
     MatCardModule,
     MatButtonModule,
-    MatIconModule,
-  ],
+    MatIconModule
+],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })

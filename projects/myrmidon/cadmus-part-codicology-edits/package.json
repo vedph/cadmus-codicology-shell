@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-edits",
-  "version": "14.0.1",
+  "version": "14.0.2",
   "description": "Cadmus codicology - edits.",
   "keywords": [
     "Cadmus"
@@ -14,19 +14,19 @@
     "name": "Daniele Fusi"
   },
   "peerDependencies": {
-    "@angular/common": "^20.0.0",
-    "@angular/core": "^20.0.0",
-    "@angular/material": "^20.0.0",
-    "@myrmidon/ngx-tools": "^2.0.0",
-    "@myrmidon/cadmus-cod-location": "^9.0.2",
-    "@myrmidon/cadmus-refs-asserted-ids": "^10.0.10",
-    "@myrmidon/cadmus-refs-doc-references": "^10.0.2",
-    "@myrmidon/cadmus-refs-historical-date": "^9.0.2",
-    "@myrmidon/cadmus-refs-lookup": "^10.0.3",
-    "@myrmidon/cadmus-ui-flag-set": "^9.0.2",
-    "@myrmidon/cadmus-state": "^14.0.0",
-    "@myrmidon/cadmus-ui": "^15.0.0",
-    "@myrmidon/cadmus-ui-pg": "^16.0.0"
+    "@angular/common": "^20.0.0 || ^21.0.0",
+    "@angular/core": "^20.0.0 || ^21.0.0",
+    "@angular/material": "^20.0.0 || ^21.0.0",
+    "@myrmidon/ngx-tools": "^2.0.2",
+    "@myrmidon/cadmus-cod-location": "^9.0.3",
+    "@myrmidon/cadmus-refs-asserted-ids": "^10.0.12",
+    "@myrmidon/cadmus-refs-doc-references": "^10.0.3",
+    "@myrmidon/cadmus-refs-historical-date": "^9.1.1",
+    "@myrmidon/cadmus-refs-lookup": "^10.0.6",
+    "@myrmidon/cadmus-ui-flag-set": "^9.0.3",
+    "@myrmidon/cadmus-state": "^14.0.2",
+    "@myrmidon/cadmus-ui": "^15.1.4",
+    "@myrmidon/cadmus-ui-pg": "^16.0.1"
   },
   "dependencies": {
     "tslib": "^2.3.0"
