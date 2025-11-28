@@ -1,4 +1,4 @@
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -10,6 +10,7 @@ import {
 } from '@angular/forms';
 import { AsyncPipe, TitleCasePipe } from '@angular/common';
 import { Observable, take } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import {
   MatCard,
@@ -136,10 +137,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     CodQuireDescriptionComponent,
   ],
 })
-export class CodSheetLabelsPartComponent
-  extends ModelEditorComponentBase<CodSheetLabelsPart>
-  implements OnInit
-{
+export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodSheetLabelsPart> {
   private _table: CodSheetTable;
   private _editedEndleafIndex;
   private _editedNDefIndex;
@@ -172,6 +170,7 @@ export class CodSheetLabelsPartComponent
   public addForm: FormGroup;
 
   public readonly adderColumn = signal<boolean>(false);
+  public readonly isColQ = signal<boolean>(false);
 
   public nDefs: FormControl<CodNColDefinition[]>;
   public cDefs: FormControl<CodCColDefinition[]>;
@@ -324,12 +323,21 @@ export class CodSheetLabelsPartComponent
     this.endleaves = formBuilder.control([], { nonNullable: true });
 
     this.autoAppend = formBuilder.control(false, { nonNullable: true });
-  }
 
-  public override ngOnInit(): void {
-    super.ngOnInit();
+    // subscriptions
+    this.addType.valueChanges.pipe(takeUntilDestroyed()).subscribe((v) => {
+      this.adderColumn.set(v && (v as string).startsWith('col') ? true : false);
+      const isColQ = v === 'col-q';
+      this.isColQ.set(isColQ);
+      if (isColQ) {
+        this.addName.disable();
+      } else {
+        this.addName.enable();
+      }
+    });
 
-    this.rows$.subscribe((rows) => {
+    this.rows$.pipe(takeUntilDestroyed()).subscribe((rows) => {
+      console.log('[CodSheetLabels] rows$ subscription triggered, row count:', rows.length);
       this.endleafRowIds.set([
         ...new Set(
           rows
@@ -338,10 +346,8 @@ export class CodSheetLabelsPartComponent
         ),
       ]);
     });
-    this.addType.valueChanges.subscribe((v) => {
-      this.adderColumn.set(v && (v as string).startsWith('col') ? true : false);
-    });
-    this.autoAppend.valueChanges.subscribe((v) => {
+
+    this.autoAppend.valueChanges.pipe(takeUntilDestroyed()).subscribe((v) => {
       this._table.overflowDropping = v ? false : true;
     });
   }
@@ -537,7 +543,7 @@ export class CodSheetLabelsPartComponent
     const max = this._table.getMaxQuireNumber();
 
     // remove all quire scoped notes with number > max
-    const quireDsc = {...this.quireDsc()};
+    const quireDsc = { ...this.quireDsc() };
     if (quireDsc?.scopedNotes) {
       for (const key of Object.keys(quireDsc.scopedNotes || {})) {
         const n = parseInt(key);
@@ -569,6 +575,7 @@ export class CodSheetLabelsPartComponent
   }
 
   public onAction(): void {
+    console.log('[CodSheetLabels] onAction START');
     if (this.opForm.invalid) {
       return;
     }
@@ -577,6 +584,7 @@ export class CodSheetLabelsPartComponent
       if (!action) {
         return;
       }
+      console.log('[CodSheetLabels] setPageValue action');
       this._table.setPageValue(
         this._table.getColumnIndex(this.opColumn.value!),
         action.pages,
@@ -587,8 +595,10 @@ export class CodSheetLabelsPartComponent
         this.opColumn.value!,
         this.opAction.value!
       );
+      console.log('[CodSheetLabels] addCells action, cells count:', cells.length);
       this._table.addCells(cells);
     }
+    console.log('[CodSheetLabels] onAction END');
   }
 
   public onTypeAdd(): void {

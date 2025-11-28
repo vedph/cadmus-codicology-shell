@@ -518,6 +518,7 @@ export class CodSheetTable {
    * @param cells The cells to add.
    */
   public addCells(cells: CodLabelCell[]): void {
+    console.log('[CodSheetTable] addCells START, cells:', cells.length);
     if (!cells.length) {
       return;
     }
@@ -568,7 +569,13 @@ export class CodSheetTable {
     }
 
     // save
-    this._rows$.next(deepCopy(rows));
+    console.log('[CodSheetTable] addCells emitting rows$.next, total rows:', rows.length);
+    const t0 = performance.now();
+    const rowsCopy = deepCopy(rows);
+    const t1 = performance.now();
+    console.log('[CodSheetTable] deepCopy took:', (t1 - t0).toFixed(2), 'ms');
+    this._rows$.next(rowsCopy);
+    console.log('[CodSheetTable] addCells END');
   }
 
   private isRowEmpty(row: CodRowViewModel): boolean {

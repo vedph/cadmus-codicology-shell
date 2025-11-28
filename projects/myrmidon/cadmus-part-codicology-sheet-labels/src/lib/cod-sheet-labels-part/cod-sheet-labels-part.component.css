@@ -20,7 +20,12 @@ fieldset {
 .full-width {
   width: 100%;
 }
-
+.nr {
+  width: 6em;
+}
+.op {
+  width: 8em;
+}
 table {
   margin: 8px 0;
   border-collapse: collapse;

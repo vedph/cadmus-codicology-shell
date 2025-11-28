@@ -24,7 +24,7 @@
                   (submit)="onAction()"
                 >
                   <!-- opColumn -->
-                  <mat-form-field style="width: 8em">
+                  <mat-form-field class="op">
                     <mat-label>column</mat-label>
                     <mat-select [formControl]="opColumn">
                       @for (c of columns$ | async; track c) {
@@ -58,7 +58,7 @@
                   </button>
 
                   <!-- opAction -->
-                  <mat-form-field style="width: 8em">
+                  <mat-form-field>
                     <mat-label>action</mat-label>
                     <input
                       matInput
@@ -113,9 +113,9 @@
                         <mat-option value="row-4">back cover</mat-option>
                       </mat-optgroup>
                       <mat-optgroup label="columns">
-                        <mat-option value="col-q" [disabled]="qPresent()"
-                          >quire</mat-option
-                        >
+                        @if (!qPresent()) {
+                        <mat-option value="col-q">quire</mat-option>
+                        }
                         <mat-option value="col-n">numbering</mat-option>
                         <mat-option value="col-c">catchword</mat-option>
                         <mat-option value="col-s">signature</mat-option>
@@ -128,8 +128,8 @@
                     }
                   </mat-form-field>
 
-                  <!-- addName -->
-                  @if (adderColumn()) {
+                  <!-- addName (not for quire) -->
+                  @if (adderColumn() && addType.value !== 'col-q') {
                   <mat-form-field>
                     <mat-label>name</mat-label>
                     <input matInput [formControl]="addName" />
@@ -143,10 +143,10 @@
                   </mat-form-field>
                   }
 
-                  <!-- addCount (not for covers) -->
-                  @if ( !adderColumn() && addType.value !== 'row-0' &&
-                  addType.value !== 'row-4' ) {
-                  <mat-form-field style="width: 6em">
+                  <!-- addCount (not for covers/quire) -->
+                  @if ( !adderColumn() && addType.value !== 'col-q' &&
+                  addType.value !== 'row-0' && addType.value !== 'row-4' ) {
+                  <mat-form-field class="nr">
                     <mat-label>count</mat-label>
                     <input
                       matInput
@@ -378,7 +378,8 @@
                 <td>{{ endleaf.location }}</td>
                 <td>
                   {{
-                    endleaf.material | flatLookup : matEntries() : "id" : "value"
+                    endleaf.material
+                      | flatLookup : matEntries() : "id" : "value"
                   }}
                 </td>
               </tr>
@@ -418,6 +419,24 @@
               relationship with quires.
             </p>
             <p>
+              The model focuses on the sequence of physical sheets in the
+              current arrangement of the manuscript (i.e. 1r, 1v, 2r, 2v, etc.).
+              In relation with this sequence, quires describe sheets "grouping",
+              while all the other properties describe labels on some sheets,
+              usually following a pattern. So, we start with a bidimensional
+              table, having 2 rows per physical page (each page being the recto
+              or verso of one physical sheet) in the current manuscript, and
+              thus being uniformly labelled like 1r, 1v, 2r, 2v, etc.
+            </p>
+            <p>
+              Each of these rows has a number of columns equal to all the labels
+              we want to attach to the sheets, plus a fixed column to describe
+              how sheets are related to quires. So, at a minimum we have a
+              single column for quires. Usually anyway several other columns get
+              added for numbering systems, catchwords, quire signatures, and
+              quire register signatures.
+            </p>
+            <p>
               The main view shows a grid having a row for each physical sheet,
               and a column for each label. The <code>q</code> column is the
               quires column, which is unique. All the other columns are added at
@@ -426,11 +445,59 @@
               required. You can edit data about each column using the edit
               button next to the action's tool column picker.
             </p>
+            <h2>Getting Started</h2>
+            <ol>
+              <li>
+                add as many rows as required, considering that each row
+                corresponds to a page (you can adjust them later at any time):
+                in the adder tool, pick a row type (e.g. body), enter the number
+                of rows to add, and click the add button. Rows will appear, with
+                their reference page numbering.
+              </li>
+              <li>
+                add the quire column (<code>q</code>) to define how pages are
+                connected to quires: in the adder tool, pick the quire column
+                type, and click the add button. The column will appear with no
+                numbering.
+              </li>
+              <li>
+                add quire numbering: in the column action tool, pick the quire
+                column, enter a formula like <code>1x2=q1/4</code> in the action
+                field, and click the execute button. This will add numbering for
+                2 sheets per quire, starting from quire 1 having 4 sheets.
+                Usually, you first setup the dominant numbering scheme via
+                actions, and then adjust it by hand when required.
+              </li>
+              <li>
+                add other labels: add other label columns as required, and fill
+                them with labels using the action tool. For instance, to add a
+                default page numbering to all pages, you can add a numbering
+                column (type <code>n</code>) with no name, and then use an
+                action like e.g. <code>1r%16=1</code> to add to 16 pages Arabic
+                numbering starting from 1.
+              </li>
+            </ol>
+            <p>
+              You can edit general metadata about each column by clicking the
+              edit button next to the column picker.
+            </p>
+            <p>
+              You can manually edit each label by clicking the pen button next
+              to it. You can also add a free text note by clicking the add note
+              button next to the label, or edit its features when these were
+              defined in the proper thesauri.
+            </p>
             <h2>Columns</h2>
             <p>
               The quires column is unique, and always has the ID <code>q</code>.
               All the other columns have an ID starting with their type prefix
-              plus dot plus an arbitrary suffix (e.g. <code>n.roman</code>).
+              plus dot plus an arbitrary suffix (e.g. <code>n.roman</code>). If
+              you omit the suffix, this implies that you are representing what
+              you consider the default labelling system for that type.
+            </p>
+            <p>
+              Quires are numbered as <code>N.S/T</code> where N=quire ordinal
+              number, S=sheet ordinal number, and T=total sheets in that quire.
               Type prefixes are:
             </p>
             <ul>
@@ -481,11 +548,11 @@
                 <code>value</code>=value of the label(s) to add. Include in
                 double quotes when it's a literal constant. Else, it can be an
                 Arabic number, a Roman number, or a Latin/Greek letter, either
-                uppercase or lowercase. In all these cases, the labels will be
-                generated automatically: e.g. <code>1r*3=xi</code> = assign
-                labels <code>xi</code>, <code>xii</code>, and
-                <code>xiii</code> to sheets 1r, 2r, and 3r. Quires have a
-                special numbering, with form
+                uppercase or lowercase, representing the start number. In all
+                these cases, the labels will be generated automatically: e.g.
+                <code>1r*3=xi</code> = assign labels <code>xi</code>,
+                <code>xii</code>, and <code>xiii</code> to sheets 1r, 2r, and
+                3r. Quires have a special numbering, with form
                 <code>qN/M</code>
                 where N=sheet number and M=count of sheets in that quire. For
                 instance, <code>1x2=q1/4</code> generates 16 labels like
