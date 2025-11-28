@@ -284,11 +284,11 @@
             @if (rows$ | async; as rows) {
             <tbody>
               <!-- rows -->
-              @for (r of rows; track r) {
+              @for (r of rows; track r.id) {
               <tr>
                 <th>{{ r.id }}</th>
                 <!-- cols -->
-                @for (rc of r.columns; track rc) {
+                @for (rc of r.columns; track rc.id) {
                 <td>
                   <cadmus-cod-label-cell
                     [color]="$any(rc.id | cellTypeColor)"

@@ -162,6 +162,7 @@ graph LR;
 
 ## History
 
+- 2025-11-28: fixes to sheet labels editor.
 - 2025-11-23:
   - ⚠️ upgraded to Angular 21.
   - migrated to `pnpm`.
