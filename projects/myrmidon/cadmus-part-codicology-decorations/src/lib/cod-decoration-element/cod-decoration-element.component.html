@@ -156,7 +156,7 @@
       <!-- typologies -->
       <div>
         <fieldset [hidden]="!typologyFlags().length || hidden()?.typologies">
-          <legend>typologies</legend>
+          <legend>types</legend>
           <cadmus-ui-flag-set
             [flags]="typologyFlags()"
             [checkedIds]="typologies.value"
@@ -196,7 +196,7 @@
             (!gildingFlags().length && !elemGildingFree()) || hidden()?.gildings
           "
         >
-          <legend>gildings</legend>
+          <legend>precious metals</legend>
           <cadmus-ui-flag-set
             [flags]="gildingFlags()"
             [allowCustom]="elemGildingFree() || false"
