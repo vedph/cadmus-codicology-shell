@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, input, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -55,6 +55,7 @@ import { CodContentEditorComponent } from '../cod-content-editor/cod-content-edi
  * CodContentsPart editor component.
  * Thesauri: cod-content-states, cod-content-tags, cod-content-annotation-features,
  * cod-content-annotation-languages, cod-content-annotation-types,
+ * cod-content-gap-types, cod-content-gap-tags,
  * assertion-tags, doc-reference-types, doc-reference-tags, external-id-tags,
  * external-id-scopes (all optional).
  */
@@ -93,25 +94,29 @@ export class CodContentsPartComponent
   public readonly editedContent = signal<CodContent | undefined>(undefined);
 
   // cod-content-states
-  public stateEntries?: ThesaurusEntry[];
+  public readonly stateEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-content-tags
-  public tagEntries?: ThesaurusEntry[];
+  public readonly tagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-content-annotation-types
-  public annTypeEntries?: ThesaurusEntry[];
+  public readonly annTypeEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-content-annotation-features
-  public annFeatureEntries?: ThesaurusEntry[];
+  public readonly annFeatureEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-content-annotation-languages
-  public annLangEntries?: ThesaurusEntry[];
+  public readonly annLangEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  // cod-content-gap-types
+  public readonly gapTypeEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  // cod-content-gap-tags
+  public readonly gapTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // assertion-tags
-  public assTagEntries?: ThesaurusEntry[];
+  public readonly assTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // doc-reference-types
-  public refTypeEntries?: ThesaurusEntry[];
+  public readonly refTypeEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // doc-reference-tags
-  public refTagEntries?: ThesaurusEntry[];
+  public readonly refTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // external-id-tags
-  public idTagEntries?: ThesaurusEntry[];
+  public readonly idTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // external-id-scopes
-  public idScopeEntries?: ThesaurusEntry[];
+  public readonly idScopeEntries = signal<ThesaurusEntry[] | undefined>(undefined);
 
   public contents: FormControl<CodContent[]>;
 
@@ -141,63 +146,75 @@ export class CodContentsPartComponent
   private updateThesauri(thesauri: ThesauriSet): void {
     let key = 'cod-content-states';
     if (this.hasThesaurus(key)) {
-      this.stateEntries = thesauri[key].entries;
+      this.stateEntries.set(thesauri[key].entries);
     } else {
-      this.stateEntries = undefined;
+      this.stateEntries.set(undefined);
     }
     key = 'cod-content-tags';
     if (this.hasThesaurus(key)) {
-      this.tagEntries = thesauri[key].entries;
+      this.tagEntries.set(thesauri[key].entries);
     } else {
-      this.tagEntries = undefined;
+      this.tagEntries.set(undefined);
     }
     key = 'cod-content-annotation-features';
     if (this.hasThesaurus(key)) {
-      this.annFeatureEntries = thesauri[key].entries;
+      this.annFeatureEntries.set(thesauri[key].entries);
     } else {
-      this.annFeatureEntries = undefined;
+      this.annFeatureEntries.set(undefined);
     }
     key = 'cod-content-annotation-languages';
     if (this.hasThesaurus(key)) {
-      this.annLangEntries = thesauri[key].entries;
+      this.annLangEntries.set(thesauri[key].entries);
     } else {
-      this.annLangEntries = undefined;
+      this.annLangEntries.set(undefined);
     }
     key = 'cod-content-annotation-types';
     if (this.hasThesaurus(key)) {
-      this.annTypeEntries = thesauri[key].entries;
+      this.annTypeEntries.set(thesauri[key].entries);
     } else {
-      this.annTypeEntries = undefined;
+      this.annTypeEntries.set(undefined);
+    }
+    key = 'cod-content-gap-types';
+    if (this.hasThesaurus(key)) {
+      this.gapTypeEntries.set(thesauri[key].entries);
+    } else {
+      this.gapTypeEntries.set(undefined);
+    }
+    key = 'cod-content-gap-tags';
+    if (this.hasThesaurus(key)) {
+      this.gapTagEntries.set(thesauri[key].entries);
+    } else {
+      this.gapTagEntries.set(undefined);
     }
     key = 'assertion-tags';
     if (this.hasThesaurus(key)) {
-      this.assTagEntries = thesauri[key].entries;
+      this.assTagEntries.set(thesauri[key].entries);
     } else {
-      this.assTagEntries = undefined;
+      this.assTagEntries.set(undefined);
     }
     key = 'doc-reference-types';
     if (this.hasThesaurus(key)) {
-      this.refTypeEntries = thesauri[key].entries;
+      this.refTypeEntries.set(thesauri[key].entries);
     } else {
-      this.refTypeEntries = undefined;
+      this.refTypeEntries.set(undefined);
     }
     key = 'doc-reference-tags';
     if (this.hasThesaurus(key)) {
-      this.refTagEntries = thesauri[key].entries;
+      this.refTagEntries.set(thesauri[key].entries);
     } else {
-      this.refTagEntries = undefined;
+      this.refTagEntries.set(undefined);
     }
     key = 'external-id-tags';
     if (this.hasThesaurus(key)) {
-      this.idTagEntries = thesauri[key].entries;
+      this.idTagEntries.set(thesauri[key].entries);
     } else {
-      this.idTagEntries = undefined;
+      this.idTagEntries.set(undefined);
     }
     key = 'external-id-scopes';
     if (this.hasThesaurus(key)) {
-      this.idScopeEntries = thesauri[key].entries;
+      this.idScopeEntries.set(thesauri[key].entries);
     } else {
-      this.idScopeEntries = undefined;
+      this.idScopeEntries.set(undefined);
     }
   }
 

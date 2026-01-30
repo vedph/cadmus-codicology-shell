@@ -53,12 +53,13 @@ import {
 } from '@myrmidon/cadmus-cod-location';
 import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 import { Citation, CitSchemeService } from '@myrmidon/cadmus-refs-citation';
+import { LookupDocReferenceComponent } from '@myrmidon/cadmus-refs-lookup';
 
 // cadmus
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 // local
-import { CodContent, CodContentAnnotation } from '../cod-contents-part';
+import { CodContent, CodContentAnnotation, CodContentGap } from '../cod-contents-part';
 import { CodContentAnnotationComponent } from '../cod-content-annotation/cod-content-annotation.component';
 import { CitationPickerComponent } from '../citation-picker/citation-picker.component';
 
@@ -100,6 +101,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     CodLocationComponent,
     CodLocationRangePipe,
     FlagSetComponent,
+    LookupDocReferenceComponent
   ],
 })
 export class CodContentEditorComponent {
@@ -115,6 +117,10 @@ export class CodContentEditorComponent {
   public readonly annFeatureEntries = input<ThesaurusEntry[]>();
   // cod-content-annotation-languages
   public readonly annLangEntries = input<ThesaurusEntry[]>();
+  // cod-content-gap-types
+  public readonly gapTypeEntries = input<ThesaurusEntry[]>();
+  // cod-content-gap-tags
+  public readonly gapTagEntries = input<ThesaurusEntry[]>();
   // assertion-tags
   public readonly assTagEntries = input<ThesaurusEntry[]>();
   // doc-reference-types
@@ -134,6 +140,7 @@ export class CodContentEditorComponent {
   public workId: FormControl<AssertedCompositeId | null>;
   public author: FormControl<string | null>;
   public ranges: FormControl<CodLocationRange[]>;
+  public gaps: FormControl<CodContentGap[]>;
   public tag: FormControl<string | null>;
   public title: FormControl<string | null>;
   public location: FormControl<string | null>;
@@ -149,7 +156,7 @@ export class CodContentEditorComponent {
   public form: FormGroup;
 
   public readonly editedAnnotation = signal<CodContentAnnotation | undefined>(
-    undefined
+    undefined,
   );
   public readonly editedIndex = signal<number>(-1);
 
@@ -161,7 +168,7 @@ export class CodContentEditorComponent {
     private _dialogService: DialogService,
     private _dialog: MatDialog,
     @Optional()
-    public citSchemeService?: CitSchemeService
+    public citSchemeService?: CitSchemeService,
   ) {
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
@@ -171,6 +178,7 @@ export class CodContentEditorComponent {
       validators: NgxToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
+    this.gaps = formBuilder.control([], { nonNullable: true });
     this.tag = formBuilder.control(null, Validators.maxLength(50));
     this.title = formBuilder.control(null, Validators.maxLength(200));
     this.location = formBuilder.control(null, Validators.maxLength(50));
@@ -188,6 +196,7 @@ export class CodContentEditorComponent {
       workId: this.workId,
       author: this.author,
       ranges: this.ranges,
+      gaps: this.gaps,
       tag: this.tag,
       title: this.title,
       location: this.location,
@@ -224,6 +233,7 @@ export class CodContentEditorComponent {
     this.author.setValue(content.author || null);
     this.ranges.setValue(content.ranges || []);
     this.states.setValue(content.states || []);
+    this.gaps.setValue(content.gaps || []);
     this.tag.setValue(content.tag || null);
     this.title.setValue(content.title || null);
     this.location.setValue(content.location || null);
@@ -279,6 +289,7 @@ export class CodContentEditorComponent {
       claimedAuthorRanges: this.claimedAuthorRanges.value || undefined,
       claimedTitle: this.claimedTitle.value?.trim(),
       claimedTitleRanges: this.claimedTitleRanges.value || undefined,
+      gaps: this.gaps.value?.length? this.gaps.value : undefined,
       tag: this.tag.value?.trim(),
       note: this.note.value?.trim(),
       incipit: this.incipit.value?.trim(),
@@ -349,8 +360,8 @@ export class CodContentEditorComponent {
     const annotations = this.annotations.value || [];
     this.annotations.setValue(
       annotations.map((a: CodContentAnnotation, i: number) =>
-        i === this.editedIndex() ? annotation : a
-      )
+        i === this.editedIndex() ? annotation : a,
+      ),
     );
     this.editAnnotation(-1);
   }

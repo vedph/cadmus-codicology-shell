@@ -1,6 +1,7 @@
 import { CodLocationRange } from '@myrmidon/cadmus-cod-location';
 import { Part } from '@myrmidon/cadmus-core';
 import { AssertedCompositeId } from '@myrmidon/cadmus-refs-asserted-ids';
+import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
 
 export interface CodContentAnnotation {
   type: string;
@@ -11,6 +12,11 @@ export interface CodContentAnnotation {
   explicit?: string;
   text?: string;
   note?: string;
+}
+
+export interface CodContentGap {
+  start: DocReference;
+  end: DocReference;
 }
 
 export interface CodContent {
@@ -25,6 +31,7 @@ export interface CodContent {
   claimedAuthorRanges?: CodLocationRange[];
   claimedTitle?: string;
   claimedTitleRanges?: CodLocationRange[];
+  gaps?: CodContentGap[];
   tag?: string;
   note?: string;
   incipit?: string;
@@ -444,6 +451,55 @@ export const COD_CONTENTS_PART_SCHEMA = {
                               type: 'integer',
                             },
                             word: {
+                              type: 'string',
+                            },
+                          },
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              gaps: {
+                type: 'array',
+                items: {
+                  anyOf: [
+                    {
+                      type: 'object',
+                      required: ['start', 'end'],
+                      properties: {
+                        start: {
+                          type: 'object',
+                          required: ['citation'],
+                          properties: {
+                            type: {
+                              type: 'string',
+                            },
+                            tag: {
+                              type: 'string',
+                            },
+                            citation: {
+                              type: 'string',
+                            },
+                            note: {
+                              type: 'string',
+                            },
+                          },
+                        },
+                        end: {
+                          type: 'object',
+                          required: ['citation'],
+                          properties: {
+                            type: {
+                              type: 'string',
+                            },
+                            tag: {
+                              type: 'string',
+                            },
+                            citation: {
+                              type: 'string',
+                            },
+                            note: {
                               type: 'string',
                             },
                           },

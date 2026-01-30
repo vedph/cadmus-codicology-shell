@@ -43,6 +43,8 @@ export class CodContentsPartFeatureComponent
       'cod-content-annotation-types',
       'cod-content-annotation-features',
       'cod-content-annotation-languages',
+      'cod-content-gap-types',
+      'cod-content-gap-tags',
       'assertion-tags',
       'doc-reference-types',
       'doc-reference-tags',
