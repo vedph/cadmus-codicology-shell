@@ -53,7 +53,6 @@ import {
 } from '@myrmidon/cadmus-cod-location';
 import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 import { Citation, CitSchemeService } from '@myrmidon/cadmus-refs-citation';
-import { LookupDocReferenceComponent } from '@myrmidon/cadmus-refs-lookup';
 
 // cadmus
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
@@ -61,6 +60,7 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 // local
 import { CodContent, CodContentAnnotation, CodContentGap } from '../cod-contents-part';
 import { CodContentAnnotationComponent } from '../cod-content-annotation/cod-content-annotation.component';
+import { CodContentGapsComponent } from '../cod-content-gaps/cod-content-gaps.component';
 import { CitationPickerComponent } from '../citation-picker/citation-picker.component';
 
 function entryToFlag(entry: ThesaurusEntry): Flag {
@@ -97,11 +97,12 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     FlatLookupPipe,
     // bricks
     AssertedCompositeIdComponent,
-    CodContentAnnotationComponent,
     CodLocationComponent,
     CodLocationRangePipe,
     FlagSetComponent,
-    LookupDocReferenceComponent
+    // local
+    CodContentAnnotationComponent,
+    CodContentGapsComponent,
   ],
 })
 export class CodContentEditorComponent {
@@ -329,6 +330,12 @@ export class CodContentEditorComponent {
     this.claimedTitleRanges.setValue(ranges || []);
     this.claimedTitleRanges.updateValueAndValidity();
     this.claimedTitleRanges.markAsDirty();
+  }
+
+  public onGapsChange(gaps: CodContentGap[] | undefined): void {
+    this.gaps.setValue(gaps || []);
+    this.gaps.updateValueAndValidity();
+    this.gaps.markAsDirty();
   }
 
   //#region Annotations

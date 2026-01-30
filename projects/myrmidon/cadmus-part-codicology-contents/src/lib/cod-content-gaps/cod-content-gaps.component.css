@@ -1,0 +1,58 @@
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+tbody tr:nth-child(odd) {
+  background-color: #e2e2e2;
+}
+th {
+  text-align: left;
+  font-weight: normal;
+  color: silver;
+}
+td.fit-width {
+  width: 1px;
+  white-space: nowrap;
+}
+tr.selected {
+  background-color: #d0d0d0 !important;
+}
+fieldset {
+  border: 1px solid silver;
+  border-radius: 6px;
+  padding: 6px;
+  margin-top: 8px;
+}
+.refs-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.ref-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ref-label {
+  font-weight: 500;
+  color: #666;
+}
+.ref-value {
+  min-width: 80px;
+}
+.ref-type {
+  color: #888;
+  font-size: 0.9em;
+}
+.empty {
+  color: #aaa;
+}
+mat-expansion-panel {
+  margin-top: 8px;
+}
+.editor-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}

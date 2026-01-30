@@ -1,1 +1,194 @@
-<p>cod-content-gaps works!</p>
+<!-- gaps list -->
+<div>
+  <button
+    type="button"
+    mat-flat-button
+    color="primary"
+    (click)="addGap()"
+    [disabled]="editingIndex() !== -1"
+  >
+    <mat-icon>add_circle</mat-icon> gap
+  </button>
+</div>
+
+@if (editedGaps().length) {
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>start</th>
+        <th>start type</th>
+        <th>end</th>
+        <th>end type</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (
+        gap of editedGaps();
+        track $index;
+        let i = $index;
+        let first = $first;
+        let last = $last
+      ) {
+        <tr [class.selected]="editingIndex() === i">
+          <td class="fit-width">
+            <button
+              type="button"
+              mat-icon-button
+              color="primary"
+              matTooltip="Edit this gap"
+              [disabled]="editingIndex() !== -1"
+              (click)="editGap(i)"
+            >
+              <mat-icon class="mat-primary">edit</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              matTooltip="Move this gap up"
+              [disabled]="first || editingIndex() !== -1"
+              (click)="moveGapUp(i)"
+            >
+              <mat-icon>arrow_upward</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              matTooltip="Move this gap down"
+              [disabled]="last || editingIndex() !== -1"
+              (click)="moveGapDown(i)"
+            >
+              <mat-icon>arrow_downward</mat-icon>
+            </button>
+            <button
+              type="button"
+              mat-icon-button
+              color="warn"
+              matTooltip="Delete this gap"
+              [disabled]="editingIndex() !== -1"
+              (click)="removeGap(i)"
+            >
+              <mat-icon class="mat-warn">remove_circle</mat-icon>
+            </button>
+          </td>
+          <td>{{ gap.start.citation }}</td>
+          <td>
+            {{ gap.start.type | flatLookup: gapTypeEntries() : "id" : "value" }}
+          </td>
+          <td>{{ gap.end.citation }}</td>
+          <td>
+            {{ gap.end.type | flatLookup: gapTypeEntries() : "id" : "value" }}
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
+
+<!-- gap editor -->
+@if (editingIndex() !== -1) {
+  <fieldset>
+    <legend>
+      {{ editingIndex() === -2 ? "new gap" : "gap #" + (editingIndex() + 1) }}
+    </legend>
+
+    <!-- start and end references row -->
+    <div class="refs-row">
+      <!-- start reference -->
+      <div class="ref-item">
+        <span class="ref-label">start:</span>
+        <span class="ref-value">
+          @if (editedStart().citation) {
+            {{ editedStart().citation }}
+            @if (editedStart().type) {
+              <span class="ref-type">
+                ({{
+                  editedStart().type
+                    | flatLookup: gapTypeEntries() : "id" : "value"
+                }})
+              </span>
+            }
+          } @else {
+            <em class="empty">&mdash;</em>
+          }
+        </span>
+        <button
+          type="button"
+          mat-icon-button
+          matTooltip="Edit start reference"
+          [disabled]="editingRef() !== null"
+          (click)="editRef('start')"
+        >
+          <mat-icon class="mat-primary">edit</mat-icon>
+        </button>
+      </div>
+
+      <!-- end reference -->
+      <div class="ref-item">
+        <span class="ref-label">end:</span>
+        <span class="ref-value">
+          @if (editedEnd().citation) {
+            {{ editedEnd().citation }}
+            @if (editedEnd().type) {
+              <span class="ref-type">
+                ({{
+                  editedEnd().type
+                    | flatLookup: gapTypeEntries() : "id" : "value"
+                }})
+              </span>
+            }
+          } @else {
+            <em class="empty">&mdash;</em>
+          }
+        </span>
+        <button
+          type="button"
+          mat-icon-button
+          matTooltip="Edit end reference"
+          [disabled]="editingRef() !== null"
+          (click)="editRef('end')"
+        >
+          <mat-icon class="mat-primary">edit</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- single reference editor (expansion panel) -->
+    @if (editingRef()) {
+      <mat-expansion-panel [expanded]="editingRef()" [disabled]="!editingRef()">
+        <mat-expansion-panel-header>
+          <mat-panel-title>{{ editingRef() }} reference</mat-panel-title>
+        </mat-expansion-panel-header>
+        <cadmus-refs-lookup-doc-reference
+          [reference]="currentEditedRef()"
+          [typeEntries]="gapTypeEntries()"
+          [tagEntries]="gapTagEntries()"
+          [noLookup]="true"
+          (referenceChange)="onRefChange($event)"
+        />
+      </mat-expansion-panel>
+    }
+
+    <!-- gap editor buttons (save/cancel the whole gap) -->
+    <div class="editor-buttons">
+      <button
+        type="button"
+        mat-icon-button
+        matTooltip="Cancel gap edit"
+        [disabled]="editingRef() !== null"
+        (click)="cancelEdit()"
+      >
+        <mat-icon class="mat-warn">cancel</mat-icon>
+      </button>
+      <button
+        type="button"
+        mat-icon-button
+        matTooltip="Save gap"
+        [disabled]="!isEditValid() || editingRef() !== null"
+        (click)="saveGap()"
+      >
+        <mat-icon class="mat-primary">check_circle</mat-icon>
+      </button>
+    </div>
+  </fieldset>
+}
