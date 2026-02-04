@@ -53,12 +53,17 @@ import {
 } from '@myrmidon/cadmus-cod-location';
 import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 import { Citation, CitSchemeService } from '@myrmidon/cadmus-refs-citation';
+import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 // cadmus
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 // local
-import { CodContent, CodContentAnnotation, CodContentGap } from '../cod-contents-part';
+import {
+  CodContent,
+  CodContentAnnotation,
+  CodContentGap,
+} from '../cod-contents-part';
 import { CodContentAnnotationComponent } from '../cod-content-annotation/cod-content-annotation.component';
 import { CodContentGapsComponent } from '../cod-content-gaps/cod-content-gaps.component';
 import { CitationPickerComponent } from '../citation-picker/citation-picker.component';
@@ -132,6 +137,10 @@ export class CodContentEditorComponent {
   public readonly idTagEntries = input<ThesaurusEntry[]>();
   // external-id-scopes
   public readonly idScopeEntries = input<ThesaurusEntry[]>();
+
+  public readonly lookupProviderOptions = input<
+    LookupProviderOptions | undefined
+  >();
 
   public readonly editorClose = output();
 
@@ -290,7 +299,7 @@ export class CodContentEditorComponent {
       claimedAuthorRanges: this.claimedAuthorRanges.value || undefined,
       claimedTitle: this.claimedTitle.value?.trim(),
       claimedTitleRanges: this.claimedTitleRanges.value || undefined,
-      gaps: this.gaps.value?.length? this.gaps.value : undefined,
+      gaps: this.gaps.value?.length ? this.gaps.value : undefined,
       tag: this.tag.value?.trim(),
       note: this.note.value?.trim(),
       incipit: this.incipit.value?.trim(),

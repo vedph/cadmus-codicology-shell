@@ -1,61 +1,64 @@
 @if (user$ | async) {
-<form [formGroup]="form">
-  @if (loading()) {
-  <mat-progress-bar mode="indeterminate" />
-  }
-  <!-- item -->
-  <cadmus-refs-lookup
-    [service]="lookupService"
-    [item]="item"
-    [baseFilter]="baseFilter()"
-    label="item"
-    (itemChange)="onItemChange($event)"
-  />
-  <!-- autoCopy -->
-  <div>
-    <mat-slide-toggle [formControl]="autoCopy" matTooltip="Toggle auto-copy"
-      >copy</mat-slide-toggle
-    >
-  </div>
-  <!-- systems -->
-  @if (systems$ | async; as systems) {
-  <div style="margin-top: 4px">
-    <div>
-      @if (systems.length) {
-      <mat-form-field>
-        <mat-label>system</mat-label>
-        <mat-select [formControl]="system">
-          @for (s of systems; track s) {
-          <mat-option [value]="s">
-            {{ s }}
-          </mat-option>
-          }
-        </mat-select>
-        @if ( $any(system).errors?.required && (system.dirty || system.touched)
-        ) {
-        <mat-error>system required</mat-error>
-        }
-      </mat-form-field>
-      }
-    </div>
-    @if (system.value) {
-    <div class="form-row">
-      <!-- label -->
-      <mat-form-field style="width: 5em">
-        <mat-label>label</mat-label>
-        <input matInput [formControl]="label" />
-      </mat-form-field>
-      <mat-icon>sync_alt</mat-icon>
-      <!-- location -->
-      <mat-form-field style="width: 5em">
-        <mat-label>location</mat-label>
-        <input matInput [formControl]="location" />
-      </mat-form-field>
-    </div>
-    } @if (!system.value) {
-    <span style="color: silver">(no systems)</span>
+  <form [formGroup]="form">
+    @if (loading()) {
+      <mat-progress-bar mode="indeterminate" />
     }
-  </div>
-  }
-</form>
+    <!-- item -->
+    <cadmus-refs-lookup
+      [service]="lookupService"
+      [item]="item"
+      [baseFilter]="baseFilter()"
+      label="item"
+      (itemChange)="onItemChange($event)"
+    />
+    <!-- autoCopy -->
+    <div>
+      <mat-slide-toggle [formControl]="autoCopy" matTooltip="Toggle auto-copy"
+        >copy</mat-slide-toggle
+      >
+    </div>
+    <!-- systems -->
+    @if (systems$ | async; as systems) {
+      <div style="margin-top: 4px">
+        <div>
+          @if (systems.length) {
+            <mat-form-field>
+              <mat-label>system</mat-label>
+              <mat-select [formControl]="system">
+                @for (s of systems; track s) {
+                  <mat-option [value]="s">
+                    {{ s }}
+                  </mat-option>
+                }
+              </mat-select>
+              @if (
+                $any(system).errors?.required &&
+                (system.dirty || system.touched)
+              ) {
+                <mat-error>system required</mat-error>
+              }
+            </mat-form-field>
+          }
+        </div>
+        @if (system.value) {
+          <div class="form-row">
+            <!-- label -->
+            <mat-form-field style="width: 5em">
+              <mat-label>label</mat-label>
+              <input matInput [formControl]="label" />
+            </mat-form-field>
+            <mat-icon>sync_alt</mat-icon>
+            <!-- location -->
+            <mat-form-field style="width: 5em">
+              <mat-label>location</mat-label>
+              <input matInput [formControl]="location" />
+            </mat-form-field>
+          </div>
+        }
+        @if (!system.value) {
+          <span style="color: silver">(no systems)</span>
+        }
+      </div>
+    }
+  </form>
 }

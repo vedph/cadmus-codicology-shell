@@ -17,6 +17,7 @@ import { MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 
+import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 import {
   CodLocationRange,
   CodLocationComponent,
@@ -72,6 +73,10 @@ export class CodUnitEditorComponent {
   public readonly refTypeEntries = input<ThesaurusEntry[]>();
   // doc-reference-tags
   public readonly refTagEntries = input<ThesaurusEntry[]>();
+
+  public readonly lookupProviderOptions = input<
+    LookupProviderOptions | undefined
+  >();
 
   public readonly editorClose = output();
 

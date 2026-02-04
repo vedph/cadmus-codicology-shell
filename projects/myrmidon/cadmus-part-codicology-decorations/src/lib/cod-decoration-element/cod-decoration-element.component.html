@@ -47,6 +47,7 @@
             [refTagEntries]="refTagEntries()"
             [canSwitchMode]="true"
             [canEditTarget]="true"
+            [lookupProviderOptions]="lookupProviderOptions()"
             [ids]="links.value"
             (idsChange)="onLinksChange($event)"
           />
@@ -286,6 +287,7 @@
           [tagEntries]="refTagEntries()"
           [typeEntries]="refTypeEntries()"
           [references]="references.value"
+          [lookupProviderOptions]="lookupProviderOptions()"
           defaultPicker="lookup"
           (referencesChange)="onReferencesChange($event)"
         />

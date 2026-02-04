@@ -104,7 +104,7 @@ export class TextOrEntrySelectorComponent implements OnInit, OnDestroy {
     this.id.set(
       this.free() && !this.idCtl.value?.startsWith(FREE_PREFIX)
         ? FREE_PREFIX + this.idCtl.value
-        : this.idCtl.value!
+        : this.idCtl.value!,
     );
   }
 

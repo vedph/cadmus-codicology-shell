@@ -37,6 +37,7 @@ import {
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
 } from '@myrmidon/cadmus-ui';
+import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 import {
   CodWatermark,
@@ -44,6 +45,10 @@ import {
   COD_WATERMARKS_PART_TYPEID,
 } from '../cod-watermarks-part';
 import { CodWatermarkEditorComponent } from '../cod-watermark-editor/cod-watermark-editor.component';
+
+interface CodWatermarksPartSettings {
+  lookupProviderOptions?: LookupProviderOptions;
+}
 
 /**
  * CodWatermarksPart editor component.
@@ -102,12 +107,17 @@ export class CodWatermarksPartComponent
   // physical-size-units
   public szUnitEntries: ThesaurusEntry[] | undefined;
 
+  // lookup options depending on role
+  public readonly lookupProviderOptions = signal<
+    LookupProviderOptions | undefined
+  >(undefined);
+
   public watermarks: FormControl<CodWatermark[]>;
 
   constructor(
     authService: AuthJwtService,
     formBuilder: FormBuilder,
-    private _dialogService: DialogService
+    private _dialogService: DialogService,
   ) {
     super(authService, formBuilder);
     // form
@@ -198,14 +208,23 @@ export class CodWatermarksPartComponent
     if (data?.thesauri) {
       this.updateThesauri(data.thesauri);
     }
-
+    // settings
+    this._appRepository
+      ?.getSettingFor<CodWatermarksPartSettings>(
+        COD_WATERMARKS_PART_TYPEID,
+        this.identity()?.roleId || undefined,
+      )
+      .then((settings) => {
+        const options = settings?.lookupProviderOptions;
+        this.lookupProviderOptions.set(options || undefined);
+      });
     // form
     this.updateForm(data?.value);
   }
 
   protected getValue(): CodWatermarksPart {
     let part = this.getEditedPart(
-      COD_WATERMARKS_PART_TYPEID
+      COD_WATERMARKS_PART_TYPEID,
     ) as CodWatermarksPart;
     part.watermarks = this.watermarks.value || [];
     return part;

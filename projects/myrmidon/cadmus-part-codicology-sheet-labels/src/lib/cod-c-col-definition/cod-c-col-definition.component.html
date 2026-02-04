@@ -10,32 +10,39 @@
   <div class="form-row">
     <!-- position (bound) -->
     @if (posEntries()?.length) {
-    <mat-form-field class="form-col">
-      <mat-label>position</mat-label>
-      <mat-select [formControl]="position">
-        @for (e of posEntries(); track e.id) {
-        <mat-option [value]="e.id">{{ e.value }}</mat-option>
+      <mat-form-field class="form-col">
+        <mat-label>position</mat-label>
+        <mat-select [formControl]="position">
+          @for (e of posEntries(); track e.id) {
+            <mat-option [value]="e.id">{{ e.value }}</mat-option>
+          }
+        </mat-select>
+        @if (
+          $any(position).errors?.required &&
+          (position.dirty || position.touched)
+        ) {
+          <mat-error>position required</mat-error>
         }
-      </mat-select>
-      @if ( $any(position).errors?.required && (position.dirty ||
-      position.touched) ) {
-      <mat-error>position required</mat-error>
-      }
-    </mat-form-field>
+      </mat-form-field>
     }
     <!-- position (free) -->
     @else {
-    <mat-form-field class="form-col">
-      <mat-label>position</mat-label>
-      <input matInput [formControl]="position" />
-      @if ( $any(position).errors?.required && (position.dirty ||
-      position.touched) ) {
-      <mat-error>position required</mat-error>
-      } @if ( $any(position).errors?.maxLength && (position.dirty ||
-      position.touched) ) {
-      <mat-error>position too long</mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field class="form-col">
+        <mat-label>position</mat-label>
+        <input matInput [formControl]="position" />
+        @if (
+          $any(position).errors?.required &&
+          (position.dirty || position.touched)
+        ) {
+          <mat-error>position required</mat-error>
+        }
+        @if (
+          $any(position).errors?.maxLength &&
+          (position.dirty || position.touched)
+        ) {
+          <mat-error>position too long</mat-error>
+        }
+      </mat-form-field>
     }
 
     <!-- isVertical -->
@@ -47,9 +54,11 @@
     <mat-form-field class="long-text">
       <mat-label>decoration</mat-label>
       <input matInput [formControl]="decoration" />
-      @if ( $any(decoration).errors?.maxLength && (decoration.dirty ||
-      decoration.touched) ) {
-      <mat-error>decoration too long</mat-error>
+      @if (
+        $any(decoration).errors?.maxLength &&
+        (decoration.dirty || decoration.touched)
+      ) {
+        <mat-error>decoration too long</mat-error>
       }
     </mat-form-field>
   </div>
@@ -66,6 +75,7 @@
         [refTagEntries]="refTagEntries()"
         [canSwitchMode]="true"
         [canEditTarget]="true"
+        [lookupProviderOptions]="lookupProviderOptions()"
         [ids]="links.value"
         (idsChange)="onLinkIdsChange($event)"
       />
@@ -78,7 +88,7 @@
       <mat-label>note</mat-label>
       <input matInput [formControl]="note" />
       @if ($any(note).errors?.maxLength && (note.dirty || note.touched)) {
-      <mat-error>note too long</mat-error>
+        <mat-error>note too long</mat-error>
       }
     </mat-form-field>
   </div>

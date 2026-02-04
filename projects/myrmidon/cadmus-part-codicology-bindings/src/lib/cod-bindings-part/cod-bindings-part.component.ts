@@ -41,6 +41,8 @@ import {
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
 } from '@myrmidon/cadmus-ui';
+import { PhysicalSizePipe } from '@myrmidon/cadmus-mat-physical-size';
+import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 import {
   CodBinding,
@@ -48,7 +50,10 @@ import {
   COD_BINDINGS_PART_TYPEID,
 } from '../cod-bindings-part';
 import { CodBindingEditorComponent } from '../cod-binding-editor/cod-binding-editor.component';
-import { PhysicalSizePipe } from '@myrmidon/cadmus-mat-physical-size';
+
+interface CodBindingsPartSettings {
+  lookupProviderOptions?: LookupProviderOptions;
+}
 
 /**
  * CodBindingsPart editor component.
@@ -110,12 +115,17 @@ export class CodBindingsPartComponent
   // physical-size-units
   public szUnitEntries: ThesaurusEntry[] | undefined;
 
+  // lookup options depending on role
+  public readonly lookupProviderOptions = signal<
+    LookupProviderOptions | undefined
+  >(undefined);
+
   public bindings: FormControl<CodBinding[]>;
 
   constructor(
     authService: AuthJwtService,
     formBuilder: FormBuilder,
-    private _dialogService: DialogService
+    private _dialogService: DialogService,
   ) {
     super(authService, formBuilder);
     this.editedIndex.set(-1);
@@ -213,6 +223,15 @@ export class CodBindingsPartComponent
     if (data?.thesauri) {
       this.updateThesauri(data.thesauri);
     }
+    this._appRepository
+      ?.getSettingFor<CodBindingsPartSettings>(
+        COD_BINDINGS_PART_TYPEID,
+        this.identity()?.roleId || undefined,
+      )
+      .then((settings) => {
+        const options = settings?.lookupProviderOptions;
+        this.lookupProviderOptions.set(options || undefined);
+      });
 
     // form
     this.updateForm(data?.value);

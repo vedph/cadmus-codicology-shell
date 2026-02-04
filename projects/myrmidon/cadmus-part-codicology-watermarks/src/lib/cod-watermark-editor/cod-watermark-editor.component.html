@@ -5,9 +5,10 @@
       <mat-label>name</mat-label>
       <input matInput [formControl]="name" />
       @if ($any(name).errors?.required && (name.dirty || name.touched)) {
-      <mat-error>name required</mat-error>
-      } @if ($any(name).errors?.maxLength && (name.dirty || name.touched)) {
-      <mat-error>name too long</mat-error>
+        <mat-error>name required</mat-error>
+      }
+      @if ($any(name).errors?.maxLength && (name.dirty || name.touched)) {
+        <mat-error>name too long</mat-error>
       }
     </mat-form-field>
 
@@ -36,9 +37,11 @@
     <mat-form-field class="long-text">
       <mat-label>description</mat-label>
       <textarea matInput rows="2" [formControl]="description"></textarea>
-      @if ( $any(description).errors?.maxLength && (description.dirty ||
-      description.touched) ) {
-      <mat-error>description too long</mat-error>
+      @if (
+        $any(description).errors?.maxLength &&
+        (description.dirty || description.touched)
+      ) {
+        <mat-error>description too long</mat-error>
       }
     </mat-form-field>
   </div>
@@ -52,6 +55,7 @@
       [refTagEntries]="refTagEntries()"
       [canSwitchMode]="true"
       [canEditTarget]="true"
+      [lookupProviderOptions]="lookupProviderOptions()"
       [ids]="ids.value"
       (idsChange)="onIdsChange($event!)"
     />
@@ -60,20 +64,20 @@
   <div>
     <mat-checkbox [formControl]="hasSize">has size</mat-checkbox>
     @if (hasSize.value) {
-    <fieldset>
-      <legend>size</legend>
-      <cadmus-mat-physical-size
-        [tagEntries]="szTagEntries()"
-        [unitEntries]="szUnitEntries()"
-        [hBeforeW]="true"
-        [dimTagEntries]="szDimTagEntries()"
-        defaultWUnit="mm"
-        defaultHUnit="mm"
-        defaultDUnit="mm"
-        [size]="size.value || undefined"
-        (sizeChange)="onSizeChange($event!)"
-      />
-    </fieldset>
+      <fieldset>
+        <legend>size</legend>
+        <cadmus-mat-physical-size
+          [tagEntries]="szTagEntries()"
+          [unitEntries]="szUnitEntries()"
+          [hBeforeW]="true"
+          [dimTagEntries]="szDimTagEntries()"
+          defaultWUnit="mm"
+          defaultHUnit="mm"
+          defaultDUnit="mm"
+          [size]="size.value || undefined"
+          (sizeChange)="onSizeChange($event!)"
+        />
+      </fieldset>
     }
   </div>
   <div>
@@ -85,6 +89,7 @@
         [assTagEntries]="assTagEntries()"
         [refTagEntries]="refTagEntries()"
         [refTypeEntries]="refTypeEntries()"
+        [lookupProviderOptions]="lookupProviderOptions()"
         (chronotopesChange)="onChronotopesChange($event!)"
       />
     </fieldset>

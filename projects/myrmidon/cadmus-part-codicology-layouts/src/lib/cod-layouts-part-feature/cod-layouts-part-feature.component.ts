@@ -24,7 +24,7 @@ export class CodLayoutsPartFeatureComponent
     snackbar: MatSnackBar,
     itemService: ItemService,
     thesaurusService: ThesaurusService,
-    editorService: PartEditorService
+    editorService: PartEditorService,
   ) {
     super(
       router,
@@ -32,7 +32,7 @@ export class CodLayoutsPartFeatureComponent
       snackbar,
       itemService,
       thesaurusService,
-      editorService
+      editorService,
     );
   }
 

@@ -49,6 +49,7 @@ import {
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
 } from '@myrmidon/cadmus-ui';
+import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 import {
   CodCColDefinition,
@@ -79,6 +80,10 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     id: entry.id,
     label: entry.value,
   };
+}
+
+interface CodSheetLabelsPartSettings {
+  lookupProviderOptions?: LookupProviderOptions;
 }
 
 /**
@@ -154,6 +159,11 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
   public readonly editedDefId = signal<string | undefined>(undefined);
   public readonly editedEndleaf = signal<CodEndleaf | undefined>(undefined);
 
+  // lookup options depending on role
+  public readonly lookupProviderOptions = signal<
+    LookupProviderOptions | undefined
+  >(undefined);
+
   public columns$: Observable<string[]>;
   public rows$: Observable<CodRowViewModel[]>;
 
@@ -195,7 +205,7 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
   // R/S-COL
   // cod-quire-features
   public readonly quireFeatEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // cod-quiresig-systems
   public readonly syssEntries = signal<ThesaurusEntry[] | undefined>(undefined);
@@ -206,56 +216,56 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
   public readonly matEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // chronotope-tags
   public readonly ctTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // assertion-tags
   public readonly assTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // doc-reference-types
   public readonly refTypeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // doc-reference-tags
   public readonly refTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // LINKS
   // asserted-id-scopes
   public readonly assIdScopeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // asserted-id-tags
   public readonly assIdTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // external-id-tags
   public readonly idTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // external-id-scopes
   public readonly idScopeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // cod-labels-col-q-features
   public readonly qFeatureEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // cod-labels-col-n-features
   public readonly nFeatureEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // cod-labels-col-c-features
   public readonly cFeatureEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // cod-labels-col-s-features
   public readonly sFeatureEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // cod-labels-col-r-features
   public readonly rFeatureEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
 
   // flags
@@ -278,7 +288,7 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
   constructor(
     authService: AuthJwtService,
     formBuilder: FormBuilder,
-    private _dialogService: DialogService
+    private _dialogService: DialogService,
   ) {
     super(authService, formBuilder);
     this._table = new CodSheetTable();
@@ -337,12 +347,15 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
     });
 
     this.rows$.pipe(takeUntilDestroyed()).subscribe((rows) => {
-      console.log('[CodSheetLabels] rows$ subscription triggered, row count:', rows.length);
+      console.log(
+        '[CodSheetLabels] rows$ subscription triggered, row count:',
+        rows.length,
+      );
       this.endleafRowIds.set([
         ...new Set(
           rows
             .filter((r) => r.id.startsWith('('))
-            .map((r) => r.id.replace(/[rv]\)/, ')'))
+            .map((r) => r.id.replace(/[rv]\)/, ')')),
         ),
       ]);
     });
@@ -534,7 +547,16 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
     if (data?.thesauri) {
       this.updateThesauri(data.thesauri);
     }
-
+    // settings
+    this._appRepository
+      ?.getSettingFor<CodSheetLabelsPartSettings>(
+        COD_SHEET_LABELS_PART_TYPEID,
+        this.identity()?.roleId || undefined,
+      )
+      .then((settings) => {
+        const options = settings?.lookupProviderOptions;
+        this.lookupProviderOptions.set(options || undefined);
+      });
     // form
     this.updateForm(data?.value);
   }
@@ -558,7 +580,7 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
 
   protected getValue(): CodSheetLabelsPart {
     let part = this.getEditedPart(
-      COD_SHEET_LABELS_PART_TYPEID
+      COD_SHEET_LABELS_PART_TYPEID,
     ) as CodSheetLabelsPart;
     part.rows = this._table.getRows();
     part.quireDescription = this.isQuireDscEmpty()
@@ -588,14 +610,17 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
       this._table.setPageValue(
         this._table.getColumnIndex(this.opColumn.value!),
         action.pages,
-        action.value
+        action.value,
       );
     } else {
       const cells = LabelGenerator.generateFrom(
         this.opColumn.value!,
-        this.opAction.value!
+        this.opAction.value!,
       );
-      console.log('[CodSheetLabels] addCells action, cells count:', cells.length);
+      console.log(
+        '[CodSheetLabels] addCells action, cells count:',
+        cells.length,
+      );
       this._table.addCells(cells);
     }
     console.log('[CodSheetLabels] onAction END');

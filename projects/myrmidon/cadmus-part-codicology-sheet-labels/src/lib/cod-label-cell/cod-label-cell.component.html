@@ -1,105 +1,107 @@
 @if (cell()) {
-<div class="cell" [style.background-color]="color() || 'transparent'">
-  <!-- VIEW -->
-  @if (editMode === 'none') {
-  <div class="form-row-center">
-    <!-- cell value -->
-    <span>{{ cell()?.value }}</span>
-    <!-- cell note -->
-    @if (cell()?.note) {
-    <span [matTooltip]="cell()!.note">
-      <mat-icon>description</mat-icon>
-    </span>
+  <div class="cell" [style.background-color]="color() || 'transparent'">
+    <!-- VIEW -->
+    @if (editMode === "none") {
+      <div class="form-row-center">
+        <!-- cell value -->
+        <span>{{ cell()?.value }}</span>
+        <!-- cell note -->
+        @if (cell()?.note) {
+          <span [matTooltip]="cell()!.note">
+            <mat-icon>description</mat-icon>
+          </span>
+        }
+        <!-- edit value button -->
+        <button
+          class="muted"
+          type="button"
+          mat-icon-button
+          matTooltip="Edit value"
+          (click)="editValue()"
+        >
+          <mat-icon class="mat-primary">edit</mat-icon>
+        </button>
+        <!-- edit note button -->
+        <button
+          class="muted"
+          type="button"
+          mat-icon-button
+          matTooltip="Edit note"
+          (click)="editNote()"
+        >
+          <mat-icon>edit_note</mat-icon>
+        </button>
+        <!-- features -->
+        @if (featureFlags().length) {
+          <button
+            class="muted"
+            type="button"
+            mat-icon-button
+            matTooltip="Edit features"
+            (click)="editFeatures()"
+          >
+            <mat-icon>checklist</mat-icon>
+          </button>
+        }
+        <cadmus-flag-set-badge [flags]="cellFlags()" />
+      </div>
     }
-    <!-- edit value button -->
-    <button
-      class="muted"
-      type="button"
-      mat-icon-button
-      matTooltip="Edit value"
-      (click)="editValue()"
-    >
-      <mat-icon class="mat-primary">edit</mat-icon>
-    </button>
-    <!-- edit note button -->
-    <button
-      class="muted"
-      type="button"
-      mat-icon-button
-      matTooltip="Edit note"
-      (click)="editNote()"
-    >
-      <mat-icon>edit_note</mat-icon>
-    </button>
-    <!-- features -->
-    @if (featureFlags().length) {
-    <button
-      class="muted"
-      type="button"
-      mat-icon-button
-      matTooltip="Edit features"
-      (click)="editFeatures()"
-    >
-      <mat-icon>checklist</mat-icon>
-    </button>
-    }
-    <cadmus-flag-set-badge [flags]="cellFlags()" />
-  </div>
-  }
 
-  <!-- EDIT -->
-  @else {
-  <form [formGroup]="form" (submit)="saveEdit()" class="form-row">
-    <!-- value -->
-    @if (editMode === 'value') {
-    <mat-form-field>
-      <mat-label>value</mat-label>
-      <input
-        #valueInput
-        matInput
-        type="text"
-        spellcheck="false"
-        [formControl]="value"
-        (keydown.esc)="cancelEdit()"
-      />
-      @if (value.hasError('maxLength') && (value.dirty || value.touched)) {
-      <mat-error>value too long</mat-error>
-      }
-    </mat-form-field>
+    <!-- EDIT -->
+    @else {
+      <form [formGroup]="form" (submit)="saveEdit()" class="form-row">
+        <!-- value -->
+        @if (editMode === "value") {
+          <mat-form-field>
+            <mat-label>value</mat-label>
+            <input
+              #valueInput
+              matInput
+              type="text"
+              spellcheck="false"
+              [formControl]="value"
+              (keydown.esc)="cancelEdit()"
+            />
+            @if (
+              value.hasError("maxLength") && (value.dirty || value.touched)
+            ) {
+              <mat-error>value too long</mat-error>
+            }
+          </mat-form-field>
+        }
+        <!-- note -->
+        @if (editMode === "note") {
+          <mat-form-field>
+            <mat-label>note</mat-label>
+            <input
+              #noteInput
+              matInput
+              type="text"
+              [formControl]="note"
+              (keydown.esc)="cancelEdit()"
+            />
+            @if (note.hasError("maxLength") && (note.dirty || note.touched)) {
+              <mat-error>note too long</mat-error>
+            }
+          </mat-form-field>
+        }
+        <button
+          type="button"
+          mat-icon-button
+          matTooltip="Discard edit"
+          (click)="cancelEdit()"
+        >
+          <mat-icon class="mat-warn">clear</mat-icon>
+        </button>
+        <button
+          type="submit"
+          [disabled]="form.invalid"
+          mat-icon-button
+          matTooltip="Save edit"
+        >
+          <mat-icon class="mat-primary">check_circle</mat-icon>
+        </button>
+      </form>
     }
-    <!-- note -->
-    @if (editMode === 'note') {
-    <mat-form-field>
-      <mat-label>note</mat-label>
-      <input
-        #noteInput
-        matInput
-        type="text"
-        [formControl]="note"
-        (keydown.esc)="cancelEdit()"
-      />
-      @if (note.hasError('maxLength') && (note.dirty || note.touched)) {
-      <mat-error>note too long</mat-error>
-      }
-    </mat-form-field>
-    }
-    <button
-      type="button"
-      mat-icon-button
-      matTooltip="Discard edit"
-      (click)="cancelEdit()"
-    >
-      <mat-icon class="mat-warn">clear</mat-icon>
-    </button>
-    <button
-      type="submit"
-      [disabled]="form.invalid"
-      mat-icon-button
-      matTooltip="Save edit"
-    >
-      <mat-icon class="mat-primary">check_circle</mat-icon>
-    </button>
-  </form>
-  }
-</div>
+  </div>
 }

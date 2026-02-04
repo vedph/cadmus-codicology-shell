@@ -3,27 +3,27 @@
     <div class="form-row">
       <!-- tag (bound) -->
       @if (tagEntries()?.length) {
-      <mat-form-field>
-        <mat-label>tag</mat-label>
-        <mat-select [formControl]="tag">
-          @for (e of tagEntries(); track e.id) {
-          <mat-option [value]="e.id">{{ e.value }}</mat-option>
+        <mat-form-field>
+          <mat-label>tag</mat-label>
+          <mat-select [formControl]="tag">
+            @for (e of tagEntries(); track e.id) {
+              <mat-option [value]="e.id">{{ e.value }}</mat-option>
+            }
+          </mat-select>
+          @if ($any(tag).errors?.required && (tag.dirty || tag.touched)) {
+            <mat-error>tag required</mat-error>
           }
-        </mat-select>
-        @if ($any(tag).errors?.required && (tag.dirty || tag.touched)) {
-        <mat-error>tag required</mat-error>
-        }
-      </mat-form-field>
+        </mat-form-field>
       }
       <!-- tag (free) -->
       @else {
-      <mat-form-field>
-        <mat-label>tag</mat-label>
-        <input matInput [formControl]="tag" />
-        @if ($any(tag).errors?.maxLength && (tag.dirty || tag.touched)) {
-        <mat-error>tag too long</mat-error>
-        }
-      </mat-form-field>
+        <mat-form-field>
+          <mat-label>tag</mat-label>
+          <input matInput [formControl]="tag" />
+          @if ($any(tag).errors?.maxLength && (tag.dirty || tag.touched)) {
+            <mat-error>tag too long</mat-error>
+          }
+        </mat-form-field>
       }
 
       <!-- sample -->
@@ -45,65 +45,69 @@
 
     <!-- rulings -->
     @if (rulTechEntries()?.length) {
-    <fieldset>
-      <legend>rulings</legend>
-      <cadmus-ui-flag-set
-        [flags]="rulFlags()"
-        [checkedIds]="rulings.value"
-        (checkedIdsChange)="onCheckedIdsChange($event)"
-      />
-    </fieldset>
+      <fieldset>
+        <legend>rulings</legend>
+        <cadmus-ui-flag-set
+          [flags]="rulFlags()"
+          [checkedIds]="rulings.value"
+          (checkedIdsChange)="onCheckedIdsChange($event)"
+        />
+      </fieldset>
     }
 
     <div class="form-row">
       <!-- derolez (bound) -->
       @if (drzEntries()?.length) {
-      <mat-form-field>
-        <mat-label>derolez</mat-label>
-        <mat-select [formControl]="derolez">
-          @for (e of drzEntries(); track e.id) {
-          <mat-option [value]="e.id">{{ e.value }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
+        <mat-form-field>
+          <mat-label>derolez</mat-label>
+          <mat-select [formControl]="derolez">
+            @for (e of drzEntries(); track e.id) {
+              <mat-option [value]="e.id">{{ e.value }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
       }
       <!-- derolez (free) -->
       @else {
-      <mat-form-field>
-        <mat-label>derolez</mat-label>
-        <input matInput [formControl]="derolez" />
-        @if ( $any(derolez).errors?.maxLength && (derolez.dirty ||
-        derolez.touched) ) {
-        <mat-error>derolez too long</mat-error>
-        }
-      </mat-form-field>
+        <mat-form-field>
+          <mat-label>derolez</mat-label>
+          <input matInput [formControl]="derolez" />
+          @if (
+            $any(derolez).errors?.maxLength &&
+            (derolez.dirty || derolez.touched)
+          ) {
+            <mat-error>derolez too long</mat-error>
+          }
+        </mat-form-field>
       }
 
       <!-- pricking (bound) -->
       @if (prkEntries()?.length) {
-      <mat-form-field>
-        <mat-label>pricking</mat-label>
-        <mat-select [formControl]="pricking">
-          @for (e of prkEntries(); track e.id) {
-          <mat-option [value]="e.id">{{ e.value }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
+        <mat-form-field>
+          <mat-label>pricking</mat-label>
+          <mat-select [formControl]="pricking">
+            @for (e of prkEntries(); track e.id) {
+              <mat-option [value]="e.id">{{ e.value }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
       }
       <!-- pricking (free) -->
       @else {
-      <mat-form-field>
-        <mat-label>pricking</mat-label>
-        <input matInput [formControl]="pricking" />
-        @if ( $any(pricking).errors?.maxLength && (pricking.dirty ||
-        pricking.touched) ) {
-        <mat-error>pricking too long</mat-error>
-        }
-      </mat-form-field>
+        <mat-form-field>
+          <mat-label>pricking</mat-label>
+          <input matInput [formControl]="pricking" />
+          @if (
+            $any(pricking).errors?.maxLength &&
+            (pricking.dirty || pricking.touched)
+          ) {
+            <mat-error>pricking too long</mat-error>
+          }
+        </mat-form-field>
       }
 
       <!-- columnCount -->
-      <mat-form-field style="width: 5em">
+      <mat-form-field class="nr">
         <mat-label>cols</mat-label>
         <input
           matInput
@@ -112,9 +116,11 @@
           max="18"
           [formControl]="columnCount"
         />
-        @if ( $any(columnCount).errors?.required && (columnCount.dirty ||
-        columnCount.touched) ) {
-        <mat-error>count required</mat-error>
+        @if (
+          $any(columnCount).errors?.required &&
+          (columnCount.dirty || columnCount.touched)
+        ) {
+          <mat-error>count required</mat-error>
         }
       </mat-form-field>
     </div>
@@ -137,7 +143,7 @@
         <mat-label>note</mat-label>
         <input matInput [formControl]="note" />
         @if ($any(note).errors?.maxLength && (note.dirty || note.touched)) {
-        <mat-error>note too long</mat-error>
+          <mat-error>note too long</mat-error>
         }
       </mat-form-field>
     </div>

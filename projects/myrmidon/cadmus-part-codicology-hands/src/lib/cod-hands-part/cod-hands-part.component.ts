@@ -36,6 +36,7 @@ import {
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
 } from '@myrmidon/cadmus-ui';
+import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 import {
   CodHand,
@@ -43,6 +44,10 @@ import {
   COD_HANDS_PART_TYPEID,
 } from '../cod-hands-part';
 import { CodHandComponent } from '../cod-hand/cod-hand.component';
+
+interface CodHandsPartSettings {
+  lookupProviderOptions?: LookupProviderOptions;
+}
 
 /**
  * CodHandsPart editor component.
@@ -113,12 +118,17 @@ export class CodHandsPartComponent
   // cod-hand-subscription-languages
   public subLangEntries: ThesaurusEntry[] | undefined;
 
+  // lookup options depending on role
+  public readonly lookupProviderOptions = signal<
+    LookupProviderOptions | undefined
+  >(undefined);
+
   public hands: FormControl<CodHand[]>;
 
   constructor(
     authService: AuthJwtService,
     formBuilder: FormBuilder,
-    private _dialogService: DialogService
+    private _dialogService: DialogService,
   ) {
     super(authService, formBuilder);
     // form
@@ -223,7 +233,16 @@ export class CodHandsPartComponent
     if (data?.thesauri) {
       this.updateThesauri(data.thesauri);
     }
-
+    // settings
+    this._appRepository
+      ?.getSettingFor<CodHandsPartSettings>(
+        COD_HANDS_PART_TYPEID,
+        this.identity()?.roleId || undefined,
+      )
+      .then((settings) => {
+        const options = settings?.lookupProviderOptions;
+        this.lookupProviderOptions.set(options || undefined);
+      });
     // form
     this.updateForm(data?.value);
   }

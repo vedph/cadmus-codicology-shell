@@ -1,4 +1,4 @@
-import { Component, input, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -42,6 +42,7 @@ import {
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
 } from '@myrmidon/cadmus-ui';
+import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 // local
 import {
@@ -50,6 +51,10 @@ import {
   COD_CONTENTS_PART_TYPEID,
 } from '../cod-contents-part';
 import { CodContentEditorComponent } from '../cod-content-editor/cod-content-editor.component';
+
+interface CodContentsPartSettings {
+  lookupProviderOptions?: LookupProviderOptions;
+}
 
 /**
  * CodContentsPart editor component.
@@ -94,36 +99,63 @@ export class CodContentsPartComponent
   public readonly editedContent = signal<CodContent | undefined>(undefined);
 
   // cod-content-states
-  public readonly stateEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly stateEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // cod-content-tags
   public readonly tagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-content-annotation-types
-  public readonly annTypeEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly annTypeEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // cod-content-annotation-features
-  public readonly annFeatureEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly annFeatureEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // cod-content-annotation-languages
-  public readonly annLangEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly annLangEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // cod-content-gap-types
-  public readonly gapTypeEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly gapTypeEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // cod-content-gap-tags
-  public readonly gapTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly gapTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // assertion-tags
-  public readonly assTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly assTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // doc-reference-types
-  public readonly refTypeEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly refTypeEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // doc-reference-tags
-  public readonly refTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly refTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // external-id-tags
-  public readonly idTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly idTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // external-id-scopes
-  public readonly idScopeEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly idScopeEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
+
+  // lookup options depending on role
+  public readonly lookupProviderOptions = signal<
+    LookupProviderOptions | undefined
+  >(undefined);
 
   public contents: FormControl<CodContent[]>;
 
   constructor(
     authService: AuthJwtService,
     formBuilder: FormBuilder,
-    private _dialogService: DialogService
+    private _dialogService: DialogService,
   ) {
     super(authService, formBuilder);
     // form
@@ -232,6 +264,16 @@ export class CodContentsPartComponent
     if (data?.thesauri) {
       this.updateThesauri(data.thesauri);
     }
+    // settings
+    this._appRepository
+      ?.getSettingFor<CodContentsPartSettings>(
+        COD_CONTENTS_PART_TYPEID,
+        this.identity()?.roleId || undefined,
+      )
+      .then((settings) => {
+        const options = settings?.lookupProviderOptions;
+        this.lookupProviderOptions.set(options || undefined);
+      });
 
     // form
     this.updateForm(data?.value);

@@ -1,16 +1,16 @@
 <form [formGroup]="form" (submit)="save()">
   <!-- features -->
   @if (featureFlags().length) {
-  <div>
-    <fieldset>
-      <legend>features</legend>
-      <cadmus-ui-flag-set
-        [flags]="featureFlags()"
-        [checkedIds]="features.value"
-        (checkedIdsChange)="onFeatureCheckedIdsChange($event)"
-      />
-    </fieldset>
-  </div>
+    <div>
+      <fieldset>
+        <legend>features</legend>
+        <cadmus-ui-flag-set
+          [flags]="featureFlags()"
+          [checkedIds]="features.value"
+          (checkedIdsChange)="onFeatureCheckedIdsChange($event)"
+        />
+      </fieldset>
+    </div>
   }
   <!-- note -->
   <div>
@@ -18,21 +18,21 @@
       <mat-label>note</mat-label>
       <textarea matInput [formControl]="note" rows="3"></textarea>
       @if ($any(note).errors?.maxLength && (note.dirty || note.touched)) {
-      <mat-error>note too long</mat-error>
+        <mat-error>note too long</mat-error>
       }
     </mat-form-field>
   </div>
   <!-- scoped notes -->
   @if (scopes().length) {
-  <div>
-    <fieldset>
-      <legend>scoped notes</legend>
-      <cadmus-ui-note-set
-        [set]="this.scopedNotes.value"
-        (setChange)="onSetChange($event)"
-      />
-    </fieldset>
-  </div>
+    <div>
+      <fieldset>
+        <legend>scoped notes</legend>
+        <cadmus-ui-note-set
+          [set]="this.scopedNotes.value"
+          (setChange)="onSetChange($event)"
+        />
+      </fieldset>
+    </div>
   }
   <!-- buttons -->
   <div>

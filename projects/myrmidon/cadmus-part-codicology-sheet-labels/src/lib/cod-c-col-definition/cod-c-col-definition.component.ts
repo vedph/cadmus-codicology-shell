@@ -21,6 +21,7 @@ import {
   AssertedCompositeId,
   AssertedCompositeIdsComponent,
 } from '@myrmidon/cadmus-refs-asserted-ids';
+import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
@@ -61,6 +62,10 @@ export class CodCColDefinitionComponent {
   public readonly idTagEntries = input<ThesaurusEntry[]>();
   // external-id-scopes
   public readonly idScopeEntries = input<ThesaurusEntry[]>();
+
+  public readonly lookupProviderOptions = input<
+    LookupProviderOptions | undefined
+  >();
 
   public readonly editorClose = output();
 

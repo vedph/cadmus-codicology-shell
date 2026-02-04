@@ -23,7 +23,7 @@ export class CodSheetLabelsPartFeatureComponent
     snackbar: MatSnackBar,
     itemService: ItemService,
     thesaurusService: ThesaurusService,
-    editorService: PartEditorService
+    editorService: PartEditorService,
   ) {
     super(
       router,
@@ -31,8 +31,9 @@ export class CodSheetLabelsPartFeatureComponent
       snackbar,
       itemService,
       thesaurusService,
-      editorService
+      editorService,
     );
+    this.roleIdInThesauri = true;
   }
 
   protected override getReqThesauriIds(): string[] {

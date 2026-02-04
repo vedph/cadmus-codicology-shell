@@ -162,6 +162,9 @@ graph LR;
 
 ## History
 
+- 2026-02-04:
+  - updated packages.
+  - added `lookupProviderOptions` wherever lookup components are used, getting data from settings and changing the corresponding part thesauri to be role-dependent.
 - 2026-01-30:
   - 🆕 add gaps to codicological content.
   - updated Angular and packages.

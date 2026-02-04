@@ -1,29 +1,31 @@
 <form [formGroup]="form">
   <!-- bound -->
   @if (!free && entries()?.length) {
-  <mat-form-field>
-    <mat-select [formControl]="idCtl" [placeholder]="label()">
-      @for (e of entries(); track e.id) {
-      <mat-option [value]="e.id">{{ e.value }}</mat-option>
+    <mat-form-field>
+      <mat-select [formControl]="idCtl" [placeholder]="label()">
+        @for (e of entries(); track e.id) {
+          <mat-option [value]="e.id">{{ e.value }}</mat-option>
+        }
+      </mat-select>
+      @if ($any(idCtl).errors?.required && (idCtl.dirty || idCtl.touched)) {
+        <mat-error>required</mat-error>
       }
-    </mat-select>
-    @if ($any(idCtl).errors?.required && (idCtl.dirty || idCtl.touched)) {
-    <mat-error>required</mat-error>
-    }
-  </mat-form-field>
+    </mat-form-field>
   }
 
   <!-- free -->
   @else {
-  <mat-form-field>
-    <input matInput [formControl]="idCtl" [placeholder]="label()" />
-    @if ($any(idCtl).errors?.required && (idCtl.dirty || idCtl.touched)) {
-    <mat-error>required</mat-error>
-    } @if ($any(idCtl).errors?.maxLength && (idCtl.dirty || idCtl.touched)) {
-    <mat-error>too long</mat-error>
-    } @if ($any(idCtl).errors?.invalidCtl && (idCtl.dirty || idCtl.touched)) {
-    <mat-error>invalid</mat-error>
-    }
-  </mat-form-field>
+    <mat-form-field>
+      <input matInput [formControl]="idCtl" [placeholder]="label()" />
+      @if ($any(idCtl).errors?.required && (idCtl.dirty || idCtl.touched)) {
+        <mat-error>required</mat-error>
+      }
+      @if ($any(idCtl).errors?.maxLength && (idCtl.dirty || idCtl.touched)) {
+        <mat-error>too long</mat-error>
+      }
+      @if ($any(idCtl).errors?.invalidCtl && (idCtl.dirty || idCtl.touched)) {
+        <mat-error>invalid</mat-error>
+      }
+    </mat-form-field>
   }
 </form>

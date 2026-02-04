@@ -24,6 +24,7 @@ import { Assertion, AssertionComponent } from '@myrmidon/cadmus-refs-assertion';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import { CodDecorationArtistStyle } from '../cod-decorations-part';
+import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 @Component({
   selector: 'cadmus-cod-decoration-artist-style',
@@ -55,6 +56,10 @@ export class CodDecorationArtistStyleComponent implements OnInit {
   public readonly refTypeEntries = input<ThesaurusEntry[]>();
   // doc-reference-tags
   public readonly refTagEntries = input<ThesaurusEntry[]>();
+
+  public readonly lookupProviderOptions = input<
+    LookupProviderOptions | undefined
+  >();
 
   public readonly editorClose = output();
 

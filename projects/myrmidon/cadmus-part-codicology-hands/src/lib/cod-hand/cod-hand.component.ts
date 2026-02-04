@@ -1,4 +1,12 @@
-import { Component, effect, input, model, OnInit, output, signal } from '@angular/core';
+import {
+  Component,
+  effect,
+  input,
+  model,
+  OnInit,
+  output,
+  signal,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -24,14 +32,18 @@ import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 
+import { LookupDocReferencesComponent, LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
-import { NgxToolsValidators, FlatLookupPipe, deepCopy } from '@myrmidon/ngx-tools';
+import {
+  NgxToolsValidators,
+  FlatLookupPipe,
+  deepCopy,
+} from '@myrmidon/ngx-tools';
 import {
   AssertedCompositeId,
   AssertedCompositeIdsComponent,
 } from '@myrmidon/cadmus-refs-asserted-ids';
 import { CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
-import { LookupDocReferencesComponent } from '@myrmidon/cadmus-refs-lookup';
 
 import {
   CodHand,
@@ -104,6 +116,10 @@ export class CodHandComponent implements OnInit {
   // cod-hand-subscription-languages
   public readonly subLangEntries = input<ThesaurusEntry[]>();
 
+  public readonly lookupProviderOptions = input<
+    LookupProviderOptions | undefined
+  >();
+
   public readonly editorClose = output();
 
   public eid: FormControl<string | null>;
@@ -122,11 +138,16 @@ export class CodHandComponent implements OnInit {
   public readonly editedIst = signal<CodHandInstance | undefined>(undefined);
 
   public readonly editedSubIndex = signal<number>(-1);
-  public readonly editedSub = signal<CodHandSubscription | undefined>(undefined);
+  public readonly editedSub = signal<CodHandSubscription | undefined>(
+    undefined,
+  );
 
   public dscKeys: string[];
 
-  constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
+  constructor(
+    formBuilder: FormBuilder,
+    private _dialogService: DialogService,
+  ) {
     this.dscKeys = [];
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
@@ -220,7 +241,7 @@ export class CodHandComponent implements OnInit {
 
   public editDescription(
     description: CodHandDescription | null,
-    index = -1
+    index = -1,
   ): void {
     if (!description) {
       this.editedDscIndex.set(-1);
@@ -373,7 +394,7 @@ export class CodHandComponent implements OnInit {
 
   public editSubscription(
     subscription: CodHandSubscription | null,
-    index = -1
+    index = -1,
   ): void {
     if (!subscription) {
       this.editedSubIndex.set(-1);

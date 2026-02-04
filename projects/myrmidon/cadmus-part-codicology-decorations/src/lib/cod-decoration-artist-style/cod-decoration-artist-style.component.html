@@ -5,9 +5,10 @@
       <mat-label>name</mat-label>
       <input matInput [formControl]="name" />
       @if ($any(name).errors?.required && (name.dirty || name.touched)) {
-      <mat-error>name required</mat-error>
-      } @if ($any(name).errors?.maxLength && (name.dirty || name.touched)) {
-      <mat-error>name too long</mat-error>
+        <mat-error>name required</mat-error>
+      }
+      @if ($any(name).errors?.maxLength && (name.dirty || name.touched)) {
+        <mat-error>name too long</mat-error>
       }
     </mat-form-field>
   </div>
@@ -16,14 +17,15 @@
   <div>
     <mat-checkbox [formControl]="hasChronotope">chronotope</mat-checkbox>
     @if (hasChronotope.value) {
-    <cadmus-refs-asserted-chronotope
-      [tagEntries]="ctTagEntries()"
-      [assTagEntries]="assTagEntries()"
-      [refTagEntries]="refTagEntries()"
-      [refTypeEntries]="refTypeEntries()"
-      [chronotope]="chronotope.value || undefined"
-      (chronotopeChange)="onChronotopeChange($event)"
-    />
+      <cadmus-refs-asserted-chronotope
+        [tagEntries]="ctTagEntries()"
+        [assTagEntries]="assTagEntries()"
+        [refTagEntries]="refTagEntries()"
+        [refTypeEntries]="refTypeEntries()"
+        [lookupProviderOptions]="lookupProviderOptions()"
+        [chronotope]="chronotope.value || undefined"
+        (chronotopeChange)="onChronotopeChange($event)"
+      />
     }
   </div>
 
@@ -31,13 +33,14 @@
   <div>
     <mat-checkbox [formControl]="hasAssertion">assertion</mat-checkbox>
     @if (hasAssertion.value) {
-    <cadmus-refs-assertion
-      [assTagEntries]="assTagEntries()"
-      [refTagEntries]="refTagEntries()"
-      [refTypeEntries]="refTypeEntries()"
-      [assertion]="assertion.value || undefined"
-      (assertionChange)="onAssertionChange($event)"
-    />
+      <cadmus-refs-assertion
+        [assTagEntries]="assTagEntries()"
+        [refTagEntries]="refTagEntries()"
+        [refTypeEntries]="refTypeEntries()"
+        [lookupProviderOptions]="lookupProviderOptions()"
+        [assertion]="assertion.value || undefined"
+        (assertionChange)="onAssertionChange($event)"
+      />
     }
   </div>
 

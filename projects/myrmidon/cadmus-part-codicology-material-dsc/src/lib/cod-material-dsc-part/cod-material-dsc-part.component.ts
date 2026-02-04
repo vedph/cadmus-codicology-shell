@@ -29,7 +29,11 @@ import {
   MatExpansionPanelTitle,
 } from '@angular/material/expansion';
 
-import { NgxToolsValidators, FlatLookupPipe, deepCopy } from '@myrmidon/ngx-tools';
+import {
+  NgxToolsValidators,
+  FlatLookupPipe,
+  deepCopy,
+} from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 import { HistoricalDatePipe } from '@myrmidon/cadmus-refs-historical-date';
@@ -44,6 +48,7 @@ import {
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
 } from '@myrmidon/cadmus-ui';
+import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 import {
   CodMaterialDscPart,
@@ -53,6 +58,10 @@ import {
 } from '../cod-material-dsc-part';
 import { CodUnitEditorComponent } from '../cod-unit-editor/cod-unit-editor.component';
 import { CodPalimpsestEditorComponent } from '../cod-palimpsest-editor/cod-palimpsest-editor.component';
+
+interface CodMaterialDscPartSettings {
+  lookupProviderOptions?: LookupProviderOptions;
+}
 
 /**
  * CodMaterialDsc part editor component.
@@ -120,10 +129,15 @@ export class CodMaterialDscPartComponent
   // doc-reference-tags
   public refTagEntries: ThesaurusEntry[] | undefined;
 
+  // lookup options depending on role
+  public readonly lookupProviderOptions = signal<
+    LookupProviderOptions | undefined
+  >(undefined);
+
   constructor(
     authService: AuthJwtService,
     formBuilder: FormBuilder,
-    private _dialogService: DialogService
+    private _dialogService: DialogService,
   ) {
     super(authService, formBuilder);
     // form
@@ -211,14 +225,23 @@ export class CodMaterialDscPartComponent
     if (data?.thesauri) {
       this.updateThesauri(data.thesauri);
     }
-
+    // settings
+    this._appRepository
+      ?.getSettingFor<CodMaterialDscPartSettings>(
+        COD_MATERIAL_DSC_PART_TYPEID,
+        this.identity()?.roleId || undefined,
+      )
+      .then((settings) => {
+        const options = settings?.lookupProviderOptions;
+        this.lookupProviderOptions.set(options || undefined);
+      });
     // form
     this.updateForm(data?.value);
   }
 
   protected getValue(): CodMaterialDscPart {
     let part = this.getEditedPart(
-      COD_MATERIAL_DSC_PART_TYPEID
+      COD_MATERIAL_DSC_PART_TYPEID,
     ) as CodMaterialDscPart;
     part.units = this.units.value || [];
     part.palimpsests = this.palimpsests.value?.length

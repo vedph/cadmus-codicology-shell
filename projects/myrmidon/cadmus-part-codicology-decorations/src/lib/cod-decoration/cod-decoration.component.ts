@@ -1,4 +1,12 @@
-import { Component, computed, effect, input, model, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  input,
+  model,
+  output,
+  signal,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -27,7 +35,10 @@ import {
   AssertedChronotopeSetComponent,
 } from '@myrmidon/cadmus-refs-asserted-chronotope';
 import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
-import { LookupDocReferencesComponent } from '@myrmidon/cadmus-refs-lookup';
+import {
+  LookupDocReferencesComponent,
+  LookupProviderOptions,
+} from '@myrmidon/cadmus-refs-lookup';
 import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 import { CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
 
@@ -147,6 +158,10 @@ export class CodDecorationComponent {
   // external-id-scopes
   public readonly idScopeEntries = input<ThesaurusEntry[]>();
 
+  public readonly lookupProviderOptions = input<
+    LookupProviderOptions | undefined
+  >();
+
   public readonly editorClose = output();
 
   public eid: FormControl<string | null>;
@@ -160,11 +175,15 @@ export class CodDecorationComponent {
   public form: FormGroup;
 
   public readonly editedElementIndex = signal<number>(-1);
-  public readonly editedElement = signal<CodDecorationElement | undefined>(undefined);
+  public readonly editedElement = signal<CodDecorationElement | undefined>(
+    undefined,
+  );
   public readonly parentKeys = signal<string[]>([]);
 
   public readonly editedArtistIndex = signal<number>(-1);
-  public readonly editedArtist = signal<CodDecorationArtist | undefined>(undefined);
+  public readonly editedArtist = signal<CodDecorationArtist | undefined>(
+    undefined,
+  );
 
   public editorOptions = {
     theme: 'vs-light',
@@ -179,7 +198,10 @@ export class CodDecorationComponent {
     return this.decFlagEntries()?.map(entryToFlag) || [];
   });
 
-  constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
+  constructor(
+    formBuilder: FormBuilder,
+    private _dialogService: DialogService,
+  ) {
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.name = formBuilder.control(null, [
@@ -290,7 +312,7 @@ export class CodDecorationComponent {
       return;
     }
     let keys: string[] = this.elements.value.map(
-      (e: CodDecorationElement) => e.key!
+      (e: CodDecorationElement) => e.key!,
     );
     this.parentKeys.set([...new Set(keys)].sort());
   }

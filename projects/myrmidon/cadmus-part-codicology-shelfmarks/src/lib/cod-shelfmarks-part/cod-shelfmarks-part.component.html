@@ -20,84 +20,98 @@
         </button>
       </div>
       @if (shelfmarks.value.length) {
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>tag</th>
-            <th>city</th>
-            <th>library</th>
-            <th>fund</th>
-            <th>location</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for ( entry of shelfmarks.value; track entry; let i = $index; let
-          first = $first; let last = $last) {
-          <tr [class.selected]="i === editedIndex()">
-            <td class="fit-width">
-              <button
-                type="button"
-                mat-icon-button
-                matTooltip="Edit this shelfmark"
-                (click)="editShelfmark(entry, i)"
-              >
-                <mat-icon class="mat-primary">edit</mat-icon>
-              </button>
-              <button
-                type="button"
-                mat-icon-button
-                matTooltip="Move this shelfmark up"
-                [disabled]="first"
-                (click)="moveShelfmarkUp(i)"
-              >
-                <mat-icon>arrow_upward</mat-icon>
-              </button>
-              <button
-                type="button"
-                mat-icon-button
-                matTooltip="Move this shelfmark down"
-                [disabled]="last"
-                (click)="moveShelfmarkDown(i)"
-              >
-                <mat-icon>arrow_downward</mat-icon>
-              </button>
-              <button
-                type="button"
-                mat-icon-button
-                matTooltip="Delete this shelfmark"
-                (click)="deleteShelfmark(i)"
-              >
-                <mat-icon class="mat-warn">remove_circle</mat-icon>
-              </button>
-            </td>
-            <td>{{ entry.tag | flatLookup : tagEntries() : "id" : "value" }}</td>
-            <td>{{ entry.city | flatLookup : cityEntries() : "id" : "value" }}</td>
-            <td>{{ entry.library | flatLookup : libEntries() : "id" : "value" }}</td>
-            <td>{{ entry.fund }}</td>
-            <td>{{ entry.location }}</td>
-          </tr>
-          }
-        </tbody>
-      </table>
-      } @if (editedShelfmark()) {
-      <mat-expansion-panel
-        [expanded]="editedShelfmark()"
-        [disabled]="!editedShelfmark()"
-      >
-        <mat-expansion-panel-header>
-          <mat-panel-title> #{{ editedIndex() + 1 }} </mat-panel-title>
-        </mat-expansion-panel-header>
-        <cadmus-cod-shelfmark-editor
-          [tagEntries]="tagEntries()"
-          [cityEntries]="cityEntries()"
-          [libEntries]="libEntries()"
-          [cityFromLibPattern]="cityFromLibPattern()"
-          [shelfmark]="editedShelfmark()"
-          (shelfmarkChange)="onShelfmarkChange($event!)"
-          (editorClose)="editShelfmark(null)"
-        />
-      </mat-expansion-panel>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>tag</th>
+              <th>city</th>
+              <th>library</th>
+              <th>fund</th>
+              <th>location</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (
+              entry of shelfmarks.value;
+              track entry;
+              let i = $index;
+              let first = $first;
+              let last = $last
+            ) {
+              <tr [class.selected]="i === editedIndex()">
+                <td class="fit-width">
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Edit this shelfmark"
+                    (click)="editShelfmark(entry, i)"
+                  >
+                    <mat-icon class="mat-primary">edit</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Move this shelfmark up"
+                    [disabled]="first"
+                    (click)="moveShelfmarkUp(i)"
+                  >
+                    <mat-icon>arrow_upward</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Move this shelfmark down"
+                    [disabled]="last"
+                    (click)="moveShelfmarkDown(i)"
+                  >
+                    <mat-icon>arrow_downward</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Delete this shelfmark"
+                    (click)="deleteShelfmark(i)"
+                  >
+                    <mat-icon class="mat-warn">remove_circle</mat-icon>
+                  </button>
+                </td>
+                <td>
+                  {{ entry.tag | flatLookup: tagEntries() : "id" : "value" }}
+                </td>
+                <td>
+                  {{ entry.city | flatLookup: cityEntries() : "id" : "value" }}
+                </td>
+                <td>
+                  {{
+                    entry.library | flatLookup: libEntries() : "id" : "value"
+                  }}
+                </td>
+                <td>{{ entry.fund }}</td>
+                <td>{{ entry.location }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+      @if (editedShelfmark()) {
+        <mat-expansion-panel
+          [expanded]="editedShelfmark()"
+          [disabled]="!editedShelfmark()"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title> #{{ editedIndex() + 1 }} </mat-panel-title>
+          </mat-expansion-panel-header>
+          <cadmus-cod-shelfmark-editor
+            [tagEntries]="tagEntries()"
+            [cityEntries]="cityEntries()"
+            [libEntries]="libEntries()"
+            [cityFromLibPattern]="cityFromLibPattern()"
+            [shelfmark]="editedShelfmark()"
+            (shelfmarkChange)="onShelfmarkChange($event!)"
+            (editorClose)="editShelfmark(null)"
+          />
+        </mat-expansion-panel>
       }
     </mat-card-content>
     <mat-card-actions>

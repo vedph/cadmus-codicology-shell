@@ -20,6 +20,7 @@ import {
   AssertedCompositeId,
   AssertedCompositeIdsComponent,
 } from '@myrmidon/cadmus-refs-asserted-ids';
+import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
@@ -41,7 +42,7 @@ import { CodRColDefinition } from '../cod-sheet-labels-part';
     MatIconButton,
     MatTooltip,
     MatIcon,
-    AssertedCompositeIdsComponent
+    AssertedCompositeIdsComponent,
   ],
 })
 export class CodRColDefinitionComponent {
@@ -60,6 +61,10 @@ export class CodRColDefinitionComponent {
   public readonly idTagEntries = input<ThesaurusEntry[]>();
   // external-id-scopes
   public readonly idScopeEntries = input<ThesaurusEntry[]>();
+
+  public readonly lookupProviderOptions = input<
+    LookupProviderOptions | undefined
+  >();
 
   public readonly editorClose = output();
 
@@ -117,7 +122,7 @@ export class CodRColDefinitionComponent {
       id: this.id,
       rank: +this.rank.value || 0,
       position: this.position.value?.trim() || '',
-      links: this.links.value?.length? this.links.value : undefined,
+      links: this.links.value?.length ? this.links.value : undefined,
       note: this.note.value?.trim(),
     };
   }

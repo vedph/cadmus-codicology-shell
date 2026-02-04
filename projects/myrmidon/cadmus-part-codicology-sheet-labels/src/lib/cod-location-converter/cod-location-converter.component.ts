@@ -1,4 +1,12 @@
-import { Component, effect, input, Input, model, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  effect,
+  input,
+  Input,
+  model,
+  OnInit,
+  signal,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -90,7 +98,7 @@ export class CodLocationConverterComponent implements OnInit {
     authService: AuthJwtService,
     private _clipboard: Clipboard,
     private _snackbar: MatSnackBar,
-    formBuilder: FormBuilder
+    formBuilder: FormBuilder,
   ) {
     this._converter = new CodLocationConverter();
     this.systems$ = this._converter.systems$;
@@ -112,9 +120,9 @@ export class CodLocationConverterComponent implements OnInit {
     });
 
     effect(() => {
-      this.baseFilter.set(this.facetId()
-        ? { facetId: this.facetId() }
-        : undefined);
+      this.baseFilter.set(
+        this.facetId() ? { facetId: this.facetId() } : undefined,
+      );
     });
   }
 
@@ -191,7 +199,7 @@ export class CodLocationConverterComponent implements OnInit {
           this.loading.set(false);
           console.error(
             'Error loading labels part for item ' + item!.id,
-            error
+            error,
           );
         },
       });

@@ -33,6 +33,7 @@ import {
   HistoricalDateComponent,
 } from '@myrmidon/cadmus-refs-historical-date';
 import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
+import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
@@ -96,6 +97,10 @@ export class CodNColDefinitionComponent {
   // external-id-scopes
   public readonly idScopeEntries = input<ThesaurusEntry[]>();
 
+  public readonly lookupProviderOptions = input<
+    LookupProviderOptions | undefined
+  >();
+
   public readonly editorClose = output();
 
   public id: string;
@@ -115,7 +120,7 @@ export class CodNColDefinitionComponent {
 
   // flags
   public readonly colorFlags = computed<Flag[]>(
-    () => this.clrEntries()?.map(entryToFlag) || []
+    () => this.clrEntries()?.map(entryToFlag) || [],
   );
 
   constructor(formBuilder: FormBuilder) {

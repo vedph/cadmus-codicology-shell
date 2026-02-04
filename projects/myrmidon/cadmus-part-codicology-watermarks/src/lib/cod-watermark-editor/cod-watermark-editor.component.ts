@@ -31,6 +31,7 @@ import {
   AssertedCompositeId,
   AssertedCompositeIdsComponent,
 } from '@myrmidon/cadmus-refs-asserted-ids';
+import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
@@ -78,6 +79,10 @@ export class CodWatermarkEditorComponent {
   public readonly szDimTagEntries = input<ThesaurusEntry[]>();
   // physical-size-units
   public readonly szUnitEntries = input<ThesaurusEntry[]>();
+
+  public readonly lookupProviderOptions = input<
+    LookupProviderOptions | undefined
+  >();
 
   public editorClose = output();
 

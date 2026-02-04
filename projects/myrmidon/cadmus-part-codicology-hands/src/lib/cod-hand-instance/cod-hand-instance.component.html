@@ -6,15 +6,15 @@
       <legend>script(s)</legend>
       <div class="form-row">
         @if (scriptEntries()?.length) {
-        <mat-form-field>
-          <mat-label>script</mat-label>
-          <mat-select [formControl]="script">
-            @for (e of scriptEntries(); track e.id) {
-            <mat-option [value]="e">{{ e.value }}</mat-option>
-            }
-          </mat-select>
-          <mat-hint>script to add</mat-hint>
-        </mat-form-field>
+          <mat-form-field>
+            <mat-label>script</mat-label>
+            <mat-select [formControl]="script">
+              @for (e of scriptEntries(); track e.id) {
+                <mat-option [value]="e">{{ e.value }}</mat-option>
+              }
+            </mat-select>
+            <mat-hint>script to add</mat-hint>
+          </mat-form-field>
         }
         <button
           type="button"
@@ -31,45 +31,50 @@
       <div>
         <table>
           <tbody>
-            @for ( e of scripts.value; track e; let i = $index; let first =
-            $first; let last = $last) {
-            <tr>
-              <td>
-                <button
-                  mat-icon-button
-                  type="button"
-                  matTooltip="Remove this script"
-                  (click)="deleteScript(i)"
-                >
-                  <mat-icon class="mat-warn">remove_circle</mat-icon>
-                </button>
-                <button
-                  [disabled]="first"
-                  mat-icon-button
-                  type="button"
-                  matTooltip="Move script up"
-                  (click)="moveScriptUp(i)"
-                >
-                  <mat-icon>arrow_upward</mat-icon>
-                </button>
-                <button
-                  [disabled]="last"
-                  mat-icon-button
-                  type="button"
-                  matTooltip="Move script down"
-                  (click)="moveScriptDown(i)"
-                >
-                  <mat-icon>arrow_downward</mat-icon>
-                </button>
-              </td>
-              <td>{{ i + 1 }}. {{ e.value }}</td>
-            </tr>
+            @for (
+              e of scripts.value;
+              track e;
+              let i = $index;
+              let first = $first;
+              let last = $last
+            ) {
+              <tr>
+                <td>
+                  <button
+                    mat-icon-button
+                    type="button"
+                    matTooltip="Remove this script"
+                    (click)="deleteScript(i)"
+                  >
+                    <mat-icon class="mat-warn">remove_circle</mat-icon>
+                  </button>
+                  <button
+                    [disabled]="first"
+                    mat-icon-button
+                    type="button"
+                    matTooltip="Move script up"
+                    (click)="moveScriptUp(i)"
+                  >
+                    <mat-icon>arrow_upward</mat-icon>
+                  </button>
+                  <button
+                    [disabled]="last"
+                    mat-icon-button
+                    type="button"
+                    matTooltip="Move script down"
+                    (click)="moveScriptDown(i)"
+                  >
+                    <mat-icon>arrow_downward</mat-icon>
+                  </button>
+                </td>
+                <td>{{ i + 1 }}. {{ e.value }}</td>
+              </tr>
             }
           </tbody>
         </table>
       </div>
       @if (scripts.invalid) {
-      <span class="error">script(s) required</span>
+        <span class="error">script(s) required</span>
       }
     </fieldset>
 
@@ -81,19 +86,20 @@
 
     <!-- dscKey -->
     @if (dscKeys()?.length) {
-    <mat-form-field>
-      <mat-label>dsc.key</mat-label>
-      <mat-select [formControl]="dscKey">
-        <mat-option [value]="null">--</mat-option>
-        @for (k of dscKeys(); track k) {
-        <mat-option [value]="k">{{ k }}</mat-option>
+      <mat-form-field>
+        <mat-label>dsc.key</mat-label>
+        <mat-select [formControl]="dscKey">
+          <mat-option [value]="null">--</mat-option>
+          @for (k of dscKeys(); track k) {
+            <mat-option [value]="k">{{ k }}</mat-option>
+          }
+        </mat-select>
+        @if (
+          $any(dscKey).errors?.required && (dscKey.dirty || dscKey.touched)
+        ) {
+          <mat-error>key required</mat-error>
         }
-      </mat-select>
-      @if ( $any(dscKey).errors?.required && (dscKey.dirty || dscKey.touched) )
-      {
-      <mat-error>key required</mat-error>
-      }
-    </mat-form-field>
+      </mat-form-field>
     }
 
     <!-- ranges -->
@@ -133,6 +139,7 @@
       [assTagEntries]="assTagEntries()"
       [refTagEntries]="refTagEntries()"
       [refTypeEntries]="refTypeEntries()"
+      [lookupProviderOptions]="lookupProviderOptions()"
       [chronotope]="chronotope.value || undefined"
       (chronotopeChange)="onChronotopeChange($event!)"
     />

@@ -2,29 +2,30 @@
   <div class="form-row">
     <!-- type (bound) -->
     @if (typeEntries()?.length) {
-    <mat-form-field>
-      <mat-label>type</mat-label>
-      <mat-select [formControl]="type">
-        @for (e of typeEntries(); track e.id) {
-        <mat-option [value]="e.id">{{ e.value }}</mat-option>
+      <mat-form-field>
+        <mat-label>type</mat-label>
+        <mat-select [formControl]="type">
+          @for (e of typeEntries(); track e.id) {
+            <mat-option [value]="e.id">{{ e.value }}</mat-option>
+          }
+        </mat-select>
+        @if ($any(type).errors?.required && (type.dirty || type.touched)) {
+          <mat-error>type required</mat-error>
         }
-      </mat-select>
-      @if ($any(type).errors?.required && (type.dirty || type.touched)) {
-      <mat-error>type required</mat-error>
-      }
-    </mat-form-field>
+      </mat-form-field>
     }
     <!-- type (free) -->
     @else {
-    <mat-form-field>
-      <mat-label>type</mat-label>
-      <input matInput [formControl]="type" />
-      @if ($any(type).errors?.required && (type.dirty || type.touched)) {
-      <mat-error>type required</mat-error>
-      } @if ($any(type).errors?.maxLength && (type.dirty || type.touched)) {
-      <mat-error>type too long</mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field>
+        <mat-label>type</mat-label>
+        <input matInput [formControl]="type" />
+        @if ($any(type).errors?.required && (type.dirty || type.touched)) {
+          <mat-error>type required</mat-error>
+        }
+        @if ($any(type).errors?.maxLength && (type.dirty || type.touched)) {
+          <mat-error>type too long</mat-error>
+        }
+      </mat-form-field>
     }
 
     <!-- eid -->
@@ -32,7 +33,7 @@
       <mat-label>EID</mat-label>
       <input matInput [formControl]="eid" />
       @if ($any(eid).errors?.maxLength && (eid.dirty || eid.touched)) {
-      <mat-error>EID too long</mat-error>
+        <mat-error>EID too long</mat-error>
       }
     </mat-form-field>
 
@@ -57,31 +58,33 @@
       />
       <!-- svg -->
       @if (mufi.value?.svg) {
-      <div id="glyph-box">
-        <div
-          [innerHTML]="
-            mufi.value?.svg || ''
-              | replaceString : 'rgb(64,101,101)' : 'rgb(68,76,255)' : false
-              | safeHtml
-          "
-        ></div>
-      </div>
+        <div id="glyph-box">
+          <div
+            [innerHTML]="
+              mufi.value?.svg || ''
+                | replaceString: 'rgb(64,101,101)' : 'rgb(68,76,255)' : false
+                | safeHtml
+            "
+          ></div>
+        </div>
       }
     </div>
   </fieldset>
 
   <!-- comment -->
   @if (mufi.value?.comment) {
-  <div id="glyph-comment">{{ mufi.value!.comment }}</div>
+    <div id="glyph-comment">{{ mufi.value!.comment }}</div>
   }
   <div>
     <!-- description -->
     <mat-form-field class="long-text">
       <mat-label>description</mat-label>
       <textarea matInput [formControl]="description"></textarea>
-      @if ( $any(description).errors?.maxLength && (description.dirty ||
-      description.touched) ) {
-      <mat-error>description too long</mat-error>
+      @if (
+        $any(description).errors?.maxLength &&
+        (description.dirty || description.touched)
+      ) {
+        <mat-error>description too long</mat-error>
       }
     </mat-form-field>
   </div>

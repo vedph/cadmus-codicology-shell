@@ -1,4 +1,11 @@
-import { Component, computed, effect, input, model, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  input,
+  model,
+  output,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -23,7 +30,10 @@ import {
   CodLocationComponent,
 } from '@myrmidon/cadmus-cod-location';
 import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
-import { LookupDocReferencesComponent } from '@myrmidon/cadmus-refs-lookup';
+import {
+  LookupDocReferencesComponent,
+  LookupProviderOptions,
+} from '@myrmidon/cadmus-refs-lookup';
 import {
   HistoricalDateModel,
   HistoricalDateComponent,
@@ -95,6 +105,10 @@ export class CodEditEditorComponent {
   public readonly idTagEntries = input<ThesaurusEntry[]>();
   // external-id-scopes
   public readonly idScopeEntries = input<ThesaurusEntry[]>();
+
+  public readonly lookupProviderOptions = input<
+    LookupProviderOptions | undefined
+  >();
 
   public editorClose = output();
 

@@ -20,6 +20,7 @@ import {
   AssertedChronotope,
   AssertedChronotopeComponent,
 } from '@myrmidon/cadmus-refs-asserted-chronotope';
+import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
@@ -57,6 +58,10 @@ export class CodEndleafComponent {
   public readonly refTypeEntries = input<ThesaurusEntry[]>();
   // doc-reference-tags
   public readonly refTagEntries = input<ThesaurusEntry[]>();
+
+  public readonly lookupProviderOptions = input<
+    LookupProviderOptions | undefined
+  >();
 
   public readonly locations = input<string[]>([]);
 

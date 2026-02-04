@@ -41,6 +41,7 @@ import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { CodImage, CodImagesComponent } from '@myrmidon/cadmus-codicology-ui';
+import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 import { CodHandInstance } from '../cod-hands-part';
 
@@ -100,6 +101,10 @@ export class CodHandInstanceComponent {
   // cod-image-types
   public readonly imgTypeEntries = input<ThesaurusEntry[]>();
 
+  public readonly lookupProviderOptions = input<
+    LookupProviderOptions | undefined
+  >();
+
   public readonly editorClose = output();
 
   public script: FormControl<ThesaurusEntry | null>;
@@ -116,10 +121,10 @@ export class CodHandInstanceComponent {
 
   // flags
   public readonly typologyFlags = computed(
-    () => this.typeEntries()?.map(entryToFlag) || []
+    () => this.typeEntries()?.map(entryToFlag) || [],
   );
   public readonly colorFlags = computed(
-    () => this.colorEntries()?.map(entryToFlag) || []
+    () => this.colorEntries()?.map(entryToFlag) || [],
   );
 
   constructor(formBuilder: FormBuilder) {
@@ -176,8 +181,8 @@ export class CodHandInstanceComponent {
           this.scriptEntries()?.find((e) => e.id === id) ?? {
             id: id,
             value: id,
-          }
-      )
+          },
+      ),
     );
     this.rank.setValue(model.rank || 0);
     this.dscKey.setValue(model.descriptionKey || null);

@@ -50,6 +50,7 @@
         [id]="workId.value || undefined"
         [canSwitchMode]="true"
         [canEditTarget]="true"
+        [lookupProviderOptions]="lookupProviderOptions()"
         (idChange)="onIdChange($event!)"
       />
     </fieldset>

@@ -47,7 +47,7 @@ import { CodImage, CodImagesComponent } from '@myrmidon/cadmus-codicology-ui';
 
 import { CodDecorationElement } from '../cod-decorations-part';
 import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
-import { LookupDocReferencesComponent } from '@myrmidon/cadmus-refs-lookup';
+import { LookupDocReferencesComponent, LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 /**
  * List of hidden fields in decoration element component.
@@ -172,6 +172,10 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
   public readonly positionFlags = computed<Flag[]>(() => {
     return this.elemPosEntries()?.map(entryToFlag) || [];
   });
+
+  public readonly lookupProviderOptions = input<
+    LookupProviderOptions | undefined
+  >();
 
   // doc-reference-types
   public readonly refTypeEntries = input<ThesaurusEntry[]>();
@@ -313,7 +317,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
 
   private getFilteredEntries(
     entries: ThesaurusEntry[] | undefined | null,
-    prefix: string | null
+    prefix: string | null,
   ): ThesaurusEntry[] | undefined {
     if (!prefix || !entries?.some((e) => e.id.indexOf('.') > -1)) {
       return entries ? [...entries] : undefined;
@@ -325,7 +329,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
   private updateVisibility(): void {
     const hidden: any = {};
     const entry = this.decTypeHiddenEntries()?.find(
-      (e) => e.id === this.type.value
+      (e) => e.id === this.type.value,
     );
     if (entry) {
       const names = entry.value.split(' ').filter((s) => s);
@@ -370,7 +374,7 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
         this.description.setValue(this._editorModel!.getValue());
         this.description.markAsDirty();
         this.description.updateValueAndValidity();
-      })
+      }),
     );
   }
 
@@ -389,26 +393,28 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
 
     // calculate filtered entries
     this.elemFlagEntries.set(
-      this.getFilteredEntries(this.decElemFlagEntries(), this.type.value) || []
+      this.getFilteredEntries(this.decElemFlagEntries(), this.type.value) || [],
     );
     this.elemColorEntries.set(
-      this.getFilteredEntries(this.decElemColorEntries(), this.type.value) || []
+      this.getFilteredEntries(this.decElemColorEntries(), this.type.value) ||
+        [],
     );
     this.elemGildingEntries.set(
       this.getFilteredEntries(this.decElemGildingEntries(), this.type.value) ||
-        []
+        [],
     );
     this.elemTechEntries.set(
-      this.getFilteredEntries(this.decElemTechEntries(), this.type.value) || []
+      this.getFilteredEntries(this.decElemTechEntries(), this.type.value) || [],
     );
     this.elemPosEntries.set(
-      this.getFilteredEntries(this.decElemPosEntries(), this.type.value) || []
+      this.getFilteredEntries(this.decElemPosEntries(), this.type.value) || [],
     );
     this.elemToolEntries.set(
-      this.getFilteredEntries(this.decElemToolEntries(), this.type.value) || []
+      this.getFilteredEntries(this.decElemToolEntries(), this.type.value) || [],
     );
     this.elemTypolEntries.set(
-      this.getFilteredEntries(this.decElemTypolEntries(), this.type.value) || []
+      this.getFilteredEntries(this.decElemTypolEntries(), this.type.value) ||
+        [],
     );
 
     // filter entries for multiple-selections
@@ -418,28 +424,28 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
     // filter entries and set free for single-entry groups with "any.-"
     let entries = this.getFilteredEntries(
       this.decElemGildingEntries(),
-      this.type.value
+      this.type.value,
     );
     this.elemGildingFree.set(this.isFreeSet(entries));
     this.gildings.setValue(this.element()?.gildings || []);
 
     entries = this.getFilteredEntries(
       this.decElemTechEntries(),
-      this.type.value
+      this.type.value,
     );
     this.elemTechniqueFree.set(this.isFreeSet(entries));
     this.techniques.setValue(this.element()?.techniques || []);
 
     entries = this.getFilteredEntries(
       this.decElemPosEntries(),
-      this.type.value
+      this.type.value,
     );
     this.elemPositionFree.set(this.isFreeSet(entries));
     this.positions.setValue(this.element()?.positions || []);
 
     entries = this.getFilteredEntries(
       this.decElemToolEntries(),
-      this.type.value
+      this.type.value,
     );
     this.elemToolFree.set(this.isFreeSet(entries));
     this.tools.setValue(this.element()?.tools || []);

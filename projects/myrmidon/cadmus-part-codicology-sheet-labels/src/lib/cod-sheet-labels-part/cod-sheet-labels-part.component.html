@@ -28,12 +28,14 @@
                     <mat-label>column</mat-label>
                     <mat-select [formControl]="opColumn">
                       @for (c of columns$ | async; track c) {
-                      <mat-option [value]="c">{{ c }}</mat-option>
+                        <mat-option [value]="c">{{ c }}</mat-option>
                       }
                     </mat-select>
-                    @if ( $any(opColumn).errors?.required && (opColumn.dirty ||
-                    opColumn.touched) ) {
-                    <mat-error>column required</mat-error>
+                    @if (
+                      $any(opColumn).errors?.required &&
+                      (opColumn.dirty || opColumn.touched)
+                    ) {
+                      <mat-error>column required</mat-error>
                     }
                   </mat-form-field>
 
@@ -65,12 +67,17 @@
                       [formControl]="opAction"
                       (keyup.enter)="$any($event.target).select()"
                     />
-                    @if ( $any(opAction).errors?.required && (opAction.dirty ||
-                    opAction.touched) ) {
-                    <mat-error>action required</mat-error>
-                    } @if ( $any(opAction).errors?.pattern && (opAction.dirty ||
-                    opAction.touched) ) {
-                    <mat-error>invalid action</mat-error>
+                    @if (
+                      $any(opAction).errors?.required &&
+                      (opAction.dirty || opAction.touched)
+                    ) {
+                      <mat-error>action required</mat-error>
+                    }
+                    @if (
+                      $any(opAction).errors?.pattern &&
+                      (opAction.dirty || opAction.touched)
+                    ) {
+                      <mat-error>invalid action</mat-error>
                     }
                   </mat-form-field>
 
@@ -114,7 +121,7 @@
                       </mat-optgroup>
                       <mat-optgroup label="columns">
                         @if (!qPresent()) {
-                        <mat-option value="col-q">quire</mat-option>
+                          <mat-option value="col-q">quire</mat-option>
                         }
                         <mat-option value="col-n">numbering</mat-option>
                         <mat-option value="col-c">catchword</mat-option>
@@ -122,39 +129,50 @@
                         <mat-option value="col-r">register</mat-option>
                       </mat-optgroup>
                     </mat-select>
-                    @if ( $any(addType).errors?.required && (addType.dirty ||
-                    addType.touched) ) {
-                    <mat-error>type required</mat-error>
+                    @if (
+                      $any(addType).errors?.required &&
+                      (addType.dirty || addType.touched)
+                    ) {
+                      <mat-error>type required</mat-error>
                     }
                   </mat-form-field>
 
                   <!-- addName (not for quire) -->
-                  @if (adderColumn() && addType.value !== 'col-q') {
-                  <mat-form-field>
-                    <mat-label>name</mat-label>
-                    <input matInput [formControl]="addName" />
-                    @if ( $any(addName).errors?.required && (addName.dirty ||
-                    addName.touched) ) {
-                    <mat-error>name required</mat-error>
-                    } @if ( $any(addName).errors?.maxLength && (addName.dirty ||
-                    addName.touched) ) {
-                    <mat-error>name too long</mat-error>
-                    }
-                  </mat-form-field>
+                  @if (adderColumn() && addType.value !== "col-q") {
+                    <mat-form-field>
+                      <mat-label>name</mat-label>
+                      <input matInput [formControl]="addName" />
+                      @if (
+                        $any(addName).errors?.required &&
+                        (addName.dirty || addName.touched)
+                      ) {
+                        <mat-error>name required</mat-error>
+                      }
+                      @if (
+                        $any(addName).errors?.maxLength &&
+                        (addName.dirty || addName.touched)
+                      ) {
+                        <mat-error>name too long</mat-error>
+                      }
+                    </mat-form-field>
                   }
 
                   <!-- addCount (not for covers/quire) -->
-                  @if ( !adderColumn() && addType.value !== 'col-q' &&
-                  addType.value !== 'row-0' && addType.value !== 'row-4' ) {
-                  <mat-form-field class="nr">
-                    <mat-label>count</mat-label>
-                    <input
-                      matInput
-                      [formControl]="addCount"
-                      type="number"
-                      min="1"
-                    />
-                  </mat-form-field>
+                  @if (
+                    !adderColumn() &&
+                    addType.value !== "col-q" &&
+                    addType.value !== "row-0" &&
+                    addType.value !== "row-4"
+                  ) {
+                    <mat-form-field class="nr">
+                      <mat-label>count</mat-label>
+                      <input
+                        matInput
+                        [formControl]="addCount"
+                        type="number"
+                        min="1"
+                      />
+                    </mat-form-field>
                   }
 
                   <button
@@ -199,110 +217,110 @@
               >column: {{ editedDefId() }}</mat-expansion-panel-header
             >
             <!-- Q -->
-            @if (editedDefId() === 'q') {
-            <div>
-              <h3>quire</h3>
-              <cadmus-cod-quire-description
-                [featureEntries]="quireFeatEntries()"
-                [description]="quireDsc()"
-                [maxQuireNumber]="maxQuireNumber()"
-                (descriptionChange)="saveQuireDsc($event!)"
-                (descriptionCancel)="onColumnDefClose()"
-              />
-            </div>
+            @if (editedDefId() === "q") {
+              <div>
+                <h3>quire</h3>
+                <cadmus-cod-quire-description
+                  [featureEntries]="quireFeatEntries()"
+                  [description]="quireDsc()"
+                  [maxQuireNumber]="maxQuireNumber()"
+                  (descriptionChange)="saveQuireDsc($event!)"
+                  (descriptionCancel)="onColumnDefClose()"
+                />
+              </div>
             }
             <!-- N -->
             @if (editedNDef()) {
-            <div>
-              <h3>numbering</h3>
-              <cadmus-cod-n-col-definition
-                [clrEntries]="clrEntries()"
-                [posEntries]="posnEntries()"
-                [sysEntries]="sysnEntries()"
-                [techEntries]="techEntries()"
-                [definition]="editedNDef()"
-                (definitionChange)="onEditedNDefChange($event!)"
-                (editorClose)="onColumnDefClose()"
-              />
-            </div>
+              <div>
+                <h3>numbering</h3>
+                <cadmus-cod-n-col-definition
+                  [clrEntries]="clrEntries()"
+                  [posEntries]="posnEntries()"
+                  [sysEntries]="sysnEntries()"
+                  [techEntries]="techEntries()"
+                  [definition]="editedNDef()"
+                  (definitionChange)="onEditedNDefChange($event!)"
+                  (editorClose)="onColumnDefClose()"
+                />
+              </div>
             }
 
             <!-- C -->
             @if (editedCDef()) {
-            <div>
-              <h3>catchword</h3>
-              <cadmus-cod-c-col-definition
-                [posEntries]="poscEntries()"
-                [definition]="editedCDef()"
-                (definitionChange)="onEditedCDefChange($event!)"
-                (editorClose)="onColumnDefClose()"
-              />
-            </div>
+              <div>
+                <h3>catchword</h3>
+                <cadmus-cod-c-col-definition
+                  [posEntries]="poscEntries()"
+                  [definition]="editedCDef()"
+                  (definitionChange)="onEditedCDefChange($event!)"
+                  (editorClose)="onColumnDefClose()"
+                />
+              </div>
             }
 
             <!-- S -->
             @if (editedSDef()) {
-            <div>
-              <h3>signature</h3>
-              <cadmus-cod-s-col-definition
-                [posEntries]="possEntries()"
-                [sysEntries]="syssEntries()"
-                [definition]="editedSDef()"
-                (definitionChange)="onEditedSDefChange($event!)"
-                (editorClose)="onColumnDefClose()"
-              />
-            </div>
+              <div>
+                <h3>signature</h3>
+                <cadmus-cod-s-col-definition
+                  [posEntries]="possEntries()"
+                  [sysEntries]="syssEntries()"
+                  [definition]="editedSDef()"
+                  (definitionChange)="onEditedSDefChange($event!)"
+                  (editorClose)="onColumnDefClose()"
+                />
+              </div>
             }
 
             <!-- R -->
             @if (editedRDef()) {
-            <div>
-              <h3>register signature</h3>
-              <cadmus-cod-r-col-definition
-                [posEntries]="possEntries()"
-                [definition]="editedRDef()"
-                (definitionChange)="onEditedRDefChange($event!)"
-                (editorClose)="onColumnDefClose()"
-              />
-            </div>
+              <div>
+                <h3>register signature</h3>
+                <cadmus-cod-r-col-definition
+                  [posEntries]="possEntries()"
+                  [definition]="editedRDef()"
+                  (definitionChange)="onEditedRDefChange($event!)"
+                  (editorClose)="onColumnDefClose()"
+                />
+              </div>
             }
           </mat-expansion-panel>
 
           <!-- table -->
           @if (columns$ | async; as columns) {
-          <table class="labels">
-            <thead>
-              <tr>
-                <th></th>
-                @for (c of columns; track c) {
-                <th [class.selected]="c === opColumn.value">
-                  {{ c }}
-                </th>
-                }
-              </tr>
-            </thead>
-            @if (rows$ | async; as rows) {
-            <tbody>
-              <!-- rows -->
-              @for (r of rows; track r.id) {
-              <tr>
-                <th>{{ r.id }}</th>
-                <!-- cols -->
-                @for (rc of r.columns; track rc.id) {
-                <td>
-                  <cadmus-cod-label-cell
-                    [color]="$any(rc.id | cellTypeColor)"
-                    [cell]="$any(rc | cellAdapter : r.id)"
-                    [featureFlags]="getColFeatureFlags(rc.id)"
-                    (cellChange)="onCellChange($event!)"
-                  />
-                </td>
-                }
-              </tr>
+            <table class="labels">
+              <thead>
+                <tr>
+                  <th></th>
+                  @for (c of columns; track c) {
+                    <th [class.selected]="c === opColumn.value">
+                      {{ c }}
+                    </th>
+                  }
+                </tr>
+              </thead>
+              @if (rows$ | async; as rows) {
+                <tbody>
+                  <!-- rows -->
+                  @for (r of rows; track r.id) {
+                    <tr>
+                      <th>{{ r.id }}</th>
+                      <!-- cols -->
+                      @for (rc of r.columns; track rc.id) {
+                        <td>
+                          <cadmus-cod-label-cell
+                            [color]="$any(rc.id | cellTypeColor)"
+                            [cell]="$any(rc | cellAdapter: r.id)"
+                            [featureFlags]="getColFeatureFlags(rc.id)"
+                            (cellChange)="onCellChange($event!)"
+                          />
+                        </td>
+                      }
+                    </tr>
+                  }
+                </tbody>
               }
-            </tbody>
-            }
-          </table>
+            </table>
           }
         </mat-tab>
 
@@ -319,73 +337,78 @@
             </button>
           </div>
           @if (endleaves.value.length) {
-          <table>
-            <thead>
-              <tr>
-                <th></th>
-                <th>location</th>
-                <th>material</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for ( endleaf of endleaves.value; track endleaf; let i = $index;
-              let first = $first; let last = $last) {
-              <tr>
-                <td class="fit-width">
-                  <button
-                    type="button"
-                    mat-icon-button
-                    matTooltip="Edit this endleaf"
-                    (click)="editEndleaf(endleaf, i)"
-                  >
-                    <mat-icon class="mat-primary">edit</mat-icon>
-                  </button>
-                  <button
-                    type="button"
-                    mat-icon-button
-                    matTooltip="Clone this endleaf"
-                    (click)="cloneEndleaf(i)"
-                  >
-                    <mat-icon>content_copy</mat-icon>
-                  </button>
-                  <button
-                    type="button"
-                    mat-icon-button
-                    matTooltip="Move this endleaf up"
-                    [disabled]="first"
-                    (click)="moveEndleafUp(i)"
-                  >
-                    <mat-icon>arrow_upward</mat-icon>
-                  </button>
-                  <button
-                    type="button"
-                    mat-icon-button
-                    matTooltip="Move this endleaf down"
-                    [disabled]="last"
-                    (click)="moveEndleafDown(i)"
-                  >
-                    <mat-icon>arrow_downward</mat-icon>
-                  </button>
-                  <button
-                    type="button"
-                    mat-icon-button
-                    matTooltip="Delete this endleaf"
-                    (click)="deleteEndleaf(i)"
-                  >
-                    <mat-icon class="mat-warn">remove_circle</mat-icon>
-                  </button>
-                </td>
-                <td>{{ endleaf.location }}</td>
-                <td>
-                  {{
-                    endleaf.material
-                      | flatLookup : matEntries() : "id" : "value"
-                  }}
-                </td>
-              </tr>
-              }
-            </tbody>
-          </table>
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>location</th>
+                  <th>material</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (
+                  endleaf of endleaves.value;
+                  track endleaf;
+                  let i = $index;
+                  let first = $first;
+                  let last = $last
+                ) {
+                  <tr>
+                    <td class="fit-width">
+                      <button
+                        type="button"
+                        mat-icon-button
+                        matTooltip="Edit this endleaf"
+                        (click)="editEndleaf(endleaf, i)"
+                      >
+                        <mat-icon class="mat-primary">edit</mat-icon>
+                      </button>
+                      <button
+                        type="button"
+                        mat-icon-button
+                        matTooltip="Clone this endleaf"
+                        (click)="cloneEndleaf(i)"
+                      >
+                        <mat-icon>content_copy</mat-icon>
+                      </button>
+                      <button
+                        type="button"
+                        mat-icon-button
+                        matTooltip="Move this endleaf up"
+                        [disabled]="first"
+                        (click)="moveEndleafUp(i)"
+                      >
+                        <mat-icon>arrow_upward</mat-icon>
+                      </button>
+                      <button
+                        type="button"
+                        mat-icon-button
+                        matTooltip="Move this endleaf down"
+                        [disabled]="last"
+                        (click)="moveEndleafDown(i)"
+                      >
+                        <mat-icon>arrow_downward</mat-icon>
+                      </button>
+                      <button
+                        type="button"
+                        mat-icon-button
+                        matTooltip="Delete this endleaf"
+                        (click)="deleteEndleaf(i)"
+                      >
+                        <mat-icon class="mat-warn">remove_circle</mat-icon>
+                      </button>
+                    </td>
+                    <td>{{ endleaf.location }}</td>
+                    <td>
+                      {{
+                        endleaf.material
+                          | flatLookup: matEntries() : "id" : "value"
+                      }}
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
           }
 
           <mat-expansion-panel

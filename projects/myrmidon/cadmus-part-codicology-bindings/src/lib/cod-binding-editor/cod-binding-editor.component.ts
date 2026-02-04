@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  input,
-  model,
-  output,
-} from '@angular/core';
+import { Component, effect, input, model, output, signal } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -36,7 +29,7 @@ import {
 } from '@myrmidon/cadmus-refs-asserted-chronotope';
 
 import { CodBinding } from '../cod-bindings-part';
-import { deepCopy } from '@myrmidon/ngx-tools';
+import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 @Component({
   selector: 'cadmus-cod-binding-editor',
@@ -83,6 +76,10 @@ export class CodBindingEditorComponent {
   public readonly szDimTagEntries = input<ThesaurusEntry[]>();
   // physical-size-units
   public readonly szUnitEntries = input<ThesaurusEntry[]>();
+
+  public readonly lookupProviderOptions = input<
+    LookupProviderOptions | undefined
+  >();
 
   public editorClose = output();
 
@@ -137,7 +134,7 @@ export class CodBindingEditorComponent {
     this.coverMaterial.setValue(binding.coverMaterial);
     this.boardMaterial.setValue(binding.boardMaterial);
     this.description.setValue(binding.description || null);
-    this.size.setValue(deepCopy(binding.size) || null);
+    this.size.setValue(structuredClone(binding.size) || null);
     this.hasSize.setValue(binding.size ? true : false);
     this.chronotope.setValue(binding.chronotope || null);
     this.form.markAsPristine();

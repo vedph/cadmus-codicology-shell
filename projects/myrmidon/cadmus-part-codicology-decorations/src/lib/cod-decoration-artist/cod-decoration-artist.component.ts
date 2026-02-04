@@ -31,6 +31,7 @@ import {
   AssertedCompositeId,
   AssertedCompositeIdsComponent,
 } from '@myrmidon/cadmus-refs-asserted-ids';
+import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
@@ -85,6 +86,10 @@ export class CodDecorationArtistComponent {
   // external-id-scopes
   public readonly idScopeEntries = input<ThesaurusEntry[]>();
 
+  public readonly lookupProviderOptions = input<
+    LookupProviderOptions | undefined
+  >();
+
   public readonly editorClose = output();
 
   public eid: FormControl<string | null>;
@@ -98,10 +103,13 @@ export class CodDecorationArtistComponent {
 
   public readonly editedStyleIndex = signal<number>(-1);
   public readonly editedStyle = signal<CodDecorationArtistStyle | undefined>(
-    undefined
+    undefined,
   );
 
-  constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
+  constructor(
+    formBuilder: FormBuilder,
+    private _dialogService: DialogService,
+  ) {
     // form
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.type = formBuilder.control(null, Validators.maxLength(50));
@@ -139,14 +147,14 @@ export class CodDecorationArtistComponent {
     this.styles.setValue(artist.styles || []);
     // element keys are edited as text separated by space
     this.elementKeys.setValue(
-      artist.elementKeys ? artist.elementKeys.join(' ') : ''
+      artist.elementKeys ? artist.elementKeys.join(' ') : '',
     );
     this.note.setValue(artist.note || null);
     this.form.markAsPristine();
   }
 
   private parseElementKeys(
-    text: string | undefined | null
+    text: string | undefined | null,
   ): string[] | undefined {
     if (!text) {
       return undefined;
@@ -155,7 +163,7 @@ export class CodDecorationArtistComponent {
       ...new Set(
         text.split(' ').filter((k) => {
           return k.trim()?.length ? true : false;
-        })
+        }),
       ),
     ];
     return keys.length ? keys.sort() : undefined;

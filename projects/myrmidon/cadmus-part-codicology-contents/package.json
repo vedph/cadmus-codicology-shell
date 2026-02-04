@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-contents",
-  "version": "14.0.3",
+  "version": "14.0.4",
   "description": "Cadmus codicology - contents.",
   "keywords": [
     "Cadmus"
@@ -20,11 +20,11 @@
     "@myrmidon/ngx-tools": "^2.0.2",
     "@myrmidon/ngx-mat-tools": "^1.0.1",
     "@myrmidon/cadmus-cod-location": "^9.0.3",
-    "@myrmidon/cadmus-refs-asserted-ids": "^10.0.13",
+    "@myrmidon/cadmus-refs-asserted-ids": "^10.0.15",
     "@myrmidon/cadmus-refs-citation": "^1.0.3",
     "@myrmidon/cadmus-ui-flag-set": "^9.0.3",
     "@myrmidon/cadmus-state": "^14.0.4",
-    "@myrmidon/cadmus-ui": "^16.0.0",
+    "@myrmidon/cadmus-ui": "^16.0.1",
     "@myrmidon/cadmus-ui-pg": "^16.0.1"
   },
   "dependencies": {

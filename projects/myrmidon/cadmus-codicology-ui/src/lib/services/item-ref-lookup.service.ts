@@ -16,6 +16,8 @@ export interface ItemRefLookupFilter extends RefLookupFilter {
   providedIn: 'root',
 })
 export class ItemRefLookupService implements RefLookupService {
+  public readonly id = 'item';
+
   constructor(private _itemService: ItemService) {}
 
   public getName(item: any): string {
@@ -33,12 +35,12 @@ export class ItemRefLookupService implements RefLookupService {
           facetId: filter.facetId,
         },
         1,
-        filter.limit
+        filter.limit,
       )
       .pipe(
         map((page) => {
           return page.items;
-        })
+        }),
       );
   }
 }

@@ -41,6 +41,7 @@ import {
   CloseSaveButtonsComponent,
 } from '@myrmidon/cadmus-ui';
 import { CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
+import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 import {
   CodEdit,
@@ -48,6 +49,10 @@ import {
   COD_EDITS_PART_TYPEID,
 } from '../cod-edits-part';
 import { CodEditEditorComponent } from '../cod-edit-editor/cod-edit-editor.component';
+
+interface CodEditsPartSettings {
+  lookupProviderOptions?: LookupProviderOptions;
+}
 
 /**
  * CodEditsPart editor component.
@@ -112,12 +117,17 @@ export class CodEditsPartComponent
   // external-id-scopes
   public idScopeEntries: ThesaurusEntry[] | undefined;
 
+  // lookup options depending on role
+  public readonly lookupProviderOptions = signal<
+    LookupProviderOptions | undefined
+  >(undefined);
+
   public edits: FormControl<CodEdit[]>;
 
   constructor(
     authService: AuthJwtService,
     formBuilder: FormBuilder,
-    private _dialogService: DialogService
+    private _dialogService: DialogService,
   ) {
     super(authService, formBuilder);
     // form
@@ -220,7 +230,16 @@ export class CodEditsPartComponent
     if (data?.thesauri) {
       this.updateThesauri(data.thesauri);
     }
-
+    // settings
+    this._appRepository
+      ?.getSettingFor<CodEditsPartSettings>(
+        COD_EDITS_PART_TYPEID,
+        this.identity()?.roleId || undefined,
+      )
+      .then((settings) => {
+        const options = settings?.lookupProviderOptions;
+        this.lookupProviderOptions.set(options || undefined);
+      });
     // form
     this.updateForm(data?.value);
   }

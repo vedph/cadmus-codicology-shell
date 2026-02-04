@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, input, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -26,6 +26,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { deepCopy, NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
+import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 import {
   ThesauriSet,
@@ -86,96 +87,100 @@ export class CodDecorationsPartComponent
 {
   public readonly editedIndex = signal<number>(-1);
   public readonly editedDecoration = signal<CodDecoration | undefined>(
-    undefined
+    undefined,
   );
 
   // cod-decoration-flags
   public readonly decFlagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // cod-decoration-element-flags
   public readonly decElemFlagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // cod-decoration-element-types (required)
   public readonly decElemTypeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // cod-decoration-type-hidden
   public readonly decTypeHiddenEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // cod-decoration-element-colors
   public readonly decElemColorEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // cod-decoration-element-gildings
   public readonly decElemGildingEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // cod-decoration-element-techniques
   public readonly decElemTechEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // cod-decoration-element-positions
   public readonly decElemPosEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // cod-decoration-element-tags
   public readonly decElemTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // cod-decoration-element-tools
   public readonly decElemToolEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // cod-decoration-element-typologies
   public readonly decElemTypolEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // cod-image-types
   public readonly imgTypeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // cod-decoration-artist-types
   public readonly artTypeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // cod-decoration-artist-style-names
   public readonly artStyleEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // chronotope-tags
   public readonly ctTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // assertion-tags
   public readonly assTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // doc-reference-types
   public readonly refTypeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // doc-reference-tags
   public readonly refTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // external-id-tags
   public readonly idTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
   // external-id-scopes
   public readonly idScopeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined
+    undefined,
   );
+
+  public readonly lookupProviderOptions = input<
+    LookupProviderOptions | undefined
+  >();
 
   public decorations: FormControl<CodDecoration[]>;
 
   constructor(
     authService: AuthJwtService,
     formBuilder: FormBuilder,
-    private _dialogService: DialogService
+    private _dialogService: DialogService,
   ) {
     super(authService, formBuilder);
     // form
@@ -358,7 +363,7 @@ export class CodDecorationsPartComponent
 
   protected getValue(): CodDecorationsPart {
     let part = this.getEditedPart(
-      COD_DECORATIONS_PART_TYPEID
+      COD_DECORATIONS_PART_TYPEID,
     ) as CodDecorationsPart;
     part.decorations = this.decorations.value || [];
     return part;

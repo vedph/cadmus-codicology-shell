@@ -5,43 +5,51 @@
       <mat-label>location</mat-label>
       <mat-select [formControl]="location">
         @for (l of locations(); track l) {
-        <mat-option [value]="l">{{ l }}</mat-option>
+          <mat-option [value]="l">{{ l }}</mat-option>
         }
       </mat-select>
-      @if ( $any(location).errors?.required && (location.dirty ||
-      location.touched) ) {
-      <mat-error>location required</mat-error>
+      @if (
+        $any(location).errors?.required && (location.dirty || location.touched)
+      ) {
+        <mat-error>location required</mat-error>
       }
     </mat-form-field>
 
     <!-- material (bound) -->
     @if (matEntries()?.length) {
-    <mat-form-field class="form-col">
-      <mat-label>material</mat-label>
-      <mat-select [formControl]="material">
-        @for (e of matEntries(); track e.id) {
-        <mat-option [value]="e.id">{{ e.value }}</mat-option>
+      <mat-form-field class="form-col">
+        <mat-label>material</mat-label>
+        <mat-select [formControl]="material">
+          @for (e of matEntries(); track e.id) {
+            <mat-option [value]="e.id">{{ e.value }}</mat-option>
+          }
+        </mat-select>
+        @if (
+          $any(material).errors?.required &&
+          (material.dirty || material.touched)
+        ) {
+          <mat-error>material required</mat-error>
         }
-      </mat-select>
-      @if ( $any(material).errors?.required && (material.dirty ||
-      material.touched) ) {
-      <mat-error>material required</mat-error>
-      }
-    </mat-form-field>
+      </mat-form-field>
     }
     <!-- material (free) -->
     @else {
-    <mat-form-field class="form-col">
-      <mat-label>material</mat-label>
-      <input matInput [formControl]="material" />
-      @if ( $any(material).errors?.required && (material.dirty ||
-      material.touched) ) {
-      <mat-error>material required</mat-error>
-      } @if ( $any(material).errors?.maxLength && (material.dirty ||
-      material.touched) ) {
-      <mat-error>material too long</mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field class="form-col">
+        <mat-label>material</mat-label>
+        <input matInput [formControl]="material" />
+        @if (
+          $any(material).errors?.required &&
+          (material.dirty || material.touched)
+        ) {
+          <mat-error>material required</mat-error>
+        }
+        @if (
+          $any(material).errors?.maxLength &&
+          (material.dirty || material.touched)
+        ) {
+          <mat-error>material too long</mat-error>
+        }
+      </mat-form-field>
     }
   </div>
 
@@ -51,6 +59,7 @@
     [assTagEntries]="assTagEntries()"
     [refTagEntries]="refTagEntries()"
     [refTypeEntries]="refTypeEntries()"
+    [lookupProviderOptions]="lookupProviderOptions()"
     [chronotope]="chronotope.value || undefined"
     (chronotopeChange)="onChronotopeChange($event)"
   />
@@ -60,8 +69,8 @@
     <mat-form-field class="long-text">
       <mat-label>note</mat-label>
       <textarea rows="2" matInput [formControl]="note"></textarea>
-      @if ( $any(note).errors?.maxLength && (note.dirty || note.touched) ) {
-      <mat-error>note too long</mat-error>
+      @if ($any(note).errors?.maxLength && (note.dirty || note.touched)) {
+        <mat-error>note too long</mat-error>
       }
     </mat-form-field>
   </div>

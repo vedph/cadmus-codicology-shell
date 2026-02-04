@@ -20,86 +20,93 @@
         </button>
       </div>
       @if (watermarks.value && watermarks.value.length) {
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>name</th>
-            <th>sample</th>
-            <th>ct</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for ( entry of watermarks.value; track entry; let i = $index; let
-          first = $first; let last = $last) {
-          <tr [class.selected]="editedIndex() === i">
-            <td class="fit-width">
-              <button
-                type="button"
-                mat-icon-button
-                matTooltip="Edit this watermark"
-                (click)="editWatermark(entry, i)"
-              >
-                <mat-icon class="mat-primary">edit</mat-icon>
-              </button>
-              <button
-                type="button"
-                mat-icon-button
-                matTooltip="Move this watermark up"
-                [disabled]="first"
-                (click)="moveWatermarkUp(i)"
-              >
-                <mat-icon>arrow_upward</mat-icon>
-              </button>
-              <button
-                type="button"
-                mat-icon-button
-                matTooltip="Move this watermark down"
-                [disabled]="last"
-                (click)="moveWatermarkDown(i)"
-              >
-                <mat-icon>arrow_downward</mat-icon>
-              </button>
-              <button
-                type="button"
-                mat-icon-button
-                matTooltip="Delete this watermark"
-                (click)="deleteWatermark(i)"
-              >
-                <mat-icon class="mat-warn">remove_circle</mat-icon>
-              </button>
-            </td>
-            <td>{{ entry.name }}</td>
-            <td>{{ entry.sampleRange | codLocationRange }}</td>
-            <td>{{ entry.chronotopes?.length || 0 }}</td>
-          </tr>
-          }
-        </tbody>
-      </table>
-      } @if (editedWatermark()) {
-      <mat-expansion-panel
-        [expanded]="editedWatermark()"
-        [disabled]="!editedWatermark()"
-      >
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            #{{ editedIndex() + 1 }} {{ editedWatermark()?.name }}
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <cadmus-cod-watermark-editor
-          [idTagEntries]="idTagEntries"
-          [idScopeEntries]="idScopeEntries"
-          [ctTagEntries]="ctTagEntries"
-          [assTagEntries]="assTagEntries"
-          [refTypeEntries]="refTypeEntries"
-          [szTagEntries]="szTagEntries"
-          [szDimTagEntries]="szDimTagEntries"
-          [szUnitEntries]="szUnitEntries"
-          [watermark]="editedWatermark()"
-          (watermarkChange)="onWatermarkChange($event!)"
-          (editorClose)="editWatermark(null)"
-        />
-      </mat-expansion-panel>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>name</th>
+              <th>sample</th>
+              <th>ct</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (
+              entry of watermarks.value;
+              track entry;
+              let i = $index;
+              let first = $first;
+              let last = $last
+            ) {
+              <tr [class.selected]="editedIndex() === i">
+                <td class="fit-width">
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Edit this watermark"
+                    (click)="editWatermark(entry, i)"
+                  >
+                    <mat-icon class="mat-primary">edit</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Move this watermark up"
+                    [disabled]="first"
+                    (click)="moveWatermarkUp(i)"
+                  >
+                    <mat-icon>arrow_upward</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Move this watermark down"
+                    [disabled]="last"
+                    (click)="moveWatermarkDown(i)"
+                  >
+                    <mat-icon>arrow_downward</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Delete this watermark"
+                    (click)="deleteWatermark(i)"
+                  >
+                    <mat-icon class="mat-warn">remove_circle</mat-icon>
+                  </button>
+                </td>
+                <td>{{ entry.name }}</td>
+                <td>{{ entry.sampleRange | codLocationRange }}</td>
+                <td>{{ entry.chronotopes?.length || 0 }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+      @if (editedWatermark()) {
+        <mat-expansion-panel
+          [expanded]="editedWatermark()"
+          [disabled]="!editedWatermark()"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              #{{ editedIndex() + 1 }} {{ editedWatermark()?.name }}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <cadmus-cod-watermark-editor
+            [idTagEntries]="idTagEntries"
+            [idScopeEntries]="idScopeEntries"
+            [ctTagEntries]="ctTagEntries"
+            [assTagEntries]="assTagEntries"
+            [refTypeEntries]="refTypeEntries"
+            [szTagEntries]="szTagEntries"
+            [szDimTagEntries]="szDimTagEntries"
+            [szUnitEntries]="szUnitEntries"
+            [lookupProviderOptions]="lookupProviderOptions()"
+            [watermark]="editedWatermark()"
+            (watermarkChange)="onWatermarkChange($event!)"
+            (editorClose)="editWatermark(null)"
+          />
+        </mat-expansion-panel>
       }
     </mat-card-content>
     <mat-card-actions>

@@ -5,57 +5,58 @@
       <mat-label>EID</mat-label>
       <input matInput [formControl]="eid" />
       @if ($any(eid).errors?.maxLength && (eid.dirty || eid.touched)) {
-      <mat-error>eid too long</mat-error>
+        <mat-error>eid too long</mat-error>
       }
     </mat-form-field>
 
     <!-- type (bound) -->
     @if (typeEntries()?.length) {
-    <mat-form-field>
-      <mat-label>type</mat-label>
-      <mat-select [formControl]="type">
-        @for (e of typeEntries(); track e.id) {
-        <mat-option [value]="e.id">{{ e.value }}</mat-option>
+      <mat-form-field>
+        <mat-label>type</mat-label>
+        <mat-select [formControl]="type">
+          @for (e of typeEntries(); track e.id) {
+            <mat-option [value]="e.id">{{ e.value }}</mat-option>
+          }
+        </mat-select>
+        @if ($any(type).errors?.required && (type.dirty || type.touched)) {
+          <mat-error>type required</mat-error>
         }
-      </mat-select>
-      @if ($any(type).errors?.required && (type.dirty || type.touched)) {
-      <mat-error>type required</mat-error>
-      }
-    </mat-form-field>
+      </mat-form-field>
     }
     <!-- type (free) -->
     @else {
-    <mat-form-field>
-      <mat-label>type</mat-label>
-      <input matInput [formControl]="type" />
-      @if ($any(type).errors?.required && (type.dirty || type.touched)) {
-      <mat-error>type required</mat-error>
-      } @if ($any(type).errors?.maxLength && (type.dirty || type.touched)) {
-      <mat-error>type too long</mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field>
+        <mat-label>type</mat-label>
+        <input matInput [formControl]="type" />
+        @if ($any(type).errors?.required && (type.dirty || type.touched)) {
+          <mat-error>type required</mat-error>
+        }
+        @if ($any(type).errors?.maxLength && (type.dirty || type.touched)) {
+          <mat-error>type too long</mat-error>
+        }
+      </mat-form-field>
     }
 
     <!-- tag (bound) -->
     @if (tagEntries()?.length) {
-    <mat-form-field>
-      <mat-label>tag</mat-label>
-      <mat-select [formControl]="tag">
-        @for (e of tagEntries(); track e.id) {
-        <mat-option [value]="e.id">{{ e.value }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+      <mat-form-field>
+        <mat-label>tag</mat-label>
+        <mat-select [formControl]="tag">
+          @for (e of tagEntries(); track e.id) {
+            <mat-option [value]="e.id">{{ e.value }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
     }
     <!-- tag (free) -->
     @else {
-    <mat-form-field>
-      <mat-label>tag</mat-label>
-      <input matInput [formControl]="tag" />
-      @if ($any(tag).errors?.maxLength && (tag.dirty || tag.touched)) {
-      <mat-error>tag too long</mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field>
+        <mat-label>tag</mat-label>
+        <input matInput [formControl]="tag" />
+        @if ($any(tag).errors?.maxLength && (tag.dirty || tag.touched)) {
+          <mat-error>tag too long</mat-error>
+        }
+      </mat-form-field>
     }
 
     <!-- ranges -->
@@ -78,6 +79,7 @@
       [ids]="authorIds.value"
       [canSwitchMode]="true"
       [canEditTarget]="true"
+      [lookupProviderOptions]="lookupProviderOptions()"
       (idsChange)="onAuthorIdsChange($event)"
     />
   </div>
@@ -97,46 +99,50 @@
   <div class="form-row">
     <!-- language (bound) -->
     @if (langEntries()?.length) {
-    <mat-form-field>
-      <mat-label>language</mat-label>
-      <mat-select [formControl]="language">
-        @for (e of langEntries(); track e.id) {
-        <mat-option [value]="e.id">{{ e.value }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+      <mat-form-field>
+        <mat-label>language</mat-label>
+        <mat-select [formControl]="language">
+          @for (e of langEntries(); track e.id) {
+            <mat-option [value]="e.id">{{ e.value }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
     }
     <!-- language (free) -->
     @else {
-    <mat-form-field>
-      <mat-label>language</mat-label>
-      <input matInput [formControl]="language" />
-      @if ( $any(language).errors?.maxLength && (language.dirty ||
-      language.touched) ) {
-      <mat-error>language too long</mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field>
+        <mat-label>language</mat-label>
+        <input matInput [formControl]="language" />
+        @if (
+          $any(language).errors?.maxLength &&
+          (language.dirty || language.touched)
+        ) {
+          <mat-error>language too long</mat-error>
+        }
+      </mat-form-field>
     }
     <!-- position (bound) -->
     @if (posEntries()?.length) {
-    <mat-form-field>
-      <mat-label>position</mat-label>
-      <mat-select [formControl]="position">
-        @for (e of posEntries(); track e) {
-        <mat-option [value]="e.id">{{ e.value }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+      <mat-form-field>
+        <mat-label>position</mat-label>
+        <mat-select [formControl]="position">
+          @for (e of posEntries(); track e) {
+            <mat-option [value]="e.id">{{ e.value }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
     } @else {
-    <!-- position (free) -->
-    <mat-form-field>
-      <mat-label>position</mat-label>
-      <input matInput [formControl]="position" />
-      @if ($any(position).errors?.maxLength && (position.dirty ||
-      position.touched)) {
-      <mat-error>position too long</mat-error>
-      }
-    </mat-form-field>
+      <!-- position (free) -->
+      <mat-form-field>
+        <mat-label>position</mat-label>
+        <input matInput [formControl]="position" />
+        @if (
+          $any(position).errors?.maxLength &&
+          (position.dirty || position.touched)
+        ) {
+          <mat-error>position too long</mat-error>
+        }
+      </mat-form-field>
     }
     <!-- date -->
     <div>
@@ -144,10 +150,10 @@
         <mat-checkbox [formControl]="hasDate">date</mat-checkbox>
       </div>
       @if (hasDate.value) {
-      <cadmus-refs-historical-date
-        [date]="date.value || undefined"
-        (dateChange)="onDateChange($event!)"
-      />
+        <cadmus-refs-historical-date
+          [date]="date.value || undefined"
+          (dateChange)="onDateChange($event!)"
+        />
       }
     </div>
   </div>
@@ -167,9 +173,11 @@
     <mat-form-field class="long-text">
       <mat-label>description</mat-label>
       <textarea rows="2" matInput [formControl]="description"></textarea>
-      @if ( $any(description).errors?.maxLength && (description.dirty ||
-      description.touched) ) {
-      <mat-error>description too long</mat-error>
+      @if (
+        $any(description).errors?.maxLength &&
+        (description.dirty || description.touched)
+      ) {
+        <mat-error>description too long</mat-error>
       }
     </mat-form-field>
   </div>
@@ -180,7 +188,7 @@
       <mat-label>text</mat-label>
       <textarea matInput rows="2" [formControl]="text"></textarea>
       @if ($any(text).errors?.maxLength && (text.dirty || text.touched)) {
-      <mat-error>text too long</mat-error>
+        <mat-error>text too long</mat-error>
       }
     </mat-form-field>
   </div>
@@ -190,6 +198,7 @@
     [tagEntries]="refTagEntries()"
     [typeEntries]="refTypeEntries()"
     [references]="references.value"
+    [lookupProviderOptions]="lookupProviderOptions()"
     defaultPicker="lookup"
     (referencesChange)="onReferencesChange($event)"
   />

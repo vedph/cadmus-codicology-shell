@@ -5,7 +5,7 @@
       <mat-label>EID</mat-label>
       <input matInput [formControl]="eid" />
       @if ($any(eid).errors?.maxLength && (eid.dirty || eid.touched)) {
-      <mat-error>EID too long</mat-error>
+        <mat-error>EID too long</mat-error>
       }
     </mat-form-field>
 
@@ -14,7 +14,7 @@
       <mat-label>name</mat-label>
       <input matInput [formControl]="name" />
       @if ($any(name).errors?.maxLength && (name.dirty || name.touched)) {
-      <mat-error>name too long</mat-error>
+        <mat-error>name too long</mat-error>
       }
     </mat-form-field>
   </div>
@@ -56,73 +56,79 @@
       </button>
     </div>
     @if (descriptions.value && descriptions.value.length) {
-    <table>
-      <thead>
-        <tr>
-          <th></th>
-          <th>key</th>
-          <th>signs</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for ( description of descriptions.value; track description; let i =
-        $index; let first = $first; let last = $last) {
-        <tr [class.selected]="i === editedDscIndex()">
-          <td class="fit-width">
-            <button
-              type="button"
-              mat-icon-button
-              matTooltip="Edit this description"
-              (click)="editDescription(description, i)"
-            >
-              <mat-icon class="mat-primary">edit</mat-icon>
-            </button>
-            <button
-              type="button"
-              mat-icon-button
-              matTooltip="Move this description up"
-              [disabled]="first"
-              (click)="moveDescriptionUp(i)"
-            >
-              <mat-icon>arrow_upward</mat-icon>
-            </button>
-            <button
-              type="button"
-              mat-icon-button
-              matTooltip="Move this description down"
-              [disabled]="last"
-              (click)="moveDescriptionDown(i)"
-            >
-              <mat-icon>arrow_downward</mat-icon>
-            </button>
-            <button
-              type="button"
-              mat-icon-button
-              matTooltip="Delete this description"
-              (click)="deleteDescription(i)"
-            >
-              <mat-icon class="mat-warn">remove_circle</mat-icon>
-            </button>
-          </td>
-          <td>{{ description.key }}</td>
-          <td>{{ description.signs?.length }}</td>
-          <td></td>
-        </tr>
-        }
-      </tbody>
-    </table>
-    } @if (editedDsc()) {
-    <mat-expansion-panel [expanded]="editedDsc()" [disabled]="!editedDsc()">
-      <mat-expansion-panel-header
-        >description #{{ editedDscIndex() + 1 }}</mat-expansion-panel-header
-      >
-      <cadmus-cod-hand-description
-        [sgnTypeEntries]="sgnTypeEntries()"
-        [description]="editedDsc()"
-        (descriptionChange)="onDescriptionChange($event!)"
-        (editorClose)="editDescription(null)"
-      />
-    </mat-expansion-panel>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>key</th>
+            <th>signs</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (
+            description of descriptions.value;
+            track description;
+            let i = $index;
+            let first = $first;
+            let last = $last
+          ) {
+            <tr [class.selected]="i === editedDscIndex()">
+              <td class="fit-width">
+                <button
+                  type="button"
+                  mat-icon-button
+                  matTooltip="Edit this description"
+                  (click)="editDescription(description, i)"
+                >
+                  <mat-icon class="mat-primary">edit</mat-icon>
+                </button>
+                <button
+                  type="button"
+                  mat-icon-button
+                  matTooltip="Move this description up"
+                  [disabled]="first"
+                  (click)="moveDescriptionUp(i)"
+                >
+                  <mat-icon>arrow_upward</mat-icon>
+                </button>
+                <button
+                  type="button"
+                  mat-icon-button
+                  matTooltip="Move this description down"
+                  [disabled]="last"
+                  (click)="moveDescriptionDown(i)"
+                >
+                  <mat-icon>arrow_downward</mat-icon>
+                </button>
+                <button
+                  type="button"
+                  mat-icon-button
+                  matTooltip="Delete this description"
+                  (click)="deleteDescription(i)"
+                >
+                  <mat-icon class="mat-warn">remove_circle</mat-icon>
+                </button>
+              </td>
+              <td>{{ description.key }}</td>
+              <td>{{ description.signs?.length }}</td>
+              <td></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+    @if (editedDsc()) {
+      <mat-expansion-panel [expanded]="editedDsc()" [disabled]="!editedDsc()">
+        <mat-expansion-panel-header
+          >description #{{ editedDscIndex() + 1 }}</mat-expansion-panel-header
+        >
+        <cadmus-cod-hand-description
+          [sgnTypeEntries]="sgnTypeEntries()"
+          [description]="editedDsc()"
+          (descriptionChange)="onDescriptionChange($event!)"
+          (editorClose)="editDescription(null)"
+        />
+      </mat-expansion-panel>
     }
   </mat-expansion-panel>
 
@@ -148,85 +154,92 @@
       </button>
     </div>
     @if (instances.value && instances.value.length) {
-    <table>
-      <thead>
-        <tr>
-          <th></th>
-          <th>script</th>
-          <th>extent</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for ( instance of instances.value; track instance; let i = $index; let
-        first = $first; let last = $last) {
-        <tr [class.selected]="i === editedIstIndex()">
-          <td class="fit-width">
-            <button
-              type="button"
-              mat-icon-button
-              matTooltip="Edit this instance"
-              (click)="editInstance(instance, i)"
-            >
-              <mat-icon class="mat-primary">edit</mat-icon>
-            </button>
-            <button
-              type="button"
-              mat-icon-button
-              matTooltip="Move this instance up"
-              [disabled]="first"
-              (click)="moveInstanceUp(i)"
-            >
-              <mat-icon>arrow_upward</mat-icon>
-            </button>
-            <button
-              type="button"
-              mat-icon-button
-              matTooltip="Move this instance down"
-              [disabled]="last"
-              (click)="moveInstanceDown(i)"
-            >
-              <mat-icon>arrow_downward</mat-icon>
-            </button>
-            <button
-              type="button"
-              mat-icon-button
-              matTooltip="Delete this instance"
-              (click)="deleteInstance(i)"
-            >
-              <mat-icon class="mat-warn">remove_circle</mat-icon>
-            </button>
-          </td>
-          <td>
-            {{
-              instance.scripts[0]
-                | flatLookup : scriptEntries() : "id" : "value"
-            }}
-          </td>
-          <td>{{ instance.ranges | codLocationRange }}</td>
-        </tr>
-        }
-      </tbody>
-    </table>
-    } @if (editedIst()) {
-    <mat-expansion-panel [expanded]="editedIst()" [disabled]="!editedIst()">
-      <mat-expansion-panel-header
-        >instance #{{ editedIstIndex() + 1 }}</mat-expansion-panel-header
-      >
-      <cadmus-cod-hand-instance
-        [typeEntries]="typeEntries()"
-        [colorEntries]="colorEntries()"
-        [ctTagEntries]="ctTagEntries()"
-        [assTagEntries]="assTagEntries()"
-        [refTagEntries]="refTagEntries()"
-        [scriptEntries]="scriptEntries()"
-        [imgTypeEntries]="imgTypeEntries()"
-        [refTypeEntries]="refTypeEntries()"
-        [instance]="editedIst()"
-        [dscKeys]="dscKeys"
-        (instanceChange)="onInstanceChange($event!)"
-        (editorClose)="editInstance(null)"
-      />
-    </mat-expansion-panel>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>script</th>
+            <th>extent</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (
+            instance of instances.value;
+            track instance;
+            let i = $index;
+            let first = $first;
+            let last = $last
+          ) {
+            <tr [class.selected]="i === editedIstIndex()">
+              <td class="fit-width">
+                <button
+                  type="button"
+                  mat-icon-button
+                  matTooltip="Edit this instance"
+                  (click)="editInstance(instance, i)"
+                >
+                  <mat-icon class="mat-primary">edit</mat-icon>
+                </button>
+                <button
+                  type="button"
+                  mat-icon-button
+                  matTooltip="Move this instance up"
+                  [disabled]="first"
+                  (click)="moveInstanceUp(i)"
+                >
+                  <mat-icon>arrow_upward</mat-icon>
+                </button>
+                <button
+                  type="button"
+                  mat-icon-button
+                  matTooltip="Move this instance down"
+                  [disabled]="last"
+                  (click)="moveInstanceDown(i)"
+                >
+                  <mat-icon>arrow_downward</mat-icon>
+                </button>
+                <button
+                  type="button"
+                  mat-icon-button
+                  matTooltip="Delete this instance"
+                  (click)="deleteInstance(i)"
+                >
+                  <mat-icon class="mat-warn">remove_circle</mat-icon>
+                </button>
+              </td>
+              <td>
+                {{
+                  instance.scripts[0]
+                    | flatLookup: scriptEntries() : "id" : "value"
+                }}
+              </td>
+              <td>{{ instance.ranges | codLocationRange }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+    @if (editedIst()) {
+      <mat-expansion-panel [expanded]="editedIst()" [disabled]="!editedIst()">
+        <mat-expansion-panel-header
+          >instance #{{ editedIstIndex() + 1 }}</mat-expansion-panel-header
+        >
+        <cadmus-cod-hand-instance
+          [typeEntries]="typeEntries()"
+          [colorEntries]="colorEntries()"
+          [ctTagEntries]="ctTagEntries()"
+          [assTagEntries]="assTagEntries()"
+          [refTagEntries]="refTagEntries()"
+          [scriptEntries]="scriptEntries()"
+          [imgTypeEntries]="imgTypeEntries()"
+          [refTypeEntries]="refTypeEntries()"
+          [lookupProviderOptions]="lookupProviderOptions()"
+          [instance]="editedIst()"
+          [dscKeys]="dscKeys"
+          (instanceChange)="onInstanceChange($event!)"
+          (editorClose)="editInstance(null)"
+        />
+      </mat-expansion-panel>
     }
   </mat-expansion-panel>
 
@@ -252,77 +265,83 @@
       </button>
     </div>
     @if (subscriptions.value && subscriptions.value.length) {
-    <table>
-      <thead>
-        <tr>
-          <th></th>
-          <th>extent</th>
-          <th>language</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for ( subscription of subscriptions.value; track subscription; let i =
-        $index; let first = $first; let last = $last) {
-        <tr [class.selected]="i === editedSubIndex()">
-          <td class="fit-width">
-            <button
-              type="button"
-              mat-icon-button
-              matTooltip="Edit this subscription"
-              (click)="editSubscription(subscription, i)"
-            >
-              <mat-icon class="mat-primary">edit</mat-icon>
-            </button>
-            <button
-              type="button"
-              mat-icon-button
-              matTooltip="Move this subscription up"
-              [disabled]="first"
-              (click)="moveSubscriptionUp(i)"
-            >
-              <mat-icon>arrow_upward</mat-icon>
-            </button>
-            <button
-              type="button"
-              mat-icon-button
-              matTooltip="Move this subscription down"
-              [disabled]="last"
-              (click)="moveSubscriptionDown(i)"
-            >
-              <mat-icon>arrow_downward</mat-icon>
-            </button>
-            <button
-              type="button"
-              mat-icon-button
-              matTooltip="Delete this subscription"
-              (click)="deleteSubscription(i)"
-            >
-              <mat-icon class="mat-warn">remove_circle</mat-icon>
-            </button>
-          </td>
-          <td>{{ subscription.ranges | codLocationRange }}</td>
-          <td>
-            {{
-              subscription.language
-                | flatLookup : subLangEntries() : "id" : "value"
-            }}
-          </td>
-        </tr>
-        }
-      </tbody>
-    </table>
-    } @if (editedSub()) {
-    <mat-expansion-panel [expanded]="editedSub()" [disabled]="!editedSub()">
-      <mat-expansion-panel-header
-        >subscription #{{ editedSubIndex() + 1 }}</mat-expansion-panel-header
-      >
-      <cadmus-cod-hand-subscription
-        [langEntries]="subLangEntries()"
-        [subscription]="editedSub()"
-        (subscriptionChange)="onSubscriptionChange($event!)"
-        (editorClose)="editSubscription(null)"
-      />
-    </mat-expansion-panel>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>extent</th>
+            <th>language</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (
+            subscription of subscriptions.value;
+            track subscription;
+            let i = $index;
+            let first = $first;
+            let last = $last
+          ) {
+            <tr [class.selected]="i === editedSubIndex()">
+              <td class="fit-width">
+                <button
+                  type="button"
+                  mat-icon-button
+                  matTooltip="Edit this subscription"
+                  (click)="editSubscription(subscription, i)"
+                >
+                  <mat-icon class="mat-primary">edit</mat-icon>
+                </button>
+                <button
+                  type="button"
+                  mat-icon-button
+                  matTooltip="Move this subscription up"
+                  [disabled]="first"
+                  (click)="moveSubscriptionUp(i)"
+                >
+                  <mat-icon>arrow_upward</mat-icon>
+                </button>
+                <button
+                  type="button"
+                  mat-icon-button
+                  matTooltip="Move this subscription down"
+                  [disabled]="last"
+                  (click)="moveSubscriptionDown(i)"
+                >
+                  <mat-icon>arrow_downward</mat-icon>
+                </button>
+                <button
+                  type="button"
+                  mat-icon-button
+                  matTooltip="Delete this subscription"
+                  (click)="deleteSubscription(i)"
+                >
+                  <mat-icon class="mat-warn">remove_circle</mat-icon>
+                </button>
+              </td>
+              <td>{{ subscription.ranges | codLocationRange }}</td>
+              <td>
+                {{
+                  subscription.language
+                    | flatLookup: subLangEntries() : "id" : "value"
+                }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+    @if (editedSub()) {
+      <mat-expansion-panel [expanded]="editedSub()" [disabled]="!editedSub()">
+        <mat-expansion-panel-header
+          >subscription #{{ editedSubIndex() + 1 }}</mat-expansion-panel-header
+        >
+        <cadmus-cod-hand-subscription
+          [langEntries]="subLangEntries()"
+          [subscription]="editedSub()"
+          (subscriptionChange)="onSubscriptionChange($event!)"
+          (editorClose)="editSubscription(null)"
+        />
+      </mat-expansion-panel>
     }
   </mat-expansion-panel>
 
@@ -343,6 +362,7 @@
       [tagEntries]="refTagEntries()"
       [typeEntries]="refTypeEntries()"
       [references]="references.value"
+      [lookupProviderOptions]="lookupProviderOptions()"
       defaultPicker="lookup"
       (referencesChange)="onReferencesChange($event)"
     />
