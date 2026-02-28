@@ -1,4 +1,9 @@
-import { Component, Inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  signal,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
@@ -18,6 +23,7 @@ export interface CellFeaturesData {
   imports: [MatButtonModule, MatIcon, FlagSetComponent],
   templateUrl: './cell-features.component.html',
   styleUrl: './cell-features.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CellFeaturesComponent {
   public readonly flags = signal<Flag[]>([]);
@@ -25,7 +31,7 @@ export class CellFeaturesComponent {
 
   constructor(
     public dialogRef: MatDialogRef<CellFeaturesData>,
-    @Inject(MAT_DIALOG_DATA) public config: CellFeaturesData
+    @Inject(MAT_DIALOG_DATA) public config: CellFeaturesData,
   ) {}
 
   public ngOnInit(): void {

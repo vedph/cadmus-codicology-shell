@@ -1,4 +1,4 @@
-import { Component, effect, input, model, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -58,6 +58,7 @@ import { CodHandSign } from '../cod-hands-part';
     ReplaceStringPipe,
     SafeHtmlPipe,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodHandSignComponent {
   public readonly sign = model<CodHandSign>();

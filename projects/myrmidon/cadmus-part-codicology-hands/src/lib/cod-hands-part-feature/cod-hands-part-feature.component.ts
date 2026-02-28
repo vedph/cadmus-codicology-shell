@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -12,6 +12,7 @@ import { CodHandsPartComponent } from '../cod-hands-part/cod-hands-part.componen
   templateUrl: './cod-hands-part-feature.component.html',
   styleUrls: ['./cod-hands-part-feature.component.css'],
   imports: [CurrentItemBarComponent, CodHandsPartComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodHandsPartFeatureComponent
   extends EditPartFeatureBase

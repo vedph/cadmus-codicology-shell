@@ -1,4 +1,5 @@
-import { Component, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -57,6 +58,7 @@ import { CodLayoutEditorComponent } from '../cod-layout-editor/cod-layout-editor
   selector: 'cadmus-cod-layouts-part',
   templateUrl: './cod-layouts-part.component.html',
   styleUrls: ['./cod-layouts-part.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -86,17 +88,17 @@ export class CodLayoutsPartComponent
   public readonly editedLayout = signal<CodLayout | undefined>(undefined);
 
   // cod-layout-tags
-  public tagEntries: ThesaurusEntry[] | undefined;
+  public readonly tagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-layout-ruling-techniques
-  public rulTechEntries: ThesaurusEntry[] | undefined;
+  public readonly rulTechEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-layout-derolez
-  public drzEntries: ThesaurusEntry[] | undefined;
+  public readonly drzEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-layout-prickings
-  public prkEntries: ThesaurusEntry[] | undefined;
+  public readonly prkEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // decorated-count-ids
-  public cntIdEntries: ThesaurusEntry[] | undefined;
+  public readonly cntIdEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // decorated-count-tags
-  public cntTagEntries: ThesaurusEntry[] | undefined;
+  public readonly cntTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
 
   public entries: FormControl<CodLayout[]>;
 
@@ -126,39 +128,39 @@ export class CodLayoutsPartComponent
   private updateThesauri(thesauri: ThesauriSet): void {
     let key = 'cod-layout-tags';
     if (this.hasThesaurus(key)) {
-      this.tagEntries = thesauri[key].entries;
+      this.tagEntries.set(thesauri[key].entries);
     } else {
-      this.tagEntries = undefined;
+      this.tagEntries.set(undefined);
     }
     key = 'cod-layout-ruling-techniques';
     if (this.hasThesaurus(key)) {
-      this.rulTechEntries = thesauri[key].entries;
+      this.rulTechEntries.set(thesauri[key].entries);
     } else {
-      this.rulTechEntries = undefined;
+      this.rulTechEntries.set(undefined);
     }
     key = 'cod-layout-derolez';
     if (this.hasThesaurus(key)) {
-      this.drzEntries = thesauri[key].entries;
+      this.drzEntries.set(thesauri[key].entries);
     } else {
-      this.drzEntries = undefined;
+      this.drzEntries.set(undefined);
     }
     key = 'cod-layout-prickings';
     if (this.hasThesaurus(key)) {
-      this.prkEntries = thesauri[key].entries;
+      this.prkEntries.set(thesauri[key].entries);
     } else {
-      this.prkEntries = undefined;
+      this.prkEntries.set(undefined);
     }
     key = 'decorated-count-ids';
     if (this.hasThesaurus(key)) {
-      this.cntIdEntries = thesauri[key].entries;
+      this.cntIdEntries.set(thesauri[key].entries);
     } else {
-      this.cntIdEntries = undefined;
+      this.cntIdEntries.set(undefined);
     }
     key = 'decorated-count-tags';
     if (this.hasThesaurus(key)) {
-      this.cntTagEntries = thesauri[key].entries;
+      this.cntTagEntries.set(thesauri[key].entries);
     } else {
-      this.cntTagEntries = undefined;
+      this.cntTagEntries.set(undefined);
     }
   }
 

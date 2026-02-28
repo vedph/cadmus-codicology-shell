@@ -1,4 +1,5 @@
-import { Component, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -73,6 +74,7 @@ interface CodMaterialDscPartSettings {
   selector: 'cadmus-cod-material-dsc-part',
   templateUrl: './cod-material-dsc-part.component.html',
   styleUrls: ['./cod-material-dsc-part.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -113,21 +115,21 @@ export class CodMaterialDscPartComponent
   public palimpsests: FormControl<CodPalimpsest[]>;
 
   // cod-unit-tags
-  public tagEntries: ThesaurusEntry[] | undefined;
+  public readonly tagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-unit-materials
-  public materialEntries: ThesaurusEntry[] | undefined;
+  public readonly materialEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-unit-formats
-  public formatEntries: ThesaurusEntry[] | undefined;
+  public readonly formatEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-unit-states
-  public stateEntries: ThesaurusEntry[] | undefined;
+  public readonly stateEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // chronotope-tags
-  public ctTagEntries: ThesaurusEntry[] | undefined;
+  public readonly ctTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // assertion-tags
-  public assTagEntries: ThesaurusEntry[] | undefined;
+  public readonly assTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // doc-reference-types
-  public refTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly refTypeEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // doc-reference-tags
-  public refTagEntries: ThesaurusEntry[] | undefined;
+  public readonly refTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
 
   // lookup options depending on role
   public readonly lookupProviderOptions = signal<
@@ -162,51 +164,51 @@ export class CodMaterialDscPartComponent
   private updateThesauri(thesauri: ThesauriSet): void {
     let key = 'cod-unit-tags';
     if (this.hasThesaurus(key)) {
-      this.tagEntries = thesauri[key].entries;
+      this.tagEntries.set(thesauri[key].entries);
     } else {
-      this.tagEntries = undefined;
+      this.tagEntries.set(undefined);
     }
     key = 'cod-unit-materials';
     if (this.hasThesaurus(key)) {
-      this.materialEntries = thesauri[key].entries;
+      this.materialEntries.set(thesauri[key].entries);
     } else {
-      this.materialEntries = undefined;
+      this.materialEntries.set(undefined);
     }
     key = 'cod-unit-formats';
     if (this.hasThesaurus(key)) {
-      this.formatEntries = thesauri[key].entries;
+      this.formatEntries.set(thesauri[key].entries);
     } else {
-      this.formatEntries = undefined;
+      this.formatEntries.set(undefined);
     }
     key = 'cod-unit-states';
     if (this.hasThesaurus(key)) {
-      this.stateEntries = thesauri[key].entries;
+      this.stateEntries.set(thesauri[key].entries);
     } else {
-      this.stateEntries = undefined;
+      this.stateEntries.set(undefined);
     }
     key = 'chronotope-tags';
     if (this.hasThesaurus(key)) {
-      this.ctTagEntries = thesauri[key].entries;
+      this.ctTagEntries.set(thesauri[key].entries);
     } else {
-      this.ctTagEntries = undefined;
+      this.ctTagEntries.set(undefined);
     }
     key = 'assertion-tags';
     if (this.hasThesaurus(key)) {
-      this.assTagEntries = thesauri[key].entries;
+      this.assTagEntries.set(thesauri[key].entries);
     } else {
-      this.assTagEntries = undefined;
+      this.assTagEntries.set(undefined);
     }
     key = 'doc-reference-types';
     if (this.hasThesaurus(key)) {
-      this.refTypeEntries = thesauri[key].entries;
+      this.refTypeEntries.set(thesauri[key].entries);
     } else {
-      this.refTypeEntries = undefined;
+      this.refTypeEntries.set(undefined);
     }
     key = 'doc-reference-tags';
     if (this.hasThesaurus(key)) {
-      this.refTagEntries = thesauri[key].entries;
+      this.refTagEntries.set(thesauri[key].entries);
     } else {
-      this.refTagEntries = undefined;
+      this.refTagEntries.set(undefined);
     }
   }
 
@@ -253,9 +255,9 @@ export class CodMaterialDscPartComponent
   //#region Units
   public addUnit(): void {
     this.editUnit({
-      material: this.materialEntries?.length ? this.materialEntries[0].id : '',
-      format: this.formatEntries?.length ? this.formatEntries[0].id : '',
-      state: this.stateEntries?.length ? this.stateEntries[0].id : '',
+      material: this.materialEntries()?.length ? this.materialEntries()![0].id : '',
+      format: this.formatEntries()?.length ? this.formatEntries()![0].id : '',
+      state: this.stateEntries()?.length ? this.stateEntries()![0].id : '',
       ranges: [],
     });
   }

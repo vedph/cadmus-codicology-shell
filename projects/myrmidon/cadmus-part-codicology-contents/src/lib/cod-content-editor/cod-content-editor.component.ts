@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   effect,
   input,
@@ -79,6 +80,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   selector: 'cadmus-cod-content-editor',
   templateUrl: './cod-content-editor.component.html',
   styleUrls: ['./cod-content-editor.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,

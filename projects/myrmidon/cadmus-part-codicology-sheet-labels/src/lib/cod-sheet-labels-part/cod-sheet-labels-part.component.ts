@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -102,6 +102,7 @@ interface CodSheetLabelsPartSettings {
   selector: 'cadmus-cod-sheet-labels-part',
   templateUrl: './cod-sheet-labels-part.component.html',
   styleUrls: ['./cod-sheet-labels-part.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -663,7 +664,7 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
       if (id.charAt(0) === 'q') {
         this.qPresent.set(true);
       }
-      setTimeout(() => this.opColumn.setValue(id), 200);
+      this.opColumn.setValue(id);
     }
   }
 

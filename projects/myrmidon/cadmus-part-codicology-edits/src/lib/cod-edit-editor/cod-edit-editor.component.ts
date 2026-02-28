@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   effect,
@@ -79,6 +80,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     MatTooltip,
     MatIcon,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodEditEditorComponent {
   public readonly edit = model<CodEdit>();

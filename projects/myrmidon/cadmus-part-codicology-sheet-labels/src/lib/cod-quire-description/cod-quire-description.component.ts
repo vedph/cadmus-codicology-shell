@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   effect,
@@ -51,6 +52,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   ],
   templateUrl: './cod-quire-description.component.html',
   styleUrl: './cod-quire-description.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodQuireDescriptionComponent {
   public readonly description = model<CodQuireDescription>();
@@ -79,7 +81,7 @@ export class CodQuireDescriptionComponent {
 
   // flags mapped from thesaurus entries
   public featureFlags = computed<Flag[]>(
-    () => this.featureEntries()?.map((e) => entryToFlag(e)) || []
+    () => this.featureEntries()?.map((e) => entryToFlag(e)) || [],
   );
 
   // form
@@ -93,13 +95,13 @@ export class CodQuireDescriptionComponent {
     this.features = formBuilder.control<string[]>([], { nonNullable: true });
     this.note = formBuilder.control<string | null>(
       null,
-      Validators.maxLength(1000)
+      Validators.maxLength(1000),
     );
     this.scopedNotes = formBuilder.control<NoteSet>(
       {
         definitions: [],
       } as NoteSet,
-      { nonNullable: true }
+      { nonNullable: true },
     );
     this.form = formBuilder.group({
       features: this.features,
@@ -133,7 +135,7 @@ export class CodQuireDescriptionComponent {
   }
 
   private getScopedFromNoteSet(
-    noteSet?: NoteSet | null
+    noteSet?: NoteSet | null,
   ): { [key: number]: string } | undefined {
     if (!noteSet) {
       return undefined;

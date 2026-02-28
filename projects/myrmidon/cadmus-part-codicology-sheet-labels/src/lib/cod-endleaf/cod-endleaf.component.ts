@@ -1,4 +1,11 @@
-import { Component, effect, input, model, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  input,
+  model,
+  output,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -44,6 +51,7 @@ import { CodEndleaf } from '../cod-sheet-labels-part';
     MatTooltip,
     MatIcon,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodEndleafComponent {
   public readonly endleaf = model<CodEndleaf>();

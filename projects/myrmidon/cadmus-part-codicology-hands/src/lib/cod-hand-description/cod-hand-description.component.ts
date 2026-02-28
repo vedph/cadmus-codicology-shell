@@ -1,5 +1,6 @@
 import { KeyValue } from '@angular/common';
-import { Component, effect, input, model, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, effect, input, model, output, signal } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -38,6 +39,7 @@ import { deepCopy } from '@myrmidon/ngx-tools';
   selector: 'cadmus-cod-hand-description',
   templateUrl: './cod-hand-description.component.html',
   styleUrls: ['./cod-hand-description.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,

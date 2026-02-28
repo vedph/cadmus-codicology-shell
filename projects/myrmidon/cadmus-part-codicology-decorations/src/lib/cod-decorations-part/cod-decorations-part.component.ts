@@ -1,4 +1,5 @@
-import { Component, input, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, input, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -62,6 +63,7 @@ import { CodDecorationComponent } from '../cod-decoration/cod-decoration.compone
   selector: 'cadmus-cod-decorations-part',
   templateUrl: './cod-decorations-part.component.html',
   styleUrls: ['./cod-decorations-part.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,

@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   effect,
   input,
@@ -45,6 +46,7 @@ import { CodShelfmark } from '../cod-shelfmarks-part';
     MatTooltip,
     MatIcon,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodShelfmarkEditorComponent {
   public readonly shelfmark = model<CodShelfmark>();
@@ -99,7 +101,7 @@ export class CodShelfmarkEditorComponent {
 
     // convert library value changes to a signal
     const libraryValue = toSignal(
-      this.library.valueChanges.pipe(takeUntilDestroyed())
+      this.library.valueChanges.pipe(takeUntilDestroyed()),
     );
 
     // effect to update form when shelfmark changes

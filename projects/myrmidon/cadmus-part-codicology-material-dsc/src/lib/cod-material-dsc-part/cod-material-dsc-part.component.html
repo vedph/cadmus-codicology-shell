@@ -80,7 +80,7 @@
                   <td>
                     {{
                       unit.material
-                        | flatLookup: materialEntries : "id" : "value"
+                        | flatLookup: materialEntries() : "id" : "value"
                     }}
                   </td>
                   <td>{{ unit.chronotopes?.length || 0 }}</td>
@@ -95,14 +95,14 @@
               <mat-panel-title> #{{ editedUtIndex() + 1 }} </mat-panel-title>
             </mat-expansion-panel-header>
             <cadmus-cod-unit-editor
-              [tagEntries]="tagEntries"
-              [materialEntries]="materialEntries"
-              [formatEntries]="formatEntries"
-              [stateEntries]="stateEntries"
-              [ctTagEntries]="ctTagEntries"
-              [assTagEntries]="assTagEntries"
-              [refTypeEntries]="refTypeEntries"
-              [refTagEntries]="refTagEntries"
+              [tagEntries]="tagEntries()"
+              [materialEntries]="materialEntries()"
+              [formatEntries]="formatEntries()"
+              [stateEntries]="stateEntries()"
+              [ctTagEntries]="ctTagEntries()"
+              [assTagEntries]="assTagEntries()"
+              [refTypeEntries]="refTypeEntries()"
+              [refTagEntries]="refTagEntries()"
               [lookupProviderOptions]="lookupProviderOptions()"
               [unit]="editedUt()"
               (unitChange)="onUnitChange($event!)"
@@ -202,10 +202,10 @@
               <mat-panel-title> #{{ editedPsIndex() + 1 }} </mat-panel-title>
             </mat-expansion-panel-header>
             <cadmus-cod-palimpsest-editor
-              [ctTagEntries]="ctTagEntries"
-              [assTagEntries]="assTagEntries"
-              [refTagEntries]="refTagEntries"
-              [refTypeEntries]="refTypeEntries"
+              [ctTagEntries]="ctTagEntries()"
+              [assTagEntries]="assTagEntries()"
+              [refTagEntries]="refTagEntries()"
+              [refTypeEntries]="refTypeEntries()"
               [lookupProviderOptions]="lookupProviderOptions()"
               [palimpsest]="editedPs()"
               (palimpsestChange)="onPalimpsestChange($event!)"

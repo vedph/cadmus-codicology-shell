@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   effect,
@@ -54,6 +55,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   selector: 'cadmus-cod-n-col-definition',
   templateUrl: './cod-n-col-definition.component.html',
   styleUrls: ['./cod-n-col-definition.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,

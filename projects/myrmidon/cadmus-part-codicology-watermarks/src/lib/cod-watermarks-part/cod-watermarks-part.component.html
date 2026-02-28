@@ -93,14 +93,14 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           <cadmus-cod-watermark-editor
-            [idTagEntries]="idTagEntries"
-            [idScopeEntries]="idScopeEntries"
-            [ctTagEntries]="ctTagEntries"
-            [assTagEntries]="assTagEntries"
-            [refTypeEntries]="refTypeEntries"
-            [szTagEntries]="szTagEntries"
-            [szDimTagEntries]="szDimTagEntries"
-            [szUnitEntries]="szUnitEntries"
+            [idTagEntries]="idTagEntries()"
+            [idScopeEntries]="idScopeEntries()"
+            [ctTagEntries]="ctTagEntries()"
+            [assTagEntries]="assTagEntries()"
+            [refTypeEntries]="refTypeEntries()"
+            [szTagEntries]="szTagEntries()"
+            [szDimTagEntries]="szDimTagEntries()"
+            [szUnitEntries]="szUnitEntries()"
             [lookupProviderOptions]="lookupProviderOptions()"
             [watermark]="editedWatermark()"
             (watermarkChange)="onWatermarkChange($event!)"

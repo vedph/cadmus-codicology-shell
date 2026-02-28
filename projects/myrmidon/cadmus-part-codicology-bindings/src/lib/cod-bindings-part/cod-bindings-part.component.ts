@@ -1,4 +1,5 @@
-import { Component, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -65,6 +66,7 @@ interface CodBindingsPartSettings {
   selector: 'cadmus-cod-bindings-part',
   templateUrl: './cod-bindings-part.component.html',
   styleUrls: ['./cod-bindings-part.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -95,25 +97,25 @@ export class CodBindingsPartComponent
   public readonly editedBinding = signal<CodBinding | undefined>(undefined);
 
   // cod-binding-tags
-  public tagEntries: ThesaurusEntry[] | undefined;
+  public readonly tagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-binding-cover-materials
-  public coverEntries: ThesaurusEntry[] | undefined;
+  public readonly coverEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-binding-board-materials
-  public boardEntries: ThesaurusEntry[] | undefined;
+  public readonly boardEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // chronotope-tags
-  public ctTagEntries: ThesaurusEntry[] | undefined;
+  public readonly ctTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // assertion-tags
-  public assTagEntries: ThesaurusEntry[] | undefined;
+  public readonly assTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // doc-reference-types
-  public refTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly refTypeEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // doc-reference-tags
-  public refTagEntries: ThesaurusEntry[] | undefined;
+  public readonly refTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // physical-size-tags
-  public szTagEntries: ThesaurusEntry[] | undefined;
+  public readonly szTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // physical-size-dim-tags
-  public szDimTagEntries: ThesaurusEntry[] | undefined;
+  public readonly szDimTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // physical-size-units
-  public szUnitEntries: ThesaurusEntry[] | undefined;
+  public readonly szUnitEntries = signal<ThesaurusEntry[] | undefined>(undefined);
 
   // lookup options depending on role
   public readonly lookupProviderOptions = signal<
@@ -149,63 +151,63 @@ export class CodBindingsPartComponent
   private updateThesauri(thesauri: ThesauriSet): void {
     let key = 'cod-binding-tags';
     if (this.hasThesaurus(key)) {
-      this.tagEntries = thesauri[key].entries;
+      this.tagEntries.set(thesauri[key].entries);
     } else {
-      this.tagEntries = undefined;
+      this.tagEntries.set(undefined);
     }
     key = 'cod-binding-cover-materials';
     if (this.hasThesaurus(key)) {
-      this.coverEntries = thesauri[key].entries;
+      this.coverEntries.set(thesauri[key].entries);
     } else {
-      this.coverEntries = undefined;
+      this.coverEntries.set(undefined);
     }
     key = 'cod-binding-board-materials';
     if (this.hasThesaurus(key)) {
-      this.boardEntries = thesauri[key].entries;
+      this.boardEntries.set(thesauri[key].entries);
     } else {
-      this.boardEntries = undefined;
+      this.boardEntries.set(undefined);
     }
     key = 'chronotope-tags';
     if (this.hasThesaurus(key)) {
-      this.ctTagEntries = thesauri[key].entries;
+      this.ctTagEntries.set(thesauri[key].entries);
     } else {
-      this.ctTagEntries = undefined;
+      this.ctTagEntries.set(undefined);
     }
     key = 'assertion-tags';
     if (this.hasThesaurus(key)) {
-      this.assTagEntries = thesauri[key].entries;
+      this.assTagEntries.set(thesauri[key].entries);
     } else {
-      this.assTagEntries = undefined;
+      this.assTagEntries.set(undefined);
     }
     key = 'doc-reference-types';
     if (this.hasThesaurus(key)) {
-      this.refTypeEntries = thesauri[key].entries;
+      this.refTypeEntries.set(thesauri[key].entries);
     } else {
-      this.refTypeEntries = undefined;
+      this.refTypeEntries.set(undefined);
     }
     key = 'doc-reference-tags';
     if (this.hasThesaurus(key)) {
-      this.refTagEntries = thesauri[key].entries;
+      this.refTagEntries.set(thesauri[key].entries);
     } else {
-      this.refTagEntries = undefined;
+      this.refTagEntries.set(undefined);
     }
     key = 'physical-size-tags';
     if (this.hasThesaurus(key)) {
-      this.szTagEntries = thesauri[key].entries;
+      this.szTagEntries.set(thesauri[key].entries);
     } else {
-      this.szTagEntries = undefined;
+      this.szTagEntries.set(undefined);
     }
     key = 'physical-size-dim-tags';
     if (this.hasThesaurus(key)) {
-      this.szDimTagEntries = thesauri[key].entries;
+      this.szDimTagEntries.set(thesauri[key].entries);
     } else {
-      this.szDimTagEntries = undefined;
+      this.szDimTagEntries.set(undefined);
     }
     key = 'physical-size-units';
     if (this.hasThesaurus(key)) {
-      this.szUnitEntries = thesauri[key].entries;
+      this.szUnitEntries.set(thesauri[key].entries);
     } else {
-      this.szUnitEntries = undefined;
+      this.szUnitEntries.set(undefined);
     }
   }
 
@@ -245,8 +247,8 @@ export class CodBindingsPartComponent
 
   public addBinding(): void {
     this.editBinding({
-      coverMaterial: this.coverEntries?.length ? this.coverEntries[0].id : '',
-      boardMaterial: this.boardEntries?.length ? this.boardEntries[0].id : '',
+      coverMaterial: this.coverEntries()?.length ? this.coverEntries()![0].id : '',
+      boardMaterial: this.boardEntries()?.length ? this.boardEntries()![0].id : '',
       chronotope: {},
     });
   }

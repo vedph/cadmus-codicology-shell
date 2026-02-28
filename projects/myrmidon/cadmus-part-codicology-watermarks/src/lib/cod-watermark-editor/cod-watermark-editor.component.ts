@@ -1,4 +1,5 @@
-import { Component, effect, input, model, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -41,6 +42,7 @@ import { CodWatermark } from '../cod-watermarks-part';
   selector: 'cadmus-cod-watermark-editor',
   templateUrl: './cod-watermark-editor.component.html',
   styleUrls: ['./cod-watermark-editor.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,

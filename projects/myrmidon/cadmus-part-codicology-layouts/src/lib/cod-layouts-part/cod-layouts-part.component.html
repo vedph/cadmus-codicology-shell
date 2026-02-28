@@ -93,12 +93,12 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           <cadmus-cod-layout-editor
-            [tagEntries]="tagEntries"
-            [rulTechEntries]="rulTechEntries"
-            [drzEntries]="drzEntries"
-            [prkEntries]="prkEntries"
-            [cntIdEntries]="cntIdEntries"
-            [cntTagEntries]="cntTagEntries"
+            [tagEntries]="tagEntries()"
+            [rulTechEntries]="rulTechEntries()"
+            [drzEntries]="drzEntries()"
+            [prkEntries]="prkEntries()"
+            [cntIdEntries]="cntIdEntries()"
+            [cntTagEntries]="cntTagEntries()"
             [layout]="editedLayout()"
             (layoutChange)="onLayoutChange($event!)"
             (editorClose)="editLayout(null)"

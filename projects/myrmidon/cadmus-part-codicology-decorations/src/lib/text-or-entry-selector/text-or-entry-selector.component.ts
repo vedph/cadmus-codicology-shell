@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   effect,
   input,
@@ -42,6 +43,7 @@ const FREE_PREFIX = '$';
     MatError,
     MatInput,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TextOrEntrySelectorComponent implements OnInit, OnDestroy {
   private _sub?: Subscription;

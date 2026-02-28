@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -12,6 +12,7 @@ import { CodMaterialDscPartComponent } from '../cod-material-dsc-part/cod-materi
   templateUrl: './cod-material-dsc-part-feature.component.html',
   styleUrls: ['./cod-material-dsc-part-feature.component.css'],
   imports: [CurrentItemBarComponent, CodMaterialDscPartComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodMaterialDscPartFeatureComponent
   extends EditPartFeatureBase

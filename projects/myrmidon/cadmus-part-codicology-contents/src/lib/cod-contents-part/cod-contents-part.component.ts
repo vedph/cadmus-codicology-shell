@@ -1,4 +1,5 @@
-import { Component, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -68,6 +69,7 @@ interface CodContentsPartSettings {
   selector: 'cadmus-cod-contents-part',
   templateUrl: './cod-contents-part.component.html',
   styleUrls: ['./cod-contents-part.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,

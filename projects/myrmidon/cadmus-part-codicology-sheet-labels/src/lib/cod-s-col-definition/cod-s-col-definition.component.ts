@@ -1,4 +1,11 @@
-import { Component, effect, input, model, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  input,
+  model,
+  output,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -30,6 +37,7 @@ import { CodSColDefinition } from '../cod-sheet-labels-part';
   selector: 'cadmus-cod-s-col-definition',
   templateUrl: './cod-s-col-definition.component.html',
   styleUrls: ['./cod-s-col-definition.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,

@@ -1,4 +1,4 @@
-import { Component, effect, input, model, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -46,6 +46,7 @@ import { CodPalimpsest } from '../cod-material-dsc-part';
     MatTooltip,
     MatIcon,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodPalimpsestEditorComponent {
   public readonly palimpsest = model<CodPalimpsest>();

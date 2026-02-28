@@ -1,4 +1,4 @@
-import { Component, Inject, Optional } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Optional } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { Citation, CitationComponent } from '@myrmidon/cadmus-refs-citation';
@@ -12,6 +12,7 @@ import { PayloadMatDialogConfig } from '@myrmidon/cadmus-codicology-ui';
   imports: [CitationComponent],
   templateUrl: './citation-picker.component.html',
   styleUrls: ['./citation-picker.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CitationPickerComponent {
   constructor(

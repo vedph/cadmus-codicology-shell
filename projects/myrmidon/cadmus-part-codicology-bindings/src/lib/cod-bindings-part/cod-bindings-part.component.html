@@ -72,15 +72,15 @@
                 <mat-icon class="mat-warn">remove_circle</mat-icon>
               </button>
             </td>
-            <td>{{ entry.tag | flatLookup : tagEntries : "id" : "value" }}</td>
+            <td>{{ entry.tag | flatLookup : tagEntries() : "id" : "value" }}</td>
             <td>
               {{
-                entry.coverMaterial | flatLookup : coverEntries : "id" : "value"
+                entry.coverMaterial | flatLookup : coverEntries() : "id" : "value"
               }}
             </td>
             <td>
               {{
-                entry.boardMaterial | flatLookup : boardEntries : "id" : "value"
+                entry.boardMaterial | flatLookup : boardEntries() : "id" : "value"
               }}
             </td>
             <td>{{ entry.size | physicalSize }}</td>
@@ -100,16 +100,16 @@
           <mat-panel-title> #{{ editedIndex() + 1 }} </mat-panel-title>
         </mat-expansion-panel-header>
         <cadmus-cod-binding-editor
-          [tagEntries]="tagEntries"
-          [coverEntries]="coverEntries"
-          [boardEntries]="boardEntries"
-          [ctTagEntries]="ctTagEntries"
-          [assTagEntries]="assTagEntries"
-          [refTypeEntries]="refTypeEntries"
-          [refTagEntries]="refTagEntries"
-          [szTagEntries]="szTagEntries"
-          [szDimTagEntries]="szDimTagEntries"
-          [szUnitEntries]="szUnitEntries"
+          [tagEntries]="tagEntries()"
+          [coverEntries]="coverEntries()"
+          [boardEntries]="boardEntries()"
+          [ctTagEntries]="ctTagEntries()"
+          [assTagEntries]="assTagEntries()"
+          [refTypeEntries]="refTypeEntries()"
+          [refTagEntries]="refTagEntries()"
+          [szTagEntries]="szTagEntries()"
+          [szDimTagEntries]="szDimTagEntries()"
+          [szUnitEntries]="szUnitEntries()"
           [lookupProviderOptions]="lookupProviderOptions()"
           [binding]="editedBinding()"
           (bindingChange)="onBindingChange($event!)"

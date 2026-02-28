@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -12,6 +12,7 @@ import { CodShelfmarksPartComponent } from '../cod-shelfmarks-part/cod-shelfmark
   templateUrl: './cod-shelfmarks-part-feature.component.html',
   styleUrls: ['./cod-shelfmarks-part-feature.component.css'],
   imports: [CurrentItemBarComponent, CodShelfmarksPartComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodShelfmarksPartFeatureComponent
   extends EditPartFeatureBase
@@ -23,7 +24,7 @@ export class CodShelfmarksPartFeatureComponent
     snackbar: MatSnackBar,
     itemService: ItemService,
     thesaurusService: ThesaurusService,
-    editorService: PartEditorService
+    editorService: PartEditorService,
   ) {
     super(
       router,
@@ -31,7 +32,7 @@ export class CodShelfmarksPartFeatureComponent
       snackbar,
       itemService,
       thesaurusService,
-      editorService
+      editorService,
     );
   }
 

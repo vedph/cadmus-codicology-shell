@@ -1,10 +1,13 @@
 import {
-  AfterViewInit,
+  afterNextRender,
+  ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   ElementRef,
   input,
   model,
+  signal,
   ViewChild,
 } from '@angular/core';
 
@@ -32,17 +35,9 @@ interface CodLayoutFigureRect {
   selector: 'cadmus-cod-layout-figure',
   templateUrl: './cod-layout-figure.component.html',
   styleUrls: ['./cod-layout-figure.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CodLayoutFigureComponent implements AfterViewInit {
-  private _afterInit = false;
-  // visibility mode: 0=none, 1=height, 2=width, 3=both
-  public visMode = 3;
-
-  public height: number;
-  public width: number;
-  public heightRects: CodLayoutFigureRect[];
-  public widthRects: CodLayoutFigureRect[];
-
+export class CodLayoutFigureComponent {
   @ViewChild('fig') fig: ElementRef | undefined;
 
   /**
@@ -63,35 +58,44 @@ export class CodLayoutFigureComponent implements AfterViewInit {
    */
   public readonly rects = model<CodLayoutRectSet>();
 
-  public viewbox: string;
+  // visibility mode: 0=none, 1=height, 2=width, 3=both
+  public readonly visMode = signal<number>(3);
+
+  private readonly _resolvedSize = computed(() => {
+    const s = this.size();
+    return s ? { height: s.height, width: s.width } : { height: 400, width: 200 };
+  });
+
+  public readonly heightRects = signal<CodLayoutFigureRect[]>([]);
+  public readonly widthRects = signal<CodLayoutFigureRect[]>([]);
+  public readonly viewbox = signal<string>('0 0 200 400');
 
   constructor() {
-    this.viewbox = '0 0 200 400';
-    this.width = 200;
-    this.height = 400;
-    this.heightRects = [];
-    this.widthRects = [];
+    // after the view is first rendered, compute the figure
+    afterNextRender(() => {
+      this.refresh(this.rects());
+    });
 
+    // whenever rects or size change (after first render), recompute
     effect(() => {
-      const size = this.size();
-      if (size) {
-        this.height = size.height;
-        this.width = size.width;
-      } else {
-        this.height = 400;
-        this.width = 200;
-      }
-      if (this._afterInit) {
-        this.refresh(this.rects());
-      }
+      const rects = this.rects();
+      const size = this._resolvedSize();
+      // afterNextRender handles the initial render; subsequent updates
+      // are driven by this effect (signals track rects and size)
+      this.refresh(rects, size);
     });
   }
 
-  private refresh(rects?: CodLayoutRectSet): void {
+  private refresh(
+    rects?: CodLayoutRectSet,
+    size?: { height: number; width: number },
+  ): void {
+    const resolvedSize = size ?? this._resolvedSize();
+
     if (!rects) {
-      this.widthRects = [];
-      this.heightRects = [];
-      this.viewbox = '0 0 200 400';
+      this.widthRects.set([]);
+      this.heightRects.set([]);
+      this.viewbox.set('0 0 200 400');
       return;
     }
 
@@ -152,25 +156,18 @@ export class CodLayoutFigureComponent implements AfterViewInit {
       x += r.value + rects.gap;
     }
 
-    this.heightRects = hr;
-    this.widthRects = wr;
+    this.heightRects.set(hr);
+    this.widthRects.set(wr);
 
     // scale
     if (this.noScale()) {
-      this.viewbox = `0 0 ${w} ${h}`;
+      this.viewbox.set(`0 0 ${w} ${h}`);
     } else {
-      this.viewbox = `0 0 ${this.width} ${this.height}`;
+      this.viewbox.set(`0 0 ${resolvedSize.width} ${resolvedSize.height}`);
     }
   }
 
-  public ngAfterViewInit(): void {
-    this._afterInit = true;
-    setTimeout(() => {
-      this.refresh(this.rects());
-    }, 500);
-  }
-
   public onSvgClick(): void {
-    this.visMode = this.visMode === 3 ? 1 : this.visMode + 1;
+    this.visMode.update((v) => (v === 3 ? 1 : v + 1));
   }
 }

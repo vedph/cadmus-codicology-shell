@@ -1,8 +1,8 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   effect,
   input,
-  Input,
   model,
   OnInit,
   signal,
@@ -49,6 +49,7 @@ import { CodLocationConverter } from '../cod-location-converter';
   selector: 'cadmus-cod-location-converter',
   templateUrl: './cod-location-converter.component.html',
   styleUrls: ['./cod-location-converter.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,

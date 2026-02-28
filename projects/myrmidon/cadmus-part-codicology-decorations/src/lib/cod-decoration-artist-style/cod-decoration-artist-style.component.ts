@@ -1,4 +1,4 @@
-import { Component, effect, input, model, OnInit, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input, model, OnInit, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -44,6 +44,7 @@ import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
     MatTooltip,
     MatIcon,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodDecorationArtistStyleComponent implements OnInit {
   public readonly style = model<CodDecorationArtistStyle>();

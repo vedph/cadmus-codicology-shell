@@ -1,4 +1,5 @@
-import { Component, effect, input, model, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, effect, input, model, output, signal } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -46,6 +47,7 @@ import { deepCopy } from '@myrmidon/ngx-tools';
   selector: 'cadmus-cod-decoration-artist',
   templateUrl: './cod-decoration-artist.component.html',
   styleUrls: ['./cod-decoration-artist.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,

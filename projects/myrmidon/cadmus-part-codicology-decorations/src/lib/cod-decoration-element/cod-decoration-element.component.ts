@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   effect,
   computed,
@@ -82,6 +83,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   selector: 'cadmus-cod-decoration-element',
   templateUrl: './cod-decoration-element.component.html',
   styleUrls: ['./cod-decoration-element.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -338,15 +340,13 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
       });
     }
     this.hidden.set(hidden);
-    console.log('hidden: ' + JSON.stringify(this.hidden));
   }
 
   public ngOnInit(): void {
     this.type.valueChanges
       .pipe(distinctUntilChanged(), debounceTime(300))
-      .subscribe((value) => {
+      .subscribe((_value) => {
         if (!this._adjustingUI && !this._updatingForm) {
-          console.log('type value changed: ' + value);
           this.adjustUI();
         }
       });
@@ -378,18 +378,20 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
     );
   }
 
-  private adjustUI(): void {
+  private adjustUI(skipFormValues = false): void {
     if (this._adjustingUI) {
       return;
     }
     this._adjustingUI = true;
-    console.log('adjustUI enter');
-    // reset type-dependent values
-    this.flags.reset();
-    this.typologies.reset();
-    this.subject.reset();
-    this.lineHeight.reset();
-    this.textRelation.reset();
+
+    if (!skipFormValues) {
+      // reset type-dependent values
+      this.flags.reset();
+      this.typologies.reset();
+      this.subject.reset();
+      this.lineHeight.reset();
+      this.textRelation.reset();
+    }
 
     // calculate filtered entries
     this.elemFlagEntries.set(
@@ -417,49 +419,48 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
         [],
     );
 
-    // filter entries for multiple-selections
-    this.flags.setValue(this.element()?.flags || []);
-    this.colors.setValue(this.element()?.colors || []);
-
-    // filter entries and set free for single-entry groups with "any.-"
+    // free-set flags (always computed, regardless of skipFormValues)
     let entries = this.getFilteredEntries(
       this.decElemGildingEntries(),
       this.type.value,
     );
     this.elemGildingFree.set(this.isFreeSet(entries));
-    this.gildings.setValue(this.element()?.gildings || []);
 
     entries = this.getFilteredEntries(
       this.decElemTechEntries(),
       this.type.value,
     );
     this.elemTechniqueFree.set(this.isFreeSet(entries));
-    this.techniques.setValue(this.element()?.techniques || []);
 
     entries = this.getFilteredEntries(
       this.decElemPosEntries(),
       this.type.value,
     );
     this.elemPositionFree.set(this.isFreeSet(entries));
-    this.positions.setValue(this.element()?.positions || []);
 
     entries = this.getFilteredEntries(
       this.decElemToolEntries(),
       this.type.value,
     );
     this.elemToolFree.set(this.isFreeSet(entries));
-    this.tools.setValue(this.element()?.tools || []);
 
-    this.typologies.setValue(this.element()?.typologies || []);
+    if (!skipFormValues) {
+      // set form values from current element (for interactive type change)
+      this.flags.setValue(this.element()?.flags || []);
+      this.colors.setValue(this.element()?.colors || []);
+      this.gildings.setValue(this.element()?.gildings || []);
+      this.techniques.setValue(this.element()?.techniques || []);
+      this.positions.setValue(this.element()?.positions || []);
+      this.tools.setValue(this.element()?.tools || []);
+      this.typologies.setValue(this.element()?.typologies || []);
+    }
 
     // visibility
     this.updateVisibility();
     this._adjustingUI = false;
-    console.log('adjustUI exit');
   }
 
   private updateTypeDependencies(element: CodDecorationElement): void {
-    console.log('updateTypeDependencies enter');
     this.key.setValue(element.key || null);
     this.parentKey.setValue(element.parentKey || null);
     this.instanceCount.setValue(element.instanceCount || 0);
@@ -494,16 +495,13 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
 
     this.form.markAsPristine();
     this._updatingForm = false;
-    console.log('updateTypeDependencies exit');
   }
 
   private updateForm(element: CodDecorationElement | undefined): void {
     this._updatingForm = true;
-    console.log('updateForm enter');
     if (!element) {
       this.form.reset();
       this._updatingForm = false;
-      console.log('updateForm exit');
       return;
     }
     // general
@@ -511,18 +509,11 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
     this.tag.setValue(element.tag || null, { emitEvent: false });
     this.references.setValue(element.references || []);
 
-    setTimeout(() => {
-      // let the UI adjust itself before setting type-dependent controls
-      console.log('adjust UI from updateForm');
-      this.adjustUI();
-      // set type-dependent controls
-      setTimeout(() => {
-        this.updateTypeDependencies(element);
-      });
-    });
-
-    // set other controls
-    console.log('updateForm exit');
+    // compute filtered entries and visibility (skip form value resets/sets
+    // since updateTypeDependencies will set all values from element)
+    this.adjustUI(true);
+    // set all type-dependent control values from element
+    this.updateTypeDependencies(element);
   }
 
   private getElement(): CodDecorationElement {

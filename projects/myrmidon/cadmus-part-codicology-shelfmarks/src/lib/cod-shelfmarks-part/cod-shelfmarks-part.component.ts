@@ -1,4 +1,9 @@
-import { Component, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  signal,
+} from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -24,7 +29,6 @@ import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 
 import {
-  deepCopy,
   FlatLookupPipe,
   NgxToolsValidators,
 } from '@myrmidon/ngx-tools';
@@ -65,6 +69,7 @@ interface CodShelfmarksPartSettings {
   selector: 'cadmus-cod-shelfmarks-part',
   templateUrl: './cod-shelfmarks-part.component.html',
   styleUrls: ['./cod-shelfmarks-part.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -114,7 +119,7 @@ export class CodShelfmarksPartComponent
   constructor(
     authService: AuthJwtService,
     formBuilder: FormBuilder,
-    private _dialogService: DialogService
+    private _dialogService: DialogService,
   ) {
     super(authService, formBuilder);
     // form
@@ -129,10 +134,10 @@ export class CodShelfmarksPartComponent
 
     // load settings for this part
     if (this._appRepository) {
-      const settings = await this._appRepository.getSettingFor(
-          COD_SHELFMARKS_PART_TYPEID,
-          this.identity()?.roleId || undefined
-        ) as CodShelfmarksPartSettings | null;
+      const settings = (await this._appRepository.getSettingFor(
+        COD_SHELFMARKS_PART_TYPEID,
+        this.identity()?.roleId || undefined,
+      )) as CodShelfmarksPartSettings | null;
       if (settings) {
         this.cityFromLibPattern.set(settings.cityFromLibPattern);
       }
@@ -187,7 +192,7 @@ export class CodShelfmarksPartComponent
 
   protected getValue(): CodShelfmarksPart {
     let part = this.getEditedPart(
-      COD_SHELFMARKS_PART_TYPEID
+      COD_SHELFMARKS_PART_TYPEID,
     ) as CodShelfmarksPart;
     part.shelfmarks = this.shelfmarks.value || [];
     return part;

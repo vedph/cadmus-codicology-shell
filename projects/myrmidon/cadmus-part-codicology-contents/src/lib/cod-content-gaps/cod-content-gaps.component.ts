@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, input, linkedSignal, model, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, input, linkedSignal, model, signal } from '@angular/core';
 
 // material
 import { MatButtonModule } from '@angular/material/button';
@@ -20,6 +21,7 @@ import { CodContentGap } from '../cod-contents-part';
 
 @Component({
   selector: 'cadmus-cod-content-gaps',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     MatButtonModule,

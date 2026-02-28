@@ -1,4 +1,4 @@
-import { Component, effect, input, model, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -44,6 +44,7 @@ import { CodHandSubscription } from '../cod-hands-part';
     MatTooltip,
     MatIcon,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodHandSubscriptionComponent {
   public readonly subscription = model<CodHandSubscription>();

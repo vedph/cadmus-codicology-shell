@@ -1,4 +1,5 @@
-import { Component, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -65,6 +66,7 @@ interface CodEditsPartSettings {
   selector: 'cadmus-cod-edits-part',
   templateUrl: './cod-edits-part.component.html',
   styleUrls: ['./cod-edits-part.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -95,27 +97,27 @@ export class CodEditsPartComponent
   public readonly editedEdit = signal<CodEdit | undefined>(undefined);
 
   // cod-edit-colors
-  public colorEntries: ThesaurusEntry[] | undefined;
+  public readonly colorEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-edit-techniques
-  public techEntries: ThesaurusEntry[] | undefined;
+  public readonly techEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-edit-types
-  public typeEntries: ThesaurusEntry[] | undefined;
+  public readonly typeEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-edit-tags
-  public tagEntries: ThesaurusEntry[] | undefined;
+  public readonly tagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-edit-positions
-  public posEntries: ThesaurusEntry[] | undefined;
+  public readonly posEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-edit-languages
-  public langEntries: ThesaurusEntry[] | undefined;
+  public readonly langEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // doc-reference-types
-  public refTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly refTypeEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // doc-reference-tags
-  public refTagEntries: ThesaurusEntry[] | undefined;
+  public readonly refTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // assertion-tags
-  public assTagEntries: ThesaurusEntry[] | undefined;
+  public readonly assTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // external-id-tags
-  public idTagEntries: ThesaurusEntry[] | undefined;
+  public readonly idTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // external-id-scopes
-  public idScopeEntries: ThesaurusEntry[] | undefined;
+  public readonly idScopeEntries = signal<ThesaurusEntry[] | undefined>(undefined);
 
   // lookup options depending on role
   public readonly lookupProviderOptions = signal<
@@ -150,69 +152,69 @@ export class CodEditsPartComponent
   private updateThesauri(thesauri: ThesauriSet): void {
     let key = 'cod-edit-colors';
     if (this.hasThesaurus(key)) {
-      this.colorEntries = thesauri[key].entries;
+      this.colorEntries.set(thesauri[key].entries);
     } else {
-      this.colorEntries = undefined;
+      this.colorEntries.set(undefined);
     }
     key = 'cod-edit-techniques';
     if (this.hasThesaurus(key)) {
-      this.techEntries = thesauri[key].entries;
+      this.techEntries.set(thesauri[key].entries);
     } else {
-      this.techEntries = undefined;
+      this.techEntries.set(undefined);
     }
     key = 'cod-edit-types';
     if (this.hasThesaurus(key)) {
-      this.typeEntries = thesauri[key].entries;
+      this.typeEntries.set(thesauri[key].entries);
     } else {
-      this.typeEntries = undefined;
+      this.typeEntries.set(undefined);
     }
     key = 'cod-edit-tags';
     if (this.hasThesaurus(key)) {
-      this.tagEntries = thesauri[key].entries;
+      this.tagEntries.set(thesauri[key].entries);
     } else {
-      this.tagEntries = undefined;
+      this.tagEntries.set(undefined);
     }
     key = 'cod-edit-positions';
     if (this.hasThesaurus(key)) {
-      this.posEntries = thesauri[key].entries;
+      this.posEntries.set(thesauri[key].entries);
     } else {
-      this.posEntries = undefined;
+      this.posEntries.set(undefined);
     }
     key = 'cod-edit-languages';
     if (this.hasThesaurus(key)) {
-      this.langEntries = thesauri[key].entries;
+      this.langEntries.set(thesauri[key].entries);
     } else {
-      this.langEntries = undefined;
+      this.langEntries.set(undefined);
     }
     key = 'doc-reference-types';
     if (this.hasThesaurus(key)) {
-      this.refTypeEntries = thesauri[key].entries;
+      this.refTypeEntries.set(thesauri[key].entries);
     } else {
-      this.refTypeEntries = undefined;
+      this.refTypeEntries.set(undefined);
     }
     key = 'doc-reference-tags';
     if (this.hasThesaurus(key)) {
-      this.refTagEntries = thesauri[key].entries;
+      this.refTagEntries.set(thesauri[key].entries);
     } else {
-      this.refTagEntries = undefined;
+      this.refTagEntries.set(undefined);
     }
     key = 'assertion-tags';
     if (this.hasThesaurus(key)) {
-      this.assTagEntries = thesauri[key].entries;
+      this.assTagEntries.set(thesauri[key].entries);
     } else {
-      this.assTagEntries = undefined;
+      this.assTagEntries.set(undefined);
     }
     key = 'external-id-tags';
     if (this.hasThesaurus(key)) {
-      this.idTagEntries = thesauri[key].entries;
+      this.idTagEntries.set(thesauri[key].entries);
     } else {
-      this.idTagEntries = undefined;
+      this.idTagEntries.set(undefined);
     }
     key = 'external-id-scopes';
     if (this.hasThesaurus(key)) {
-      this.idScopeEntries = thesauri[key].entries;
+      this.idScopeEntries.set(thesauri[key].entries);
     } else {
-      this.idScopeEntries = undefined;
+      this.idScopeEntries.set(undefined);
     }
   }
 
@@ -252,7 +254,7 @@ export class CodEditsPartComponent
 
   public addEdit(): void {
     this.editEdit({
-      type: this.typeEntries?.length ? this.typeEntries[0].id : '',
+      type: this.typeEntries()?.length ? this.typeEntries()![0].id : '',
       ranges: [],
     });
   }

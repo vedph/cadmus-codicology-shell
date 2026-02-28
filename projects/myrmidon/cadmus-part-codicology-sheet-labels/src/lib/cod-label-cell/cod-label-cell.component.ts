@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   effect,
   ElementRef,
@@ -46,9 +47,10 @@ import { CellFeaturesComponent } from '../cell-features/cell-features.component'
     MatError,
     FlagSetBadgeComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodLabelCellComponent implements OnDestroy {
-  private _dropNextUpdate = false
+  private _dropNextUpdate = false;
   private _sub?: Subscription;
   /**
    * The cell to display and edit.
@@ -75,14 +77,16 @@ export class CodLabelCellComponent implements OnDestroy {
   @ViewChild('noteInput')
   public noteElement?: ElementRef;
 
-  public editMode: 'none' | 'value' | 'note';
+  public readonly editMode = signal<'none' | 'value' | 'note'>('none');
   public value: FormControl<string | null>;
   public note: FormControl<string | null>;
   public features: FormControl<string[]>;
   public form: FormGroup;
 
-  constructor(formBuilder: FormBuilder, public dialog: MatDialog) {
-    this.editMode = 'none';
+  constructor(
+    formBuilder: FormBuilder,
+    public dialog: MatDialog,
+  ) {
     // form
     this.value = formBuilder.control(null, Validators.maxLength(50));
     this.note = formBuilder.control(null, Validators.maxLength(500));
@@ -105,9 +109,11 @@ export class CodLabelCellComponent implements OnDestroy {
     this._sub = this.features.valueChanges
       .pipe(distinctUntilChanged(), debounceTime(300))
       .subscribe(() => {
-        this.cellFlags.set(this.features.value.map(
-          (f) => this.featureFlags().find((ff) => ff.id === f)!
-        ));
+        this.cellFlags.set(
+          this.features.value.map(
+            (f) => this.featureFlags().find((ff) => ff.id === f)!,
+          ),
+        );
       });
   }
 
@@ -116,10 +122,10 @@ export class CodLabelCellComponent implements OnDestroy {
   }
 
   public editValue(): void {
-    if (this.editMode !== 'none') {
+    if (this.editMode() !== 'none') {
       return;
     }
-    this.editMode = 'value';
+    this.editMode.set('value');
     this.features.setValue(this.cell()?.features || []);
     setTimeout(() => {
       this.valueElement?.nativeElement.focus();
@@ -128,10 +134,10 @@ export class CodLabelCellComponent implements OnDestroy {
   }
 
   public editNote(): void {
-    if (this.editMode !== 'none') {
+    if (this.editMode() !== 'none') {
       return;
     }
-    this.editMode = 'note';
+    this.editMode.set('note');
     setTimeout(() => {
       this.noteElement?.nativeElement.focus();
       this.noteElement?.nativeElement.select();
@@ -188,12 +194,12 @@ export class CodLabelCellComponent implements OnDestroy {
     if (this.form.invalid) {
       return;
     }
-    this.editMode = 'none';
+    this.editMode.set('none');
     this.cell.set(this.getCell());
   }
 
   public cancelEdit(): void {
     this.updateForm(this.cell());
-    this.editMode = 'none';
+    this.editMode.set('none');
   }
 }

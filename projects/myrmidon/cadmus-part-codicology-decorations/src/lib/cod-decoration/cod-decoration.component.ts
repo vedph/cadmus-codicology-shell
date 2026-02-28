@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   effect,
@@ -89,6 +90,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   selector: 'cadmus-cod-decoration',
   templateUrl: './cod-decoration.component.html',
   styleUrls: ['./cod-decoration.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,

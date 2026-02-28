@@ -1,4 +1,9 @@
-import { Component, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  signal,
+} from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -61,6 +66,7 @@ interface CodWatermarksPartSettings {
   selector: 'cadmus-cod-watermarks-part',
   templateUrl: './cod-watermarks-part.component.html',
   styleUrls: ['./cod-watermarks-part.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -89,23 +95,41 @@ export class CodWatermarksPartComponent
   public readonly editedWatermark = signal<CodWatermark | undefined>(undefined);
 
   // asserted-id-tags
-  public idTagEntries: ThesaurusEntry[] | undefined;
+  public readonly idTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // asserted-id-scopes
-  public idScopeEntries: ThesaurusEntry[] | undefined;
+  public readonly idScopeEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // chronotope-tags
-  public ctTagEntries: ThesaurusEntry[] | undefined;
+  public readonly ctTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // assertion-tags
-  public assTagEntries: ThesaurusEntry[] | undefined;
+  public readonly assTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // doc-reference-types
-  public refTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly refTypeEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // doc-reference-tags
-  public refTagEntries: ThesaurusEntry[] | undefined;
+  public readonly refTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // physical-size-tags
-  public szTagEntries: ThesaurusEntry[] | undefined;
+  public readonly szTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // physical-size-dim-tags
-  public szDimTagEntries: ThesaurusEntry[] | undefined;
+  public readonly szDimTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // physical-size-units
-  public szUnitEntries: ThesaurusEntry[] | undefined;
+  public readonly szUnitEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
 
   // lookup options depending on role
   public readonly lookupProviderOptions = signal<
@@ -140,57 +164,57 @@ export class CodWatermarksPartComponent
   private updateThesauri(thesauri: ThesauriSet): void {
     let key = 'asserted-id-tags';
     if (this.hasThesaurus(key)) {
-      this.assTagEntries = thesauri[key].entries;
+      this.assTagEntries.set(thesauri[key].entries);
     } else {
-      this.assTagEntries = undefined;
+      this.assTagEntries.set(undefined);
     }
     key = 'asserted-id-scopes';
     if (this.hasThesaurus(key)) {
-      this.idScopeEntries = thesauri[key].entries;
+      this.idScopeEntries.set(thesauri[key].entries);
     } else {
-      this.idScopeEntries = undefined;
+      this.idScopeEntries.set(undefined);
     }
     key = 'chronotope-tags';
     if (this.hasThesaurus(key)) {
-      this.ctTagEntries = thesauri[key].entries;
+      this.ctTagEntries.set(thesauri[key].entries);
     } else {
-      this.ctTagEntries = undefined;
+      this.ctTagEntries.set(undefined);
     }
     key = 'assertion-tags';
     if (this.hasThesaurus(key)) {
-      this.assTagEntries = thesauri[key].entries;
+      this.assTagEntries.set(thesauri[key].entries);
     } else {
-      this.assTagEntries = undefined;
+      this.assTagEntries.set(undefined);
     }
     key = 'doc-reference-types';
     if (this.hasThesaurus(key)) {
-      this.refTypeEntries = thesauri[key].entries;
+      this.refTypeEntries.set(thesauri[key].entries);
     } else {
-      this.refTypeEntries = undefined;
+      this.refTypeEntries.set(undefined);
     }
     key = 'doc-reference-tags';
     if (this.hasThesaurus(key)) {
-      this.refTagEntries = thesauri[key].entries;
+      this.refTagEntries.set(thesauri[key].entries);
     } else {
-      this.refTagEntries = undefined;
+      this.refTagEntries.set(undefined);
     }
     key = 'physical-size-tags';
     if (this.hasThesaurus(key)) {
-      this.szTagEntries = thesauri[key].entries;
+      this.szTagEntries.set(thesauri[key].entries);
     } else {
-      this.szTagEntries = undefined;
+      this.szTagEntries.set(undefined);
     }
     key = 'physical-size-dim-tags';
     if (this.hasThesaurus(key)) {
-      this.szDimTagEntries = thesauri[key].entries;
+      this.szDimTagEntries.set(thesauri[key].entries);
     } else {
-      this.szDimTagEntries = undefined;
+      this.szDimTagEntries.set(undefined);
     }
     key = 'physical-size-units';
     if (this.hasThesaurus(key)) {
-      this.szUnitEntries = thesauri[key].entries;
+      this.szUnitEntries.set(thesauri[key].entries);
     } else {
-      this.szUnitEntries = undefined;
+      this.szUnitEntries.set(undefined);
     }
   }
 

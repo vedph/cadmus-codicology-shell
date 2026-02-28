@@ -1,4 +1,5 @@
-import { Component, computed, effect, input, model, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, computed, effect, input, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -79,6 +80,7 @@ interface OrderedPhysicalDimension extends PhysicalDimension {
  */
 @Component({
   selector: 'cadmus-cod-layout-formula',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
     MatButtonModule,

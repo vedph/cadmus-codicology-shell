@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   effect,
@@ -74,6 +75,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     FlagSetComponent,
     CodLayoutFormulaComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodLayoutEditorComponent {
   public readonly layout = model<CodLayout>();

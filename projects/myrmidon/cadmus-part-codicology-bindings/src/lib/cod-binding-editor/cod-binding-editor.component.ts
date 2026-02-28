@@ -1,4 +1,4 @@
-import { Component, effect, input, model, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input, model, output, signal } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -51,7 +51,7 @@ import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
     MatTooltip,
     MatIcon,
   ],
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodBindingEditorComponent {
   public readonly binding = model<CodBinding>();

@@ -1,7 +1,7 @@
 @if (cell()) {
   <div class="cell" [style.background-color]="color() || 'transparent'">
     <!-- VIEW -->
-    @if (editMode === "none") {
+    @if (editMode() === "none") {
       <div class="form-row-center">
         <!-- cell value -->
         <span>{{ cell()?.value }}</span>
@@ -51,7 +51,7 @@
     @else {
       <form [formGroup]="form" (submit)="saveEdit()" class="form-row">
         <!-- value -->
-        @if (editMode === "value") {
+        @if (editMode() === "value") {
           <mat-form-field>
             <mat-label>value</mat-label>
             <input
@@ -70,7 +70,7 @@
           </mat-form-field>
         }
         <!-- note -->
-        @if (editMode === "note") {
+        @if (editMode() === "note") {
           <mat-form-field>
             <mat-label>note</mat-label>
             <input

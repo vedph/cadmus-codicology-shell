@@ -1,4 +1,5 @@
-import { Component, effect, input, Input, model, OnDestroy } from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, effect, input, Input, model, OnDestroy } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -34,6 +35,7 @@ export interface CodImage {
   selector: 'cadmus-cod-images',
   templateUrl: './cod-images.component.html',
   styleUrls: ['./cod-images.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,

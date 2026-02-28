@@ -1,4 +1,9 @@
-import { Component, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  signal,
+} from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -80,6 +85,7 @@ interface CodHandsPartSettings {
     TitleCasePipe,
     CloseSaveButtonsComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodHandsPartComponent
   extends ModelEditorComponentBase<CodHandsPart>
@@ -91,32 +97,54 @@ export class CodHandsPartComponent
 
   // thesauri from description:
   // cod-hand-sign-types
-  public sgnTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly sgnTypeEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // thesauri from instance:
   // cod-hand-scripts
-  public scriptEntries: ThesaurusEntry[] | undefined;
+  public readonly scriptEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // cod-hand-typologies
-  public typeEntries: ThesaurusEntry[] | undefined;
+  public readonly typeEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-hand-colors
-  public colorEntries: ThesaurusEntry[] | undefined;
+  public readonly colorEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // chronotope-tags
-  public ctTagEntries: ThesaurusEntry[] | undefined;
+  public readonly ctTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // assertion-tags
-  public assTagEntries: ThesaurusEntry[] | undefined;
+  public readonly assTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // doc-reference-types
-  public refTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly refTypeEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // doc-reference-tags
-  public refTagEntries: ThesaurusEntry[] | undefined;
+  public readonly refTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // cod-image-types
-  public imgTypeEntries: ThesaurusEntry[] | undefined;
+  public readonly imgTypeEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // external-id-tags
-  public idTagEntries: ThesaurusEntry[] | undefined;
+  public readonly idTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // external-id-scopes
-  public idScopeEntries: ThesaurusEntry[] | undefined;
+  public readonly idScopeEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
 
   // thesauri from subscription:
   // cod-hand-subscription-languages
-  public subLangEntries: ThesaurusEntry[] | undefined;
+  public readonly subLangEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
 
   // lookup options depending on role
   public readonly lookupProviderOptions = signal<
@@ -150,73 +178,53 @@ export class CodHandsPartComponent
 
   private updateThesauri(thesauri: ThesauriSet): void {
     let key = 'cod-hand-sign-types';
-    if (this.hasThesaurus(key)) {
-      this.sgnTypeEntries = thesauri[key].entries;
-    } else {
-      this.sgnTypeEntries = undefined;
-    }
+    this.sgnTypeEntries.set(
+      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
+    );
     key = 'cod-hand-scripts';
-    if (this.hasThesaurus(key)) {
-      this.scriptEntries = thesauri[key].entries;
-    } else {
-      this.scriptEntries = undefined;
-    }
+    this.scriptEntries.set(
+      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
+    );
     key = 'cod-hand-typologies';
-    if (this.hasThesaurus(key)) {
-      this.typeEntries = thesauri[key].entries;
-    } else {
-      this.typeEntries = undefined;
-    }
+    this.typeEntries.set(
+      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
+    );
     key = 'cod-hand-colors';
-    if (this.hasThesaurus(key)) {
-      this.colorEntries = thesauri[key].entries;
-    } else {
-      this.colorEntries = undefined;
-    }
+    this.colorEntries.set(
+      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
+    );
     key = 'chronotope-tags';
-    if (this.hasThesaurus(key)) {
-      this.ctTagEntries = thesauri[key].entries;
-    } else {
-      this.ctTagEntries = undefined;
-    }
+    this.ctTagEntries.set(
+      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
+    );
     key = 'assertion-tags';
-    if (this.hasThesaurus(key)) {
-      this.assTagEntries = thesauri[key].entries;
-    } else {
-      this.assTagEntries = undefined;
-    }
+    this.assTagEntries.set(
+      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
+    );
     key = 'doc-reference-types';
-    if (this.hasThesaurus(key)) {
-      this.refTypeEntries = thesauri[key].entries;
-    } else {
-      this.refTypeEntries = undefined;
-    }
+    this.refTypeEntries.set(
+      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
+    );
     key = 'doc-reference-tags';
-    if (this.hasThesaurus(key)) {
-      this.refTagEntries = thesauri[key].entries;
-    } else {
-      this.refTagEntries = undefined;
-    }
+    this.refTagEntries.set(
+      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
+    );
     key = 'cod-image-types';
-    if (this.hasThesaurus(key)) {
-      this.imgTypeEntries = thesauri[key].entries;
-    } else {
-      this.imgTypeEntries = undefined;
-    }
+    this.imgTypeEntries.set(
+      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
+    );
     key = 'cod-hand-subscription-languages';
-    if (this.hasThesaurus(key)) {
-      this.subLangEntries = thesauri[key].entries;
-    } else {
-      this.subLangEntries = undefined;
-    }
+    this.subLangEntries.set(
+      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
+    );
     key = 'external-id-tags';
-    if (this.hasThesaurus(key)) {
-      this.idTagEntries = thesauri[key].entries;
-    }
+    this.idTagEntries.set(
+      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
+    );
     key = 'external-id-scopes';
-    if (this.hasThesaurus(key)) {
-      this.idScopeEntries = thesauri[key].entries;
-    }
+    this.idScopeEntries.set(
+      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
+    );
   }
 
   private updateForm(part?: CodHandsPart | null): void {
@@ -264,9 +272,7 @@ export class CodHandsPartComponent
   public editHand(hand: CodHand | null, index = -1): void {
     this.editedIndex.set(index);
     this.editedHand.set(hand ? deepCopy(hand) : undefined);
-    setTimeout(() => {
-      this.tabIndex.set(hand ? 1 : 0);
-    });
+    this.tabIndex.set(hand ? 1 : 0);
   }
 
   public onHandChange(hand: CodHand): void {

@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   effect,
@@ -56,6 +57,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   selector: 'cadmus-cod-hand-instance',
   templateUrl: './cod-hand-instance.component.html',
   styleUrls: ['./cod-hand-instance.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,

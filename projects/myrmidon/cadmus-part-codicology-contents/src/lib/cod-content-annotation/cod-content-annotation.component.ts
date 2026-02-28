@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   effect,
@@ -68,6 +69,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     CodLocationComponent,
     FlagSetComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodContentAnnotationComponent {
   public readonly annotation = model<CodContentAnnotation>();

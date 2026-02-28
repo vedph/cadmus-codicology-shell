@@ -1,4 +1,4 @@
-import { Component, effect, model, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, model, output } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -33,6 +33,7 @@ export interface CodOrdinalValue {
   ],
   templateUrl: './cod-ordinal-editor.component.html',
   styleUrls: ['./cod-ordinal-editor.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodOrdinalEditorComponent {
   public readonly ordinal = model<CodOrdinalValue>();

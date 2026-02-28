@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -12,6 +12,7 @@ import { CodSheetLabelsPartComponent } from '../cod-sheet-labels-part/cod-sheet-
   templateUrl: './cod-sheet-labels-part-feature.component.html',
   styleUrls: ['./cod-sheet-labels-part-feature.component.css'],
   imports: [CurrentItemBarComponent, CodSheetLabelsPartComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodSheetLabelsPartFeatureComponent
   extends EditPartFeatureBase

@@ -75,7 +75,7 @@
                   </button>
                 </td>
                 <td>
-                  {{ entry.type | flatLookup: typeEntries : "id" : "value" }}
+                  {{ entry.type | flatLookup: typeEntries() : "id" : "value" }}
                 </td>
                 <td>{{ entry.ranges | codLocationRange }}</td>
                 <td>
@@ -96,17 +96,17 @@
           </mat-expansion-panel-header>
 
           <cadmus-cod-edit-editor
-            [tagEntries]="tagEntries"
-            [posEntries]="posEntries"
-            [langEntries]="langEntries"
-            [techEntries]="techEntries"
-            [typeEntries]="typeEntries"
-            [colorEntries]="colorEntries"
-            [refTagEntries]="refTagEntries"
-            [refTypeEntries]="refTypeEntries"
-            [assTagEntries]="assTagEntries"
-            [idScopeEntries]="idScopeEntries"
-            [idTagEntries]="idTagEntries"
+            [tagEntries]="tagEntries()"
+            [posEntries]="posEntries()"
+            [langEntries]="langEntries()"
+            [techEntries]="techEntries()"
+            [typeEntries]="typeEntries()"
+            [colorEntries]="colorEntries()"
+            [refTagEntries]="refTagEntries()"
+            [refTypeEntries]="refTypeEntries()"
+            [assTagEntries]="assTagEntries()"
+            [idScopeEntries]="idScopeEntries()"
+            [idTagEntries]="idTagEntries()"
             [lookupProviderOptions]="lookupProviderOptions()"
             [edit]="editedEdit()"
             (editChange)="onEditChange($event!)"

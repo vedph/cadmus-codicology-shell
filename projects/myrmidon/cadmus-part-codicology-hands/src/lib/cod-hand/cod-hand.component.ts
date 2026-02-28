@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   effect,
   input,
@@ -59,6 +60,7 @@ import { CodHandSubscriptionComponent } from '../cod-hand-subscription/cod-hand-
   selector: 'cadmus-cod-hand',
   templateUrl: './cod-hand.component.html',
   styleUrls: ['./cod-hand.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
     ReactiveFormsModule,
