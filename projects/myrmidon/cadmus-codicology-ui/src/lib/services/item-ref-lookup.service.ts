@@ -24,6 +24,14 @@ export class ItemRefLookupService implements RefLookupService {
     return item?.title;
   }
 
+  public getById(id: string): Observable<any | undefined> {
+    return this._itemService.getItem(id, false).pipe(
+      map((item) => {
+        return item;
+      }),
+    );
+  }
+
   public lookup(filter: ItemRefLookupFilter, options?: any): Observable<any[]> {
     if (!filter.text) {
       return of([]);

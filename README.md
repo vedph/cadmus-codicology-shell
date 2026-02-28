@@ -162,6 +162,9 @@ graph LR;
 
 ## History
 
+### 14.1.0
+
+- 2026-02-28: ⚠️ updated Angular and packages.
 - 2026-02-25: updated Angular and packages.
 - 2026-02-04:
   - updated packages.
