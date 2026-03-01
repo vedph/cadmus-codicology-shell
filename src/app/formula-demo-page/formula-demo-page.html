@@ -4,12 +4,12 @@
   </mat-card-header>
   <mat-card-content>
     <cadmus-cod-layout-formula
-      [data]="data"
+      [data]="data()"
       (dataChange)="onDataChange($event!)"
     />
     <hr />
     <div>
-      <code><pre>{{ data | json }}</pre></code>
+      <code><pre>{{ data() | json }}</pre></code>
     </div>
   </mat-card-content>
 </mat-card>
