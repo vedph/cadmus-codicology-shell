@@ -94,11 +94,11 @@ export class CodContentAnnotationComponent {
   public form: FormGroup;
 
   public featFlags = computed<Flag[]>(
-    () => this.featureEntries()?.map((e) => entryToFlag(e)) || []
+    () => this.featureEntries()?.map((e) => entryToFlag(e)) || [],
   );
 
   public langFlags = computed<Flag[]>(
-    () => this.langEntries()?.map((e) => entryToFlag(e)) || []
+    () => this.langEntries()?.map((e) => entryToFlag(e)) || [],
   );
 
   constructor(formBuilder: FormBuilder) {

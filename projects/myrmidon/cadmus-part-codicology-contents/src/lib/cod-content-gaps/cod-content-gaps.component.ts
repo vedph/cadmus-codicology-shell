@@ -1,12 +1,16 @@
 import { CommonModule } from '@angular/common';
 import {
-  ChangeDetectionStrategy, Component, input, linkedSignal, model, signal } from '@angular/core';
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  linkedSignal,
+  model,
+  signal,
+} from '@angular/core';
 
 // material
 import { MatButtonModule } from '@angular/material/button';
-import {
-  MatExpansionModule,
-} from '@angular/material/expansion';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 

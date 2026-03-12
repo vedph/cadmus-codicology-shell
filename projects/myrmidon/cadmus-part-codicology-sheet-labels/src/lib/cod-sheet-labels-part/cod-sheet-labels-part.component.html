@@ -559,7 +559,9 @@
               </li>
             </ul>
             <h2>Formula</h2>
-            <p>A formula consists of these parts:</p>
+            <p>
+              A formula to <strong>add rows</strong> consists of these parts:
+            </p>
             <ol>
               <li><code>N</code>=sheet number;</li>
               <li>
@@ -568,28 +570,29 @@
               <li><code>*</code>=sheet or <code>%</code>=page;</li>
               <li><code>N</code>=count of sheet/page labels to add;</li>
               <li>
-                <code>value</code>=value of the label(s) to add. Include in
-                double quotes when it's a literal constant. Else, it can be an
-                Arabic number, a Roman number, or a Latin/Greek letter, either
-                uppercase or lowercase, representing the start number. In all
-                these cases, the labels will be generated automatically: e.g.
-                <code>1r*3=xi</code> = assign labels <code>xi</code>,
-                <code>xii</code>, and <code>xiii</code> to sheets 1r, 2r, and
-                3r. Quires have a special numbering, with form
-                <code>qN/M</code>
-                where N=sheet number and M=count of sheets in that quire. For
-                instance, <code>1x2=q1/4</code> generates 16 labels like
+                <code>=value</code>=value of the label(s) to add. Include in
+                double quotes when it's a literal constant. Otherwise, it can be
+                an Arabic number, a Roman number, or a Latin/Greek letter,
+                either uppercase or lowercase, representing the start alphabetic
+                number. In all these cases, the labels will be generated
+                automatically: e.g. <code>1r*3=xi</code> = assign labels
+                <code>xi</code>, <code>xii</code>, and <code>xiii</code> to
+                sheets 1r, 2r, and 3r. Quires have a special numbering, with
+                form <code>qN/M</code> where <code>N</code>=sheet number and
+                <code>M</code>=count of sheets in that quire. For instance,
+                <code>1x2=q1/4</code> generates 16 labels like
                 <code>1.1/4</code> for 1r and 1v, <code>1.2/4</code> for 2r and
                 2v, etc. where the initial number followed by dot is the quire
                 ordinal number, while others correspond to N and M.
               </li>
             </ol>
             <p>
-              Also, you can use another syntax to just set the value of an
-              arbitrarily defined set of cells. In this case, you specify any
-              number of physical locations (e.g. <code>1r</code>) or location
-              ranges (e.g. <code>1r-4v</code>), followed by <code>:=</code> and
-              a single value to assign to all the listed cells.
+              You can use another syntax to just <strong>set</strong> the value
+              of an arbitrarily defined set of cells. In this case, you specify
+              any number of physical locations (e.g. <code>1r</code>) or
+              location ranges (e.g. <code>1r-4v</code>), followed by
+              <code>:=</code> and a single value to assign to all the listed
+              cells.
             </p>
             <p></p>
           </div>

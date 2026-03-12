@@ -1,14 +1,11 @@
 import {
-  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   computed,
   effect,
-  ElementRef,
   input,
   model,
   signal,
-  ViewChild,
 } from '@angular/core';
 
 import { CodLayoutRect } from '../../services/cod-layout.service';
@@ -38,8 +35,6 @@ interface CodLayoutFigureRect {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodLayoutFigureComponent {
-  @ViewChild('fig') fig: ElementRef | undefined;
-
   /**
    * If true, the figure will not be scaled to fit the size.
    */
@@ -63,7 +58,9 @@ export class CodLayoutFigureComponent {
 
   private readonly _resolvedSize = computed(() => {
     const s = this.size();
-    return s ? { height: s.height, width: s.width } : { height: 400, width: 200 };
+    return s
+      ? { height: s.height, width: s.width }
+      : { height: 400, width: 200 };
   });
 
   public readonly heightRects = signal<CodLayoutFigureRect[]>([]);
@@ -71,17 +68,10 @@ export class CodLayoutFigureComponent {
   public readonly viewbox = signal<string>('0 0 200 400');
 
   constructor() {
-    // after the view is first rendered, compute the figure
-    afterNextRender(() => {
-      this.refresh(this.rects());
-    });
-
-    // whenever rects or size change (after first render), recompute
+    // whenever rects or size change, recompute the figure
     effect(() => {
       const rects = this.rects();
       const size = this._resolvedSize();
-      // afterNextRender handles the initial render; subsequent updates
-      // are driven by this effect (signals track rects and size)
       this.refresh(rects, size);
     });
   }

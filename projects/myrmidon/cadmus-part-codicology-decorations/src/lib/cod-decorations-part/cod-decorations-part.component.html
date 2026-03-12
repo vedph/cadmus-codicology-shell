@@ -20,97 +20,105 @@
         </button>
       </div>
       @if (decorations.value && decorations.value.length) {
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>name</th>
-            <th>EID</th>
-            <th>elems</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for ( entry of decorations.value; track entry; let i = $index; let
-          first = $first; let last = $last) {
-          <tr [class.selected]="i === editedIndex()">
-            <td class="fit-width">
-              <button
-                type="button"
-                mat-icon-button
-                matTooltip="Edit this decoration"
-                (click)="editDecoration(entry, i)"
-              >
-                <mat-icon class="mat-primary">edit</mat-icon>
-              </button>
-              <button
-                type="button"
-                mat-icon-button
-                matTooltip="Move this decoration up"
-                [disabled]="first"
-                (click)="moveDecorationUp(i)"
-              >
-                <mat-icon>arrow_upward</mat-icon>
-              </button>
-              <button
-                type="button"
-                mat-icon-button
-                matTooltip="Move this decoration down"
-                [disabled]="last"
-                (click)="moveDecorationDown(i)"
-              >
-                <mat-icon>arrow_downward</mat-icon>
-              </button>
-              <button
-                type="button"
-                mat-icon-button
-                matTooltip="Delete this decoration"
-                (click)="deleteDecoration(i)"
-              >
-                <mat-icon class="mat-warn">remove_circle</mat-icon>
-              </button>
-            </td>
-            <td>{{ entry.name }}</td>
-            <td>{{ entry.eid }}</td>
-            <td>{{ entry.elements?.length || 0 }}</td>
-          </tr>
-          }
-        </tbody>
-      </table>
-      } @if (editedDecoration()) {
-      <mat-expansion-panel
-        [expanded]="editedDecoration()"
-        [disabled]="!editedDecoration()"
-      >
-        <mat-expansion-panel-header>
-          <mat-panel-title>decoration #{{ editedIndex() + 1 }} </mat-panel-title>
-        </mat-expansion-panel-header>
-        <cadmus-cod-decoration
-          [decFlagEntries]="decFlagEntries()"
-          [ctTagEntries]="ctTagEntries()"
-          [assTagEntries]="assTagEntries()"
-          [refTagEntries]="refTagEntries()"
-          [artTypeEntries]="artTypeEntries()"
-          [imgTypeEntries]="imgTypeEntries()"
-          [refTypeEntries]="refTypeEntries()"
-          [artStyleEntries]="artStyleEntries()"
-          [decElemColorEntries]="decElemColorEntries()"
-          [decElemTagEntries]="decElemTagEntries()"
-          [decElemTypolEntries]="decElemTypolEntries()"
-          [decElemGildingEntries]="decElemGildingEntries()"
-          [decElemPosEntries]="decElemPosEntries()"
-          [decElemFlagEntries]="decElemFlagEntries()"
-          [decElemTechEntries]="decElemTechEntries()"
-          [decElemToolEntries]="decElemToolEntries()"
-          [decElemTypeEntries]="decElemTypeEntries()"
-          [decTypeHiddenEntries]="decTypeHiddenEntries()"
-          [idTagEntries]="idTagEntries()"
-          [idScopeEntries]="idScopeEntries()"
-          [lookupProviderOptions]="lookupProviderOptions()"
-          [decoration]="editedDecoration()"
-          (decorationChange)="onDecorationSave($event!)"
-          (editorClose)="editDecoration(null)"
-        />
-      </mat-expansion-panel>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>name</th>
+              <th>EID</th>
+              <th>elems</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (
+              entry of decorations.value;
+              track entry;
+              let i = $index;
+              let first = $first;
+              let last = $last
+            ) {
+              <tr [class.selected]="i === editedIndex()">
+                <td class="fit-width">
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Edit this decoration"
+                    (click)="editDecoration(entry, i)"
+                  >
+                    <mat-icon class="mat-primary">edit</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Move this decoration up"
+                    [disabled]="first"
+                    (click)="moveDecorationUp(i)"
+                  >
+                    <mat-icon>arrow_upward</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Move this decoration down"
+                    [disabled]="last"
+                    (click)="moveDecorationDown(i)"
+                  >
+                    <mat-icon>arrow_downward</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Delete this decoration"
+                    (click)="deleteDecoration(i)"
+                  >
+                    <mat-icon class="mat-warn">remove_circle</mat-icon>
+                  </button>
+                </td>
+                <td>{{ entry.name }}</td>
+                <td>{{ entry.eid }}</td>
+                <td>{{ entry.elements?.length || 0 }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+      @if (editedDecoration()) {
+        <mat-expansion-panel
+          [expanded]="editedDecoration()"
+          [disabled]="!editedDecoration()"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title
+              >decoration #{{ editedIndex() + 1 }}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <cadmus-cod-decoration
+            [decFlagEntries]="decFlagEntries()"
+            [ctTagEntries]="ctTagEntries()"
+            [assTagEntries]="assTagEntries()"
+            [refTagEntries]="refTagEntries()"
+            [artTypeEntries]="artTypeEntries()"
+            [imgTypeEntries]="imgTypeEntries()"
+            [refTypeEntries]="refTypeEntries()"
+            [artStyleEntries]="artStyleEntries()"
+            [decElemColorEntries]="decElemColorEntries()"
+            [decElemTagEntries]="decElemTagEntries()"
+            [decElemTypolEntries]="decElemTypolEntries()"
+            [decElemGildingEntries]="decElemGildingEntries()"
+            [decElemPosEntries]="decElemPosEntries()"
+            [decElemFlagEntries]="decElemFlagEntries()"
+            [decElemTechEntries]="decElemTechEntries()"
+            [decElemToolEntries]="decElemToolEntries()"
+            [decElemTypeEntries]="decElemTypeEntries()"
+            [decTypeHiddenEntries]="decTypeHiddenEntries()"
+            [idTagEntries]="idTagEntries()"
+            [idScopeEntries]="idScopeEntries()"
+            [lookupProviderOptions]="lookupProviderOptions()"
+            [decoration]="editedDecoration()"
+            (decorationChange)="onDecorationSave($event!)"
+            (editorClose)="editDecoration(null)"
+          />
+        </mat-expansion-panel>
       }
     </mat-card-content>
     <mat-card-actions>

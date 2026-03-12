@@ -173,7 +173,7 @@ export class CodContentEditorComponent {
   public readonly editedIndex = signal<number>(-1);
 
   // flags
-  public stateFlags: Flag[] = [];
+  public readonly stateFlags = signal<Flag[]>([]);
 
   constructor(
     formBuilder: FormBuilder,
@@ -224,13 +224,11 @@ export class CodContentEditorComponent {
     });
 
     effect(() => {
-      const content = this.content();
-      console.log('input content', content);
-      this.updateForm(content);
+      this.updateForm(this.content());
     });
 
     effect(() => {
-      this.stateFlags = this.stateEntries()?.map(entryToFlag) || [];
+      this.stateFlags.set(this.stateEntries()?.map(entryToFlag) || []);
     });
   }
 
@@ -313,7 +311,6 @@ export class CodContentEditorComponent {
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
-    console.log('locationChange');
     this.ranges.setValue(ranges || []);
     this.ranges.updateValueAndValidity();
     this.ranges.markAsDirty();

@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, effect, input, model, OnInit, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  input,
+  model,
+  OnInit,
+  output,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,

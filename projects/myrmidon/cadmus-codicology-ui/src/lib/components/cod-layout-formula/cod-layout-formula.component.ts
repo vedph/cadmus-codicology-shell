@@ -1,5 +1,12 @@
 import {
-  ChangeDetectionStrategy, Component, computed, effect, input, model, output } from '@angular/core';
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  input,
+  model,
+  output,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -107,7 +114,7 @@ export class CodLayoutFormulaComponent {
    * Custom validator for formula validation using the formula service.
    */
   private formulaValidator: ValidatorFn = (
-    control: AbstractControl
+    control: AbstractControl,
   ): ValidationErrors | null => {
     if (!control.value) {
       return null; // let required validator handle empty values
@@ -140,7 +147,7 @@ export class CodLayoutFormulaComponent {
   /**
    * The hint for the current formula service.
    */
-  public readonly hint = computed<string|undefined>(() => {
+  public readonly hint = computed<string | undefined>(() => {
     return this._formulaService?.hint;
   });
 
@@ -166,7 +173,10 @@ export class CodLayoutFormulaComponent {
   public dimensionsCtl: FormControl<OrderedPhysicalDimension[]>;
   public form: FormGroup;
 
-  constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
+  constructor(
+    formBuilder: FormBuilder,
+    private _dialogService: DialogService,
+  ) {
     // formula
     this.formulaCtl = formBuilder.control(this.data()?.formula || '', {
       validators: [
@@ -179,11 +189,11 @@ export class CodLayoutFormulaComponent {
     // dimensions
     this.dimensionsCtl = formBuilder.control(
       this.data()?.dimensions.map(
-        (d, i) => ({ ...d, ordinal: i + 3 } as OrderedPhysicalDimension)
+        (d, i) => ({ ...d, ordinal: i + 3 }) as OrderedPhysicalDimension,
       ) || [],
       {
         nonNullable: true,
-      }
+      },
     );
     // form
     this.form = formBuilder.group({
@@ -194,6 +204,7 @@ export class CodLayoutFormulaComponent {
     // when data changes, update service and form
     effect(() => {
       if (this._updatingForm) {
+        this._updatingForm = false;
         return;
       }
       this._updatingForm = true;
@@ -241,8 +252,8 @@ export class CodLayoutFormulaComponent {
           const formulaLabels = new Set(
             this._formulaService.filterFormulaLabels(
               parsedFormula,
-              allDimensionTags
-            )
+              allDimensionTags,
+            ),
           );
           formulaLabels.add('height');
           formulaLabels.add('width');
@@ -265,9 +276,9 @@ export class CodLayoutFormulaComponent {
 
             if (d.tag && formulaLabels.has(d.tag)) {
               // this is a formula-derived dimension
-              if (parsedFormula.height?.label || 'height' === d.tag) {
+              if ((parsedFormula.height?.label || 'height') === d.tag) {
                 ordinal = 1;
-              } else if (parsedFormula.width?.label || 'width' === d.tag) {
+              } else if ((parsedFormula.width?.label || 'width') === d.tag) {
                 ordinal = 2;
               } else {
                 ordinal = spanOrdinals.get(d.tag) || 0;
@@ -306,7 +317,7 @@ export class CodLayoutFormulaComponent {
     let formula: CodLayoutFormula | null | undefined;
     try {
       formula = this._formulaService.parseFormula(
-        this.formulaCtl.value
+        this.formulaCtl.value,
       )?.result;
       if (!formula?.width || !formula?.height) {
         return;
@@ -318,7 +329,7 @@ export class CodLayoutFormulaComponent {
 
     // collect non-formula dimensions (those with ordinal 0)
     const nonFormulaDimensions = this.dimensionsCtl.value.filter(
-      (d) => !d.ordinal
+      (d) => !d.ordinal,
     );
 
     // extract dimensions from formula height, width, and spans
@@ -398,10 +409,9 @@ export class CodLayoutFormulaComponent {
 
     // only work with formula-derived dimensions (ordinal > 0)
     const formulaDimensions = this.dimensionsCtl.value.filter(
-      (d) => d.ordinal > 0
+      (d) => d.ordinal > 0,
     );
     if (formulaDimensions.length === 0) {
-      console.log('No formula-derived dimensions to update');
       return;
     }
 
@@ -416,9 +426,6 @@ export class CodLayoutFormulaComponent {
       if (heightDim.value !== parsedFormula.height.value) {
         parsedFormula.height.value = heightDim.value || 0;
         hasChanges = true;
-        console.log(
-          `Updated height ${parsedFormula.height.label}: ${heightDim.value}`
-        );
       }
     }
 
@@ -428,9 +435,6 @@ export class CodLayoutFormulaComponent {
       if (widthDim.value !== parsedFormula.width.value) {
         parsedFormula.width.value = widthDim.value || 0;
         hasChanges = true;
-        console.log(
-          `Updated width ${parsedFormula.width.label}: ${widthDim.value}`
-        );
       }
     }
 
@@ -452,9 +456,6 @@ export class CodLayoutFormulaComponent {
 
           if (spanDim && spanDim.value !== span.value) {
             hasChanges = true;
-            console.log(
-              `Updated span ${span.label} (ordinal ${expectedOrdinal}): ${spanDim.value}`
-            );
             return {
               ...span, // preserve all span properties
               value: spanDim.value || 0,
@@ -467,20 +468,11 @@ export class CodLayoutFormulaComponent {
 
     // only rebuild if there are actual changes
     if (!hasChanges) {
-      console.log(
-        'No changes detected in formula-derived dimensions, skipping formula update'
-      );
       return;
     }
 
-    console.log(
-      'Updated parsed formula:',
-      JSON.stringify(parsedFormula, null, 2)
-    );
-
     // rebuild and update the formula control value
     const newFormulaValue = this._formulaService.buildFormula(parsedFormula);
-    console.log('Rebuilt formula:', newFormulaValue);
 
     if (newFormulaValue && newFormulaValue !== originalFormula) {
       // validate the new formula before applying it
@@ -494,16 +486,10 @@ export class CodLayoutFormulaComponent {
         console.error('Error validating rebuilt formula:', error);
       }
 
-      // set the value without emitting events initially to avoid recursive updates
       this.formulaCtl.setValue(newFormulaValue, { emitEvent: false });
       this.formulaCtl.markAsDirty();
-      this.formulaCtl.markAsTouched(); // ensure validation errors show
+      this.formulaCtl.markAsTouched();
       this.formulaCtl.updateValueAndValidity();
-
-      // force validation state update by triggering value change detection
-      this.formulaCtl.setValue(newFormulaValue, { emitEvent: true });
-
-      console.log('Formula updated successfully');
     } else if (!newFormulaValue) {
       console.error('Failed to rebuild formula from parsed structure');
     }
@@ -541,7 +527,7 @@ export class CodLayoutFormulaComponent {
       // adding a new dimension
       // check if a dimension with the same tag already exists and remove it
       const existingIndex = entries.findIndex(
-        (d) => d.tag === dimension.tag && d.tag
+        (d) => d.tag === dimension.tag && d.tag,
       );
       if (existingIndex !== -1) {
         entries.splice(existingIndex, 1);
@@ -557,7 +543,7 @@ export class CodLayoutFormulaComponent {
       if (originalTag !== newTag) {
         // remove any existing dimension with the new tag (to avoid duplicates)
         const duplicateIndex = entries.findIndex(
-          (d, index) => d.tag === newTag && d.tag && index !== this.editedIndex
+          (d, index) => d.tag === newTag && d.tag && index !== this.editedIndex,
         );
         if (duplicateIndex !== -1) {
           // if the duplicate is before our edited index, adjust the edited index
@@ -606,19 +592,19 @@ export class CodLayoutFormulaComponent {
     }
     this.closeDimension();
     const dimensions = [...this.dimensionsCtl.value];
-    const currentDimension = dimensions[index];
-    const targetDimension = dimensions[index - 1];
+    const current = dimensions[index];
+    const target = dimensions[index - 1];
 
     // if both dimensions have ordinals (are formula-derived), swap their ordinals
-    if (currentDimension.ordinal > 0 && targetDimension.ordinal > 0) {
-      const tempOrdinal = currentDimension.ordinal;
-      currentDimension.ordinal = targetDimension.ordinal;
-      targetDimension.ordinal = tempOrdinal;
+    let newCurrent: OrderedPhysicalDimension = current;
+    let newTarget: OrderedPhysicalDimension = target;
+    if (current.ordinal > 0 && target.ordinal > 0) {
+      newCurrent = { ...current, ordinal: target.ordinal };
+      newTarget = { ...target, ordinal: current.ordinal };
     }
 
     // swap positions in array
-    dimensions.splice(index, 1);
-    dimensions.splice(index - 1, 0, currentDimension);
+    dimensions.splice(index - 1, 2, newCurrent, newTarget);
     this.dimensionsCtl.setValue(dimensions);
     this.dimensionsCtl.markAsDirty();
     this.dimensionsCtl.updateValueAndValidity();
@@ -632,19 +618,19 @@ export class CodLayoutFormulaComponent {
     }
     this.closeDimension();
     const dimensions = [...this.dimensionsCtl.value];
-    const currentDimension = dimensions[index];
-    const targetDimension = dimensions[index + 1];
+    const current = dimensions[index];
+    const target = dimensions[index + 1];
 
     // if both dimensions have ordinals (are formula-derived), swap their ordinals
-    if (currentDimension.ordinal > 0 && targetDimension.ordinal > 0) {
-      const tempOrdinal = currentDimension.ordinal;
-      currentDimension.ordinal = targetDimension.ordinal;
-      targetDimension.ordinal = tempOrdinal;
+    let newCurrent: OrderedPhysicalDimension = current;
+    let newTarget: OrderedPhysicalDimension = target;
+    if (current.ordinal > 0 && target.ordinal > 0) {
+      newCurrent = { ...current, ordinal: target.ordinal };
+      newTarget = { ...target, ordinal: current.ordinal };
     }
 
     // swap positions in array
-    dimensions.splice(index, 1);
-    dimensions.splice(index + 1, 0, currentDimension);
+    dimensions.splice(index, 2, newTarget, newCurrent);
     this.dimensionsCtl.setValue(dimensions);
     this.dimensionsCtl.markAsDirty();
     this.dimensionsCtl.updateValueAndValidity();
@@ -664,8 +650,8 @@ export class CodLayoutFormulaComponent {
         new Set(
           this.dimensionsCtl.value
             .map((f) => f.ordinal)
-            .filter((o) => o > 0 && o !== this.editedOrdinalValue?.value)
-        )
+            .filter((o) => o > 0 && o !== this.editedOrdinalValue?.value),
+        ),
       ),
     };
   }
@@ -676,7 +662,10 @@ export class CodLayoutFormulaComponent {
     }
 
     const dimensions = [...this.dimensionsCtl.value];
-    dimensions[this.editedOrdinalIndex].ordinal = ordinal.value;
+    dimensions[this.editedOrdinalIndex] = {
+      ...dimensions[this.editedOrdinalIndex],
+      ordinal: ordinal.value,
+    };
     this.dimensionsCtl.setValue(dimensions);
     this.dimensionsCtl.markAsDirty();
     this.dimensionsCtl.updateValueAndValidity();

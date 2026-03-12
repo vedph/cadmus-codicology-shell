@@ -24,7 +24,7 @@ import {
 } from '@angular/material/form-field';
 import { MatSelect } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatInput } from '@angular/material/input';
@@ -165,9 +165,7 @@ export class CodHandInstanceComponent {
     });
 
     effect(() => {
-      const instance = this.instance();
-      console.log('input instance', instance);
-      this.updateForm(instance);
+      this.updateForm(this.instance());
     });
   }
 

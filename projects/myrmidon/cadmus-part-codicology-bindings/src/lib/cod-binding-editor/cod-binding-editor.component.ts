@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, effect, input, model, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  input,
+  model,
+  output,
+  signal,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -118,9 +126,7 @@ export class CodBindingEditorComponent {
     });
 
     effect(() => {
-      const binding = this.binding();
-      console.log('input binding', binding);
-      this.updateForm(binding);
+      this.updateForm(this.binding());
     });
   }
 

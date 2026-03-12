@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, effect, input, model, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  input,
+  model,
+  output,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -79,7 +86,7 @@ export class CodHandSubscriptionComponent {
     });
 
     effect(() => {
-      const subscription =  this.subscription();
+      const subscription = this.subscription();
       console.log('input subscription', subscription);
       this.updateForm(subscription);
     });

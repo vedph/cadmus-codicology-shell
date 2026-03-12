@@ -62,18 +62,7 @@ export class CodQuireDescriptionComponent {
 
   public readonly scopes = computed(() => {
     const max = this.maxQuireNumber();
-    const numbers = max > 0 ? Array.from({ length: max }, (_, i) => i + 1) : [];
-    // update note set definitions
-    const set = this.scopedNotes.value;
-    if (set) {
-      set.merge = true;
-      set.definitions = numbers.map((n) => ({
-        key: `${n}`,
-        label: `${n}`,
-        maxLength: 1000,
-      }));
-    }
-    return numbers;
+    return max > 0 ? Array.from({ length: max }, (_, i) => i + 1) : [];
   });
 
   // cod-quire-features

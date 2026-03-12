@@ -5,22 +5,34 @@
       <mat-label>formula</mat-label>
       <input matInput [formControl]="formulaCtl" />
       <mat-hint>{{ hint() }}</mat-hint>
-      @if ($any(formulaCtl).errors?.required && (formulaCtl.dirty ||
-      formulaCtl.touched)) {
-      <mat-error>formula required</mat-error>
-      } @if ($any(formulaCtl).errors?.maxLength && (formulaCtl.dirty ||
-      formulaCtl.touched)) {
-      <mat-error>formula too long</mat-error>
-      } @if ($any(formulaCtl).errors?.formulaErrors && (formulaCtl.dirty ||
-      formulaCtl.touched)) {
-      <mat-error>
-        @for (e of $any(formulaCtl).errors!.formulaErrors!; track e; let
-        i=$index) { @if (i > 0) {
-        <span>&#x25b3;</span>
-        }
-        <span>{{ e }}</span>
-        }
-      </mat-error>
+      @if (
+        $any(formulaCtl).errors?.required &&
+        (formulaCtl.dirty || formulaCtl.touched)
+      ) {
+        <mat-error>formula required</mat-error>
+      }
+      @if (
+        $any(formulaCtl).errors?.maxLength &&
+        (formulaCtl.dirty || formulaCtl.touched)
+      ) {
+        <mat-error>formula too long</mat-error>
+      }
+      @if (
+        $any(formulaCtl).errors?.formulaErrors &&
+        (formulaCtl.dirty || formulaCtl.touched)
+      ) {
+        <mat-error>
+          @for (
+            e of $any(formulaCtl).errors!.formulaErrors!;
+            track e;
+            let i = $index
+          ) {
+            @if (i > 0) {
+              <span>&#x25b3;</span>
+            }
+            <span>{{ e }}</span>
+          }
+        </mat-error>
       }
       <button
         type="button"
@@ -82,89 +94,96 @@
           </tr>
         </thead>
         <tbody>
-          @for (d of dimensionsCtl.value; track d; let i = $index; let first =
-          $first; let last = $last) {
-          <tr [class.selected]="d === edited">
-            <td class="fit-width">
-              <button
-                type="button"
-                mat-icon-button
-                color="primary"
-                matTooltip="Edit this dimension"
-                (click)="editDimension(d, i)"
-              >
-                <mat-icon class="mat-primary">edit</mat-icon>
-              </button>
-              <button
-                type="button"
-                mat-icon-button
-                matTooltip="Move this dimension up"
-                [disabled]="first"
-                (click)="moveDimensionUp(i)"
-              >
-                <mat-icon>arrow_upward</mat-icon>
-              </button>
-              <button
-                type="button"
-                mat-icon-button
-                matTooltip="Move this dimension down"
-                [disabled]="last"
-                (click)="moveDimensionDown(i)"
-              >
-                <mat-icon>arrow_downward</mat-icon>
-              </button>
-              <button
-                type="button"
-                mat-icon-button
-                color="warn"
-                matTooltip="Delete this dimension"
-                (click)="deleteDimension(i)"
-              >
-                <mat-icon class="mat-warn">remove_circle</mat-icon>
-              </button>
-            </td>
-            <td>{{ d.tag }}</td>
-            <td>{{ d.value }}</td>
-            <td>{{ d.unit }}</td>
-            <td class="vertical-center">
-              @if (editedOrdinalIndex === i) {
-              <cadmus-cod-ordinal-editor
-                [ordinal]="editedOrdinalValue"
-                (ordinalChange)="saveOrdinal($event!)"
-                (cancelEdit)="closeOrdinal()"
-              />
-              } @else {
-              {{ d.ordinal || "" }}
-              <button
-                type="button"
-                mat-icon-button
-                matTooltip="Edit ordinal"
-                (click)="editOrdinal(i)"
-              >
-                <mat-icon>edit</mat-icon>
-              </button>
-              }
-            </td>
-          </tr>
+          @for (
+            d of dimensionsCtl.value;
+            track d;
+            let i = $index;
+            let first = $first;
+            let last = $last
+          ) {
+            <tr [class.selected]="d === edited">
+              <td class="fit-width">
+                <button
+                  type="button"
+                  mat-icon-button
+                  color="primary"
+                  matTooltip="Edit this dimension"
+                  (click)="editDimension(d, i)"
+                >
+                  <mat-icon class="mat-primary">edit</mat-icon>
+                </button>
+                <button
+                  type="button"
+                  mat-icon-button
+                  matTooltip="Move this dimension up"
+                  [disabled]="first"
+                  (click)="moveDimensionUp(i)"
+                >
+                  <mat-icon>arrow_upward</mat-icon>
+                </button>
+                <button
+                  type="button"
+                  mat-icon-button
+                  matTooltip="Move this dimension down"
+                  [disabled]="last"
+                  (click)="moveDimensionDown(i)"
+                >
+                  <mat-icon>arrow_downward</mat-icon>
+                </button>
+                <button
+                  type="button"
+                  mat-icon-button
+                  color="warn"
+                  matTooltip="Delete this dimension"
+                  (click)="deleteDimension(i)"
+                >
+                  <mat-icon class="mat-warn">remove_circle</mat-icon>
+                </button>
+              </td>
+              <td>{{ d.tag }}</td>
+              <td>{{ d.value }}</td>
+              <td>{{ d.unit }}</td>
+              <td class="vertical-center">
+                @if (editedOrdinalIndex === i) {
+                  <cadmus-cod-ordinal-editor
+                    [ordinal]="editedOrdinalValue"
+                    (ordinalChange)="saveOrdinal($event!)"
+                    (cancelEdit)="closeOrdinal()"
+                  />
+                } @else {
+                  {{ d.ordinal || "" }}
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Edit ordinal"
+                    (click)="editOrdinal(i)"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                }
+              </td>
+            </tr>
           }
         </tbody>
       </table>
       @if (edited) {
-      <fieldset>
-        <mat-expansion-panel [expanded]="edited" [disabled]="!edited">
-          <mat-expansion-panel-header>
-            <mat-panel-title>dimension #{{ editedIndex + 1 }}</mat-panel-title>
-          </mat-expansion-panel-header>
-          <cadmus-physical-dimension
-            [dimension]="edited"
-            [unitEntries]="unitEntries()"
-            [tagEntries]="tagEntries()"
-            [unitDisabled]="true"
-            (dimensionChange)="saveDimension($event!)"
-            (cancelEdit)="closeDimension()"
-          />
-        </mat-expansion-panel>
-      </fieldset>
+        <fieldset>
+          <mat-expansion-panel [expanded]="edited" [disabled]="!edited">
+            <mat-expansion-panel-header>
+              <mat-panel-title
+                >dimension #{{ editedIndex + 1 }}</mat-panel-title
+              >
+            </mat-expansion-panel-header>
+            <cadmus-physical-dimension
+              [dimension]="edited"
+              [unitEntries]="unitEntries()"
+              [tagEntries]="tagEntries()"
+              [unitDisabled]="true"
+              (dimensionChange)="saveDimension($event!)"
+              (cancelEdit)="closeDimension()"
+            />
+          </mat-expansion-panel>
+        </fieldset>
       }
     </mat-expansion-panel>
   </div>

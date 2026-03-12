@@ -1,5 +1,12 @@
 import {
-  ChangeDetectionStrategy, Component, effect, input, model, output, signal } from '@angular/core';
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  input,
+  model,
+  output,
+  signal,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,

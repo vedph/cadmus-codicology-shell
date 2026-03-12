@@ -1,6 +1,13 @@
 import { KeyValue } from '@angular/common';
 import {
-  ChangeDetectionStrategy, Component, effect, input, model, output, signal } from '@angular/core';
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  input,
+  model,
+  output,
+  signal,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -82,7 +89,10 @@ export class CodHandDescriptionComponent {
   public readonly editedSign = signal<CodHandSign | undefined>(undefined);
   public readonly editedSignIndex = signal(-1);
 
-  constructor(formBuilder: FormBuilder, private _dialogService: DialogService) {
+  constructor(
+    formBuilder: FormBuilder,
+    private _dialogService: DialogService,
+  ) {
     this._noteDefs = [
       {
         key: 'i',

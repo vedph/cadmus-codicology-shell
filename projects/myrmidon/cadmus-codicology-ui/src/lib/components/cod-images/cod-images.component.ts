@@ -1,5 +1,11 @@
 import {
-  ChangeDetectionStrategy, Component, effect, input, Input, model, OnDestroy } from '@angular/core';
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  input,
+  model,
+  OnDestroy,
+} from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -102,7 +108,7 @@ export class CodImagesComponent implements OnDestroy {
         this._subs.push(
           g.valueChanges.pipe(debounceTime(300)).subscribe((_) => {
             this.emitImagesChange();
-          })
+          }),
         );
       }
     }
@@ -120,12 +126,12 @@ export class CodImagesComponent implements OnDestroy {
       ]),
       sourceId: this._formBuilder.control(
         item?.sourceId,
-        Validators.maxLength(300)
+        Validators.maxLength(300),
       ),
       label: this._formBuilder.control(item?.label, Validators.maxLength(100)),
       copyright: this._formBuilder.control(
         item?.copyright,
-        Validators.maxLength(100)
+        Validators.maxLength(100),
       ),
     });
   }
@@ -135,7 +141,7 @@ export class CodImagesComponent implements OnDestroy {
     this._subs.push(
       g.valueChanges.pipe(debounceTime(300)).subscribe((_) => {
         this.emitImagesChange();
-      })
+      }),
     );
     this.imagesArr.push(g);
     this.imagesArr.markAsDirty();

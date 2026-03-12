@@ -10,129 +10,155 @@
         <mat-icon>add_circle</mat-icon> image
       </button>
     </div>
-    @for ( item of imagesArr.controls; track item; let i = $index; let first =
-    $first; let last = $last) {
-    <div>
-      <!-- child form -->
-      <div [formGroupName]="i">
-        <!-- child actions -->
-        {{ i + 1 }}.
-        <button
-          mat-icon-button
-          type="button"
-          matTooltip="Remove this image"
-          (click)="removeImage(i)"
-        >
-          <mat-icon class="mat-warn">remove_circle</mat-icon>
-        </button>
-        <button
-          [disabled]="first"
-          mat-icon-button
-          type="button"
-          matTooltip="Move image up"
-          (click)="moveImageUp(i)"
-        >
-          <mat-icon>arrow_upward</mat-icon>
-        </button>
-        <button
-          [disabled]="last"
-          mat-icon-button
-          type="button"
-          matTooltip="Move image down"
-          (click)="moveImageDown(i)"
-        >
-          <mat-icon>arrow_downward</mat-icon>
-        </button>
-        <!-- child controls -->
-        <div class="form-row">
-          <!-- type (bound) -->
-          @if (typeEntries()?.length) {
-          <mat-form-field>
-            <mat-label>type</mat-label>
-            <mat-select formControlName="type">
-              @for (e of typeEntries(); track e.id) {
-              <mat-option [value]="e.id">{{ e.value }}</mat-option>
+    @for (
+      item of imagesArr.controls;
+      track item;
+      let i = $index;
+      let first = $first;
+      let last = $last
+    ) {
+      <div>
+        <!-- child form -->
+        <div [formGroupName]="i">
+          <!-- child actions -->
+          {{ i + 1 }}.
+          <button
+            mat-icon-button
+            type="button"
+            matTooltip="Remove this image"
+            (click)="removeImage(i)"
+          >
+            <mat-icon class="mat-warn">remove_circle</mat-icon>
+          </button>
+          <button
+            [disabled]="first"
+            mat-icon-button
+            type="button"
+            matTooltip="Move image up"
+            (click)="moveImageUp(i)"
+          >
+            <mat-icon>arrow_upward</mat-icon>
+          </button>
+          <button
+            [disabled]="last"
+            mat-icon-button
+            type="button"
+            matTooltip="Move image down"
+            (click)="moveImageDown(i)"
+          >
+            <mat-icon>arrow_downward</mat-icon>
+          </button>
+          <!-- child controls -->
+          <div class="form-row">
+            <!-- type (bound) -->
+            @if (typeEntries()?.length) {
+              <mat-form-field>
+                <mat-label>type</mat-label>
+                <mat-select formControlName="type">
+                  @for (e of typeEntries(); track e.id) {
+                    <mat-option [value]="e.id">{{ e.value }}</mat-option>
+                  }
+                </mat-select>
+                @if (
+                  $any(item)["controls"].type.errors?.required &&
+                  ($any(item)["controls"].type.dirty ||
+                    $any(item)["controls"].type.touched)
+                ) {
+                  <mat-error>type required</mat-error>
+                }
+              </mat-form-field>
+            }
+            <!-- type (free) -->
+            @else {
+              <mat-form-field>
+                <mat-label>type</mat-label>
+                <input matInput formControlName="type" />
+                @if (
+                  $any(item)["controls"].type.errors?.required &&
+                  ($any(item)["controls"].type.dirty ||
+                    $any(item)["controls"].type.touched)
+                ) {
+                  <mat-error>type required</mat-error>
+                }
+                @if (
+                  $any(item)["controls"].type.errors?.maxLength &&
+                  ($any(item)["controls"].type.dirty ||
+                    $any(item)["controls"].type.touched)
+                ) {
+                  <mat-error>type too long</mat-error>
+                }
+              </mat-form-field>
+            }
+            <!-- id -->
+            &nbsp;
+            <mat-form-field>
+              <mat-label>ID</mat-label>
+              <input matInput formControlName="id" />
+              @if (
+                $any(item)["controls"].id.errors?.required &&
+                ($any(item)["controls"].id.dirty ||
+                  $any(item)["controls"].id.touched)
+              ) {
+                <mat-error>ID required</mat-error>
               }
-            </mat-select>
-            @if ( $any(item)['controls'].type.errors?.required &&
-            ($any(item)['controls'].type.dirty ||
-            $any(item)['controls'].type.touched) ) {
-            <mat-error>type required</mat-error>
-            }
-          </mat-form-field>
-          }
-          <!-- type (free) -->
-          @else {
-          <mat-form-field>
-            <mat-label>type</mat-label>
-            <input matInput formControlName="type" />
-            @if ( $any(item)['controls'].type.errors?.required &&
-            ($any(item)['controls'].type.dirty ||
-            $any(item)['controls'].type.touched) ) {
-            <mat-error>type required</mat-error>
-            } @if ( $any(item)['controls'].type.errors?.maxLength &&
-            ($any(item)['controls'].type.dirty ||
-            $any(item)['controls'].type.touched) ) {
-            <mat-error>type too long</mat-error>
-            }
-          </mat-form-field>
-          }
-          <!-- id -->
-          &nbsp;
-          <mat-form-field>
-            <mat-label>ID</mat-label>
-            <input matInput formControlName="id" />
-            @if ( $any(item)['controls'].id.errors?.required &&
-            ($any(item)['controls'].id.dirty ||
-            $any(item)['controls'].id.touched) ) {
-            <mat-error>ID required</mat-error>
-            } @if ( $any(item)['controls'].id.errors?.maxLength &&
-            ($any(item)['controls'].id.dirty ||
-            $any(item)['controls'].id.touched) ) {
-            <mat-error>ID too long</mat-error>
-            }
-          </mat-form-field>
-          <!-- sourceId -->
-          &nbsp;
-          <mat-form-field>
-            <mat-label>source</mat-label>
-            <input matInput formControlName="sourceId" />
-            @if ( $any(item)['controls'].sourceId.errors?.required &&
-            ($any(item)['controls'].sourceId.dirty ||
-            $any(item)['controls'].sourceId.touched) ) {
-            <mat-error>source required</mat-error>
-            } @if ( $any(item)['controls'].sourceId.errors?.maxLength &&
-            ($any(item)['controls'].sourceId.dirty ||
-            $any(item)['controls'].sourceId.touched) ) {
-            <mat-error>source too long</mat-error>
-            }
-          </mat-form-field>
-        </div>
-        <div class="form-row">
-          <!-- label -->
-          <mat-form-field style="flex: 1 0 auto">
-            <mat-label>label</mat-label>
-            <input matInput formControlName="label" />
-            @if ( $any(item)['controls'].label.errors?.maxLength &&
-            ($any(item)['controls'].label.dirty ||
-            $any(item)['controls'].label.touched) ) {
-            <mat-error>label too long</mat-error>
-            }
-          </mat-form-field>
-          <!-- copyright -->
-          &nbsp;
-          <mat-form-field>
-            <mat-label>copyright</mat-label>
-            <input matInput formControlName="copyright" />
-            @if ( $any(item)['controls'].copyright.errors?.maxLength &&
-            ($any(item)['controls'].copyright.dirty ||
-            $any(item)['controls'].copyright.touched) ) {
-            <mat-error>copyright too long</mat-error>
-            }
-          </mat-form-field>
+              @if (
+                $any(item)["controls"].id.errors?.maxLength &&
+                ($any(item)["controls"].id.dirty ||
+                  $any(item)["controls"].id.touched)
+              ) {
+                <mat-error>ID too long</mat-error>
+              }
+            </mat-form-field>
+            <!-- sourceId -->
+            &nbsp;
+            <mat-form-field>
+              <mat-label>source</mat-label>
+              <input matInput formControlName="sourceId" />
+              @if (
+                $any(item)["controls"].sourceId.errors?.required &&
+                ($any(item)["controls"].sourceId.dirty ||
+                  $any(item)["controls"].sourceId.touched)
+              ) {
+                <mat-error>source required</mat-error>
+              }
+              @if (
+                $any(item)["controls"].sourceId.errors?.maxLength &&
+                ($any(item)["controls"].sourceId.dirty ||
+                  $any(item)["controls"].sourceId.touched)
+              ) {
+                <mat-error>source too long</mat-error>
+              }
+            </mat-form-field>
+          </div>
+          <div class="form-row">
+            <!-- label -->
+            <mat-form-field style="flex: 1 0 auto">
+              <mat-label>label</mat-label>
+              <input matInput formControlName="label" />
+              @if (
+                $any(item)["controls"].label.errors?.maxLength &&
+                ($any(item)["controls"].label.dirty ||
+                  $any(item)["controls"].label.touched)
+              ) {
+                <mat-error>label too long</mat-error>
+              }
+            </mat-form-field>
+            <!-- copyright -->
+            &nbsp;
+            <mat-form-field>
+              <mat-label>copyright</mat-label>
+              <input matInput formControlName="copyright" />
+              @if (
+                $any(item)["controls"].copyright.errors?.maxLength &&
+                ($any(item)["controls"].copyright.dirty ||
+                  $any(item)["controls"].copyright.touched)
+              ) {
+                <mat-error>copyright too long</mat-error>
+              }
+            </mat-form-field>
+          </div>
         </div>
       </div>
-    </div>
     }
   </div>
 </form>

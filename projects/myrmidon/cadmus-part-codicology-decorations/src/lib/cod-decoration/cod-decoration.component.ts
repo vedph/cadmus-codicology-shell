@@ -313,9 +313,9 @@ export class CodDecorationComponent {
       this.parentKeys.set([]);
       return;
     }
-    let keys: string[] = this.elements.value.map(
-      (e: CodDecorationElement) => e.key!,
-    );
+    let keys: string[] = this.elements.value
+      .map((e: CodDecorationElement) => e.key)
+      .filter((k): k is string => !!k);
     this.parentKeys.set([...new Set(keys)].sort());
   }
 

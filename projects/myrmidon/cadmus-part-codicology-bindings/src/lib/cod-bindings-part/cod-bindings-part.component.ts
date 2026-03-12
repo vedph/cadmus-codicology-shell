@@ -1,5 +1,9 @@
 import {
-  ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  signal,
+} from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -99,23 +103,41 @@ export class CodBindingsPartComponent
   // cod-binding-tags
   public readonly tagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-binding-cover-materials
-  public readonly coverEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly coverEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // cod-binding-board-materials
-  public readonly boardEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly boardEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // chronotope-tags
-  public readonly ctTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly ctTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // assertion-tags
-  public readonly assTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly assTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // doc-reference-types
-  public readonly refTypeEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly refTypeEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // doc-reference-tags
-  public readonly refTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly refTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // physical-size-tags
-  public readonly szTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly szTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // physical-size-dim-tags
-  public readonly szDimTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly szDimTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // physical-size-units
-  public readonly szUnitEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly szUnitEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
 
   // lookup options depending on role
   public readonly lookupProviderOptions = signal<
@@ -247,8 +269,12 @@ export class CodBindingsPartComponent
 
   public addBinding(): void {
     this.editBinding({
-      coverMaterial: this.coverEntries()?.length ? this.coverEntries()![0].id : '',
-      boardMaterial: this.boardEntries()?.length ? this.boardEntries()![0].id : '',
+      coverMaterial: this.coverEntries()?.length
+        ? this.coverEntries()![0].id
+        : '',
+      boardMaterial: this.boardEntries()?.length
+        ? this.boardEntries()![0].id
+        : '',
       chronotope: {},
     });
   }

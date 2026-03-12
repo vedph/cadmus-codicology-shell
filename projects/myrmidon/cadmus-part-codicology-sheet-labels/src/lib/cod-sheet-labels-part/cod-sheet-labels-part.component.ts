@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+} from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -348,10 +353,6 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
     });
 
     this.rows$.pipe(takeUntilDestroyed()).subscribe((rows) => {
-      console.log(
-        '[CodSheetLabels] rows$ subscription triggered, row count:',
-        rows.length,
-      );
       this.endleafRowIds.set([
         ...new Set(
           rows
@@ -568,10 +569,12 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
     // remove all quire scoped notes with number > max
     const quireDsc = { ...this.quireDsc() };
     if (quireDsc?.scopedNotes) {
-      for (const key of Object.keys(quireDsc.scopedNotes || {})) {
+      // deep-clone the nested object before mutating
+      quireDsc.scopedNotes = { ...quireDsc.scopedNotes };
+      for (const key of Object.keys(quireDsc.scopedNotes)) {
         const n = parseInt(key);
         if (n > max) {
-          delete quireDsc.scopedNotes![n];
+          delete quireDsc.scopedNotes[n];
         }
       }
     }
@@ -598,7 +601,6 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
   }
 
   public onAction(): void {
-    console.log('[CodSheetLabels] onAction START');
     if (this.opForm.invalid) {
       return;
     }
@@ -607,7 +609,6 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
       if (!action) {
         return;
       }
-      console.log('[CodSheetLabels] setPageValue action');
       this._table.setPageValue(
         this._table.getColumnIndex(this.opColumn.value!),
         action.pages,
@@ -618,13 +619,8 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
         this.opColumn.value!,
         this.opAction.value!,
       );
-      console.log(
-        '[CodSheetLabels] addCells action, cells count:',
-        cells.length,
-      );
       this._table.addCells(cells);
     }
-    console.log('[CodSheetLabels] onAction END');
   }
 
   public onTypeAdd(): void {

@@ -4,10 +4,10 @@ import {
   effect,
   input,
   model,
-  OnInit,
   output,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
   FormControl,
@@ -33,7 +33,10 @@ import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 
-import { LookupDocReferencesComponent, LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
+import {
+  LookupDocReferencesComponent,
+  LookupProviderOptions,
+} from '@myrmidon/cadmus-refs-lookup';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import {
   NgxToolsValidators,
@@ -85,7 +88,7 @@ import { CodHandSubscriptionComponent } from '../cod-hand-subscription/cod-hand-
     CodLocationRangePipe,
   ],
 })
-export class CodHandComponent implements OnInit {
+export class CodHandComponent {
   public readonly hand = model<CodHand>();
 
   // thesauri from description:
@@ -173,10 +176,15 @@ export class CodHandComponent implements OnInit {
     });
 
     effect(() => {
-      const hand = this.hand();
-      console.log('input hand', hand);
-      this.updateForm(hand);
+      this.updateForm(this.hand());
     });
+
+    // whenever descriptions change, update their keys list
+    this.descriptions.valueChanges
+      .pipe(debounceTime(200), takeUntilDestroyed())
+      .subscribe((value) => {
+        this.updateDscKeys(value);
+      });
   }
 
   private updateDscKeys(descriptions: CodHandDescription[]): void {
@@ -185,15 +193,6 @@ export class CodHandComponent implements OnInit {
       : [];
     keys.sort();
     this.dscKeys = keys;
-  }
-
-  public ngOnInit(): void {
-    // whenever descriptions change, update their keys list
-    this.descriptions.valueChanges
-      .pipe(debounceTime(200))
-      .subscribe((value) => {
-        this.updateDscKeys(value);
-      });
   }
 
   private updateForm(hand: CodHand | undefined): void {

@@ -2,29 +2,30 @@
   <div class="form-row">
     <!-- type (bound) -->
     @if (typeEntries()?.length) {
-    <mat-form-field>
-      <mat-label>type</mat-label>
-      <mat-select [formControl]="type">
-        @for (e of typeEntries(); track e.id) {
-        <mat-option [value]="e.id">{{ e.value }}</mat-option>
+      <mat-form-field>
+        <mat-label>type</mat-label>
+        <mat-select [formControl]="type">
+          @for (e of typeEntries(); track e.id) {
+            <mat-option [value]="e.id">{{ e.value }}</mat-option>
+          }
+        </mat-select>
+        @if ($any(type).errors?.required && (type.dirty || type.touched)) {
+          <mat-error>type required</mat-error>
         }
-      </mat-select>
-      @if ($any(type).errors?.required && (type.dirty || type.touched)) {
-      <mat-error>type required</mat-error>
-      }
-    </mat-form-field>
+      </mat-form-field>
     }
     <!-- type (free) -->
     @else {
-    <mat-form-field>
-      <mat-label>type</mat-label>
-      <input matInput [formControl]="type" />
-      @if ($any(type).errors?.required && (type.dirty || type.touched)) {
-      <mat-error>type required</mat-error>
-      } @if ($any(type).errors?.maxLength && (type.dirty || type.touched)) {
-      <mat-error>type too long</mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field>
+        <mat-label>type</mat-label>
+        <input matInput [formControl]="type" />
+        @if ($any(type).errors?.required && (type.dirty || type.touched)) {
+          <mat-error>type required</mat-error>
+        }
+        @if ($any(type).errors?.maxLength && (type.dirty || type.touched)) {
+          <mat-error>type too long</mat-error>
+        }
+      </mat-form-field>
     }
 
     <!-- range -->
@@ -38,24 +39,24 @@
 
   <!-- features -->
   @if (featFlags().length) {
-  <div>
-    <cadmus-ui-flag-set
-      [flags]="featFlags()"
-      [checkedIds]="features.value"
-      (checkedIdsChange)="onFeatCheckedIdsChange($event)"
-    />
-  </div>
+    <div>
+      <cadmus-ui-flag-set
+        [flags]="featFlags()"
+        [checkedIds]="features.value"
+        (checkedIdsChange)="onFeatCheckedIdsChange($event)"
+      />
+    </div>
   }
 
   <!-- languages -->
   @if (langFlags().length) {
-  <div>
-    <cadmus-ui-flag-set
-      [flags]="langFlags()"
-      [checkedIds]="languages.value"
-      (checkedIdsChange)="onLangCheckedIdsChange($event)"
-    />
-  </div>
+    <div>
+      <cadmus-ui-flag-set
+        [flags]="langFlags()"
+        [checkedIds]="languages.value"
+        (checkedIdsChange)="onLangCheckedIdsChange($event)"
+      />
+    </div>
   }
 
   <!-- incipit -->
@@ -63,12 +64,15 @@
     <mat-form-field class="long-text">
       <mat-label>incipit</mat-label>
       <input matInput [formControl]="incipit" />
-      @if ( $any(incipit).errors?.required && (incipit.dirty || incipit.touched)
+      @if (
+        $any(incipit).errors?.required && (incipit.dirty || incipit.touched)
       ) {
-      <mat-error>incipit required</mat-error>
-      } @if ( $any(incipit).errors?.maxLength && (incipit.dirty ||
-      incipit.touched) ) {
-      <mat-error>incipit too long</mat-error>
+        <mat-error>incipit required</mat-error>
+      }
+      @if (
+        $any(incipit).errors?.maxLength && (incipit.dirty || incipit.touched)
+      ) {
+        <mat-error>incipit too long</mat-error>
       }
     </mat-form-field>
   </div>
@@ -78,9 +82,10 @@
     <mat-form-field class="long-text">
       <mat-label>explicit</mat-label>
       <input matInput [formControl]="explicit" />
-      @if ( $any(explicit).errors?.maxLength && (explicit.dirty ||
-      explicit.touched) ) {
-      <mat-error>explicit too long</mat-error>
+      @if (
+        $any(explicit).errors?.maxLength && (explicit.dirty || explicit.touched)
+      ) {
+        <mat-error>explicit too long</mat-error>
       }
     </mat-form-field>
   </div>
@@ -91,7 +96,7 @@
       <mat-label>text</mat-label>
       <textarea matInput rows="3" [formControl]="text"></textarea>
       @if ($any(text).errors?.maxLength && (text.dirty || text.touched)) {
-      <mat-error>text too long</mat-error>
+        <mat-error>text too long</mat-error>
       }
     </mat-form-field>
   </div>
@@ -102,7 +107,7 @@
       <mat-label>note</mat-label>
       <textarea matInput rows="3" [formControl]="note"></textarea>
       @if ($any(note).errors?.maxLength && (note.dirty || note.touched)) {
-      <mat-error>note too long</mat-error>
+        <mat-error>note too long</mat-error>
       }
     </mat-form-field>
   </div>

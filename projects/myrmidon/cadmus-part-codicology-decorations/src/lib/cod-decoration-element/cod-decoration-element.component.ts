@@ -48,7 +48,10 @@ import { CodImage, CodImagesComponent } from '@myrmidon/cadmus-codicology-ui';
 
 import { CodDecorationElement } from '../cod-decorations-part';
 import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
-import { LookupDocReferencesComponent, LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
+import {
+  LookupDocReferencesComponent,
+  LookupProviderOptions,
+} from '@myrmidon/cadmus-refs-lookup';
 
 /**
  * List of hidden fields in decoration element component.

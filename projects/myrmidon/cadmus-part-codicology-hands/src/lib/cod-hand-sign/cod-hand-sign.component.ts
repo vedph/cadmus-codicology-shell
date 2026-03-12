@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, effect, input, model, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  input,
+  model,
+  output,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -78,7 +85,7 @@ export class CodHandSignComponent {
   constructor(
     formBuilder: FormBuilder,
     public lookupService: MufiRefLookupService,
-    private _mufiService: MufiService
+    private _mufiService: MufiService,
   ) {
     this.eid = formBuilder.control(null, Validators.maxLength(100));
     this.mufi = formBuilder.control(null);
@@ -88,7 +95,7 @@ export class CodHandSignComponent {
     ]);
     this.sampleRanges = formBuilder.control(
       [],
-      NgxToolsValidators.strictMinLengthValidator(1)
+      NgxToolsValidators.strictMinLengthValidator(1),
     );
     this.description = formBuilder.control(null, Validators.maxLength(1000));
     this.form = formBuilder.group({
@@ -100,9 +107,7 @@ export class CodHandSignComponent {
     });
 
     effect(() => {
-      const sign = this.sign();
-      console.log('input sign', sign);
-      this.updateForm(sign);
+      this.updateForm(this.sign());
     });
   }
 
@@ -117,7 +122,7 @@ export class CodHandSignComponent {
     this.sampleRanges.setValue(
       sign.sampleLocation
         ? [{ start: sign.sampleLocation, end: sign.sampleLocation }]
-        : []
+        : [],
     );
     this.description.setValue(sign.description || null);
 

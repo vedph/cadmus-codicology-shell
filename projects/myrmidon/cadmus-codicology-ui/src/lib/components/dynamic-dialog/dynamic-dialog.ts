@@ -13,7 +13,7 @@ import {
  * component that is not part of the standard dialog data.
  */
 export interface PayloadMatDialogConfig<T> extends MatDialogConfig {
-  payload?: T;
+  payload?: T;
 }
 
 /**
@@ -40,7 +40,7 @@ export interface PayloadMatDialogConfig<T> extends MatDialogConfig {
 export class DynamicDialog {
   constructor(
     public dialogRef: MatDialogRef<DynamicDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) {}
 
   onClose(): void {

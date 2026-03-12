@@ -186,7 +186,7 @@
   <div>
     <!-- states -->
     <cadmus-ui-flag-set
-      [flags]="stateFlags"
+      [flags]="stateFlags()"
       [checkedIds]="states.value"
       (checkedIdsChange)="onStateIdsChange($event!)"
     />

@@ -9,36 +9,36 @@
   <g>
     <!-- height -->
     @if (visMode() === 1 || visMode() === 3) {
-    <g>
-      @for (r of heightRects(); track r) {
-      <rect
-        [attr.x]="r.x"
-        [attr.y]="r.y"
-        [attr.width]="r.width"
-        [attr.height]="r.height"
-        [attr.fill]="r.fill"
-        [attr.title]="r.name"
-        stroke="#a0a0a0"
-      ></rect>
-      }
-    </g>
+      <g>
+        @for (r of heightRects(); track r) {
+          <rect
+            [attr.x]="r.x"
+            [attr.y]="r.y"
+            [attr.width]="r.width"
+            [attr.height]="r.height"
+            [attr.fill]="r.fill"
+            [attr.title]="r.name"
+            stroke="#a0a0a0"
+          ></rect>
+        }
+      </g>
     }
 
     <!-- width -->
     @if (visMode() >= 2) {
-    <g opacity="0.7">
-      @for (r of widthRects(); track r) {
-      <rect
-        [attr.x]="r.x"
-        [attr.y]="r.y"
-        [attr.width]="r.width"
-        [attr.height]="r.height"
-        [attr.fill]="r.fill"
-        [attr.title]="r.name"
-        stroke="#a0a0a0"
-      ></rect>
-      }
-    </g>
+      <g opacity="0.7">
+        @for (r of widthRects(); track r) {
+          <rect
+            [attr.x]="r.x"
+            [attr.y]="r.y"
+            [attr.width]="r.width"
+            [attr.height]="r.height"
+            [attr.fill]="r.fill"
+            [attr.title]="r.name"
+            stroke="#a0a0a0"
+          ></rect>
+        }
+      </g>
     }
   </g>
 </svg>
