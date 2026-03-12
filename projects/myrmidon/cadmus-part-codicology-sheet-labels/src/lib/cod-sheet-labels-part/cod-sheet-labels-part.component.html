@@ -594,7 +594,14 @@
               <code>:=</code> and a single value to assign to all the listed
               cells.
             </p>
-            <p></p>
+            <p>
+              In both cases you can add a <strong>step</strong> value to jump a
+              certain number of sheets or pages between each label. For
+              instance, <code>1r%3:2=1</code> adds labels to sheets 1r, 2v, 3r
+              with a step of 2 pages between each label; or for just labelling,
+              <code>1r-2v:=x</code> has step 1, but <code>1r-2v:2:=x</code> has
+              step 2.
+            </p>
           </div>
         </mat-tab>
       </mat-tab-group>
