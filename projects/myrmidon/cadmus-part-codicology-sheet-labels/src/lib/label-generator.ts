@@ -18,6 +18,7 @@ export interface CodLabelAction {
   qs?: number;
   page?: boolean;
   count: number;
+  step?: number;
   value?: string;
 }
 
@@ -39,6 +40,7 @@ export enum CodLabelActionType {
  */
 export interface CodLabelSetAction {
   pages: CodRowPage[];
+  step?: number;
   value?: string;
 }
 
@@ -51,25 +53,25 @@ export class LabelGenerator {
   // 2=r/v
   // 3=* (sheet) or % (page)
   // 4=count
-  // 5=value (if in "" this forces custom type; if qN/N is a quire;
+  // 5=step (optional, default 1)
+  // 6=value (if in "" this forces custom type; if qN/N is a quire;
   //          for quires we assume always r, never v).
-  // ^(?:(\(?)?(\/)?([0-9]+)([rv])?\)?[-\s*])+:=
   public static PATTERN: RegExp =
-    /^([0-9]+)([rv])?\s*([x*%])\s*([0-9]+)\s*=\s*([^\s]*)/;
+    /^([0-9]+)([rv])?\s*([x*%])\s*([0-9]+)\s*(?::([0-9]+))?\s*=\s*([^\s]*)/;
 
   // set-action:
   // any number of locations or location ranges (location-location)
-  // separated by space and followed by := (rather than just =)
+  // separated by space or hyphen, with optional :step, followed by :=
   public static SET_PATTERN: RegExp =
-    /^(?:(\(?)?(\/)?([0-9]+)([rv])?\)?[-\s*])+:=(.*)/;
+    /^(?:(\(?)?(\/)?([0-9]+)([rv])?\)?[-\s]*)+(?::([0-9]+))?:=(.*)/;
 
   // default or set action (for validation)
   public static ANY_PATTERN: RegExp =
-    /^(?:(?:(?:(\(?)?(\/)?([0-9]+)([rv])?\)?[-\s*]?)+:=(.*))|(?:([0-9]+)([rv])?\s*([x*%])\s*([0-9]+)\s*=\s*([^\s]*)))/;
+    /^(?:(?:(?:(\(?)?(\/)?([0-9]+)([rv])?\)?[-\s*]?)+(?::([0-9]+))?:=(.*))|(?:([0-9]+)([rv])?\s*([x*%])\s*([0-9]+)\s*(?::([0-9]+))?\s*=\s*([^\s]*)))/;
 
   private static parseSetActionEntry(
     m: RegExpExecArray,
-    baseIndex: number
+    baseIndex: number,
   ): CodRowPage | null {
     if (!m[3 + baseIndex]) {
       return null;
@@ -93,8 +95,18 @@ export class LabelGenerator {
    */
   public static parseSetAction(text: string): CodLabelSetAction | null {
     const i = text.indexOf(':=');
-    const tokens = text.substring(0, i).split(' ');
+    let locStr = text.substring(0, i);
     const value = text.substring(i + 2);
+
+    // extract optional step (:N) from end of location string
+    let step = 1;
+    const stepMatch = /:([0-9]+)$/.exec(locStr);
+    if (stepMatch) {
+      step = +stepMatch[1];
+      locStr = locStr.substring(0, locStr.length - stepMatch[0].length);
+    }
+
+    const tokens = locStr.split(' ');
     const pages: CodRowPage[] = [];
     // location (A) or location range (A-B):
     // A1/B5=(
@@ -139,6 +151,7 @@ export class LabelGenerator {
     return pages.length
       ? {
           pages: pages,
+          step: step,
           value: value,
         }
       : null;
@@ -150,7 +163,7 @@ export class LabelGenerator {
    * @returns The action or null if invalid.
    */
   public static parseAction(
-    text: string | null | undefined
+    text: string | null | undefined,
   ): CodLabelAction | CodLabelSetAction | null {
     if (!text) {
       return null;
@@ -173,7 +186,8 @@ export class LabelGenerator {
       v: m[2] === 'v',
       page: m[3] === '%',
       count: +m[4],
-      value: m[5] || '',
+      step: m[5] ? +m[5] : 1,
+      value: m[6] || '',
       type: CodLabelActionType.Custom,
     };
 
@@ -232,27 +246,33 @@ export class LabelGenerator {
     return action;
   }
 
-  private static getNextRoman(roman: string, lower: boolean): string {
-    let n = RomanNumber.fromRoman(roman.toUpperCase()) + 1;
+  private static getNextRoman(
+    roman: string,
+    lower: boolean,
+    step: number = 1,
+  ): string {
+    const n = RomanNumber.fromRoman(roman.toUpperCase()) + step;
     return lower
       ? RomanNumber.toRoman(n).toLowerCase()
       : RomanNumber.toRoman(n);
   }
 
-  private static getNextLatLetter(c: string, lower: boolean): string {
-    if (lower) {
-      return c === 'z' ? 'a' : String.fromCharCode(c.charCodeAt(0) + 1);
-    } else {
-      return c === 'Z' ? 'A' : String.fromCharCode(c.charCodeAt(0) + 1);
-    }
+  private static getNextLatLetter(
+    c: string,
+    lower: boolean,
+    step: number = 1,
+  ): string {
+    const base = lower ? 97 : 65; // 'a' or 'A'
+    return String.fromCharCode(base + ((c.charCodeAt(0) - base + step) % 26));
   }
 
-  private static getNextGrcLetter(c: string, lower: boolean): string {
-    if (lower) {
-      return c === 'ω' ? 'α' : String.fromCharCode(c.charCodeAt(0) + 1);
-    } else {
-      return c === 'Ω' ? 'Α' : String.fromCharCode(c.charCodeAt(0) + 1);
-    }
+  private static getNextGrcLetter(
+    c: string,
+    lower: boolean,
+    step: number = 1,
+  ): string {
+    const base = lower ? 0x03b1 : 0x0391; // α or Α (25-letter range to ω/Ω)
+    return String.fromCharCode(base + ((c.charCodeAt(0) - base + step) % 25));
   }
 
   private static generateQuireRows(action: CodLabelAction): CodLabelCell[] {
@@ -287,29 +307,30 @@ export class LabelGenerator {
 
   private static getNextValue(
     action: CodLabelAction,
-    value?: string
+    value?: string,
+    step: number = 1,
   ): string | undefined {
     switch (action.type) {
       case CodLabelActionType.Arabic:
-        value = (+value! + 1).toString();
+        value = (+value! + step).toString();
         break;
       case CodLabelActionType.UpperRoman:
-        value = this.getNextRoman(value!, false);
+        value = this.getNextRoman(value!, false, step);
         break;
       case CodLabelActionType.LowerRoman:
-        value = this.getNextRoman(value!, true);
+        value = this.getNextRoman(value!, true, step);
         break;
       case CodLabelActionType.LatLowerLetter:
-        value = this.getNextLatLetter(value!, true);
+        value = this.getNextLatLetter(value!, true, step);
         break;
       case CodLabelActionType.LatUpperLetter:
-        value = this.getNextLatLetter(value!, false);
+        value = this.getNextLatLetter(value!, false, step);
         break;
       case CodLabelActionType.GrcLowerLetter:
-        value = this.getNextGrcLetter(value!, true);
+        value = this.getNextGrcLetter(value!, true, step);
         break;
       case CodLabelActionType.GrcUpperLetter:
-        value = this.getNextGrcLetter(value!, false);
+        value = this.getNextGrcLetter(value!, false, step);
         break;
       default:
         // a custom value remains the same forever
@@ -326,7 +347,7 @@ export class LabelGenerator {
    */
   public static generate(
     columnId: string,
-    action: CodLabelAction
+    action: CodLabelAction,
   ): CodLabelCell[] {
     if (!action) {
       return [];
@@ -340,6 +361,7 @@ export class LabelGenerator {
     let n = action.n;
     let v = action.v;
     const count = action.page ? action.count : action.count * 2;
+    const step = action.step ?? 1;
     let value = action.value;
     for (let i = 0; i < count; i++) {
       cells.push({
@@ -356,7 +378,7 @@ export class LabelGenerator {
       }
       // calculate new value
       if (action.page || !v) {
-        value = this.getNextValue(action, value);
+        value = this.getNextValue(action, value, step);
       }
     }
     return cells;

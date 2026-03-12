@@ -6,7 +6,7 @@ import {
   LabelGenerator,
 } from './label-generator';
 
-describe.only('LabelGenerator', () => {
+describe('LabelGenerator', () => {
   // parser
   it('should parse null as null', () => {
     const action = LabelGenerator.parseAction(null);
@@ -455,6 +455,7 @@ describe.only('LabelGenerator', () => {
     expect(action).toBeTruthy();
     expect(action.pages.length).toBe(4);
     expect(action!.value).toBe('x');
+    expect(action!.step).toBe(1);
     // 1r
     expect(action.pages[0].type).toBe(CodRowType.Body);
     expect(action.pages[0].n).toBe(1);
@@ -471,5 +472,157 @@ describe.only('LabelGenerator', () => {
     expect(action.pages[3].type).toBe(CodRowType.Body);
     expect(action.pages[3].n).toBe(2);
     expect(action.pages[3].v).toBe(true);
+  });
+
+  // step in ADD action
+  it('should parse "1r%3:2=1" with step 2', () => {
+    const action = LabelGenerator.parseAction('1r%3:2=1') as CodLabelAction;
+    expect(action).toBeTruthy();
+    expect(action.n).toBe(1);
+    expect(action.v).toBe(false);
+    expect(action.page).toBe(true);
+    expect(action.count).toBe(3);
+    expect(action.step).toBe(2);
+    expect(action.value).toBe('1');
+    expect(action.type).toBe(CodLabelActionType.Arabic);
+  });
+
+  it('should parse "1rx3:2=10" with step 2', () => {
+    const action = LabelGenerator.parseAction('1rx3:2=10') as CodLabelAction;
+    expect(action).toBeTruthy();
+    expect(action.n).toBe(1);
+    expect(action.v).toBe(false);
+    expect(action.page).toBeFalsy();
+    expect(action.count).toBe(3);
+    expect(action.step).toBe(2);
+    expect(action.value).toBe('10');
+    expect(action.type).toBe(CodLabelActionType.Arabic);
+  });
+
+  it('should parse "1r%4:2=ii" with step 2', () => {
+    const action = LabelGenerator.parseAction('1r%4:2=ii') as CodLabelAction;
+    expect(action).toBeTruthy();
+    expect(action.step).toBe(2);
+    expect(action.value).toBe('ii');
+    expect(action.type).toBe(CodLabelActionType.LowerRoman);
+  });
+
+  it('should parse "1x3=10" with default step 1', () => {
+    const action = LabelGenerator.parseAction('1x3=10') as CodLabelAction;
+    expect(action).toBeTruthy();
+    expect(action.step).toBe(1);
+  });
+
+  // generator with step
+  it('should generate 3 pages from 1r%3:2=1 with step 2', () => {
+    const cells = LabelGenerator.generateFrom('n', '1r%3:2=1');
+    expect(cells.length).toBe(3);
+    expect(cells[0].rowId).toBe('1r');
+    expect(cells[0].value).toBe('1');
+    expect(cells[1].rowId).toBe('1v');
+    expect(cells[1].value).toBe('3');
+    expect(cells[2].rowId).toBe('2r');
+    expect(cells[2].value).toBe('5');
+  });
+
+  it('should generate 6 sheets from 1rx3:2=10 with step 2', () => {
+    const cells = LabelGenerator.generateFrom('n', '1rx3:2=10');
+    expect(cells.length).toBe(6);
+    // sheet 1: both sides labeled 10
+    expect(cells[0].rowId).toBe('1r');
+    expect(cells[0].value).toBe('10r');
+    expect(cells[1].rowId).toBe('1v');
+    expect(cells[1].value).toBe('10v');
+    // sheet 2: step 2 → 12
+    expect(cells[2].rowId).toBe('2r');
+    expect(cells[2].value).toBe('12r');
+    expect(cells[3].rowId).toBe('2v');
+    expect(cells[3].value).toBe('12v');
+    // sheet 3: step 2 → 14
+    expect(cells[4].rowId).toBe('3r');
+    expect(cells[4].value).toBe('14r');
+    expect(cells[5].rowId).toBe('3v');
+    expect(cells[5].value).toBe('14v');
+  });
+
+  it('should generate 4 pages from 1r%4:2=ii (lower roman, step 2)', () => {
+    const cells = LabelGenerator.generateFrom('n', '1r%4:2=ii');
+    expect(cells.length).toBe(4);
+    expect(cells[0].rowId).toBe('1r');
+    expect(cells[0].value).toBe('ii');
+    expect(cells[1].rowId).toBe('1v');
+    expect(cells[1].value).toBe('iv');
+    expect(cells[2].rowId).toBe('2r');
+    expect(cells[2].value).toBe('vi');
+    expect(cells[3].rowId).toBe('2v');
+    expect(cells[3].value).toBe('viii');
+  });
+
+  it('should generate 3 pages from 1r%3:3=a (lat lower letter, step 3)', () => {
+    const cells = LabelGenerator.generateFrom('n', '1r%3:3=a');
+    expect(cells.length).toBe(3);
+    expect(cells[0].value).toBe('a');
+    expect(cells[1].value).toBe('d');
+    expect(cells[2].value).toBe('g');
+  });
+
+  // step in SET action
+  it('should parse 1r-2v:2:=x with step 2', () => {
+    const action = LabelGenerator.parseSetAction(
+      '1r-2v:2:=x',
+    ) as CodLabelSetAction;
+    expect(action).toBeTruthy();
+    expect(action.pages.length).toBe(4);
+    expect(action.step).toBe(2);
+    expect(action.value).toBe('x');
+    expect(action.pages[0].n).toBe(1);
+    expect(action.pages[0].v).toBe(false);
+    expect(action.pages[1].n).toBe(1);
+    expect(action.pages[1].v).toBe(true);
+    expect(action.pages[2].n).toBe(2);
+    expect(action.pages[2].v).toBe(false);
+    expect(action.pages[3].n).toBe(2);
+    expect(action.pages[3].v).toBe(true);
+  });
+
+  it('should parse 1r:2:=x (single location, step 2)', () => {
+    const action = LabelGenerator.parseSetAction(
+      '1r:2:=x',
+    ) as CodLabelSetAction;
+    expect(action).toBeTruthy();
+    expect(action.pages.length).toBe(1);
+    expect(action.step).toBe(2);
+    expect(action.value).toBe('x');
+    expect(action.pages[0].n).toBe(1);
+    expect(action.pages[0].v).toBe(false);
+  });
+
+  it('should parse 1r 2r:3:=y (space-separated, step 3)', () => {
+    const action = LabelGenerator.parseSetAction(
+      '1r 2r:3:=y',
+    ) as CodLabelSetAction;
+    expect(action).toBeTruthy();
+    expect(action.pages.length).toBe(2);
+    expect(action.step).toBe(3);
+    expect(action.value).toBe('y');
+  });
+
+  // parseAction dispatches SET actions correctly (including single-location)
+  it('should dispatch 1r:=x as set action via parseAction', () => {
+    const action = LabelGenerator.parseAction('1r:=x') as CodLabelSetAction;
+    expect(action).toBeTruthy();
+    expect((action as CodLabelSetAction).pages).toBeTruthy();
+    expect((action as CodLabelSetAction).pages.length).toBe(1);
+    expect((action as CodLabelSetAction).value).toBe('x');
+  });
+
+  it('should dispatch 1r-2v:2:=x as set action via parseAction', () => {
+    const action = LabelGenerator.parseAction(
+      '1r-2v:2:=x',
+    ) as CodLabelSetAction;
+    expect(action).toBeTruthy();
+    expect((action as CodLabelSetAction).pages.length).toBe(4);
+    expect((action as CodLabelSetAction).step).toBe(2);
+    expect((action as CodLabelSetAction).value).toBe('x');
   });
 });
