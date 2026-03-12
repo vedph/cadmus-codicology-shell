@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { Subject, takeUntil } from 'rxjs';
@@ -11,17 +11,12 @@ import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 
 @Component({
   selector: 'cadmus-home',
-  imports: [
-    RouterModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule
-],
+  imports: [RouterModule, MatCardModule, MatButtonModule, MatIconModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  public logged = false;
+  public readonly logged = signal<boolean>(false);
   private destroy$ = new Subject<void>();
 
   constructor(private authService: AuthJwtService) {}
@@ -31,7 +26,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.authService.currentUser$
       .pipe(takeUntil(this.destroy$))
       .subscribe((user) => {
-        this.logged = user !== null;
+        this.logged.set(user !== null);
       });
   }
 

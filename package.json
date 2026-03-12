@@ -93,8 +93,7 @@
     "rxjs": "~7.8.0",
     "three.js": "^0.77.1",
     "ts-md5": "^2.0.1",
-    "tslib": "^2.3.0",
-    "zone.js": "~0.16.1"
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
     "@analogjs/vite-plugin-angular": "^2.3.1",

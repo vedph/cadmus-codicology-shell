@@ -1,5 +1,3 @@
-import 'zone.js';
-import 'zone.js/testing';
 import { getTestBed } from '@angular/core/testing';
 import {
   BrowserTestingModule,
@@ -10,5 +8,5 @@ import '@testing-library/jest-dom/vitest';
 // Initialize the Angular testing environment
 getTestBed().initTestEnvironment(
   BrowserTestingModule,
-  platformBrowserTesting(),
+  platformBrowserTesting()
 );

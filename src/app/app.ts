@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, signal } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { take } from 'rxjs/operators';
@@ -47,10 +47,12 @@ import { DC_SCHEME, OD_SCHEME } from './cit-schemes';
   styleUrl: './app.scss',
 })
 export class App implements OnInit {
-  public user?: User;
-  public logged?: boolean;
-  public itemBrowsers?: ThesaurusEntry[];
-  public version?: string;
+  public readonly user = signal<User | undefined>(undefined);
+  public readonly logged = signal<boolean>(false);
+  public readonly itemBrowsers = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
+  public readonly version = signal<string>('');
   public snavToggle: FormControl<boolean>;
 
   constructor(
@@ -61,9 +63,9 @@ export class App implements OnInit {
     private _router: Router,
     storage: RamStorageService, // for citations
     formBuilder: FormBuilder,
-    env: EnvService
+    env: EnvService,
   ) {
-    this.version = env.get('version');
+    this.version.set(env.get('version') || '');
     this.snavToggle = formBuilder.control(false, { nonNullable: true });
     this.configureCitationService(storage);
   }
@@ -95,12 +97,12 @@ export class App implements OnInit {
   }
 
   ngOnInit(): void {
-    this.user = this._authService.currentUserValue || undefined;
-    this.logged = this.user !== null;
+    this.user.set(this._authService.currentUserValue || undefined);
+    this.logged.set(this.user() !== undefined);
 
     this._authService.currentUser$.subscribe((user: User | null) => {
-      this.logged = this._authService.isAuthenticated(true);
-      this.user = user || undefined;
+      this.logged.set(this._authService.isAuthenticated(true));
+      this.user.set(user || undefined);
       // load the general app state just once
       if (user) {
         this._repository.load();
@@ -109,8 +111,8 @@ export class App implements OnInit {
 
     this._repository.itemBrowserThesaurus$.subscribe(
       (thesaurus: Thesaurus | undefined) => {
-        this.itemBrowsers = thesaurus ? thesaurus.entries : undefined;
-      }
+        this.itemBrowsers.set(thesaurus ? thesaurus.entries : undefined);
+      },
     );
   }
 
@@ -119,7 +121,7 @@ export class App implements OnInit {
   }
 
   public logout(): void {
-    if (!this.logged) {
+    if (!this.logged()) {
       return;
     }
     this._authService

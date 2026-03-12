@@ -1,9 +1,25 @@
-import { render } from '@testing-library/angular';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { ResetPasswordComponent } from './reset-password.component';
 
 describe('ResetPasswordComponent', () => {
-  it('should create', async () => {
-    const { fixture } = await render(ResetPasswordComponent);
-    expect(fixture.componentInstance).toBeTruthy();
+  let component: ResetPasswordComponent;
+  let fixture: ComponentFixture<ResetPasswordComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+    imports: [ResetPasswordComponent]
+})
+    .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ResetPasswordComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 });

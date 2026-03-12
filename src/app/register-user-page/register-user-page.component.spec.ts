@@ -1,9 +1,25 @@
-import { render } from '@testing-library/angular';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { RegisterUserPageComponent } from './register-user-page.component';
 
 describe('RegisterUserPageComponent', () => {
-  it('should create', async () => {
-    const { fixture } = await render(RegisterUserPageComponent);
-    expect(fixture.componentInstance).toBeTruthy();
+  let component: RegisterUserPageComponent;
+  let fixture: ComponentFixture<RegisterUserPageComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+    imports: [RegisterUserPageComponent]
+})
+    .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(RegisterUserPageComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 });
