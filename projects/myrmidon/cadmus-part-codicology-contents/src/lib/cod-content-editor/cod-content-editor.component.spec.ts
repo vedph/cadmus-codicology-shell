@@ -1,25 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { render } from '@testing-library/angular';
 import { CodContentEditorComponent } from './cod-content-editor.component';
 
 describe('CodContentEditorComponent', () => {
-  let component: CodContentEditorComponent;
-  let fixture: ComponentFixture<CodContentEditorComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-    imports: [CodContentEditorComponent]
-})
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(CodContentEditorComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create', async () => {
+    const { fixture } = await render(CodContentEditorComponent);
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

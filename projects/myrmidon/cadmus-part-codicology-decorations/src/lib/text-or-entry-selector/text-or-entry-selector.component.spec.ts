@@ -1,25 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { render } from '@testing-library/angular';
 import { TextOrEntrySelectorComponent } from './text-or-entry-selector.component';
 
 describe('TextOrEntrySelectorComponent', () => {
-  let component: TextOrEntrySelectorComponent;
-  let fixture: ComponentFixture<TextOrEntrySelectorComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-    imports: [TextOrEntrySelectorComponent]
-})
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TextOrEntrySelectorComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create', async () => {
+    const { fixture } = await render(TextOrEntrySelectorComponent);
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

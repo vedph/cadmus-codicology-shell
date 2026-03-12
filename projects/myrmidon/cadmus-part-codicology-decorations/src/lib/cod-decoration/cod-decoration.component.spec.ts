@@ -1,25 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { render } from '@testing-library/angular';
 import { CodDecorationComponent } from './cod-decoration.component';
 
 describe('CodDecorationComponent', () => {
-  let component: CodDecorationComponent;
-  let fixture: ComponentFixture<CodDecorationComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-    imports: [CodDecorationComponent]
-})
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(CodDecorationComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create', async () => {
+    const { fixture } = await render(CodDecorationComponent);
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

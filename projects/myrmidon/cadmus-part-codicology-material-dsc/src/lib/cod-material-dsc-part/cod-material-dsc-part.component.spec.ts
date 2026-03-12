@@ -1,25 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { render } from '@testing-library/angular';
 import { CodMaterialDscPartComponent } from './cod-material-dsc-part.component';
 
 describe('CodMaterialDscPartComponent', () => {
-  let component: CodMaterialDscPartComponent;
-  let fixture: ComponentFixture<CodMaterialDscPartComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-    imports: [CodMaterialDscPartComponent]
-})
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(CodMaterialDscPartComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create', async () => {
+    const { fixture } = await render(CodMaterialDscPartComponent);
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

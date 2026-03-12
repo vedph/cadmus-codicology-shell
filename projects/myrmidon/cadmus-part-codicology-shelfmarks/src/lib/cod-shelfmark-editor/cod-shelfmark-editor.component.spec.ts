@@ -1,25 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { render } from '@testing-library/angular';
 import { CodShelfmarkEditorComponent } from './cod-shelfmark-editor.component';
 
 describe('CodShelfmarkEditorComponent', () => {
-  let component: CodShelfmarkEditorComponent;
-  let fixture: ComponentFixture<CodShelfmarkEditorComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-    imports: [CodShelfmarkEditorComponent]
-})
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(CodShelfmarkEditorComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create', async () => {
+    const { fixture } = await render(CodShelfmarkEditorComponent);
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

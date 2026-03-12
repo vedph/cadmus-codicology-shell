@@ -1,25 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { render } from '@testing-library/angular';
 import { CodEditsPartComponent } from './cod-edits-part.component';
 
 describe('CodEditsPartComponent', () => {
-  let component: CodEditsPartComponent;
-  let fixture: ComponentFixture<CodEditsPartComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-    imports: [CodEditsPartComponent]
-})
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(CodEditsPartComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create', async () => {
+    const { fixture } = await render(CodEditsPartComponent);
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

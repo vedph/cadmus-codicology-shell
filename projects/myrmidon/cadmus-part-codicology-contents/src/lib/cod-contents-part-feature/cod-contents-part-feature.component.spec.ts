@@ -1,25 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { render } from '@testing-library/angular';
 import { CodContentsPartFeatureComponent } from './cod-contents-part-feature.component';
 
 describe('CodContentsPartFeatureComponent', () => {
-  let component: CodContentsPartFeatureComponent;
-  let fixture: ComponentFixture<CodContentsPartFeatureComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-    imports: [CodContentsPartFeatureComponent]
-})
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(CodContentsPartFeatureComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create', async () => {
+    const { fixture } = await render(CodContentsPartFeatureComponent);
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

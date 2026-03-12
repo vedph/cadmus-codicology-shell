@@ -1,25 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { render } from '@testing-library/angular';
 import { CodContentAnnotationComponent } from './cod-content-annotation.component';
 
 describe('CodContentAnnotationComponent', () => {
-  let component: CodContentAnnotationComponent;
-  let fixture: ComponentFixture<CodContentAnnotationComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-    imports: [CodContentAnnotationComponent]
-})
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(CodContentAnnotationComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should create', async () => {
+    const { fixture } = await render(CodContentAnnotationComponent);
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });
