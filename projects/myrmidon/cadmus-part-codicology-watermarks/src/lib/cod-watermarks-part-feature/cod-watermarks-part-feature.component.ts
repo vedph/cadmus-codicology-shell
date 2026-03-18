@@ -4,7 +4,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { EditPartFeatureBase, PartEditorService } from '@myrmidon/cadmus-state';
 import { ItemService, ThesaurusService } from '@myrmidon/cadmus-api';
-import { CurrentItemBarComponent } from '@myrmidon/cadmus-ui-pg';
+import { CurrentItemBarComponent } from '@myrmidon/cadmus-item-editor';
+
 import { CodWatermarksPartComponent } from '../cod-watermarks-part/cod-watermarks-part.component';
 
 @Component({

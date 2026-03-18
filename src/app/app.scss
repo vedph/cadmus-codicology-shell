@@ -1,6 +1,5 @@
 footer {
-  background-color: #f0f0f0;
-  color: #808080;
+  color: var(--mat-sys-on-surface-variant);
   padding: 4px;
   text-align: center;
 }
@@ -18,14 +17,7 @@ mat-icon.small-icon {
   flex: 1 1 auto;
 }
 fieldset {
-  border: 1px solid silver;
+  border: 1px solid var(--mat-sys-on-surface-variant);
   border-radius: 6px;
   padding: 6px 12px;
-}
-
-mat-toolbar {
-  background-color: #d4c4a8;
-}
-mat-toolbar mat-icon {
-  color: white;
 }

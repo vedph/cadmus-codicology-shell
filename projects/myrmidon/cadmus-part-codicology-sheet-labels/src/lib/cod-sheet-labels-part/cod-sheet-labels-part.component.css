@@ -1,5 +1,5 @@
 fieldset {
-  border: 1px solid silver;
+  border: 1px solid var(--mat-sys-on-surface-variant);
   border-radius: 6px;
   padding: 6px 12px;
 }
@@ -13,7 +13,7 @@ fieldset {
   flex: 0 0 auto;
 }
 .def-pane {
-  border: 1px solid silver;
+  border: 1px solid var(--mat-sys-on-surface-variant);
   border-radius: 6px;
   margin: 8px 0;
 }
@@ -32,25 +32,31 @@ table {
 }
 th {
   font-weight: normal;
-  color: silver;
+  color: var(--mat-sys-on-surface-variant);
 }
 
-/* https://stackoverflow.com/questions/47723996/table-with-fixed-thead-and-scrollable-tbody */
-table.labels {
+table {
   width: 100%;
+  border-collapse: collapse;
 }
-table.labels th {
-  background-color: #c0c0c0;
-  color: white;
+tbody tr:nth-child(odd) {
+  background-color: var(--mat-sys-surface-container);
 }
-table.labels th.selected {
-  background-color: #f0f0c0;
-  color: black;
+th {
+  text-align: left;
+  font-weight: normal;
+  color: var(--mat-sys-on-surface-variant);
 }
-table.labels table,
-table.labels th,
-table.labels td {
-  border: 1px solid silver;
+tbody tr:hover {
+  background-color: var(--mat-sys-surface-container-high);
+}
+td.fit-width {
+  width: 1px;
+  white-space: nowrap;
+}
+tbody tr.selected {
+  background-color: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
 }
 #help {
   margin-top: 8px;
@@ -59,7 +65,6 @@ table.labels td {
 }
 #help code {
   font-family: "Courier New", Courier, monospace;
-  color: #93000a;
 }
 
 div#bar {

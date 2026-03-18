@@ -3,19 +3,23 @@ table {
   border-collapse: collapse;
 }
 tbody tr:nth-child(odd) {
-  background-color: #e2e2e2;
+  background-color: var(--mat-sys-surface-container);
 }
 th {
   text-align: left;
   font-weight: normal;
-  color: silver;
+  color: var(--mat-sys-on-surface-variant);
+}
+tbody tr:hover {
+  background-color: var(--mat-sys-surface-container-high);
 }
 td.fit-width {
   width: 1px;
   white-space: nowrap;
 }
-tr.selected {
-  background-color: #d0d0d0 !important;
+tbody tr.selected {
+  background-color: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
 }
 .long-text {
   width: 90%;
@@ -23,19 +27,18 @@ tr.selected {
 }
 h3 {
   margin-top: 12px;
-  background-color: #5db2fd;
+  background-color: var(--mat-sys-primary);
   border-radius: 6px;
   padding: 0 6px;
-  color: white;
 }
 fieldset {
   margin: 8px 0;
-  border: 1px solid silver;
+  border: 1px solid var(--mat-sys-on-surface-variant);
   border-radius: 6px;
   padding: 6px 12px;
 }
 legend {
-  color: silver;
+  color: var(--mat-sys-on-surface-variant);
 }
 .toolbar-row {
   display: flex;

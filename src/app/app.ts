@@ -12,6 +12,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { EnvService, RamStorageService } from '@myrmidon/ngx-tools';
+import { ThemeToggleComponent } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService, GravatarPipe, User } from '@myrmidon/auth-jwt-login';
 
 import { Thesaurus, ThesaurusEntry } from '@myrmidon/cadmus-core';
@@ -42,6 +43,7 @@ import { DC_SCHEME, OD_SCHEME } from './cit-schemes';
     MatTooltipModule,
     GravatarPipe,
     CodLocationConverterComponent,
+    ThemeToggleComponent
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',

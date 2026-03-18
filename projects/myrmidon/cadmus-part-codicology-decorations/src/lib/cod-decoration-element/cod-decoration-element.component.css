@@ -4,18 +4,17 @@
 }
 .type-head {
   font-size: 90%;
-  border: 1px solid silver;
+  border: 1px solid var(--mat-sys-on-surface-variant);
   border-radius: 6px;
   padding: 4px;
-  background-color: #fafafa;
   text-align: center;
 }
 legend {
-  color: silver;
+  color: var(--mat-sys-on-surface-variant);
 }
 fieldset {
   margin: 8px 0;
-  border: 1px solid silver;
+  border: 1px solid var(--mat-sys-on-surface-variant);
   border-radius: 6px;
   padding: 6px 12px;
 }

@@ -4,7 +4,9 @@
     @if (editMode() === "none") {
       <div class="form-row-center">
         <!-- cell value -->
-        <span>{{ cell()?.value }}</span>
+        <span [style.color]="color() | colorToContrast">{{
+          cell()?.value
+        }}</span>
         <!-- cell note -->
         @if (cell()?.note) {
           <span [matTooltip]="cell()!.note">

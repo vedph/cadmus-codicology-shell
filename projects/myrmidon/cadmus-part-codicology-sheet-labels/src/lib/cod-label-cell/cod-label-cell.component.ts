@@ -27,6 +27,7 @@ import { MatInput } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
 
 import { Flag, FlagSetBadgeComponent } from '@myrmidon/cadmus-ui-flag-set';
+import { ColorToContrastPipe } from '@myrmidon/ngx-tools';
 
 import { CodLabelCell } from '../label-generator';
 import { CellFeaturesComponent } from '../cell-features/cell-features.component';
@@ -46,6 +47,7 @@ import { CellFeaturesComponent } from '../cell-features/cell-features.component'
     MatInput,
     MatError,
     FlagSetBadgeComponent,
+    ColorToContrastPipe
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -14,7 +14,7 @@
 fieldset {
   max-width: 900px;
   margin-bottom: 6px;
-  border: 1px solid silver;
+  border: 1px solid var(--mat-sys-on-surface-variant);
   padding: 8px;
   border-radius: 6px;
 }
