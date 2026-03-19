@@ -609,11 +609,8 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
       if (!action) {
         return;
       }
-      this._table.setPageValue(
-        this._table.getColumnIndex(this.opColumn.value!),
-        action.pages,
-        action.value,
-      );
+      const cells = LabelGenerator.generateSet(this.opColumn.value!, action);
+      this._table.setCells(cells);
     } else {
       const cells = LabelGenerator.generateFrom(
         this.opColumn.value!,

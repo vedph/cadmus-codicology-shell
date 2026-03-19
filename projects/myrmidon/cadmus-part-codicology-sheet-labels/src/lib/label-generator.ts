@@ -364,11 +364,17 @@ export class LabelGenerator {
     const step = action.step ?? 1;
     let value = action.value;
     for (let i = 0; i < count; i++) {
-      cells.push({
-        rowId: n.toString() + (v ? 'v' : 'r'),
-        id: columnId,
-        value: value + (action.page ? '' : v ? 'v' : 'r'),
-      });
+      // step controls which rows are skipped, not how much the value jumps.
+      // For page mode, position is i; for sheet mode, both r and v of the
+      // same sheet share the same position (Math.floor(i / 2)).
+      const position = action.page ? i : Math.floor(i / 2);
+      if (position % step === 0) {
+        cells.push({
+          rowId: n.toString() + (v ? 'v' : 'r'),
+          id: columnId,
+          value: value + (action.page ? '' : v ? 'v' : 'r'),
+        });
+      }
       // calculate next row ID
       if (v) {
         n++;
@@ -376,9 +382,9 @@ export class LabelGenerator {
       } else {
         v = true;
       }
-      // calculate new value
+      // value always advances by 1, even for skipped rows
       if (action.page || !v) {
-        value = this.getNextValue(action, value, step);
+        value = this.getNextValue(action, value, 1);
       }
     }
     return cells;
@@ -393,5 +399,51 @@ export class LabelGenerator {
   public static generateFrom(columnId: string, text: string): CodLabelCell[] {
     const action = this.parseAction(text) as CodLabelAction;
     return action ? this.generate(columnId, action) : [];
+  }
+
+  private static pageToRowId(page: CodRowPage): string {
+    const rv = page.v ? 'v' : 'r';
+    switch (page.type) {
+      case CodRowType.EndleafFront:
+        return `(${page.n}${rv})`;
+      case CodRowType.EndleafBack:
+        return `(/${page.n}${rv})`;
+      default:
+        return `${page.n}${rv}`;
+    }
+  }
+
+  /**
+   * Generate label cells from a set action, applying step-based skipping
+   * and auto-incrementing the starting value (by 1 for every page, including
+   * skipped ones, so skipped pages consume a counter value without a label).
+   * @param columnId The column ID.
+   * @param action The set action.
+   * @returns Generated cells (only for non-skipped pages).
+   */
+  public static generateSet(
+    columnId: string,
+    action: CodLabelSetAction,
+  ): CodLabelCell[] {
+    if (!action.pages.length) {
+      return [];
+    }
+    const step = action.step ?? 1;
+    // detect value type by parsing via a dummy add-action formula
+    const tempAction = this.parseAction(`1x1=${action.value ?? ''}`) as CodLabelAction;
+    const cells: CodLabelCell[] = [];
+    let value = action.value ?? '';
+    for (let i = 0; i < action.pages.length; i++) {
+      if (i % step === 0) {
+        cells.push({
+          rowId: this.pageToRowId(action.pages[i]),
+          id: columnId,
+          value: value,
+        });
+      }
+      // always advance value by 1, even for skipped pages
+      value = this.getNextValue(tempAction, value, 1) ?? value;
+    }
+    return cells;
   }
 }

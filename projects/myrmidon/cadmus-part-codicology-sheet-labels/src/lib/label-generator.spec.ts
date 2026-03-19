@@ -514,55 +514,58 @@ describe('LabelGenerator', () => {
   });
 
   // generator with step
-  it('should generate 3 pages from 1r%3:2=1 with step 2', () => {
+  // Step controls WHICH rows are skipped, not how much the value jumps.
+  // The value always advances by 1 for every row (including skipped ones),
+  // so skipped rows "consume" numbers without producing a label.
+
+  it('should generate 2 labeled pages from 1r%3:2=1 with step 2', () => {
+    // 3 pages total: 1r(pos 0, labeled), 1v(pos 1, skipped), 2r(pos 2, labeled).
+    // Value advances by 1 for every page, so 1v would be 2 but is skipped → 2r=3.
     const cells = LabelGenerator.generateFrom('n', '1r%3:2=1');
-    expect(cells.length).toBe(3);
+    expect(cells.length).toBe(2);
     expect(cells[0].rowId).toBe('1r');
     expect(cells[0].value).toBe('1');
-    expect(cells[1].rowId).toBe('1v');
+    expect(cells[1].rowId).toBe('2r');
     expect(cells[1].value).toBe('3');
-    expect(cells[2].rowId).toBe('2r');
-    expect(cells[2].value).toBe('5');
   });
 
-  it('should generate 6 sheets from 1rx3:2=10 with step 2', () => {
+  it('should generate 4 labeled pages from 1rx3:2=10 with step 2', () => {
+    // 3 sheets (6 pages) total. Step applies per-sheet:
+    // sheet 0 (1r,1v): labeled as 10; sheet 1 (2r,2v): skipped (value 11 consumed);
+    // sheet 2 (3r,3v): labeled as 12.
     const cells = LabelGenerator.generateFrom('n', '1rx3:2=10');
-    expect(cells.length).toBe(6);
-    // sheet 1: both sides labeled 10
+    expect(cells.length).toBe(4);
     expect(cells[0].rowId).toBe('1r');
     expect(cells[0].value).toBe('10r');
     expect(cells[1].rowId).toBe('1v');
     expect(cells[1].value).toBe('10v');
-    // sheet 2: step 2 → 12
-    expect(cells[2].rowId).toBe('2r');
+    expect(cells[2].rowId).toBe('3r');
     expect(cells[2].value).toBe('12r');
-    expect(cells[3].rowId).toBe('2v');
+    expect(cells[3].rowId).toBe('3v');
     expect(cells[3].value).toBe('12v');
-    // sheet 3: step 2 → 14
-    expect(cells[4].rowId).toBe('3r');
-    expect(cells[4].value).toBe('14r');
-    expect(cells[5].rowId).toBe('3v');
-    expect(cells[5].value).toBe('14v');
   });
 
-  it('should generate 4 pages from 1r%4:2=ii (lower roman, step 2)', () => {
+  it('should generate 2 labeled pages from 1r%4:2=ii (lower roman, step 2)', () => {
+    // 4 pages: 1r(pos 0, labeled=ii), 1v(pos 1, skipped=iii consumed),
+    //          2r(pos 2, labeled=iv), 2v(pos 3, skipped).
     const cells = LabelGenerator.generateFrom('n', '1r%4:2=ii');
-    expect(cells.length).toBe(4);
+    expect(cells.length).toBe(2);
     expect(cells[0].rowId).toBe('1r');
     expect(cells[0].value).toBe('ii');
-    expect(cells[1].rowId).toBe('1v');
+    expect(cells[1].rowId).toBe('2r');
     expect(cells[1].value).toBe('iv');
-    expect(cells[2].rowId).toBe('2r');
-    expect(cells[2].value).toBe('vi');
-    expect(cells[3].rowId).toBe('2v');
-    expect(cells[3].value).toBe('viii');
   });
 
-  it('should generate 3 pages from 1r%3:3=a (lat lower letter, step 3)', () => {
-    const cells = LabelGenerator.generateFrom('n', '1r%3:3=a');
+  it('should generate 3 labeled pages from 1r%7:3=a (lat lower letter, step 3)', () => {
+    // 7 pages: labeled at positions 0(1r=a), 3(2v=d), 6(4r=g).
+    // Positions 1,2,4,5 are skipped but each consumes one letter.
+    const cells = LabelGenerator.generateFrom('n', '1r%7:3=a');
     expect(cells.length).toBe(3);
+    expect(cells[0].rowId).toBe('1r');
     expect(cells[0].value).toBe('a');
+    expect(cells[1].rowId).toBe('2v');
     expect(cells[1].value).toBe('d');
+    expect(cells[2].rowId).toBe('4r');
     expect(cells[2].value).toBe('g');
   });
 
@@ -605,6 +608,51 @@ describe('LabelGenerator', () => {
     expect(action.pages.length).toBe(2);
     expect(action.step).toBe(3);
     expect(action.value).toBe('y');
+  });
+
+  // generateSet
+  it('should generateSet 4 cells from 1r-2v:=1 (step 1, Arabic)', () => {
+    // step=1: all rows labeled, value increments by 1 for each row
+    const action = LabelGenerator.parseSetAction('1r-2v:=1') as CodLabelSetAction;
+    const cells = LabelGenerator.generateSet('n', action);
+    expect(cells.length).toBe(4);
+    expect(cells[0]).toEqual({ rowId: '1r', id: 'n', value: '1' });
+    expect(cells[1]).toEqual({ rowId: '1v', id: 'n', value: '2' });
+    expect(cells[2]).toEqual({ rowId: '2r', id: 'n', value: '3' });
+    expect(cells[3]).toEqual({ rowId: '2v', id: 'n', value: '4' });
+  });
+
+  it('should generateSet 2 labeled cells from 1r-2v:2:=1 (step 2, Arabic)', () => {
+    // step=2: even positions (0, 2) labeled; odd positions skipped but consume counter
+    // 1r(pos 0)=1, 1v(pos 1) skipped (would be 2), 2r(pos 2)=3, 2v(pos 3) skipped
+    const action = LabelGenerator.parseSetAction('1r-2v:2:=1') as CodLabelSetAction;
+    const cells = LabelGenerator.generateSet('n', action);
+    expect(cells.length).toBe(2);
+    expect(cells[0]).toEqual({ rowId: '1r', id: 'n', value: '1' });
+    expect(cells[1]).toEqual({ rowId: '2r', id: 'n', value: '3' });
+  });
+
+  it('should generateSet constant value for custom string', () => {
+    // custom (multi-char, non-roman) value stays the same for all rows
+    const action = LabelGenerator.parseSetAction('1r-2v:=custom') as CodLabelSetAction;
+    const cells = LabelGenerator.generateSet('n', action);
+    expect(cells.length).toBe(4);
+    expect(cells[0].value).toBe('custom');
+    expect(cells[1].value).toBe('custom');
+    expect(cells[2].value).toBe('custom');
+    expect(cells[3].value).toBe('custom');
+  });
+
+  it('should generateSet lower roman with step 2', () => {
+    // 1r-4v: 8 pages, step=2 → 4 labeled at positions 0,2,4,6
+    // values: ii(0), skip iii, iv(2), skip v, vi(4), skip vii, viii(6)
+    const action = LabelGenerator.parseSetAction('1r-4v:2:=ii') as CodLabelSetAction;
+    const cells = LabelGenerator.generateSet('n', action);
+    expect(cells.length).toBe(4);
+    expect(cells[0]).toEqual({ rowId: '1r', id: 'n', value: 'ii' });
+    expect(cells[1]).toEqual({ rowId: '2r', id: 'n', value: 'iv' });
+    expect(cells[2]).toEqual({ rowId: '3r', id: 'n', value: 'vi' });
+    expect(cells[3]).toEqual({ rowId: '4r', id: 'n', value: 'viii' });
   });
 
   // parseAction dispatches SET actions correctly (including single-location)

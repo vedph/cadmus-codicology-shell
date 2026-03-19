@@ -675,6 +675,31 @@ export class CodSheetTable {
   }
 
   /**
+   * Set values of existing rows by matching their row IDs.
+   * Unlike addCells, this never creates new rows; rows that do not exist
+   * in the table are simply ignored.
+   * @param cells The cells to apply.
+   */
+  public setCells(cells: CodLabelCell[]): void {
+    if (!cells.length) {
+      return;
+    }
+    const columnId = cells[0].id;
+    const columnIndex = this._cols$.value.findIndex((id) => id === columnId);
+    if (columnIndex < 0) {
+      return;
+    }
+    const rows = deepCopy([...this._rows$.value]) as CodRowViewModel[];
+    for (const cell of cells) {
+      const row = rows.find((r) => r.id === cell.rowId);
+      if (row) {
+        row.columns[columnIndex].value = cell.value || undefined;
+      }
+    }
+    this._rows$.next(rows);
+  }
+
+  /**
    * Get the maximum quire number in the table.
    * @returns The maximum quire number.
    */
