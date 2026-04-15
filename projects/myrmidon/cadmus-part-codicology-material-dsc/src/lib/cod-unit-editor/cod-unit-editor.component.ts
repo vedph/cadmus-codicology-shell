@@ -23,7 +23,6 @@ import {
   CodLocationComponent,
 } from '@myrmidon/cadmus-cod-location';
 
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 import {
   AssertedChronotope,
   AssertedChronotopeSetComponent,
@@ -113,7 +112,6 @@ export class CodUnitEditorComponent {
       nonNullable: true,
     });
     this.chronotopes = formBuilder.control([], {
-      validators: NgxToolsValidators.strictMinLengthValidator(1),
       nonNullable: true,
     });
     this.note = formBuilder.control(null, Validators.maxLength(1000));

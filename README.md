@@ -162,6 +162,9 @@ graph LR;
 
 ## History
 
+- 2026-04-15:
+  - updated Angular and packages.
+  - made chronotopes optional in `CodUnitEditorComponent`.
 - 2026-03-19: fixes to label generator step.
 - 2026-03-18:
   - 🆕 migrated shell app to M3 themes and added dark theme support to components.

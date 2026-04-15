@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-material-dsc",
-  "version": "14.1.2",
+  "version": "14.1.3",
   "description": "Cadmus codicology - material description.",
   "keywords": [
     "Cadmus"
@@ -14,16 +14,16 @@
     "name": "Daniele Fusi"
   },
   "peerDependencies": {
-    "@angular/common": "^20.0.0 || ^21.0.0",
-    "@angular/core": "^20.0.0 || ^21.0.0",
-    "@angular/material": "^20.0.0 || ^21.0.0",
+    "@angular/common": "^21.2.8",
+    "@angular/core": "^21.2.8",
+    "@angular/material": "^21.2.6",
     "@myrmidon/ngx-tools": "^2.0.2",
     "@myrmidon/cadmus-cod-location": "^9.0.3",
     "@myrmidon/cadmus-refs-asserted-chronotope": "^11.0.1",
-    "@myrmidon/cadmus-refs-historical-date": "^9.1.3",
+    "@myrmidon/cadmus-refs-historical-date": "^9.1.4",
     "@myrmidon/cadmus-state": "^15.0.0",
     "@myrmidon/cadmus-ui": "^16.1.1",
-    "@myrmidon/cadmus-item-editor": "^16.1.3"
+    "@myrmidon/cadmus-item-editor": "^16.1.5"
   },
   "dependencies": {
     "tslib": "^2.3.0"
