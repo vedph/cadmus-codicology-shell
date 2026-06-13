@@ -188,7 +188,7 @@
                     </td>
                     <td>{{ entry.ranges | codLocationRange }}</td>
                     <td>{{ entry.chronotope?.place?.value }}</td>
-                    <td>{{ entry.chronotope?.date | historicalDate }}</td>
+                    <td>{{ $safeNavigationMigration(entry.chronotope?.date) | historicalDate }}</td>
                   </tr>
                 }
               </tbody>

@@ -10,6 +10,8 @@ import {
   output,
   ViewChild,
   signal,
+  Inject,
+  Optional,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -26,16 +28,27 @@ import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatSelect } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
 import { MatInput } from '@angular/material/input';
-import { NgeMonacoModule } from '@cisstech/nge/monaco';
 import { MatIconButton, MatButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
+
+import {
+  EditorInitializedEvent,
+  NgxMonacoEditorComponent,
+  StandaloneCodeEditor,
+  StandaloneEditorConstructionOptions,
+} from '@jean-merelis/ngx-monaco-editor';
 
 import { FlatLookupPipe } from '@myrmidon/ngx-tools';
 import {
   CodLocationRange,
   CodLocationComponent,
 } from '@myrmidon/cadmus-cod-location';
+import {
+  CadmusTextEdService,
+  CADMUS_TEXT_ED_BINDINGS_TOKEN,
+  CadmusTextEdBindings,
+} from '@myrmidon/cadmus-text-ed';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
@@ -100,7 +113,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     MatInput,
     CodLocationComponent,
     FlagSetComponent,
-    NgeMonacoModule,
+    NgxMonacoEditorComponent,
     MatIconButton,
     MatTooltip,
     MatIcon,
@@ -111,11 +124,15 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     AssertedCompositeIdsComponent,
   ],
 })
-export class CodDecorationElementComponent implements OnInit, OnDestroy {
+export class CodDecorationElementComponent implements OnInit {
   // monaco
-  private readonly _disposables: monaco.IDisposable[] = [];
-  private _editorModel?: monaco.editor.ITextModel;
-  private _editor?: monaco.editor.IStandaloneCodeEditor;
+  private _editor?: StandaloneCodeEditor;
+
+  public readonly editorOptions: StandaloneEditorConstructionOptions = {
+    minimap: { side: 'right' },
+    wordWrap: 'on',
+    automaticLayout: true,
+  };
 
   private _updatingForm?: boolean;
   private _adjustingUI?: boolean;
@@ -238,7 +255,13 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
   // and value=true.
   public readonly hidden = signal<HiddenDecElemFields | undefined>(undefined);
 
-  constructor(formBuilder: FormBuilder) {
+  constructor(
+    formBuilder: FormBuilder,
+    private _editService: CadmusTextEdService,
+    @Inject(CADMUS_TEXT_ED_BINDINGS_TOKEN)
+    @Optional()
+    private _editorBindings?: CadmusTextEdBindings,
+  ) {
     this.key = formBuilder.control(null, [
       Validators.pattern('^[-a-zA-Z0-9_]+$'),
       Validators.maxLength(50),
@@ -355,30 +378,38 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
       });
   }
 
-  public ngOnDestroy() {
-    this._disposables.forEach((d) => d.dispose());
+  private async applyEdit(selector: string) {
+    if (!this._editor) {
+      return;
+    }
+    const selection = this._editor.getSelection();
+    const text = selection
+      ? this._editor.getModel()!.getValueInRange(selection)
+      : '';
+
+    const result = await this._editService.edit({ selector, text });
+
+    this._editor.executeEdits('my-source', [
+      {
+        range: selection!,
+        text: result.text,
+        forceMoveMarkers: true,
+      },
+    ]);
   }
 
-  public onCreateEditor(editor: monaco.editor.IEditor) {
-    editor.updateOptions({
-      minimap: {
-        side: 'right',
-      },
-      wordWrap: 'on',
-      automaticLayout: true,
-    });
-    this._editorModel =
-      this._editorModel || monaco.editor.createModel('', 'markdown');
-    editor.setModel(this._editorModel);
-    this._editor = editor as monaco.editor.IStandaloneCodeEditor;
+  public onEditorInit(event: EditorInitializedEvent) {
+    this._editor = event.editor;
+    this._editor.focus();
 
-    this._disposables.push(
-      this._editorModel.onDidChangeContent((e) => {
-        this.description.setValue(this._editorModel!.getValue());
-        this.description.markAsDirty();
-        this.description.updateValueAndValidity();
-      }),
-    );
+    if (this._editorBindings) {
+      Object.keys(this._editorBindings).forEach((key) => {
+        const n = parseInt(key, 10);
+        this._editor!.addCommand(n, () => {
+          this.applyEdit(this._editorBindings![key as any]);
+        });
+      });
+    }
   }
 
   private adjustUI(skipFormValues = false): void {
@@ -492,7 +523,6 @@ export class CodDecorationElementComponent implements OnInit, OnDestroy {
     this.textRelation.setValue(element.textRelation || null);
     // description
     this.description.setValue(element.description || null);
-    this._editorModel?.setValue(element.description || '');
     this.images.setValue(element.images || []);
     this.note.setValue(element.note || null);
 

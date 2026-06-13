@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import {
   MatDialogRef,
   MAT_DIALOG_DATA,
@@ -35,6 +35,7 @@ export interface PayloadMatDialogConfig<T> extends MatDialogConfig {
 @Component({
   selector: 'dynamic-dialog',
   imports: [CommonModule, MatDialogModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dynamic-dialog.html',
 })
 export class DynamicDialog {

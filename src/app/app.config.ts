@@ -13,11 +13,14 @@ import { provideRouter, withViewTransitions } from '@angular/router';
 
 import { provideNativeDateAdapter } from '@angular/material/core';
 
-import { NgeMonacoModule } from '@cisstech/nge/monaco';
-import { NgeMarkdownModule } from '@cisstech/nge/markdown';
+import {
+  DefaultMonacoLoader,
+  NGX_MONACO_LOADER_PROVIDER,
+} from '@jean-merelis/ngx-monaco-editor';
 
 import { authJwtInterceptor } from '@myrmidon/auth-jwt-login';
 import {
+  CadmusTextEdService,
   CADMUS_TEXT_ED_BINDINGS_TOKEN,
   CADMUS_TEXT_ED_SERVICE_OPTIONS_TOKEN,
 } from '@myrmidon/cadmus-text-ed';
@@ -40,10 +43,12 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes, withViewTransitions()),
-    provideHttpClient(withFetch(), withInterceptors([authJwtInterceptor])),
+    provideHttpClient(withInterceptors([authJwtInterceptor])),
     provideNativeDateAdapter(),
-    importProvidersFrom(NgeMonacoModule.forRoot({})),
-    importProvidersFrom(NgeMarkdownModule),
+    {
+      provide: NGX_MONACO_LOADER_PROVIDER,
+      useFactory: () => new DefaultMonacoLoader({ paths: { vs: '/vs' } }),
+    },
     // parts and fragments type IDs to editor group keys mappings
     // https://github.com/nrwl/nx/issues/208#issuecomment-384102058
     // inject like: @Inject('partEditorKeys') partEditorKeys: PartEditorKeys
@@ -62,6 +67,8 @@ export const appConfig: ApplicationConfig = {
       provide: 'itemBrowserKeys',
       useValue: ITEM_BROWSER_KEYS,
     },
+    // text editing service
+    CadmusTextEdService,
     // text editing plugins
     MdBoldCtePlugin,
     MdItalicCtePlugin,

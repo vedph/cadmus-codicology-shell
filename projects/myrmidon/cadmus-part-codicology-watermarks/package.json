@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-watermarks",
-  "version": "14.1.2",
+  "version": "15.0.0",
   "description": "Cadmus codicology - watermarks.",
   "keywords": [
     "Cadmus"
@@ -14,17 +14,17 @@
     "name": "Daniele Fusi"
   },
   "peerDependencies": {
-    "@angular/common": "^20.0.0 || ^21.0.0",
-    "@angular/core": "^20.0.0 || ^21.0.0",
-    "@angular/material": "^20.0.0 || ^21.0.0",
-    "@myrmidon/cadmus-cod-location": "^9.0.3",
-    "@myrmidon/cadmus-mat-physical-size": "^9.0.12",
-    "@myrmidon/cadmus-refs-asserted-chronotope": "^11.0.1",
-    "@myrmidon/cadmus-refs-asserted-ids": "^10.0.17",
-    "@myrmidon/cadmus-refs-historical-date": "^9.1.3",
-    "@myrmidon/cadmus-state": "^15.0.0",
-    "@myrmidon/cadmus-ui": "^16.1.1",
-    "@myrmidon/cadmus-item-editor": "^16.1.3"
+    "@angular/common": "^22.0.1",
+    "@angular/core": "^22.0.1",
+    "@angular/material": "^22.0.1",
+    "@myrmidon/cadmus-cod-location": "^10.0.0",
+    "@myrmidon/cadmus-mat-physical-size": "^10.0.0",
+    "@myrmidon/cadmus-refs-asserted-chronotope": "^12.0.0",
+    "@myrmidon/cadmus-refs-asserted-ids": "^11.0.0",
+    "@myrmidon/cadmus-refs-historical-date": "^10.0.0",
+    "@myrmidon/cadmus-state": "^16.0.0",
+    "@myrmidon/cadmus-ui": "^17.0.0",
+    "@myrmidon/cadmus-item-editor": "^17.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"

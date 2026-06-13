@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { Subject, takeUntil } from 'rxjs';
@@ -13,6 +13,7 @@ import { AuthJwtService } from '@myrmidon/auth-jwt-login';
   selector: 'cadmus-home',
   imports: [RouterModule, MatCardModule, MatButtonModule, MatIconModule],
   templateUrl: './home.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit, OnDestroy {

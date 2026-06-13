@@ -89,7 +89,7 @@
         >
           <mat-expansion-panel-header>
             <mat-panel-title>
-              {{ editedLayout()?.sample | codLocation }}
+              {{ $safeNavigationMigration(editedLayout()?.sample) | codLocation }}
             </mat-panel-title>
           </mat-expansion-panel-header>
           <cadmus-cod-layout-editor

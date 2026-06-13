@@ -213,7 +213,7 @@
             [disabled]="!editedDefId()"
           >
             <mat-expansion-panel-header
-              [style.background]="editedDefId()?.charAt(0) | cellTypeColor"
+              [style.background]="$safeNavigationMigration(editedDefId()?.charAt(0)) | cellTypeColor"
               >column: {{ editedDefId() }}</mat-expansion-panel-header
             >
             <!-- Q -->

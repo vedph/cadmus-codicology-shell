@@ -125,7 +125,7 @@
         <!-- refSign -->
         <mat-form-field
           style="flex: 0 0 auto; width: 6em"
-          [hidden]="hidden()?.refSign"
+          [hidden]="$safeNavigationMigration(hidden()?.refSign)"
         >
           <mat-label>ref.sign</mat-label>
           <input matInput [formControl]="refSign" />
@@ -139,14 +139,14 @@
         <!-- lineHeight -->
         <mat-form-field
           style="flex: 0 0 auto; width: 5em"
-          [hidden]="hidden()?.lineHeight"
+          [hidden]="$safeNavigationMigration(hidden()?.lineHeight)"
         >
           <mat-label>ln.h</mat-label>
           <input matInput type="number" min="0" [formControl]="lineHeight" />
         </mat-form-field>
         <!-- textRelation -->
         <mat-form-field
-          [hidden]="hidden()?.textRelation"
+          [hidden]="$safeNavigationMigration(hidden()?.textRelation)"
           style="display: 1 0 auto"
         >
           <mat-label>text relation</mat-label>
@@ -172,7 +172,7 @@
       </div>
 
       <!-- subject -->
-      <div [hidden]="hidden()?.subject">
+      <div [hidden]="$safeNavigationMigration(hidden()?.subject)">
         <mat-form-field>
           <mat-label>subject</mat-label>
           <input matInput [formControl]="subject" />
@@ -268,11 +268,12 @@
 
     <!-- DESCRIPTION -->
     <mat-tab label="description">
-      <div>
-        <nge-monaco-editor
-          #dsceditor
-          style="--editor-height: 400px"
-          (ready)="onCreateEditor($event)"
+      <div id="editor">
+        <ngx-monaco-editor
+          [formControl]="description"
+          [language]="'markdown'"
+          [options]="editorOptions"
+          (editorInitialized)="onEditorInit($event)"
         />
         @if (
           $any(description).errors?.maxLength &&
@@ -281,7 +282,7 @@
           <mat-error>description too long</mat-error>
         }
       </div>
-      <div>
+      <div class="margin-top">
         <!-- images -->
         <cadmus-cod-images
           [typeEntries]="imgTypeEntries()"

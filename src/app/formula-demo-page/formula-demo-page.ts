@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { JsonPipe } from '@angular/common';
 
 import { MatCardModule } from '@angular/material/card';
@@ -12,6 +12,7 @@ import {
   selector: 'app-formula-demo-page',
   imports: [MatCardModule, CodLayoutFormulaComponent, JsonPipe],
   templateUrl: './formula-demo-page.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './formula-demo-page.scss',
 })
 export class FormulaDemoPageComponent {

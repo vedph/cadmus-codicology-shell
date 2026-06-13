@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, signal } from '@angular/core';
+import { Component, OnInit, Inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { take } from 'rxjs/operators';
@@ -46,6 +46,7 @@ import { DC_SCHEME, OD_SCHEME } from './cit-schemes';
     ThemeToggleComponent
   ],
   templateUrl: './app.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './app.scss',
 })
 export class App implements OnInit {
