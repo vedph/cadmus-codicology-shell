@@ -16,7 +16,7 @@
   "peerDependencies": {
     "@angular/common": "^22.0.1",
     "@angular/core": "^22.0.1",
-    "@cisstech/nge": "^18.3.0",
+    "@jean-merelis/ngx-monaco-editor": "^21.0.0",
     "@myrmidon/ngx-mat-tools": "^2.0.0",
     "@myrmidon/cod-layout-view": "^2.0.2",
     "@myrmidon/cadmus-refs-lookup": "^11.0.0",

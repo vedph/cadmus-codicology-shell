@@ -8,6 +8,7 @@ import {
   provideHttpClient,
   withFetch,
   withInterceptors,
+  withXhr,
 } from '@angular/common/http';
 import { provideRouter, withViewTransitions } from '@angular/router';
 
@@ -43,7 +44,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes, withViewTransitions()),
-    provideHttpClient(withInterceptors([authJwtInterceptor])),
+    provideHttpClient(withXhr(), withInterceptors([authJwtInterceptor])),
     provideNativeDateAdapter(),
     {
       provide: NGX_MONACO_LOADER_PROVIDER,
