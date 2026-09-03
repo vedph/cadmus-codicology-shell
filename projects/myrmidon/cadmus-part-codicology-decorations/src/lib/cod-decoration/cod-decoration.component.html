@@ -86,113 +86,119 @@
   </mat-expansion-panel>
 
   <!-- artists -->
-  <mat-expansion-panel class="panel">
-    <mat-expansion-panel-header>
-      <mat-panel-title
-        ><mat-icon style="margin-right: 8px; color: #ddcd41">palette</mat-icon>
-        artists</mat-panel-title
-      >
-    </mat-expansion-panel-header>
-    <div>
-      <button
-        type="button"
-        mat-flat-button
-        class="mat-primary"
-        (click)="addArtist()"
-      >
-        <mat-icon>add_circle</mat-icon> artist
-      </button>
-    </div>
-    @if (artists.value && artists.value.length) {
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>type</th>
-            <th>name</th>
-            <th>EID</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (
-            artist of artists.value;
-            track artist;
-            let i = $index;
-            let first = $first;
-            let last = $last
-          ) {
-            <tr [class.selected]="editedArtistIndex() === i">
-              <td class="fit-width">
-                <button
-                  type="button"
-                  mat-icon-button
-                  matTooltip="Edit this artist"
-                  (click)="editArtist(artist, i)"
-                >
-                  <mat-icon class="mat-primary">edit</mat-icon>
-                </button>
-                <button
-                  type="button"
-                  mat-icon-button
-                  matTooltip="Move this artist up"
-                  [disabled]="first"
-                  (click)="moveArtistUp(i)"
-                >
-                  <mat-icon>arrow_upward</mat-icon>
-                </button>
-                <button
-                  type="button"
-                  mat-icon-button
-                  matTooltip="Move this artist down"
-                  [disabled]="last"
-                  (click)="moveArtistDown(i)"
-                >
-                  <mat-icon>arrow_downward</mat-icon>
-                </button>
-                <button
-                  type="button"
-                  mat-icon-button
-                  matTooltip="Delete this artist"
-                  (click)="removeArtist(i)"
-                >
-                  <mat-icon class="mat-warn">remove_circle</mat-icon>
-                </button>
-              </td>
-              <td>
-                {{ artist.type | flatLookup: artTypeEntries : "id" : "value" }}
-              </td>
-              <td>{{ artist.name }}</td>
-              <td>{{ artist.eid }}</td>
+  @if (!hideArtists()) {
+    <mat-expansion-panel class="panel">
+      <mat-expansion-panel-header>
+        <mat-panel-title
+          ><mat-icon style="margin-right: 8px; color: #ddcd41"
+            >palette</mat-icon
+          >
+          artists</mat-panel-title
+        >
+      </mat-expansion-panel-header>
+      <div>
+        <button
+          type="button"
+          mat-flat-button
+          class="mat-primary"
+          (click)="addArtist()"
+        >
+          <mat-icon>add_circle</mat-icon> artist
+        </button>
+      </div>
+      @if (artists.value && artists.value.length) {
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>type</th>
+              <th>name</th>
+              <th>EID</th>
             </tr>
-          }
-        </tbody>
-      </table>
-    }
-    @if (editedArtist()) {
-      <mat-expansion-panel
-        [expanded]="editedArtist()"
-        [disabled]="!editedArtist()"
-      >
-        <mat-expansion-panel-header>
-          <mat-panel-title>artist {{ editedArtist()?.name }}</mat-panel-title>
-        </mat-expansion-panel-header>
-        <cadmus-cod-decoration-artist
-          [idScopeEntries]="idScopeEntries()"
-          [idTagEntries]="idTagEntries()"
-          [assTagEntries]="assTagEntries()"
-          [refTypeEntries]="refTypeEntries()"
-          [refTagEntries]="refTagEntries()"
-          [ctTagEntries]="ctTagEntries()"
-          [artTypeEntries]="artTypeEntries()"
-          [artStyleEntries]="artStyleEntries()"
-          [lookupProviderOptions]="lookupProviderOptions()"
-          [artist]="editedArtist()"
-          (artistChange)="onArtistSave($event!)"
-          (editorClose)="editArtist(null)"
-        />
-      </mat-expansion-panel>
-    }
-  </mat-expansion-panel>
+          </thead>
+          <tbody>
+            @for (
+              artist of artists.value;
+              track artist;
+              let i = $index;
+              let first = $first;
+              let last = $last
+            ) {
+              <tr [class.selected]="editedArtistIndex() === i">
+                <td class="fit-width">
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Edit this artist"
+                    (click)="editArtist(artist, i)"
+                  >
+                    <mat-icon class="mat-primary">edit</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Move this artist up"
+                    [disabled]="first"
+                    (click)="moveArtistUp(i)"
+                  >
+                    <mat-icon>arrow_upward</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Move this artist down"
+                    [disabled]="last"
+                    (click)="moveArtistDown(i)"
+                  >
+                    <mat-icon>arrow_downward</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="Delete this artist"
+                    (click)="removeArtist(i)"
+                  >
+                    <mat-icon class="mat-warn">remove_circle</mat-icon>
+                  </button>
+                </td>
+                <td>
+                  {{
+                    artist.type | flatLookup: artTypeEntries : "id" : "value"
+                  }}
+                </td>
+                <td>{{ artist.name }}</td>
+                <td>{{ artist.eid }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+      @if (editedArtist()) {
+        <mat-expansion-panel
+          [expanded]="editedArtist()"
+          [disabled]="!editedArtist()"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title>artist {{ editedArtist()?.name }}</mat-panel-title>
+          </mat-expansion-panel-header>
+          <cadmus-cod-decoration-artist
+            [idScopeEntries]="idScopeEntries()"
+            [idTagEntries]="idTagEntries()"
+            [assTagEntries]="assTagEntries()"
+            [refTypeEntries]="refTypeEntries()"
+            [refTagEntries]="refTagEntries()"
+            [ctTagEntries]="ctTagEntries()"
+            [artTypeEntries]="artTypeEntries()"
+            [artStyleEntries]="artStyleEntries()"
+            [lookupProviderOptions]="lookupProviderOptions()"
+            [artist]="editedArtist()"
+            (artistChange)="onArtistSave($event!)"
+            (editorClose)="editArtist(null)"
+          />
+        </mat-expansion-panel>
+      }
+    </mat-expansion-panel>
+  }
 
   <!-- elements -->
   <fieldset>

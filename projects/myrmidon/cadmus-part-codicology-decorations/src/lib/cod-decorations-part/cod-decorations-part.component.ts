@@ -1,8 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
+  inject,
   input,
   OnInit,
+  resource,
   signal,
 } from '@angular/core';
 import {
@@ -50,6 +53,7 @@ import {
   COD_DECORATIONS_PART_TYPEID,
 } from '../cod-decorations-part';
 import { CodDecorationComponent } from '../cod-decoration/cod-decoration.component';
+import { AppRepository } from '@myrmidon/cadmus-state';
 
 /**
  * CodDecorationsPart editor component.
@@ -92,6 +96,28 @@ export class CodDecorationsPartComponent
   extends ModelEditorComponentBase<CodDecorationsPart>
   implements OnInit
 {
+  // check resource for settings
+  private readonly _checkResource = resource({
+    params: () => ({}),
+    loader: () => {
+      if (!this._appRepository) {
+        return Promise.resolve(undefined);
+      }
+      return this._appRepository.getSettingFor<boolean>(
+        'hideArtists',
+        this.identity()?.roleId || undefined,
+      );
+    },
+  });
+
+  // hideArtists is got from the resource, if available, otherwise false
+  public readonly hideArtists = computed<boolean>(() => {
+    if (this._checkResource.hasValue()) {
+      return this._checkResource.value();
+    }
+    return false;
+  });
+
   public readonly editedIndex = signal<number>(-1);
   public readonly editedDecoration = signal<CodDecoration | undefined>(
     undefined,
@@ -190,6 +216,8 @@ export class CodDecorationsPartComponent
     private _dialogService: DialogService,
   ) {
     super(authService, formBuilder);
+    // read settings for artists
+
     // form
     this.decorations = formBuilder.control([], {
       validators: NgxToolsValidators.strictMinLengthValidator(1),

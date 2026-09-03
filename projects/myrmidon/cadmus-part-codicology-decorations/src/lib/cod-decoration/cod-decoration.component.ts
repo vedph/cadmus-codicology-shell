@@ -159,6 +159,8 @@ export class CodDecorationComponent {
   public readonly idTagEntries = input<ThesaurusEntry[]>();
   // external-id-scopes
   public readonly idScopeEntries = input<ThesaurusEntry[]>();
+  // hide artists UI
+  public readonly hideArtists = input<boolean>();
 
   public readonly lookupProviderOptions = input<
     LookupProviderOptions | undefined

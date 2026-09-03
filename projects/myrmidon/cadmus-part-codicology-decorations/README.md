@@ -4,6 +4,18 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 
 ## History
 
+- 2026-09-03: 🆕 added `hideArtists` setting to decorations part. Set it in backend profile settings e.g.:
+
+```json
+{
+  "settings": {
+    "it.vedph.codicology.decorations": {
+      "hideArtists": true
+    }
+  }
+}
+```
+
 - 2025-12-11: changed some labels in decoration elements.
 - 2025-10-15: artist name and type not required. This allows just using a link instead of embedding data at the decoration level for those projects using artist items or external artists.
 - 2025-07-15:
