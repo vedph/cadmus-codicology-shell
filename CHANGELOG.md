@@ -1,5 +1,6 @@
 # History
 
+- 2026-09-22: updated packages.
 - 2026-09-03: 🆕 added `hideArtists` setting to decorations part.
 - 2026-07-21: updated Angular and packages.
 - 2026-03-13: ⚠️ migrated to Angular 22 and new [Monaco wrapper](https://vedph.github.io/cadmus-doc/history/20260613-monaco.html).
