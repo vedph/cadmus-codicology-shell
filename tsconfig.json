@@ -24,6 +24,9 @@
       "@myrmidon/cadmus-part-codicology-layouts": [
         "./dist/myrmidon/cadmus-part-codicology-layouts"
       ],
+      "@myrmidon/cadmus-part-codicology-location-ranges": [
+        "./dist/myrmidon/cadmus-part-codicology-location-ranges"
+      ],
       "@myrmidon/cadmus-part-codicology-material-dsc": [
         "./dist/myrmidon/cadmus-part-codicology-material-dsc"
       ],
@@ -139,6 +142,12 @@
     },
     {
       "path": "./projects/myrmidon/cadmus-part-codicology-pg/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-location-ranges/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/myrmidon/cadmus-part-codicology-location-ranges/tsconfig.spec.json"
     }
   ]
 }

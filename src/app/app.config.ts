@@ -3,10 +3,8 @@ import {
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
 } from '@angular/core';
-import { importProvidersFrom } from '@angular/core';
 import {
   provideHttpClient,
-  withFetch,
   withInterceptors,
   withXhr,
 } from '@angular/common/http';

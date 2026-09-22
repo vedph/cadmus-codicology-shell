@@ -28,6 +28,10 @@ import {
   COD_LAYOUTS_PART_TYPEID,
 } from '@myrmidon/cadmus-part-codicology-layouts';
 import {
+  CodLocationRangesPartFeature,
+  COD_LOCATION_RANGES_PART_TYPEID,
+} from '@myrmidon/cadmus-part-codicology-location-ranges';
+import {
   CodMaterialDscPartFeatureComponent,
   COD_MATERIAL_DSC_PART_TYPEID,
 } from '@myrmidon/cadmus-part-codicology-material-dsc';
@@ -79,6 +83,12 @@ export const CADMUS_PART_CODICOLOGY_PG_ROUTES: Routes = [
     path: `${COD_LAYOUTS_PART_TYPEID}/:pid`,
     pathMatch: 'full',
     component: CodLayoutsPartFeatureComponent,
+    canDeactivate: [PendingChangesGuard],
+  },
+  {
+    path: `${COD_LOCATION_RANGES_PART_TYPEID}/:pid`,
+    pathMatch: 'full',
+    component: CodLocationRangesPartFeature,
     canDeactivate: [PendingChangesGuard],
   },
   {

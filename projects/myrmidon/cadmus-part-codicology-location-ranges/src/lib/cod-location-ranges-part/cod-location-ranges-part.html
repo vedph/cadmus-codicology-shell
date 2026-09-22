@@ -1,0 +1,36 @@
+<form [formGroup]="form" (submit)="save()">
+  <mat-card>
+    <mat-card-header>
+      <div mat-card-avatar>
+        <mat-icon>picture_in_picture</mat-icon>
+      </div>
+      <mat-card-title>
+        {{ (modelName() | titlecase) || "Codicological Location Ranges Part" }}
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- ranges -->
+      <div>
+        <cadmus-cod-location
+          [required]="true"
+          [location]="ranges.value"
+          (locationChange)="onLocationChange($event!)"
+        />
+      </div>
+      <!-- note -->
+      <div>
+        <mat-form-field class="long-text">
+          <mat-label>note</mat-label>
+          <textarea matInput [formControl]="note" rows="5"></textarea>
+        </mat-form-field>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <cadmus-close-save-buttons
+        [form]="form"
+        [noSave]="userLevel < 2"
+        (closeRequest)="close()"
+      />
+    </mat-card-actions>
+  </mat-card>
+</form>
