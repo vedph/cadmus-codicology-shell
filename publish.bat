@@ -40,6 +40,11 @@ call npm publish --access=public
 cd ..\..\..
 pause
 
+cd .\dist\myrmidon\cadmus-part-codicology-location-ranges
+call npm publish --access=public
+cd ..\..\..
+pause
+
 cd .\dist\myrmidon\cadmus-part-codicology-material-dsc
 call npm publish --access=public
 cd ..\..\..

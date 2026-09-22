@@ -1,9 +1,23 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-location-ranges",
   "version": "0.0.1",
+  "description": "Cadmus codicology location ranges part.",
+  "keywords": [
+    "Cadmus"
+  ],
+  "homepage": "https://github.com/vedph/cadmus-codicology-shell",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vedph/cadmus-codicology-shell"
+  },
+  "author": {
+    "name": "Daniele Fusi"
+  },
   "peerDependencies": {
     "@angular/common": "^22.0.0",
-    "@angular/core": "^22.0.0"
+    "@angular/core": "^22.0.0",
+    "@myrmidon/cadmus-cod-location": "^10.0.2",
+    "@myrmidon/ngx-mat-tools": "^2.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
