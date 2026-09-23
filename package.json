@@ -39,7 +39,7 @@
     "@myrmidon/auth-jwt-admin": "^10.0.0",
     "@myrmidon/auth-jwt-login": "^10.0.0",
     "@myrmidon/cadmus-api": "^15.0.2",
-    "@myrmidon/cadmus-cod-location": "^10.0.2",
+    "@myrmidon/cadmus-cod-location": "^10.0.3",
     "@myrmidon/cadmus-core": "^13.0.1",
     "@myrmidon/cadmus-flags-pg": "^16.0.1",
     "@myrmidon/cadmus-flags-ui": "^16.0.1",
@@ -68,7 +68,7 @@
     "@myrmidon/cadmus-refs-doc-references": "^11.0.2",
     "@myrmidon/cadmus-refs-external-ids": "^11.0.2",
     "@myrmidon/cadmus-refs-historical-date": "^10.0.2",
-    "@myrmidon/cadmus-refs-lookup": "^11.0.4",
+    "@myrmidon/cadmus-refs-lookup": "^11.0.6",
     "@myrmidon/cadmus-refs-mufi-lookup": "^3.0.2",
     "@myrmidon/cadmus-refs-proper-name": "^11.0.2",
     "@myrmidon/cadmus-state": "^16.0.1",
@@ -108,7 +108,8 @@
     "jsdom": "^30.0.1",
     "ng-packagr": "^22.0.1",
     "typescript": "~6.0.3",
-    "vitest": "^5.0.1"
+    "vitest": "^5.0.1",
+    "zone.js": "0.16.2"
   },
   "optionalDependencies": {
     "@rollup/rollup-win32-arm64-msvc": "^4.63.4"

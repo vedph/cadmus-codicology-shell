@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-pg",
-  "version": "15.0.1",
+  "version": "15.0.2",
   "description": "Cadmus codicology - wrappers for part editors.",
   "keywords": [
     "Cadmus"
@@ -22,7 +22,7 @@
     "@myrmidon/cadmus-item-editor": "^18.0.0",
     "@myrmidon/cadmus-part-codicology-bindings": "^15.0.0",
     "@myrmidon/cadmus-part-codicology-contents": "^15.0.0",
-    "@myrmidon/cadmus-part-codicology-decorations": "^15.0.0",
+    "@myrmidon/cadmus-part-codicology-decorations": "^15.0.1",
     "@myrmidon/cadmus-part-codicology-edits": "^15.0.0",
     "@myrmidon/cadmus-part-codicology-hands": "^15.0.0",
     "@myrmidon/cadmus-part-codicology-layouts": "^15.0.0",

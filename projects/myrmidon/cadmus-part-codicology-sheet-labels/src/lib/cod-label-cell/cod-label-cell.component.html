@@ -51,7 +51,7 @@
 
     <!-- EDIT -->
     @else {
-      <form [formGroup]="form" (submit)="saveEdit()" class="form-row">
+      <form [formGroup]="form" (submit)="saveEdit(); $event.stopPropagation()" class="form-row">
         <!-- value -->
         @if (editMode() === "value") {
           <mat-form-field>

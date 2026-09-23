@@ -21,6 +21,7 @@ import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 import {
   CodLocationRange,
   CodLocationComponent,
+  CodLocationParser,
 } from '@myrmidon/cadmus-cod-location';
 
 import {
@@ -151,6 +152,14 @@ export class CodUnitEditorComponent {
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
+    // ignore emissions not changing the location (the location editor
+    // emits its initial value when initialized)
+    if (
+      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
+      (CodLocationParser.rangesToString(this.ranges.value) || '')
+    ) {
+      return;
+    }
     this.ranges.setValue(ranges || []);
     this.ranges.updateValueAndValidity();
     this.ranges.markAsDirty();

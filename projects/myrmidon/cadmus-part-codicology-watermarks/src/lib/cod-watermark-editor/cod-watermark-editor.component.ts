@@ -19,6 +19,7 @@ import { MatIcon } from '@angular/material/icon';
 import {
   CodLocationRange,
   CodLocationComponent,
+  CodLocationParser,
 } from '@myrmidon/cadmus-cod-location';
 import {
   PhysicalSize,
@@ -150,12 +151,28 @@ export class CodWatermarkEditorComponent {
   }
 
   public onSampleRangesChange(ranges: CodLocationRange[] | null) {
+    // ignore emissions not changing the location (the location editor
+    // emits its initial value when initialized)
+    if (
+      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
+      (CodLocationParser.rangesToString(this.sampleRanges.value) || '')
+    ) {
+      return;
+    }
     this.sampleRanges.setValue(ranges || []);
     this.sampleRanges.updateValueAndValidity();
     this.sampleRanges.markAsDirty();
   }
 
   public onRangesChange(ranges: CodLocationRange[] | null) {
+    // ignore emissions not changing the location (the location editor
+    // emits its initial value when initialized)
+    if (
+      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
+      (CodLocationParser.rangesToString(this.ranges.value) || '')
+    ) {
+      return;
+    }
     this.ranges.setValue(ranges || []);
     this.ranges.updateValueAndValidity();
     this.ranges.markAsDirty();

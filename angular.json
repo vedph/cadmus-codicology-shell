@@ -84,14 +84,8 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "tsConfig": "tsconfig.spec.json",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
-            "styles": ["src/styles.scss"]
+            "buildTarget": "cadmus-codicology-shell:build:development",
+            "setupFiles": ["jest-dom-setup.ts"]
           }
         }
       }
@@ -117,7 +111,9 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/myrmidon/cadmus-codicology-ui/tsconfig.spec.json"
+            "tsConfig": "projects/myrmidon/cadmus-codicology-ui/tsconfig.spec.json",
+            "buildTarget": "cadmus-codicology-shell:build:development",
+            "setupFiles": ["jest-dom-setup.ts"]
           }
         }
       }
@@ -143,7 +139,9 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/myrmidon/cadmus-part-codicology-bindings/tsconfig.spec.json"
+            "tsConfig": "projects/myrmidon/cadmus-part-codicology-bindings/tsconfig.spec.json",
+            "buildTarget": "cadmus-codicology-shell:build:development",
+            "setupFiles": ["jest-dom-setup.ts"]
           }
         }
       }
@@ -169,7 +167,9 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/myrmidon/cadmus-part-codicology-contents/tsconfig.spec.json"
+            "tsConfig": "projects/myrmidon/cadmus-part-codicology-contents/tsconfig.spec.json",
+            "buildTarget": "cadmus-codicology-shell:build:development",
+            "setupFiles": ["jest-dom-setup.ts"]
           }
         }
       }
@@ -195,7 +195,9 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/myrmidon/cadmus-part-codicology-decorations/tsconfig.spec.json"
+            "tsConfig": "projects/myrmidon/cadmus-part-codicology-decorations/tsconfig.spec.json",
+            "buildTarget": "cadmus-codicology-shell:build:development",
+            "setupFiles": ["jest-dom-setup.ts"]
           }
         }
       }
@@ -221,7 +223,9 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/myrmidon/cadmus-part-codicology-edits/tsconfig.spec.json"
+            "tsConfig": "projects/myrmidon/cadmus-part-codicology-edits/tsconfig.spec.json",
+            "buildTarget": "cadmus-codicology-shell:build:development",
+            "setupFiles": ["jest-dom-setup.ts"]
           }
         }
       }
@@ -247,7 +251,9 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/myrmidon/cadmus-part-codicology-hands/tsconfig.spec.json"
+            "tsConfig": "projects/myrmidon/cadmus-part-codicology-hands/tsconfig.spec.json",
+            "buildTarget": "cadmus-codicology-shell:build:development",
+            "setupFiles": ["jest-dom-setup.ts"]
           }
         }
       }
@@ -273,7 +279,9 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/myrmidon/cadmus-part-codicology-layouts/tsconfig.spec.json"
+            "tsConfig": "projects/myrmidon/cadmus-part-codicology-layouts/tsconfig.spec.json",
+            "buildTarget": "cadmus-codicology-shell:build:development",
+            "setupFiles": ["jest-dom-setup.ts"]
           }
         }
       }
@@ -299,7 +307,9 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/myrmidon/cadmus-part-codicology-material-dsc/tsconfig.spec.json"
+            "tsConfig": "projects/myrmidon/cadmus-part-codicology-material-dsc/tsconfig.spec.json",
+            "buildTarget": "cadmus-codicology-shell:build:development",
+            "setupFiles": ["jest-dom-setup.ts"]
           }
         }
       }
@@ -325,7 +335,9 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/myrmidon/cadmus-part-codicology-sheet-labels/tsconfig.spec.json"
+            "tsConfig": "projects/myrmidon/cadmus-part-codicology-sheet-labels/tsconfig.spec.json",
+            "buildTarget": "cadmus-codicology-shell:build:development",
+            "setupFiles": ["jest-dom-setup.ts"]
           }
         }
       }
@@ -351,7 +363,9 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/myrmidon/cadmus-part-codicology-shelfmarks/tsconfig.spec.json"
+            "tsConfig": "projects/myrmidon/cadmus-part-codicology-shelfmarks/tsconfig.spec.json",
+            "buildTarget": "cadmus-codicology-shell:build:development",
+            "setupFiles": ["jest-dom-setup.ts"]
           }
         }
       }
@@ -377,7 +391,9 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/myrmidon/cadmus-part-codicology-watermarks/tsconfig.spec.json"
+            "tsConfig": "projects/myrmidon/cadmus-part-codicology-watermarks/tsconfig.spec.json",
+            "buildTarget": "cadmus-codicology-shell:build:development",
+            "setupFiles": ["jest-dom-setup.ts"]
           }
         }
       }
@@ -403,7 +419,9 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/myrmidon/cadmus-part-codicology-pg/tsconfig.spec.json"
+            "tsConfig": "projects/myrmidon/cadmus-part-codicology-pg/tsconfig.spec.json",
+            "buildTarget": "cadmus-codicology-shell:build:development",
+            "setupFiles": ["jest-dom-setup.ts"]
           }
         }
       }
@@ -429,7 +447,9 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/myrmidon/cadmus-part-codicology-location-ranges/tsconfig.spec.json"
+            "tsConfig": "projects/myrmidon/cadmus-part-codicology-location-ranges/tsconfig.spec.json",
+            "buildTarget": "cadmus-codicology-shell:build:development",
+            "setupFiles": ["jest-dom-setup.ts"]
           }
         }
       }

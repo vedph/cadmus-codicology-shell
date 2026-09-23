@@ -142,7 +142,6 @@ export class CodHandDescriptionComponent {
 
     effect(() => {
       const description = this.description();
-      console.log('input description', description);
       this.updateForm(description);
     });
   }
@@ -164,6 +163,7 @@ export class CodHandDescriptionComponent {
     this.corrections.setValue(model.corrections || null);
     this.punctuation.setValue(model.punctuation || null);
     this.abbreviations.setValue(model.abbreviations || null);
+    this.note.setValue(model.note || null);
 
     if (model.initials) {
       map['i'] = model.initials;

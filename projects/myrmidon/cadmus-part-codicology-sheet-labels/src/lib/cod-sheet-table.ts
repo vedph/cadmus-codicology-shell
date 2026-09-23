@@ -517,7 +517,6 @@ export class CodSheetTable {
    * @param cells The cells to add.
    */
   public addCells(cells: CodLabelCell[]): void {
-    console.log('[CodSheetTable] addCells START, cells:', cells.length);
     if (!cells.length) {
       return;
     }
@@ -567,13 +566,8 @@ export class CodSheetTable {
     }
 
     // save
-    console.log(
-      '[CodSheetTable] addCells emitting rows$.next, total rows:',
-      rows.length,
-    );
     const rowsCopy = structuredClone(rows);
     this._rows$.next(rowsCopy);
-    console.log('[CodSheetTable] addCells END');
   }
 
   private isRowEmpty(row: CodRowViewModel): boolean {

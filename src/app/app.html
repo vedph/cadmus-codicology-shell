@@ -83,13 +83,25 @@
 
     <!-- login -->
     @if (!logged()) {
-    <button type="button" mat-icon-button routerLink="/login">
+    <button
+      type="button"
+      mat-icon-button
+      routerLink="/login"
+      aria-label="login"
+      matTooltip="Login"
+    >
       <mat-icon>login</mat-icon>
     </button>
     }
     <!-- logout -->
     @if (logged()) {
-    <button type="button" mat-icon-button (click)="logout()">
+    <button
+      type="button"
+      mat-icon-button
+      aria-label="logout"
+      matTooltip="Logout"
+      (click)="logout()"
+    >
       <mat-icon>logout</mat-icon>
     </button>
     }

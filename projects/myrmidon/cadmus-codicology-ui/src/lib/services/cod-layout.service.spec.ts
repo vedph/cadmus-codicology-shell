@@ -167,11 +167,11 @@ describe('CodLayoutService', () => {
     expect(map.get('width')).toBe(160);
     // height details
     expect(map.get('margin-top')).toBe(30);
-    expect(map.has('head-e')).toBeFalse();
-    expect(map.has('head-w')).toBeFalse();
+    expect(map.has('head-e')).toBe(false);
+    expect(map.has('head-w')).toBe(false);
     expect(map.get('area-height')).toBe(130);
-    expect(map.has('foot-e')).toBeFalse();
-    expect(map.has('foot-w')).toBeFalse();
+    expect(map.has('foot-e')).toBe(false);
+    expect(map.has('foot-w')).toBe(false);
     expect(map.get('margin-bottom')).toBe(40);
     // width details
     expect(map.get('margin-left')).toBe(15);
@@ -298,11 +298,11 @@ describe('CodLayoutService', () => {
     const map = service.parseFormula(f1).value!;
     expect(map.get('height')).toBe(200);
     expect(map.get('margin-top')).toBe(30);
-    expect(map.has('head-e')).toBeFalse();
-    expect(map.has('head-w')).toBeFalse();
+    expect(map.has('head-e')).toBe(false);
+    expect(map.has('head-w')).toBe(false);
     expect(map.get('area-height')).toBe(130);
-    expect(map.has('foot-e')).toBeFalse();
-    expect(map.has('foot-w')).toBeFalse();
+    expect(map.has('foot-e')).toBe(false);
+    expect(map.has('foot-w')).toBe(false);
     expect(map.get('margin-bottom')).toBe(40);
 
     const f2 = service.buildFormula(map);
@@ -316,10 +316,10 @@ describe('CodLayoutService', () => {
     expect(map.get('height')).toBe(200);
     expect(map.get('margin-top')).toBe(30);
     expect(map.get('head-e')).toBe(10);
-    expect(map.has('head-w')).toBeFalse();
+    expect(map.has('head-w')).toBe(false);
     expect(map.get('area-height')).toBe(120);
-    expect(map.has('foot-e')).toBeFalse();
-    expect(map.has('foot-w')).toBeFalse();
+    expect(map.has('foot-e')).toBe(false);
+    expect(map.has('foot-w')).toBe(false);
     expect(map.get('margin-bottom')).toBe(40);
 
     const f2 = service.buildFormula(map);
@@ -332,11 +332,11 @@ describe('CodLayoutService', () => {
     const map = service.parseFormula(f1).value!;
     expect(map.get('height')).toBe(200);
     expect(map.get('margin-top')).toBe(30);
-    expect(map.has('head-e')).toBeFalse();
+    expect(map.has('head-e')).toBe(false);
     expect(map.get('head-w')).toBe(10);
     expect(map.get('area-height')).toBe(120);
-    expect(map.has('foot-e')).toBeFalse();
-    expect(map.has('foot-w')).toBeFalse();
+    expect(map.has('foot-e')).toBe(false);
+    expect(map.has('foot-w')).toBe(false);
     expect(map.get('margin-bottom')).toBe(40);
 
     const f2 = service.buildFormula(map);
@@ -349,11 +349,11 @@ describe('CodLayoutService', () => {
     const map = service.parseFormula(f1).value!;
     expect(map.get('height')).toBe(200);
     expect(map.get('margin-top')).toBe(30);
-    expect(map.has('head-e')).toBeFalse();
-    expect(map.has('head-w')).toBeFalse();
+    expect(map.has('head-e')).toBe(false);
+    expect(map.has('head-w')).toBe(false);
     expect(map.get('area-height')).toBe(120);
     expect(map.get('foot-e')).toBe(10);
-    expect(map.has('foot-w')).toBeFalse();
+    expect(map.has('foot-w')).toBe(false);
     expect(map.get('margin-bottom')).toBe(40);
 
     const f2 = service.buildFormula(map);
@@ -366,10 +366,10 @@ describe('CodLayoutService', () => {
     const map = service.parseFormula(f1).value!;
     expect(map.get('height')).toBe(200);
     expect(map.get('margin-top')).toBe(30);
-    expect(map.has('head-e')).toBeFalse();
-    expect(map.has('head-w')).toBeFalse();
+    expect(map.has('head-e')).toBe(false);
+    expect(map.has('head-w')).toBe(false);
     expect(map.get('area-height')).toBe(120);
-    expect(map.has('foot-e')).toBeFalse();
+    expect(map.has('foot-e')).toBe(false);
     expect(map.get('foot-w')).toBe(10);
     expect(map.get('margin-bottom')).toBe(40);
 
@@ -384,10 +384,10 @@ describe('CodLayoutService', () => {
     expect(map.get('height')).toBe(200);
     expect(map.get('margin-top')).toBe(30);
     expect(map.get('head-e')).toBe(5);
-    expect(map.has('head-w')).toBeFalse();
+    expect(map.has('head-w')).toBe(false);
     expect(map.get('area-height')).toBe(120);
     expect(map.get('foot-e')).toBe(5);
-    expect(map.has('foot-w')).toBeFalse();
+    expect(map.has('foot-w')).toBe(false);
     expect(map.get('margin-bottom')).toBe(40);
 
     const f2 = service.buildFormula(map);
@@ -401,9 +401,9 @@ describe('CodLayoutService', () => {
     expect(map.get('height')).toBe(200);
     expect(map.get('margin-top')).toBe(30);
     expect(map.get('head-e')).toBe(5);
-    expect(map.has('head-w')).toBeFalse();
+    expect(map.has('head-w')).toBe(false);
     expect(map.get('area-height')).toBe(120);
-    expect(map.has('foot-e')).toBeFalse();
+    expect(map.has('foot-e')).toBe(false);
     expect(map.get('foot-w')).toBe(5);
     expect(map.get('margin-bottom')).toBe(40);
 
@@ -417,11 +417,11 @@ describe('CodLayoutService', () => {
     const map = service.parseFormula(f1).value!;
     expect(map.get('height')).toBe(200);
     expect(map.get('margin-top')).toBe(30);
-    expect(map.has('head-e')).toBeFalse();
+    expect(map.has('head-e')).toBe(false);
     expect(map.get('head-w')).toBe(5);
     expect(map.get('area-height')).toBe(120);
     expect(map.get('foot-e')).toBe(5);
-    expect(map.has('foot-w')).toBeFalse();
+    expect(map.has('foot-w')).toBe(false);
     expect(map.get('margin-bottom')).toBe(40);
 
     const f2 = service.buildFormula(map);
@@ -434,10 +434,10 @@ describe('CodLayoutService', () => {
     const map = service.parseFormula(f1).value!;
     expect(map.get('height')).toBe(200);
     expect(map.get('margin-top')).toBe(30);
-    expect(map.has('head-e')).toBeFalse();
+    expect(map.has('head-e')).toBe(false);
     expect(map.get('head-w')).toBe(5);
     expect(map.get('area-height')).toBe(120);
-    expect(map.has('foot-e')).toBeFalse();
+    expect(map.has('foot-e')).toBe(false);
     expect(map.get('foot-w')).toBe(5);
     expect(map.get('margin-bottom')).toBe(40);
 
@@ -451,12 +451,12 @@ describe('CodLayoutService', () => {
     const f1 = '200 × 200 = 30 [130] 40 × 30 [130] 40';
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(30);
-    expect(map.has('col-1-left-w')).toBeFalse();
-    expect(map.has('col-1-left-e')).toBeFalse();
+    expect(map.has('col-1-left-w')).toBe(false);
+    expect(map.has('col-1-left-e')).toBe(false);
     expect(map.get('col-1-width')).toBe(130);
-    expect(map.has('col-1-right-w')).toBeFalse();
-    expect(map.has('col-1-right-e')).toBeFalse();
-    expect(map.has('col-1-gap')).toBeFalse();
+    expect(map.has('col-1-right-w')).toBe(false);
+    expect(map.has('col-1-right-e')).toBe(false);
+    expect(map.has('col-1-gap')).toBe(false);
     expect(map.get('margin-right')).toBe(40);
 
     const f2 = service.buildFormula(map);
@@ -468,12 +468,12 @@ describe('CodLayoutService', () => {
     const f1 = '200 × 200 = 30 [130] 40 × 30 / 10 [120] 40';
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(30);
-    expect(map.has('col-1-left-w')).toBeFalse();
+    expect(map.has('col-1-left-w')).toBe(false);
     expect(map.get('col-1-left-e')).toBe(10);
     expect(map.get('col-1-width')).toBe(120);
-    expect(map.has('col-1-right-w')).toBeFalse();
-    expect(map.has('col-1-right-e')).toBeFalse();
-    expect(map.has('col-1-gap')).toBeFalse();
+    expect(map.has('col-1-right-w')).toBe(false);
+    expect(map.has('col-1-right-e')).toBe(false);
+    expect(map.has('col-1-gap')).toBe(false);
     expect(map.get('margin-right')).toBe(40);
 
     const f2 = service.buildFormula(map);
@@ -486,11 +486,11 @@ describe('CodLayoutService', () => {
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(30);
     expect(map.get('col-1-left-w')).toBe(10);
-    expect(map.has('col-1-left-e')).toBeFalse();
+    expect(map.has('col-1-left-e')).toBe(false);
     expect(map.get('col-1-width')).toBe(120);
-    expect(map.has('col-1-right-w')).toBeFalse();
-    expect(map.has('col-1-right-e')).toBeFalse();
-    expect(map.has('col-1-gap')).toBeFalse();
+    expect(map.has('col-1-right-w')).toBe(false);
+    expect(map.has('col-1-right-e')).toBe(false);
+    expect(map.has('col-1-gap')).toBe(false);
     expect(map.get('margin-right')).toBe(40);
 
     const f2 = service.buildFormula(map);
@@ -502,12 +502,12 @@ describe('CodLayoutService', () => {
     const f1 = '200 × 200 = 30 [130] 40 × 30 [120] 10 / 40';
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(30);
-    expect(map.has('col-1-left-w')).toBeFalse();
-    expect(map.has('col-1-left-e')).toBeFalse();
+    expect(map.has('col-1-left-w')).toBe(false);
+    expect(map.has('col-1-left-e')).toBe(false);
     expect(map.get('col-1-width')).toBe(120);
-    expect(map.has('col-1-right-w')).toBeFalse();
+    expect(map.has('col-1-right-w')).toBe(false);
     expect(map.get('col-1-right-e')).toBe(10);
-    expect(map.has('col-1-gap')).toBeFalse();
+    expect(map.has('col-1-gap')).toBe(false);
     expect(map.get('margin-right')).toBe(40);
 
     const f2 = service.buildFormula(map);
@@ -519,12 +519,12 @@ describe('CodLayoutService', () => {
     const f1 = '200 × 200 = 30 [130] 40 × 30 [120 / 10] 40';
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(30);
-    expect(map.has('col-1-left-w')).toBeFalse();
-    expect(map.has('col-1-left-e')).toBeFalse();
+    expect(map.has('col-1-left-w')).toBe(false);
+    expect(map.has('col-1-left-e')).toBe(false);
     expect(map.get('col-1-width')).toBe(120);
     expect(map.get('col-1-right-w')).toBe(10);
-    expect(map.has('col-1-right-e')).toBeFalse();
-    expect(map.has('col-1-gap')).toBeFalse();
+    expect(map.has('col-1-right-e')).toBe(false);
+    expect(map.has('col-1-gap')).toBe(false);
     expect(map.get('margin-right')).toBe(40);
 
     const f2 = service.buildFormula(map);
@@ -536,12 +536,12 @@ describe('CodLayoutService', () => {
     const f1 = '200 × 200 = 30 [130] 40 × 30 / 5 [120] 5 / 40';
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(30);
-    expect(map.has('col-1-left-w')).toBeFalse();
+    expect(map.has('col-1-left-w')).toBe(false);
     expect(map.get('col-1-left-e')).toBe(5);
     expect(map.get('col-1-width')).toBe(120);
-    expect(map.has('col-1-right-w')).toBeFalse();
+    expect(map.has('col-1-right-w')).toBe(false);
     expect(map.get('col-1-right-e')).toBe(5);
-    expect(map.has('col-1-gap')).toBeFalse();
+    expect(map.has('col-1-gap')).toBe(false);
     expect(map.get('margin-right')).toBe(40);
 
     const f2 = service.buildFormula(map);
@@ -553,12 +553,12 @@ describe('CodLayoutService', () => {
     const f1 = '200 × 200 = 30 [130] 40 × 30 / 5 [120 / 5] 40';
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(30);
-    expect(map.has('col-1-left-w')).toBeFalse();
+    expect(map.has('col-1-left-w')).toBe(false);
     expect(map.get('col-1-left-e')).toBe(5);
     expect(map.get('col-1-width')).toBe(120);
     expect(map.get('col-1-right-w')).toBe(5);
-    expect(map.has('col-1-right-e')).toBeFalse();
-    expect(map.has('col-1-gap')).toBeFalse();
+    expect(map.has('col-1-right-e')).toBe(false);
+    expect(map.has('col-1-gap')).toBe(false);
     expect(map.get('margin-right')).toBe(40);
 
     const f2 = service.buildFormula(map);
@@ -571,11 +571,11 @@ describe('CodLayoutService', () => {
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(30);
     expect(map.get('col-1-left-w')).toBe(5);
-    expect(map.has('col-1-left-e')).toBeFalse();
+    expect(map.has('col-1-left-e')).toBe(false);
     expect(map.get('col-1-width')).toBe(120);
-    expect(map.has('col-1-right-w')).toBeFalse();
+    expect(map.has('col-1-right-w')).toBe(false);
     expect(map.get('col-1-right-e')).toBe(5);
-    expect(map.has('col-1-gap')).toBeFalse();
+    expect(map.has('col-1-gap')).toBe(false);
     expect(map.get('margin-right')).toBe(40);
 
     const f2 = service.buildFormula(map);
@@ -588,11 +588,11 @@ describe('CodLayoutService', () => {
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(30);
     expect(map.get('col-1-left-w')).toBe(5);
-    expect(map.has('col-1-left-e')).toBeFalse();
+    expect(map.has('col-1-left-e')).toBe(false);
     expect(map.get('col-1-width')).toBe(120);
     expect(map.get('col-1-right-w')).toBe(5);
-    expect(map.has('col-1-right-e')).toBeFalse();
-    expect(map.has('col-1-gap')).toBeFalse();
+    expect(map.has('col-1-right-e')).toBe(false);
+    expect(map.has('col-1-gap')).toBe(false);
     expect(map.get('margin-right')).toBe(40);
 
     const f2 = service.buildFormula(map);
@@ -605,11 +605,11 @@ describe('CodLayoutService', () => {
     const f1 = '200 × 160 = 30 [130] 40 × 15 [60 (10) 60] 15';
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(15);
-    expect(map.has('col-1-left-w')).toBeFalse();
-    expect(map.has('col-1-left-e')).toBeFalse();
+    expect(map.has('col-1-left-w')).toBe(false);
+    expect(map.has('col-1-left-e')).toBe(false);
     expect(map.get('col-1-width')).toBe(60);
-    expect(map.has('col-1-right-w')).toBeFalse();
-    expect(map.has('col-1-right-e')).toBeFalse();
+    expect(map.has('col-1-right-w')).toBe(false);
+    expect(map.has('col-1-right-e')).toBe(false);
     expect(map.get('col-1-gap')).toBe(10);
     expect(map.get('margin-right')).toBe(15);
 
@@ -623,10 +623,10 @@ describe('CodLayoutService', () => {
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(15);
     expect(map.get('col-1-left-w')).toBe(5);
-    expect(map.has('col-1-left-e')).toBeFalse();
+    expect(map.has('col-1-left-e')).toBe(false);
     expect(map.get('col-1-width')).toBe(55);
-    expect(map.has('col-1-right-w')).toBeFalse();
-    expect(map.has('col-1-right-e')).toBeFalse();
+    expect(map.has('col-1-right-w')).toBe(false);
+    expect(map.has('col-1-right-e')).toBe(false);
     expect(map.get('col-1-gap')).toBe(10);
     expect(map.get('margin-right')).toBe(15);
 
@@ -639,11 +639,11 @@ describe('CodLayoutService', () => {
     const f1 = '200 × 160 = 30 [130] 40 × 15 / 5 [55 (10) 60] 15';
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(15);
-    expect(map.has('col-1-left-w')).toBeFalse();
+    expect(map.has('col-1-left-w')).toBe(false);
     expect(map.get('col-1-left-e')).toBe(5);
     expect(map.get('col-1-width')).toBe(55);
-    expect(map.has('col-1-right-w')).toBeFalse();
-    expect(map.has('col-1-right-e')).toBeFalse();
+    expect(map.has('col-1-right-w')).toBe(false);
+    expect(map.has('col-1-right-e')).toBe(false);
     expect(map.get('col-1-gap')).toBe(10);
     expect(map.get('margin-right')).toBe(15);
 
@@ -656,11 +656,11 @@ describe('CodLayoutService', () => {
     const f1 = '200 × 160 = 30 [130] 40 × 15 [55 / 5 (10) 60] 15';
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(15);
-    expect(map.has('col-1-left-w')).toBeFalse();
-    expect(map.has('col-1-left-e')).toBeFalse();
+    expect(map.has('col-1-left-w')).toBe(false);
+    expect(map.has('col-1-left-e')).toBe(false);
     expect(map.get('col-1-width')).toBe(55);
     expect(map.get('col-1-right-w')).toBe(5);
-    expect(map.has('col-1-right-e')).toBeFalse();
+    expect(map.has('col-1-right-e')).toBe(false);
     expect(map.get('col-1-gap')).toBe(10);
     expect(map.get('margin-right')).toBe(15);
 
@@ -673,10 +673,10 @@ describe('CodLayoutService', () => {
     const f1 = '200 × 160 = 30 [130] 40 × 15 [55 / 5* (10) 60] 15';
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(15);
-    expect(map.has('col-1-left-w')).toBeFalse();
-    expect(map.has('col-1-left-e')).toBeFalse();
+    expect(map.has('col-1-left-w')).toBe(false);
+    expect(map.has('col-1-left-e')).toBe(false);
     expect(map.get('col-1-width')).toBe(55);
-    expect(map.has('col-1-right-w')).toBeFalse();
+    expect(map.has('col-1-right-w')).toBe(false);
     expect(map.get('col-1-right-e')).toBe(5);
     expect(map.get('col-1-gap')).toBe(10);
     expect(map.get('margin-right')).toBe(15);
@@ -691,10 +691,10 @@ describe('CodLayoutService', () => {
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(15);
     expect(map.get('col-1-left-w')).toBe(5);
-    expect(map.has('col-1-left-e')).toBeFalse();
+    expect(map.has('col-1-left-e')).toBe(false);
     expect(map.get('col-1-width')).toBe(50);
     expect(map.get('col-1-right-w')).toBe(5);
-    expect(map.has('col-1-right-e')).toBeFalse();
+    expect(map.has('col-1-right-e')).toBe(false);
     expect(map.get('col-1-gap')).toBe(10);
     expect(map.get('margin-right')).toBe(15);
 
@@ -708,9 +708,9 @@ describe('CodLayoutService', () => {
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(15);
     expect(map.get('col-1-left-w')).toBe(5);
-    expect(map.has('col-1-left-e')).toBeFalse();
+    expect(map.has('col-1-left-e')).toBe(false);
     expect(map.get('col-1-width')).toBe(50);
-    expect(map.has('col-1-right-w')).toBeFalse();
+    expect(map.has('col-1-right-w')).toBe(false);
     expect(map.get('col-1-right-e')).toBe(5);
     expect(map.get('col-1-gap')).toBe(10);
     expect(map.get('margin-right')).toBe(15);
@@ -724,11 +724,11 @@ describe('CodLayoutService', () => {
     const f1 = '200 × 160 = 30 [130] 40 × 15 / 5 [50 / 5 (10) 60] 15';
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(15);
-    expect(map.has('col-1-left-w')).toBeFalse();
+    expect(map.has('col-1-left-w')).toBe(false);
     expect(map.get('col-1-left-e')).toBe(5);
     expect(map.get('col-1-width')).toBe(50);
     expect(map.get('col-1-right-w')).toBe(5);
-    expect(map.has('col-1-right-e')).toBeFalse();
+    expect(map.has('col-1-right-e')).toBe(false);
     expect(map.get('col-1-gap')).toBe(10);
     expect(map.get('margin-right')).toBe(15);
 
@@ -741,10 +741,10 @@ describe('CodLayoutService', () => {
     const f1 = '200 × 160 = 30 [130] 40 × 15 / 5 [50 / 5* (10) 60] 15';
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(15);
-    expect(map.has('col-1-left-w')).toBeFalse();
+    expect(map.has('col-1-left-w')).toBe(false);
     expect(map.get('col-1-left-e')).toBe(5);
     expect(map.get('col-1-width')).toBe(50);
-    expect(map.has('col-1-right-w')).toBeFalse();
+    expect(map.has('col-1-right-w')).toBe(false);
     expect(map.get('col-1-right-e')).toBe(5);
     expect(map.get('col-1-gap')).toBe(10);
     expect(map.get('margin-right')).toBe(15);
@@ -759,12 +759,12 @@ describe('CodLayoutService', () => {
     const f1 = '200 × 160 = 30 [130] 40 × 15 [60 (10) 60] 15';
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(15);
-    expect(map.has('col-2-left-w')).toBeFalse();
-    expect(map.has('col-2-left-e')).toBeFalse();
+    expect(map.has('col-2-left-w')).toBe(false);
+    expect(map.has('col-2-left-e')).toBe(false);
     expect(map.get('col-2-width')).toBe(60);
-    expect(map.has('col-2-right-w')).toBeFalse();
-    expect(map.has('col-2-right-e')).toBeFalse();
-    expect(map.has('col-2-gap')).toBeFalse();
+    expect(map.has('col-2-right-w')).toBe(false);
+    expect(map.has('col-2-right-e')).toBe(false);
+    expect(map.has('col-2-gap')).toBe(false);
     expect(map.get('margin-right')).toBe(15);
 
     const f2 = service.buildFormula(map);
@@ -777,11 +777,11 @@ describe('CodLayoutService', () => {
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(15);
     expect(map.get('col-2-left-w')).toBe(5);
-    expect(map.has('col-2-left-e')).toBeFalse();
+    expect(map.has('col-2-left-e')).toBe(false);
     expect(map.get('col-2-width')).toBe(55);
-    expect(map.has('col-2-right-w')).toBeFalse();
-    expect(map.has('col-2-right-e')).toBeFalse();
-    expect(map.has('col-2-gap')).toBeFalse();
+    expect(map.has('col-2-right-w')).toBe(false);
+    expect(map.has('col-2-right-e')).toBe(false);
+    expect(map.has('col-2-gap')).toBe(false);
     expect(map.get('margin-right')).toBe(15);
 
     const f2 = service.buildFormula(map);
@@ -793,12 +793,12 @@ describe('CodLayoutService', () => {
     const f1 = '200 × 160 = 30 [130] 40 × 15 [60 (10) 5* / 55] 15';
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(15);
-    expect(map.has('col-2-left-w')).toBeFalse();
+    expect(map.has('col-2-left-w')).toBe(false);
     expect(map.get('col-2-left-e')).toBe(5);
     expect(map.get('col-2-width')).toBe(55);
-    expect(map.has('col-2-right-w')).toBeFalse();
-    expect(map.has('col-2-right-e')).toBeFalse();
-    expect(map.has('col-2-gap')).toBeFalse();
+    expect(map.has('col-2-right-w')).toBe(false);
+    expect(map.has('col-2-right-e')).toBe(false);
+    expect(map.has('col-2-gap')).toBe(false);
     expect(map.get('margin-right')).toBe(15);
 
     const f2 = service.buildFormula(map);
@@ -810,12 +810,12 @@ describe('CodLayoutService', () => {
     const f1 = '200 × 160 = 30 [130] 40 × 15 [60 (10) 55 / 5] 15';
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(15);
-    expect(map.has('col-2-left-w')).toBeFalse();
-    expect(map.has('col-2-left-e')).toBeFalse();
+    expect(map.has('col-2-left-w')).toBe(false);
+    expect(map.has('col-2-left-e')).toBe(false);
     expect(map.get('col-2-width')).toBe(55);
     expect(map.get('col-2-right-w')).toBe(5);
-    expect(map.has('col-2-right-e')).toBeFalse();
-    expect(map.has('col-2-gap')).toBeFalse();
+    expect(map.has('col-2-right-e')).toBe(false);
+    expect(map.has('col-2-gap')).toBe(false);
     expect(map.get('margin-right')).toBe(15);
 
     const f2 = service.buildFormula(map);
@@ -827,12 +827,12 @@ describe('CodLayoutService', () => {
     const f1 = '200 × 160 = 30 [130] 40 × 15 [60 (10) 55] 5 / 15';
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(15);
-    expect(map.has('col-2-left-w')).toBeFalse();
-    expect(map.has('col-2-left-e')).toBeFalse();
+    expect(map.has('col-2-left-w')).toBe(false);
+    expect(map.has('col-2-left-e')).toBe(false);
     expect(map.get('col-2-width')).toBe(55);
-    expect(map.has('col-2-right-w')).toBeFalse();
+    expect(map.has('col-2-right-w')).toBe(false);
     expect(map.get('col-2-right-e')).toBe(5);
-    expect(map.has('col-2-gap')).toBeFalse();
+    expect(map.has('col-2-gap')).toBe(false);
     expect(map.get('margin-right')).toBe(15);
 
     const f2 = service.buildFormula(map);
@@ -845,11 +845,11 @@ describe('CodLayoutService', () => {
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(15);
     expect(map.get('col-2-left-w')).toBe(5);
-    expect(map.has('col-2-left-e')).toBeFalse();
+    expect(map.has('col-2-left-e')).toBe(false);
     expect(map.get('col-2-width')).toBe(50);
     expect(map.get('col-2-right-w')).toBe(5);
-    expect(map.has('col-2-right-e')).toBeFalse();
-    expect(map.has('col-2-gap')).toBeFalse();
+    expect(map.has('col-2-right-e')).toBe(false);
+    expect(map.has('col-2-gap')).toBe(false);
     expect(map.get('margin-right')).toBe(15);
 
     const f2 = service.buildFormula(map);
@@ -862,11 +862,11 @@ describe('CodLayoutService', () => {
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(15);
     expect(map.get('col-2-left-w')).toBe(5);
-    expect(map.has('col-2-left-e')).toBeFalse();
+    expect(map.has('col-2-left-e')).toBe(false);
     expect(map.get('col-2-width')).toBe(50);
-    expect(map.has('col-2-right-w')).toBeFalse();
+    expect(map.has('col-2-right-w')).toBe(false);
     expect(map.get('col-2-right-e')).toBe(5);
-    expect(map.has('col-2-gap')).toBeFalse();
+    expect(map.has('col-2-gap')).toBe(false);
     expect(map.get('margin-right')).toBe(15);
 
     const f2 = service.buildFormula(map);
@@ -878,12 +878,12 @@ describe('CodLayoutService', () => {
     const f1 = '200 × 160 = 30 [130] 40 × 15 [60 (10) 5* / 50 / 5] 15';
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(15);
-    expect(map.has('col-2-left-w')).toBeFalse();
+    expect(map.has('col-2-left-w')).toBe(false);
     expect(map.get('col-2-left-e')).toBe(5);
     expect(map.get('col-2-width')).toBe(50);
     expect(map.get('col-2-right-w')).toBe(5);
-    expect(map.has('col-2-right-e')).toBeFalse();
-    expect(map.has('col-2-gap')).toBeFalse();
+    expect(map.has('col-2-right-e')).toBe(false);
+    expect(map.has('col-2-gap')).toBe(false);
     expect(map.get('margin-right')).toBe(15);
 
     const f2 = service.buildFormula(map);
@@ -895,12 +895,12 @@ describe('CodLayoutService', () => {
     const f1 = '200 × 160 = 30 [130] 40 × 15 [60 (10) 5* / 50] 5 / 15';
     const map = service.parseFormula(f1).value!;
     expect(map.get('margin-left')).toBe(15);
-    expect(map.has('col-2-left-w')).toBeFalse();
+    expect(map.has('col-2-left-w')).toBe(false);
     expect(map.get('col-2-left-e')).toBe(5);
     expect(map.get('col-2-width')).toBe(50);
-    expect(map.has('col-2-right-w')).toBeFalse();
+    expect(map.has('col-2-right-w')).toBe(false);
     expect(map.get('col-2-right-e')).toBe(5);
-    expect(map.has('col-2-gap')).toBeFalse();
+    expect(map.has('col-2-gap')).toBe(false);
     expect(map.get('margin-right')).toBe(15);
 
     const f2 = service.buildFormula(map);

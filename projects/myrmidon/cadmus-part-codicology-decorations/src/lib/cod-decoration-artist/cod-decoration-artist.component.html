@@ -1,4 +1,4 @@
-<form [formGroup]="form" (submit)="save()">
+<form [formGroup]="form" (submit)="save(); $event.stopPropagation()">
   <div class="form-row">
     <!-- type (bound) -->
     @if (artTypeEntries()?.length) {
@@ -160,7 +160,7 @@
         [refTagEntries]="refTagEntries()"
         [refTypeEntries]="refTypeEntries()"
         [lookupProviderOptions]="lookupProviderOptions()"
-        [style]="editedStyle"
+        [style]="editedStyle()"
         (styleChange)="onStyleSave($event!)"
         (editorClose)="editStyle(null)"
       />

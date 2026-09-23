@@ -33,6 +33,7 @@ import {
   CodLocation,
   CodLocationRange,
   CodLocationComponent,
+  CodLocationParser,
 } from '@myrmidon/cadmus-cod-location';
 import {
   MufiChar,
@@ -149,6 +150,14 @@ export class CodHandSignComponent {
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
+    // ignore emissions not changing the location (the location editor
+    // emits its initial value when initialized)
+    if (
+      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
+      (CodLocationParser.rangesToString(this.sampleRanges.value) || '')
+    ) {
+      return;
+    }
     this.sampleRanges.setValue(ranges || []);
     this.sampleRanges.updateValueAndValidity();
     this.sampleRanges.markAsDirty();
@@ -156,6 +165,11 @@ export class CodHandSignComponent {
 
   public onMufiItemChange(mufi: unknown | null): void {
     const mufiChar = mufi as MufiChar;
+    // the lookup emits an empty item when initializing: ignore it when
+    // there is no change, so that the form is not marked as dirty
+    if ((mufiChar?.code ?? null) === (this.mufi.value?.code ?? null)) {
+      return;
+    }
     this.mufi.setValue(mufiChar);
     this.mufi.markAsDirty();
     this.mufi.updateValueAndValidity();

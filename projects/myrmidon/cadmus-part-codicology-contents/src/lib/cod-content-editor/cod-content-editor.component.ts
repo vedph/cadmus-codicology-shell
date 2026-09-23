@@ -51,6 +51,7 @@ import {
   CodLocationRange,
   CodLocationComponent,
   CodLocationRangePipe,
+  CodLocationParser,
 } from '@myrmidon/cadmus-cod-location';
 import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 import { Citation, CitSchemeService } from '@myrmidon/cadmus-refs-citation';
@@ -282,6 +283,7 @@ export class CodContentEditorComponent {
         }
         location += citation;
         this.location.setValue(location);
+        this.location.markAsDirty();
       }
     });
   }
@@ -311,6 +313,14 @@ export class CodContentEditorComponent {
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
+    // ignore emissions not changing the location (the location editor
+    // emits its initial value when initialized)
+    if (
+      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
+      (CodLocationParser.rangesToString(this.ranges.value) || '')
+    ) {
+      return;
+    }
     this.ranges.setValue(ranges || []);
     this.ranges.updateValueAndValidity();
     this.ranges.markAsDirty();
@@ -329,12 +339,28 @@ export class CodContentEditorComponent {
   }
 
   public onCALocationChange(ranges: CodLocationRange[] | null): void {
+    // ignore emissions not changing the location (the location editor
+    // emits its initial value when initialized)
+    if (
+      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
+      (CodLocationParser.rangesToString(this.claimedAuthorRanges.value) || '')
+    ) {
+      return;
+    }
     this.claimedAuthorRanges.setValue(ranges || []);
     this.claimedAuthorRanges.updateValueAndValidity();
     this.claimedAuthorRanges.markAsDirty();
   }
 
   public onCTLocationChange(ranges: CodLocationRange[] | null): void {
+    // ignore emissions not changing the location (the location editor
+    // emits its initial value when initialized)
+    if (
+      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
+      (CodLocationParser.rangesToString(this.claimedTitleRanges.value) || '')
+    ) {
+      return;
+    }
     this.claimedTitleRanges.setValue(ranges || []);
     this.claimedTitleRanges.updateValueAndValidity();
     this.claimedTitleRanges.markAsDirty();
@@ -348,16 +374,15 @@ export class CodContentEditorComponent {
 
   //#region Annotations
   public addAnnotation(): void {
-    const annotation: CodContentAnnotation = {
+    // the new annotation is added to the list only when saved
+    this.editedIndex.set(-1);
+    this.editedAnnotation.set({
       type: this.annTypeEntries()?.length ? this.annTypeEntries()![0].id : '',
       range: { start: { n: 0 }, end: { n: 0 } },
       incipit: '',
       explicit: '',
       text: '',
-    };
-    const currentAnnotations = this.annotations.value || [];
-    this.annotations.setValue([...currentAnnotations, annotation]);
-    this.editAnnotation(currentAnnotations.length);
+    });
   }
 
   public editAnnotation(index: number): void {
@@ -372,12 +397,15 @@ export class CodContentEditorComponent {
   }
 
   public onAnnotationSave(annotation: CodContentAnnotation): void {
-    const annotations = this.annotations.value || [];
-    this.annotations.setValue(
-      annotations.map((a: CodContentAnnotation, i: number) =>
-        i === this.editedIndex() ? annotation : a,
-      ),
-    );
+    const annotations = [...(this.annotations.value || [])];
+    if (this.editedIndex() > -1) {
+      annotations.splice(this.editedIndex(), 1, annotation);
+    } else {
+      annotations.push(annotation);
+    }
+    this.annotations.setValue(annotations);
+    this.annotations.updateValueAndValidity();
+    this.annotations.markAsDirty();
     this.editAnnotation(-1);
   }
 

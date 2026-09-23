@@ -68,6 +68,13 @@ import { AppRepository } from '@myrmidon/cadmus-state';
  * chronotope-tags, assertion-tags, doc-reference-types, doc-reference-tags,
  * external-id-tags, external-id-scopes, pin-link-settings.
  */
+/**
+ * Settings for the decorations part editor.
+ */
+interface CodDecorationsPartSettings {
+  hideArtists?: boolean;
+}
+
 @Component({
   selector: 'cadmus-cod-decorations-part',
   templateUrl: './cod-decorations-part.component.html',
@@ -96,24 +103,24 @@ export class CodDecorationsPartComponent
   extends ModelEditorComponentBase<CodDecorationsPart>
   implements OnInit
 {
-  // check resource for settings
-  private readonly _checkResource = resource({
-    params: () => ({}),
-    loader: () => {
+  // settings for this part type (and role, if any)
+  private readonly _settingsResource = resource({
+    params: () => ({ roleId: this.identity()?.roleId || undefined }),
+    loader: ({ params }) => {
       if (!this._appRepository) {
         return Promise.resolve(undefined);
       }
-      return this._appRepository.getSettingFor<boolean>(
-        'hideArtists',
-        this.identity()?.roleId || undefined,
+      return this._appRepository.getSettingFor<CodDecorationsPartSettings>(
+        COD_DECORATIONS_PART_TYPEID,
+        params.roleId,
       );
     },
   });
 
-  // hideArtists is got from the resource, if available, otherwise false
+  // hideArtists is got from the part settings, if available, otherwise false
   public readonly hideArtists = computed<boolean>(() => {
-    if (this._checkResource.hasValue()) {
-      return this._checkResource.value();
+    if (this._settingsResource.hasValue()) {
+      return this._settingsResource.value()?.hideArtists === true;
     }
     return false;
   });

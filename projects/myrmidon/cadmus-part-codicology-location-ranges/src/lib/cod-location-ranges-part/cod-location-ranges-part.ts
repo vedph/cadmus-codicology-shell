@@ -32,6 +32,7 @@ import {
 import {
   CodLocationComponent,
   CodLocationRange,
+  CodLocationParser,
 } from '@myrmidon/cadmus-cod-location';
 
 /**
@@ -99,7 +100,16 @@ export class CodLocationRangesPartComponent
   }
 
   public onLocationChange(location: CodLocationRange[]): void {
-    this.ranges.setValue(location);
+    // ignore emissions not changing the location (the location editor
+    // emits its initial value when initialized)
+    if (
+      (CodLocationParser.rangesToString(location as CodLocationRange[] | null) || '') ===
+      (CodLocationParser.rangesToString(this.ranges.value) || '')
+    ) {
+      return;
+    }
+    this.ranges.setValue(location || []);
+    this.ranges.markAsDirty();
   }
 
   protected getValue(): CodLocationRangesPart {

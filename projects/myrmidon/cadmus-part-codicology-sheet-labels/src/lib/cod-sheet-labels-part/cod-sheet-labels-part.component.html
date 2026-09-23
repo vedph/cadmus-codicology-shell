@@ -21,7 +21,7 @@
                 <form
                   [formGroup]="opForm"
                   class="form-row"
-                  (submit)="onAction()"
+                  (submit)="onAction(); $event.stopPropagation()"
                 >
                   <!-- opColumn -->
                   <mat-form-field class="op">
@@ -116,7 +116,7 @@
                 <form
                   [formGroup]="addForm"
                   class="form-row"
-                  (submit)="onTypeAdd()"
+                  (submit)="onTypeAdd(); $event.stopPropagation()"
                 >
                   <!-- addType -->
                   <mat-form-field>

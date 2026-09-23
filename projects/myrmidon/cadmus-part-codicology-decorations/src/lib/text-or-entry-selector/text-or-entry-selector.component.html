@@ -1,6 +1,6 @@
 <form [formGroup]="form">
   <!-- bound -->
-  @if (!free && entries()?.length) {
+  @if (!free() && entries()?.length) {
     <mat-form-field>
       <mat-select [formControl]="idCtl" [placeholder]="label()">
         @for (e of entries(); track e.id) {

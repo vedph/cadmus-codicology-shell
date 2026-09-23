@@ -30,6 +30,7 @@ import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 import {
   CodLocationRange,
   CodLocationComponent,
+  CodLocationParser,
 } from '@myrmidon/cadmus-cod-location';
 import {
   DecoratedCount,
@@ -185,6 +186,8 @@ export class CodLayoutEditorComponent {
     };
 
     this.formulaWithDimensions.set(cleanedData);
+    // the formula is not a form control: mark the form as dirty
+    this.form.markAsDirty();
     this._snackbar.open('Formula updated', 'OK', { duration: 2000 });
   }
 
@@ -208,12 +211,28 @@ export class CodLayoutEditorComponent {
   }
 
   public onSampleLocationChange(ranges: CodLocationRange[] | null): void {
+    // ignore emissions not changing the location (the location editor
+    // emits its initial value when initialized)
+    if (
+      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
+      (CodLocationParser.rangesToString(this.sampleRanges.value) || '')
+    ) {
+      return;
+    }
     this.sampleRanges.setValue(ranges || []);
     this.sampleRanges.updateValueAndValidity();
     this.sampleRanges.markAsDirty();
   }
 
   public onRangeLocationChange(ranges: CodLocationRange[] | null): void {
+    // ignore emissions not changing the location (the location editor
+    // emits its initial value when initialized)
+    if (
+      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
+      (CodLocationParser.rangesToString(this.ranges.value) || '')
+    ) {
+      return;
+    }
     this.ranges.setValue(ranges || []);
     this.ranges.updateValueAndValidity();
     this.ranges.markAsDirty();

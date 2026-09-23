@@ -200,8 +200,8 @@ export class CodShelfmarksPartComponent
 
   public addShelfmark(): void {
     this.editShelfmark({
-      city: this.cityEntries?.length ? this.cityEntries()![0].id : '',
-      library: this.libEntries?.length ? this.libEntries()![0].id : '',
+      city: this.cityEntries()?.length ? this.cityEntries()![0].id : '',
+      library: this.libEntries()?.length ? this.libEntries()![0].id : '',
       location: '',
     });
   }
@@ -226,6 +226,10 @@ export class CodShelfmarksPartComponent
     }
 
     this.shelfmarks.setValue(shelfmarks);
+
+    this.shelfmarks.updateValueAndValidity();
+
+    this.shelfmarks.markAsDirty();
     this.editShelfmark(null);
   }
 
@@ -238,6 +242,8 @@ export class CodShelfmarksPartComponent
           const entries = [...this.shelfmarks.value];
           entries.splice(index, 1);
           this.shelfmarks.setValue(entries);
+          this.shelfmarks.updateValueAndValidity();
+          this.shelfmarks.markAsDirty();
         }
       });
   }
@@ -251,6 +257,8 @@ export class CodShelfmarksPartComponent
     entries.splice(index, 1);
     entries.splice(index - 1, 0, entry);
     this.shelfmarks.setValue(entries);
+    this.shelfmarks.updateValueAndValidity();
+    this.shelfmarks.markAsDirty();
   }
 
   public moveShelfmarkDown(index: number): void {
@@ -262,5 +270,7 @@ export class CodShelfmarksPartComponent
     entries.splice(index, 1);
     entries.splice(index + 1, 0, entry);
     this.shelfmarks.setValue(entries);
+    this.shelfmarks.updateValueAndValidity();
+    this.shelfmarks.markAsDirty();
   }
 }

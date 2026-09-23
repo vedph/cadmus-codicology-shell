@@ -4,8 +4,12 @@
   "extends": "../../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../../out-tsc/spec",
-    "types": ["vitest/globals", "@testing-library/jest-dom"]
+    "types": ["vitest/globals", "@testing-library/jest-dom/vitest"]
   },
+  "files": [
+    "../../../jest-dom-setup.ts",
+    "../../../testing/cadmus-test-helpers.ts"
+  ],
   "include": [
     "src/**/*.ts"
   ],

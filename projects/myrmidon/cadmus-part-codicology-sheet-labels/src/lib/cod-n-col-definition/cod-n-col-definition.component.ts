@@ -40,6 +40,7 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
   CodLocationComponent,
   CodLocationRange,
+  CodLocationParser,
 } from '@myrmidon/cadmus-cod-location';
 
 import { CodNColDefinition } from '../cod-sheet-labels-part';
@@ -229,6 +230,14 @@ export class CodNColDefinitionComponent {
   }
 
   public onRangeChange(ranges: CodLocationRange[]): void {
+    // ignore emissions not changing the location (the location editor
+    // emits its initial value when initialized)
+    if (
+      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
+      (CodLocationParser.rangesToString(this.canonicalRanges.value) || '')
+    ) {
+      return;
+    }
     this.canonicalRanges.setValue(ranges);
     this.canonicalRanges.updateValueAndValidity();
     this.canonicalRanges.markAsDirty();

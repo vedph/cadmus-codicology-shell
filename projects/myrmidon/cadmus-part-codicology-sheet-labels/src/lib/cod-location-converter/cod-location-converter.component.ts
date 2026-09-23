@@ -135,7 +135,6 @@ export class CodLocationConverterComponent implements OnInit {
         if (this.system.value && !this._labFrozen) {
           this._locFrozen = true;
           const result = this._converter.getLocation(this.system.value, value!);
-          console.log(result);
           if (this.autoCopy.value && result) {
             this._clipboard.copy(result);
             this._snackbar.open('Copied ' + result, 'OK', {
@@ -154,7 +153,6 @@ export class CodLocationConverterComponent implements OnInit {
         if (this.system.value && !this._locFrozen) {
           this._labFrozen = true;
           const result = this._converter.getLabel(this.system.value, value!);
-          console.log(result);
           if (this.autoCopy.value && result) {
             this._clipboard.copy(result);
             this._snackbar.open('Copied ' + result, 'OK', {
@@ -191,6 +189,7 @@ export class CodLocationConverterComponent implements OnInit {
           const p = part as CodSheetLabelsPart;
           if (!p) {
             this.resetForm();
+            this.loading.set(false);
             return;
           }
           this._converter.setRows(p.rows);

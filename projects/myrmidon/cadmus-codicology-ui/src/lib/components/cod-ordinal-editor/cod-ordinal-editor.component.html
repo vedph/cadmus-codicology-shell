@@ -1,4 +1,4 @@
-<form [formGroup]="form" (submit)="save()" class="form-row">
+<form [formGroup]="form" (submit)="save(); $event.stopPropagation()" class="form-row">
   <mat-form-field appearance="fill" class="nr">
     <mat-label>value</mat-label>
     <input matInput type="number" [formControl]="value" />

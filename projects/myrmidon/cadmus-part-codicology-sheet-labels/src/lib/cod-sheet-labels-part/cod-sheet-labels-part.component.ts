@@ -611,12 +611,14 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
       }
       const cells = LabelGenerator.generateSet(this.opColumn.value!, action);
       this._table.setCells(cells);
+      this.form.markAsDirty();
     } else {
       const cells = LabelGenerator.generateFrom(
         this.opColumn.value!,
         this.opAction.value!,
       );
       this._table.addCells(cells);
+      this.form.markAsDirty();
     }
   }
 
@@ -649,11 +651,13 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
           break;
       }
       this._table.appendRows(type, count);
+      this.form.markAsDirty();
     } else {
       const id =
         this.addType.value.charAt(4) +
         (this.addName.value ? '.' + this.addName.value : '');
       this._table.addColumn(id);
+      this.form.markAsDirty();
       if (id.charAt(0) === 'q') {
         this.qPresent.set(true);
       }
@@ -671,6 +675,7 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
       .subscribe((yes) => {
         if (yes) {
           this._table.clearColumnValues(this.opColumn.value!);
+          this.form.markAsDirty();
         }
       });
   }
@@ -685,6 +690,7 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
       .subscribe((yes) => {
         if (yes) {
           this._table.deleteColumn(this.opColumn.value!);
+          this.form.markAsDirty();
         }
       });
   }
@@ -696,6 +702,7 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
       .subscribe((yes) => {
         if (yes) {
           this._table.trim();
+          this.form.markAsDirty();
         }
       });
   }
@@ -707,6 +714,7 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
       .subscribe((yes) => {
         if (yes) {
           this._table.trim(true);
+          this.form.markAsDirty();
         }
       });
   }
@@ -714,6 +722,7 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
   public onCellChange(cell: CodLabelCell): void {
     // cell was edited, update it
     this._table.updateCell(cell);
+    this.form.markAsDirty();
   }
 
   public getColFeatureFlags(cellId?: string): Flag[] {
@@ -841,6 +850,7 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
 
   public saveQuireDsc(quireDsc: CodQuireDescription): void {
     this.quireDsc.set(quireDsc);
+    this.form.markAsDirty();
     this.onColumnDefClose();
   }
 

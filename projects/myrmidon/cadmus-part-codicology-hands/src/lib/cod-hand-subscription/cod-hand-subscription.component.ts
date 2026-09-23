@@ -29,6 +29,7 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
   CodLocationRange,
   CodLocationComponent,
+  CodLocationParser,
 } from '@myrmidon/cadmus-cod-location';
 
 import { CodHandSubscription } from '../cod-hands-part';
@@ -87,7 +88,6 @@ export class CodHandSubscriptionComponent {
 
     effect(() => {
       const subscription = this.subscription();
-      console.log('input subscription', subscription);
       this.updateForm(subscription);
     });
   }
@@ -107,6 +107,14 @@ export class CodHandSubscriptionComponent {
   }
 
   public onLocationChange(ranges: unknown): void {
+    // ignore emissions not changing the location (the location editor
+    // emits its initial value when initialized)
+    if (
+      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
+      (CodLocationParser.rangesToString(this.ranges.value) || '')
+    ) {
+      return;
+    }
     this.ranges.setValue((ranges as CodLocationRange[]) || []);
     this.ranges.updateValueAndValidity();
     this.ranges.markAsDirty();
