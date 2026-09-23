@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-shelfmarks",
-  "version": "15.0.0",
+  "version": "15.0.1",
   "description": "Cadmus codicology - shelfmarks part.",
   "keywords": [
     "Cadmus"
@@ -17,9 +17,9 @@
     "@angular/common": "^22.0.1",
     "@angular/core": "^22.0.1",
     "@angular/material": "^22.0.1",
-    "@myrmidon/cadmus-state": "^16.0.0",
-    "@myrmidon/cadmus-ui": "^17.0.0",
-    "@myrmidon/cadmus-item-editor": "^17.0.0"
+    "@myrmidon/cadmus-state": "^16.0.1",
+    "@myrmidon/cadmus-ui": "^18.0.0",
+    "@myrmidon/cadmus-item-editor": "^18.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
