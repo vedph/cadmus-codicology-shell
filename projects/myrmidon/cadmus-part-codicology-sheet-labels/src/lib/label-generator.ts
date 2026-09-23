@@ -417,12 +417,13 @@ export class LabelGenerator {
   }
 
   /**
-   * Generate label cells from a set action, applying step-based skipping
-   * and auto-incrementing the starting value (by 1 for every page, including
-   * skipped ones, so skipped pages consume a counter value without a label).
+   * Generate label cells from a set action. Every listed page gets a label:
+   * unlike add actions, the step does not skip rows, but sets the increment
+   * applied to the value from each page to the next (default 1). A constant
+   * (custom) value is not incremented, so the step has no effect on it.
    * @param columnId The column ID.
    * @param action The set action.
-   * @returns Generated cells (only for non-skipped pages).
+   * @returns Generated cells (one for each page).
    */
   public static generateSet(
     columnId: string,
@@ -431,21 +432,21 @@ export class LabelGenerator {
     if (!action.pages.length) {
       return [];
     }
-    const step = action.step ?? 1;
+    const step = action.step || 1;
     // detect value type by parsing via a dummy add-action formula
-    const tempAction = this.parseAction(`1x1=${action.value ?? ''}`) as CodLabelAction;
+    const tempAction = this.parseAction(
+      `1x1=${action.value ?? ''}`,
+    ) as CodLabelAction;
     const cells: CodLabelCell[] = [];
     let value = action.value ?? '';
     for (let i = 0; i < action.pages.length; i++) {
-      if (i % step === 0) {
-        cells.push({
-          rowId: this.pageToRowId(action.pages[i]),
-          id: columnId,
-          value: value,
-        });
-      }
-      // always advance value by 1, even for skipped pages
-      value = this.getNextValue(tempAction, value, 1) ?? value;
+      cells.push({
+        rowId: this.pageToRowId(action.pages[i]),
+        id: columnId,
+        value: value,
+      });
+      // advance value by step
+      value = this.getNextValue(tempAction, value, step) ?? value;
     }
     return cells;
   }

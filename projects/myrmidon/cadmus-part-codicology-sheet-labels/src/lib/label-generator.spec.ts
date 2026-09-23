@@ -622,14 +622,56 @@ describe('LabelGenerator', () => {
     expect(cells[3]).toEqual({ rowId: '2v', id: 'n', value: '4' });
   });
 
-  it('should generateSet 2 labeled cells from 1r-2v:2:=1 (step 2, Arabic)', () => {
-    // step=2: even positions (0, 2) labeled; odd positions skipped but consume counter
-    // 1r(pos 0)=1, 1v(pos 1) skipped (would be 2), 2r(pos 2)=3, 2v(pos 3) skipped
+  it('should generateSet 4 cells from 1r-2v:2:=1 (step 2, Arabic)', () => {
+    // step=2: all rows labeled, value increments by 2 for each row
     const action = LabelGenerator.parseSetAction('1r-2v:2:=1') as CodLabelSetAction;
     const cells = LabelGenerator.generateSet('n', action);
-    expect(cells.length).toBe(2);
+    expect(cells.length).toBe(4);
     expect(cells[0]).toEqual({ rowId: '1r', id: 'n', value: '1' });
-    expect(cells[1]).toEqual({ rowId: '2r', id: 'n', value: '3' });
+    expect(cells[1]).toEqual({ rowId: '1v', id: 'n', value: '3' });
+    expect(cells[2]).toEqual({ rowId: '2r', id: 'n', value: '5' });
+    expect(cells[3]).toEqual({ rowId: '2v', id: 'n', value: '7' });
+  });
+
+  it('should generateSet 3 cells from 5r 10r 15r:5:=5 (step 5, Arabic)', () => {
+    // only the listed rows are labeled; value starts at 5, +5 each time
+    const action = LabelGenerator.parseSetAction(
+      '5r 10r 15r:5:=5',
+    ) as CodLabelSetAction;
+    const cells = LabelGenerator.generateSet('n', action);
+    expect(cells.length).toBe(3);
+    expect(cells[0]).toEqual({ rowId: '5r', id: 'n', value: '5' });
+    expect(cells[1]).toEqual({ rowId: '10r', id: 'n', value: '10' });
+    expect(cells[2]).toEqual({ rowId: '15r', id: 'n', value: '15' });
+  });
+
+  it('should generateSet 3 cells from 1r 3r 5r:=1 (default step 1)', () => {
+    // listed rows are not contiguous, but value still increments by 1
+    const action = LabelGenerator.parseSetAction(
+      '1r 3r 5r:=1',
+    ) as CodLabelSetAction;
+    const cells = LabelGenerator.generateSet('n', action);
+    expect(cells.length).toBe(3);
+    expect(cells[0]).toEqual({ rowId: '1r', id: 'n', value: '1' });
+    expect(cells[1]).toEqual({ rowId: '3r', id: 'n', value: '2' });
+    expect(cells[2]).toEqual({ rowId: '5r', id: 'n', value: '3' });
+  });
+
+  it('should generateSet custom value ignoring step', () => {
+    const action = LabelGenerator.parseSetAction(
+      '1r 2r 3r:5:=custom',
+    ) as CodLabelSetAction;
+    const cells = LabelGenerator.generateSet('n', action);
+    expect(cells.length).toBe(3);
+    expect(cells.every((c) => c.value === 'custom')).toBe(true);
+  });
+
+  it('should generateSet lat lower letter with step 2', () => {
+    const action = LabelGenerator.parseSetAction(
+      '1r 2r 3r:2:=a',
+    ) as CodLabelSetAction;
+    const cells = LabelGenerator.generateSet('n', action);
+    expect(cells.map((c) => c.value)).toEqual(['a', 'c', 'e']);
   });
 
   it('should generateSet constant value for custom string', () => {
@@ -644,15 +686,14 @@ describe('LabelGenerator', () => {
   });
 
   it('should generateSet lower roman with step 2', () => {
-    // 1r-4v: 8 pages, step=2 → 4 labeled at positions 0,2,4,6
-    // values: ii(0), skip iii, iv(2), skip v, vi(4), skip vii, viii(6)
-    const action = LabelGenerator.parseSetAction('1r-4v:2:=ii') as CodLabelSetAction;
+    // 1r-2v: 4 pages, all labeled, value +2 each time
+    const action = LabelGenerator.parseSetAction('1r-2v:2:=ii') as CodLabelSetAction;
     const cells = LabelGenerator.generateSet('n', action);
     expect(cells.length).toBe(4);
     expect(cells[0]).toEqual({ rowId: '1r', id: 'n', value: 'ii' });
-    expect(cells[1]).toEqual({ rowId: '2r', id: 'n', value: 'iv' });
-    expect(cells[2]).toEqual({ rowId: '3r', id: 'n', value: 'vi' });
-    expect(cells[3]).toEqual({ rowId: '4r', id: 'n', value: 'viii' });
+    expect(cells[1]).toEqual({ rowId: '1v', id: 'n', value: 'iv' });
+    expect(cells[2]).toEqual({ rowId: '2r', id: 'n', value: 'vi' });
+    expect(cells[3]).toEqual({ rowId: '2v', id: 'n', value: 'viii' });
   });
 
   // parseAction dispatches SET actions correctly (including single-location)

@@ -604,17 +604,27 @@
               of an arbitrarily defined set of cells. In this case, you specify
               any number of physical locations (e.g. <code>1r</code>) or
               location ranges (e.g. <code>1r-4v</code>), followed by
-              <code>:=</code> and a single value to assign to all the listed
-              cells.
+              <code>:=</code> and a starting value to assign to all the listed
+              cells. Non-constant values are incremented by 1 for each listed
+              cell, e.g. <code>1r 3r 5r:=1</code> assigns 1, 2, 3.
             </p>
             <p>
-              In both cases you can add a <strong>step</strong> value to jump a
-              certain number of sheets or pages between each label. For
-              instance, <code>1r%3:2=1</code> adds labels to sheets 1r, 2v, 3r
-              with a step of 2 pages between each label; or for just labelling,
-              <code>1r-2v:=x</code> has step 1, but <code>1r-2v:2:=x</code> has
-              step 2.
+              In both cases you can add a <strong>step</strong> value (before
+              <code>=</code> or <code>:=</code>), but with a different meaning:
             </p>
+            <ul>
+              <li>
+                when <strong>adding</strong> labels, the step skips sheets or
+                pages: for instance, <code>1r%3:2=1</code> labels only the 1st
+                and 3rd page (1r=1, 2r=3);
+              </li>
+              <li>
+                when <strong>setting</strong> labels, all the listed cells get a
+                label, and the step is the increment of the value from each cell
+                to the next: for instance, <code>5r 10r 15r:5:=5</code> assigns
+                5, 10, 15. The step is ignored for constant values.
+              </li>
+            </ul>
           </div>
         </mat-tab>
       </mat-tab-group>

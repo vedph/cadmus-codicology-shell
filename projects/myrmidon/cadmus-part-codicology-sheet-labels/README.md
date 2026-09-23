@@ -9,7 +9,7 @@ The `LabelGenerator` uses two types of formulas to create and assign labels to r
 1. **Add Actions** – Automatically generate labels starting from a specific row
 2. **Set Actions** – Assign labels to specific rows or ranges
 
-Both support multiple value types (Arabic numbers, Roman numerals, letters, custom text) and optional step-based skipping.
+Both support multiple value types (Arabic numbers, Roman numerals, letters, custom text) and an optional step, whose meaning differs between the two (see [Step Behavior](#step-behavior)).
 
 ---
 
@@ -231,7 +231,7 @@ N[rv] [x*%] count[:step] = value
 
 ## Set Actions (Target-Specific Labels)
 
-Set actions assign labels to specific rows or ranges, with optional step-based skipping.
+Set actions assign labels to all and only the specified rows or ranges. Unlike add actions, there is no formula: you just list the locations to label. The value is assigned to the first location, and (unless it is a constant) incremented for each following location by the optional step.
 
 ### Syntax
 
@@ -245,8 +245,8 @@ locations[:step] := value
   - `(Nr)` = endleaf front, row N, recto
   - `(/Nr)` = endleaf back, row N, recto
   - `A-B` = range from A to B (expands all rows in between)
-- **[:step]**: Optional. Label every n-th row in the location list
-- **:= value**: The label value (supports same value types as add actions)
+- **[:step]**: Optional. The increment applied to the value from each listed location to the next (default is 1). No row is ever skipped. The step is ignored for constant (custom) values.
+- **:= value**: The starting label value (supports same value types as add actions, except quires)
 
 ### Examples
 
@@ -298,30 +298,46 @@ locations[:step] := value
 2v: 4
 ```
 
-#### Example 4: Label a range with step (skip rows)
+#### Example 4: Label specific rows with a value step
 
 ```txt
-1r-4v:2:=ii
+5r 10r 15r:5:=5
 ```
 
-- Range spans 8 pages (1r, 1v, 2r, 2v, 3r, 3v, 4r, 4v)
-- Step = 2 (label every 2nd page)
+- Label all and only rows 5r, 10r, 15r
+- Start with value `5`
+- Step = 5 (value increment for each listed row after the first)
+
+**Output**:
+
+```txt
+5r: 5
+10r: 10
+15r: 15
+```
+
+Without the step (`5r 10r 15r:=5`), the values would be `5`, `6`, `7`.
+
+#### Example 5: Label a range with a value step
+
+```txt
+1r-2v:2:=ii
+```
+
+- Range spans 4 pages (1r, 1v, 2r, 2v), all labeled
+- Step = 2 (value increment)
 - Start with lower Roman `ii`
-- Skipped pages consume counter value
 
 **Output**:
 
 ```txt
 1r: ii
-(1v skipped, value iii consumed)
-2r: iv
-(2v skipped, value v consumed)
-3r: vi
-(3v skipped, value vii consumed)
-4r: viii
+1v: iv
+2r: vi
+2v: viii
 ```
 
-#### Example 5: Endleaf notation
+#### Example 6: Endleaf notation
 
 ```txt
 (1r) (/1v):=e
@@ -337,7 +353,7 @@ locations[:step] := value
 (/1v): e
 ```
 
-#### Example 6: Range with endleaves
+#### Example 7: Range with endleaves
 
 ```txt
 (1r) 2r (/3v):=x
@@ -365,6 +381,7 @@ locations[:step] := value
 | Label a few specific rows                 | **Set action**           |
 | Label with regular skipping patterns      | **Add action with step** |
 | Label irregular patterns                  | **Set action**           |
+| Label listed rows with a regular value gap | **Set action with step** |
 
 ### Value Type Auto-Detection
 
@@ -375,13 +392,22 @@ locations[:step] := value
 
 ### Step Behavior
 
-The **step parameter** skips rows but **still increments the counter value**:
+The **step parameter** has a different meaning in add and set actions.
+
+In **add actions**, the step **skips rows** but **still increments the counter value** by 1 for each row:
 
 - Step = 1: label every row (default)
 - Step = 2: label every 2nd row; odd-positioned rows are skipped but consume a value
 - Step = 3: label every 3rd row; other rows are skipped but consume values
 
 This ensures that skipped rows don't "leave gaps" in your numbering sequence.
+
+In **set actions**, skipping rows would make no sense, as you list all and only the rows to label. So here the step is the **increment of the value** from each listed row to the next:
+
+- Step = 1: values increment by 1 (default): `1r 3r 5r:=1` gives `1`, `2`, `3`
+- Step = 5: values increment by 5: `5r 10r 15r:5:=5` gives `5`, `10`, `15`
+
+Constant (custom) values never change, so for them the step is ignored.
 
 ### Quire Mode Details
 

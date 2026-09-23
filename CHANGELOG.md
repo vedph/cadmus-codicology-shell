@@ -4,6 +4,7 @@
   - 🆕 added clear column button to sheet labels part.
   - replaced `deepCopy` with `structuredClone`.
   - bumped versions for all libraries except unaffected libraries (cadmus-codicology-ui, cadmus-part-codicology-location-ranges, cadmus-part-codicology-pg, cadmus-part-codicology-watermarks).
+  - fix step for set action in sheet labels. While both ADD and SET actions have an optional step, in SET its meaning must be different: in ADD the step is used to skip rows; in SET skipping rows would make no sense: we specify only those rows we want to assign values to. Rather, in SET step should be used to change the default increment (+1) of the VALUE assigned (when this is not a constant -- otherwise, it will just be ignored). For instance, if I write `5r 10r 15r:5:=5` I want to say that: all and only the listed rows (5r, 10r, 15r) get a value; the value starts with 5; the value is then incremented for each listed row after the first by the specified step (5): so the value is 5 the first time; 10 the second time (=5+5); 15 the third time (=10+5). The result will thus be: `5r=5`, `10r=10` (and NOT `6`), `15r=15` (and NOT `7`). Otherwise, the step would be useless and confuse users who in SET just specify ALL the rows to apply some label to.
 - 2026-09-22:
   - 🆕 added `CodLocationRangesPart`.
   - updated packages.
