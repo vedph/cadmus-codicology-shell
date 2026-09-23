@@ -105,7 +105,6 @@ export class CodUnitEditorComponent {
       Validators.maxLength(50),
     ]);
     this.state = formBuilder.control(null, [
-      Validators.required,
       Validators.maxLength(50),
     ]);
     this.ranges = formBuilder.control([], {
@@ -144,7 +143,7 @@ export class CodUnitEditorComponent {
     this.noGregory.setValue(unit.noGregory ? true : false);
     this.material.setValue(unit.material);
     this.format.setValue(unit.format);
-    this.state.setValue(unit.state);
+    this.state.setValue(unit.state || null);
     this.ranges.setValue(unit.ranges || []);
     this.chronotopes.setValue(unit.chronotopes || []);
     this.note.setValue(unit.note || null);
@@ -178,7 +177,7 @@ export class CodUnitEditorComponent {
       noGregory: this.noGregory.value ? true : false,
       material: this.material.value?.trim() || '',
       format: this.format.value?.trim() || '',
-      state: this.state.value?.trim() || '',
+      state: this.state.value?.trim() || undefined,
       ranges: this.ranges.value,
       chronotopes: this.chronotopes.value?.length
         ? this.chronotopes.value
