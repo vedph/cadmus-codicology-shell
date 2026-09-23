@@ -52,7 +52,7 @@
     "@myrmidon/cadmus-mat-physical-size": "^10.0.2",
     "@myrmidon/cadmus-mat-physical-state": "^10.0.2",
     "@myrmidon/cadmus-part-general-pg": "^18.0.1",
-    "@myrmidon/cadmus-part-general-ui": "^18.0.2",
+    "@myrmidon/cadmus-part-general-ui": "^18.0.3",
     "@myrmidon/cadmus-part-philology-pg": "^18.0.1",
     "@myrmidon/cadmus-part-philology-ui": "^19.0.2",
     "@myrmidon/cadmus-preview-pg": "^18.0.1",

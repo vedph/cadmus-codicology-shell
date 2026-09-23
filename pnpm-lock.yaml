@@ -246,10 +246,10 @@ importers:
         version: 10.0.2(@angular/common@22.0.7(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/material@22.0.5(d4896d4a9423248bae390979b4ab2a15))(@myrmidon/cadmus-ui-flag-set@10.0.2(27fa467c7b7452c3f90950c0fad651d1))
       '@myrmidon/cadmus-part-general-pg':
         specifier: ^18.0.1
-        version: 18.0.1(280b08f8f17975f07d51b9be31a7612b)
+        version: 18.0.1(ae26848d741c929fea73e794493f6a99)
       '@myrmidon/cadmus-part-general-ui':
-        specifier: ^18.0.2
-        version: 18.0.2(02944f38fcbd771c8a1b639371323321)
+        specifier: ^18.0.3
+        version: 18.0.3(02944f38fcbd771c8a1b639371323321)
       '@myrmidon/cadmus-part-philology-pg':
         specifier: ^18.0.1
         version: 18.0.1(67ee5d3efc1229ee252d2abc0aaa9675)
@@ -1584,23 +1584,23 @@ packages:
       '@myrmidon/ngx-mat-tools': ^3.0.1
       '@myrmidon/ngx-tools': ^3.0.1
 
-  '@myrmidon/cadmus-part-general-ui@18.0.2':
-    resolution: {integrity: sha512-FyTO5X9agJPMATGXOCh1kQk9rEo+w8Jnda7N2R/b2QFemibKDB+QPSEzFCo0NAnxkWjPXSub8n2D2BUHbQtasw==}
+  '@myrmidon/cadmus-part-general-ui@18.0.3':
+    resolution: {integrity: sha512-5zULNzISDAuxiCdbVKkKLvvZRVf/V+Odp5lR4Sbo6K8ZLVMLV/OyRvLsMvBv7Jcwio5Fn8852vXNLAgnmYggHQ==}
     peerDependencies:
       '@angular/common': ^22.0.0
       '@angular/core': ^22.0.0
       '@angular/material': ^22.0.0
       '@jean-merelis/ngx-monaco-editor': ^21.0.0
-      '@myrmidon/cadmus-core': ^13.0.0
-      '@myrmidon/cadmus-refs-asserted-chronotope': 12.0.0
-      '@myrmidon/cadmus-refs-asserted-ids': ^11.0.1
-      '@myrmidon/cadmus-refs-assertion': 11.0.0
-      '@myrmidon/cadmus-refs-doc-references': ^11.0.0
-      '@myrmidon/cadmus-refs-historical-date': 10.0.0
-      '@myrmidon/cadmus-refs-proper-name': 11.0.0
-      '@myrmidon/cadmus-ui': ^17.0.1
+      '@myrmidon/cadmus-core': ^13.0.1
+      '@myrmidon/cadmus-refs-asserted-chronotope': 12.0.2
+      '@myrmidon/cadmus-refs-asserted-ids': ^11.0.5
+      '@myrmidon/cadmus-refs-assertion': 11.0.5
+      '@myrmidon/cadmus-refs-doc-references': ^11.0.2
+      '@myrmidon/cadmus-refs-historical-date': 10.0.2
+      '@myrmidon/cadmus-refs-proper-name': 11.0.2
+      '@myrmidon/cadmus-ui': ^18.0.0
       '@myrmidon/ngx-mat-tools': ^3.0.1
-      '@myrmidon/ngx-tools': ^3.0.1
+      '@myrmidon/ngx-tools': ^3.0.2
 
   '@myrmidon/cadmus-part-philology-pg@18.0.1':
     resolution: {integrity: sha512-MWBSRuqpn6BIkUXXmpvuAnRM0O15AZN7LbNsWC1nSK5EzEBA1Y6FcatzVm+eQOXnviE6DdrtXjlUPI572xy9Aw==}
@@ -5554,21 +5554,21 @@ snapshots:
       '@myrmidon/cadmus-ui-flag-set': 10.0.2(27fa467c7b7452c3f90950c0fad651d1)
       tslib: 2.8.1
 
-  '@myrmidon/cadmus-part-general-pg@18.0.1(280b08f8f17975f07d51b9be31a7612b)':
+  '@myrmidon/cadmus-part-general-pg@18.0.1(ae26848d741c929fea73e794493f6a99)':
     dependencies:
       '@angular/common': 22.0.7(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2)
       '@angular/core': 22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2)
       '@angular/material': 22.0.5(d4896d4a9423248bae390979b4ab2a15)
       '@myrmidon/cadmus-core': 13.0.1(@angular/common@22.0.7(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2))(@myrmidon/ngx-tools@3.0.2(@angular/common@22.0.7(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/forms@22.0.7(@angular/common@22.0.7(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/platform-browser@22.0.7(@angular/animations@22.0.7(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2)))(@angular/common@22.0.7(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2)))(rxjs@7.8.2)))
       '@myrmidon/cadmus-item-editor': 18.0.0(b0a8664dd9a96dcf0bda8084733db596)
-      '@myrmidon/cadmus-part-general-ui': 18.0.2(02944f38fcbd771c8a1b639371323321)
+      '@myrmidon/cadmus-part-general-ui': 18.0.3(02944f38fcbd771c8a1b639371323321)
       '@myrmidon/cadmus-state': 16.0.1(b794e93401aa12487c908ed2fa3a2439)
       '@myrmidon/cadmus-ui': 18.0.0(93f48257df449bb3582b2644defe98ce)
       '@myrmidon/ngx-mat-tools': 3.0.1(@angular/common@22.0.7(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2))
       '@myrmidon/ngx-tools': 3.0.2(@angular/common@22.0.7(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/forms@22.0.7(@angular/common@22.0.7(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/platform-browser@22.0.7(@angular/animations@22.0.7(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2)))(@angular/common@22.0.7(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2)))(rxjs@7.8.2))
       tslib: 2.8.1
 
-  '@myrmidon/cadmus-part-general-ui@18.0.2(02944f38fcbd771c8a1b639371323321)':
+  '@myrmidon/cadmus-part-general-ui@18.0.3(02944f38fcbd771c8a1b639371323321)':
     dependencies:
       '@angular/common': 22.0.7(@angular/core@22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2)
       '@angular/core': 22.0.7(@angular/compiler@22.0.7)(rxjs@7.8.2)(zone.js@0.16.2)
