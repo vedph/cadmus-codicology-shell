@@ -22,7 +22,7 @@ import {
 import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
-import { deepCopy, NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { MatExpansionModule } from '@angular/material/expansion';
 
 import { DialogService } from '@myrmidon/ngx-mat-tools';
@@ -203,7 +203,7 @@ export class CodLayoutsPartComponent
       this.editedLayout.set(undefined);
     } else {
       this.editedIndex.set(index);
-      this.editedLayout.set(deepCopy(layout));
+      this.editedLayout.set(structuredClone(layout));
     }
   }
 

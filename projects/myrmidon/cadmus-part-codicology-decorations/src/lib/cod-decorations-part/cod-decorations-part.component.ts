@@ -32,7 +32,7 @@ import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatExpansionModule } from '@angular/material/expansion';
 
-import { deepCopy, NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
@@ -416,7 +416,7 @@ export class CodDecorationsPartComponent
       this.editedDecoration.set(undefined);
     } else {
       this.editedIndex.set(index);
-      this.editedDecoration.set(deepCopy(decoration));
+      this.editedDecoration.set(structuredClone(decoration));
     }
   }
 

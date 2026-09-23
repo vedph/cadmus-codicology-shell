@@ -40,7 +40,6 @@ import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 
 import { CodHandDescription, CodHandSign } from '../cod-hands-part';
 import { CodHandSignComponent } from '../cod-hand-sign/cod-hand-sign.component';
-import { deepCopy } from '@myrmidon/ngx-tools';
 
 @Component({
   selector: 'cadmus-cod-hand-description',
@@ -247,7 +246,7 @@ export class CodHandDescriptionComponent {
       this.editedSign.set(undefined);
     } else {
       this.editedSignIndex.set(index);
-      this.editedSign.set(deepCopy(sign));
+      this.editedSign.set(structuredClone(sign));
     }
   }
 

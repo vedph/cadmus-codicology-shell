@@ -1,4 +1,3 @@
-import { deepCopy } from '@myrmidon/ngx-tools';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { CodColumn, CodRow } from './cod-sheet-labels-part';
@@ -155,7 +154,7 @@ export class CodSheetTable {
           id: r.id,
           columns: cols,
         } as CodRowViewModel;
-      })
+      }),
     );
   }
 
@@ -180,7 +179,7 @@ export class CodSheetTable {
   public hasColumn(id: string, typeOnly = false): boolean {
     const type = id.charAt(0);
     return this._cols$.value.find((c) =>
-      typeOnly ? c.charAt(0) === type : c === id
+      typeOnly ? c.charAt(0) === type : c === id,
     )
       ? true
       : false;
@@ -224,7 +223,7 @@ export class CodSheetTable {
     }
 
     this._cols$.next(cols);
-    this._rows$.next(deepCopy(rows));
+    this._rows$.next(structuredClone(rows));
   }
 
   /**
@@ -245,7 +244,7 @@ export class CodSheetTable {
     }
 
     this._cols$.next(cols);
-    this._rows$.next(deepCopy(rows));
+    this._rows$.next(structuredClone(rows));
   }
 
   private buildRowId(type: CodRowType, n: number, v: boolean) {
@@ -302,7 +301,7 @@ export class CodSheetTable {
         });
         this.incRowPage(page);
       }
-      this._rows$.next(deepCopy(rows));
+      this._rows$.next(structuredClone(rows));
       return;
     }
 
@@ -344,7 +343,7 @@ export class CodSheetTable {
       });
     }
 
-    this._rows$.next(deepCopy(rows));
+    this._rows$.next(structuredClone(rows));
   }
 
   /**
@@ -371,7 +370,7 @@ export class CodSheetTable {
       note: cell.note,
     });
     rows[rowIndex].columns = cols;
-    this._rows$.next(deepCopy(rows));
+    this._rows$.next(structuredClone(rows));
   }
 
   private parseRowId(rowId: string): CodRowPage | null {
@@ -558,8 +557,7 @@ export class CodSheetTable {
         rows.splice(rowIndex, 0, row);
       } else {
         rows[rowIndex].columns[columnIndex].value = cells[i].value;
-        rows[rowIndex].columns[columnIndex].features =
-          cells[i].features;
+        rows[rowIndex].columns[columnIndex].features = cells[i].features;
         rows[rowIndex].columns[columnIndex].note = cells[i].note;
       }
 
@@ -569,11 +567,11 @@ export class CodSheetTable {
     }
 
     // save
-    console.log('[CodSheetTable] addCells emitting rows$.next, total rows:', rows.length);
-    const t0 = performance.now();
-    const rowsCopy = deepCopy(rows);
-    const t1 = performance.now();
-    console.log('[CodSheetTable] deepCopy took:', (t1 - t0).toFixed(2), 'ms');
+    console.log(
+      '[CodSheetTable] addCells emitting rows$.next, total rows:',
+      rows.length,
+    );
+    const rowsCopy = structuredClone(rows);
     this._rows$.next(rowsCopy);
     console.log('[CodSheetTable] addCells END');
   }
@@ -645,7 +643,7 @@ export class CodSheetTable {
     }
 
     // update rows
-    this._rows$.next(deepCopy(rows));
+    this._rows$.next(structuredClone(rows));
   }
 
   /**
@@ -658,14 +656,14 @@ export class CodSheetTable {
   public setPageValue(
     columnIndex: number,
     pages: CodRowPage[],
-    value: string | undefined | null
+    value: string | undefined | null,
   ): void {
-    const rows = deepCopy([...this._rows$.value]) as CodRowViewModel[];
+    const rows = structuredClone([...this._rows$.value]) as CodRowViewModel[];
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
       const id = this.parseRowId(row.id);
       const page = pages.find(
-        (p) => p.type === id?.type && p.n === id.n && p.v === id.v
+        (p) => p.type === id?.type && p.n === id.n && p.v === id.v,
       );
       if (page) {
         row.columns[columnIndex].value = value || undefined;
@@ -689,11 +687,27 @@ export class CodSheetTable {
     if (columnIndex < 0) {
       return;
     }
-    const rows = deepCopy([...this._rows$.value]) as CodRowViewModel[];
+    const rows = structuredClone([...this._rows$.value]) as CodRowViewModel[];
     for (const cell of cells) {
       const row = rows.find((r) => r.id === cell.rowId);
       if (row) {
         row.columns[columnIndex].value = cell.value || undefined;
+      }
+    }
+    this._rows$.next(rows);
+  }
+
+  /**
+   * Clear values of all cells in the specified column.
+   * @param columnId The ID of the column to clear values from.
+   */
+  public clearColumnValues(columnId: string): void {
+    const rows = structuredClone([...this._rows$.value]) as CodRowViewModel[];
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      const columnIndex = this._cols$.value.findIndex((id) => id === columnId);
+      if (columnIndex >= 0 && row.columns[columnIndex]) {
+        row.columns[columnIndex].value = undefined;
       }
     }
     this._rows$.next(rows);
@@ -713,7 +727,7 @@ export class CodSheetTable {
           // q value is like 1.1/4, 1.2/4, etc.
           const n = parseInt(
             col.value.substring(0, col.value.indexOf('.')),
-            10
+            10,
           );
           if (n > max) {
             max = n;

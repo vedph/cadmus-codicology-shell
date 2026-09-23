@@ -28,7 +28,7 @@ import { MatTabGroup, MatTab } from '@angular/material/tabs';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 
-import { deepCopy, NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 
@@ -271,7 +271,7 @@ export class CodHandsPartComponent
 
   public editHand(hand: CodHand | null, index = -1): void {
     this.editedIndex.set(index);
-    this.editedHand.set(hand ? deepCopy(hand) : undefined);
+    this.editedHand.set(hand ? structuredClone(hand) : undefined);
     this.tabIndex.set(hand ? 1 : 0);
   }
 

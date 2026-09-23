@@ -28,7 +28,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 
-import { deepCopy, NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 import { CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
@@ -266,7 +266,7 @@ export class CodWatermarksPartComponent
       this.editedWatermark.set(undefined);
     } else {
       this.editedIndex.set(index);
-      this.editedWatermark.set(deepCopy(watermark));
+      this.editedWatermark.set(structuredClone(watermark));
     }
   }
 

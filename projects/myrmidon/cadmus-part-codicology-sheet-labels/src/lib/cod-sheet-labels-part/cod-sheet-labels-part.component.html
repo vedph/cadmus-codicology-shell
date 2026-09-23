@@ -52,6 +52,15 @@
                   <button
                     type="button"
                     mat-icon-button
+                    matTooltip="Clear the selected column"
+                    [disabled]="!opColumn.value"
+                    (click)="onClearColumn()"
+                  >
+                    <mat-icon class="mat-warn">clear</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
                     matTooltip="Delete the selected column"
                     [disabled]="!opColumn.value"
                     (click)="onDeleteColumn()"
@@ -81,6 +90,7 @@
                     }
                   </mat-form-field>
 
+                  <!-- execute action button -->
                   <button
                     mat-icon-button
                     type="submit"
@@ -89,7 +99,7 @@
                   >
                     <mat-icon class="mat-primary">play_circle</mat-icon>
                   </button>
-
+                  <!-- auto-append checkbox -->
                   <mat-checkbox
                     [formControl]="autoAppend"
                     matTooltip="Auto-append rows on overflow"
@@ -213,7 +223,10 @@
             [disabled]="!editedDefId()"
           >
             <mat-expansion-panel-header
-              [style.background]="$safeNavigationMigration(editedDefId()?.charAt(0)) | cellTypeColor"
+              [style.background]="
+                $safeNavigationMigration(editedDefId()?.charAt(0))
+                  | cellTypeColor
+              "
               >column: {{ editedDefId() }}</mat-expansion-panel-header
             >
             <!-- Q -->
@@ -435,7 +448,7 @@
         <!-- HELP -->
         <mat-tab label="help">
           <div id="help">
-            <h2>Overview</h2>
+            <h4>Overview</h4>
             <p>
               This part allows you to edit data about labels (numbering,
               catchwords and signatures) attached to manuscript sheets and their
@@ -468,7 +481,7 @@
               required. You can edit data about each column using the edit
               button next to the action's tool column picker.
             </p>
-            <h2>Getting Started</h2>
+            <h4>Getting Started</h4>
             <ol>
               <li>
                 add as many rows as required, considering that each row
@@ -510,7 +523,7 @@
               button next to the label, or edit its features when these were
               defined in the proper thesauri.
             </p>
-            <h2>Columns</h2>
+            <h4>Columns</h4>
             <p>
               The quires column is unique, and always has the ID <code>q</code>.
               All the other columns have an ID starting with their type prefix
@@ -539,7 +552,7 @@
               way to edit additional notes about any of the cell values.
             </p>
 
-            <h2>Rows</h2>
+            <h4>Rows</h4>
             <p>
               Rows (=physical sheets) are numbered according to these
               conventions:
@@ -558,7 +571,7 @@
                 <code>(/1r)</code>=1 recto.
               </li>
             </ul>
-            <h2>Formula</h2>
+            <h4>Formula</h4>
             <p>
               A formula to <strong>add rows</strong> consists of these parts:
             </p>

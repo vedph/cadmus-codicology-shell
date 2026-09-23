@@ -31,7 +31,6 @@ import { MatTooltip } from '@angular/material/tooltip';
 import {
   NgxToolsValidators,
   FlatLookupPipe,
-  deepCopy,
 } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
@@ -285,7 +284,7 @@ export class CodBindingsPartComponent
       this.editedBinding.set(undefined);
     } else {
       this.editedIndex.set(index);
-      this.editedBinding.set(deepCopy(binding));
+      this.editedBinding.set(structuredClone(binding));
     }
   }
 

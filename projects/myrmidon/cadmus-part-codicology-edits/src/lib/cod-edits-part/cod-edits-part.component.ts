@@ -28,7 +28,6 @@ import {
   NgxToolsValidators,
   EllipsisPipe,
   FlatLookupPipe,
-  deepCopy,
 } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
@@ -265,7 +264,7 @@ export class CodEditsPartComponent
       this.editedEdit.set(undefined);
     } else {
       this.editedIndex.set(index);
-      this.editedEdit.set(deepCopy(edit));
+      this.editedEdit.set(structuredClone(edit));
     }
   }
 

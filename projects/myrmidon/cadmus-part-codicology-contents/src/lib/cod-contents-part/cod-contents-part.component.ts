@@ -26,7 +26,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 
 // myrmidon
-import { deepCopy, NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { NgxToolsValidators } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 
@@ -301,7 +301,7 @@ export class CodContentsPartComponent
       this.editedContent.set(undefined);
     } else {
       this.editedIndex.set(index);
-      this.editedContent.set(deepCopy(content));
+      this.editedContent.set(structuredClone(content));
     }
   }
 

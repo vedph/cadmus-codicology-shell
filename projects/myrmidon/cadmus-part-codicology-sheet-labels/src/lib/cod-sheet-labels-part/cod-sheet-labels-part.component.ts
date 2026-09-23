@@ -39,7 +39,7 @@ import {
   MatExpansionPanelHeader,
 } from '@angular/material/expansion';
 
-import { deepCopy, FlatLookupPipe } from '@myrmidon/ngx-tools';
+import { FlatLookupPipe } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 
@@ -661,6 +661,20 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
     }
   }
 
+  public onClearColumn(): void {
+    if (!this.opColumn.value) {
+      return;
+    }
+    this._dialogService
+      .confirm('Confirmation', `Clear column ${this.opColumn.value}?`)
+      .pipe(take(1))
+      .subscribe((yes) => {
+        if (yes) {
+          this._table.clearColumnValues(this.opColumn.value!);
+        }
+      });
+  }
+
   public onDeleteColumn(): void {
     if (!this.opColumn.value) {
       return;
@@ -907,7 +921,7 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
 
   public cloneEndleaf(index: number): void {
     const endleaves: CodEndleaf[] = [...this.endleaves.value];
-    endleaves.splice(index, 0, deepCopy(endleaves[index]));
+    endleaves.splice(index, 0, structuredClone(endleaves[index]));
     this.endleaves.setValue(endleaves);
     this.endleaves.updateValueAndValidity();
     this.endleaves.markAsDirty();

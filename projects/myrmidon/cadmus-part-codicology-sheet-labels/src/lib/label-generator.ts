@@ -22,6 +22,9 @@ export interface CodLabelAction {
   value?: string;
 }
 
+/**
+ * The types of actions that can be used to generate labels.
+ */
 export enum CodLabelActionType {
   Custom = 0,
   Arabic,

@@ -41,7 +41,6 @@ import { DialogService } from '@myrmidon/ngx-mat-tools';
 import {
   NgxToolsValidators,
   FlatLookupPipe,
-  deepCopy,
 } from '@myrmidon/ngx-tools';
 import {
   AssertedCompositeId,
@@ -249,7 +248,7 @@ export class CodHandComponent {
       this.editedDsc.set(undefined);
     } else {
       this.editedDscIndex.set(index);
-      this.editedDsc.set(deepCopy(description));
+      this.editedDsc.set(structuredClone(description));
     }
   }
 
@@ -324,7 +323,7 @@ export class CodHandComponent {
       this.editedIst.set(undefined);
     } else {
       this.editedIstIndex.set(index);
-      this.editedIst.set(deepCopy(instance));
+      this.editedIst.set(structuredClone(instance));
     }
   }
 
@@ -402,7 +401,7 @@ export class CodHandComponent {
       this.editedSub.set(undefined);
     } else {
       this.editedSubIndex.set(index);
-      this.editedSub.set(deepCopy(subscription));
+      this.editedSub.set(structuredClone(subscription));
     }
   }
 

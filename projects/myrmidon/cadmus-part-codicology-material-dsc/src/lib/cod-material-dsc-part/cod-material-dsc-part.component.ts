@@ -1,5 +1,9 @@
 import {
-  ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  signal,
+} from '@angular/core';
 import {
   FormControl,
   FormBuilder,
@@ -30,11 +34,7 @@ import {
   MatExpansionPanelTitle,
 } from '@angular/material/expansion';
 
-import {
-  NgxToolsValidators,
-  FlatLookupPipe,
-  deepCopy,
-} from '@myrmidon/ngx-tools';
+import { NgxToolsValidators, FlatLookupPipe } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 import { HistoricalDatePipe } from '@myrmidon/cadmus-refs-historical-date';
@@ -117,19 +117,33 @@ export class CodMaterialDscPartComponent
   // cod-unit-tags
   public readonly tagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
   // cod-unit-materials
-  public readonly materialEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly materialEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // cod-unit-formats
-  public readonly formatEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly formatEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // cod-unit-states
-  public readonly stateEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly stateEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // chronotope-tags
-  public readonly ctTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly ctTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // assertion-tags
-  public readonly assTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly assTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // doc-reference-types
-  public readonly refTypeEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly refTypeEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
   // doc-reference-tags
-  public readonly refTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly refTagEntries = signal<ThesaurusEntry[] | undefined>(
+    undefined,
+  );
 
   // lookup options depending on role
   public readonly lookupProviderOptions = signal<
@@ -255,7 +269,9 @@ export class CodMaterialDscPartComponent
   //#region Units
   public addUnit(): void {
     this.editUnit({
-      material: this.materialEntries()?.length ? this.materialEntries()![0].id : '',
+      material: this.materialEntries()?.length
+        ? this.materialEntries()![0].id
+        : '',
       format: this.formatEntries()?.length ? this.formatEntries()![0].id : '',
       state: this.stateEntries()?.length ? this.stateEntries()![0].id : '',
       ranges: [],
@@ -271,7 +287,7 @@ export class CodMaterialDscPartComponent
       this.editedUt.set(undefined);
     } else {
       this.editedUtIndex.set(index);
-      this.editedUt.set(deepCopy(unit));
+      this.editedUt.set(structuredClone(unit));
     }
   }
 
@@ -348,7 +364,7 @@ export class CodMaterialDscPartComponent
       this.editedPs.set(undefined);
     } else {
       this.editedPsIndex.set(index);
-      this.editedPs.set(deepCopy(palimpsest));
+      this.editedPs.set(structuredClone(palimpsest));
     }
   }
 

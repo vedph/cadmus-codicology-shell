@@ -1,5 +1,9 @@
 # History
 
+- 2026-09-23:
+  - 🆕 added clear column button to sheet labels part.
+  - replaced `deepCopy` with `structuredClone`.
+  - bumped versions for all libraries except unaffected libraries (cadmus-codicology-ui, cadmus-part-codicology-location-ranges, cadmus-part-codicology-pg, cadmus-part-codicology-watermarks).
 - 2026-09-22:
   - 🆕 added `CodLocationRangesPart`.
   - updated packages.

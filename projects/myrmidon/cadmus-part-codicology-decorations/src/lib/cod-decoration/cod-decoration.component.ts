@@ -29,7 +29,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 
-import { deepCopy, FlatLookupPipe } from '@myrmidon/ngx-tools';
+import { FlatLookupPipe } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import {
   AssertedChronotope,
@@ -306,7 +306,7 @@ export class CodDecorationComponent {
       this.editedElement.set(undefined);
     } else {
       this.editedElementIndex.set(index);
-      this.editedElement.set(deepCopy(element));
+      this.editedElement.set(structuredClone(element));
     }
   }
 
@@ -394,7 +394,7 @@ export class CodDecorationComponent {
       this.editedArtist.set(undefined);
     } else {
       this.editedArtistIndex.set(index);
-      this.editedArtist.set(deepCopy(artist));
+      this.editedArtist.set(structuredClone(artist));
     }
   }
 

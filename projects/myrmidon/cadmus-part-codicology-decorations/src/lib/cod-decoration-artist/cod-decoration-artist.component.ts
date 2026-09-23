@@ -48,7 +48,7 @@ import {
   CodDecorationArtistStyle,
 } from '../cod-decorations-part';
 import { CodDecorationArtistStyleComponent } from '../cod-decoration-artist-style/cod-decoration-artist-style.component';
-import { deepCopy } from '@myrmidon/ngx-tools';
+
 
 @Component({
   selector: 'cadmus-cod-decoration-artist',
@@ -209,7 +209,7 @@ export class CodDecorationArtistComponent {
       this.editedStyle.set(undefined);
     } else {
       this.editedStyleIndex.set(index);
-      this.editedStyle.set(deepCopy(style));
+      this.editedStyle.set(structuredClone(style));
     }
   }
 
