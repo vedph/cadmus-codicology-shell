@@ -399,10 +399,15 @@ export class CodSheetTable {
     };
   }
 
+  private getPagePosition(page: CodRowPage): number {
+    // 1r=2, 1v=3, 2r=4...
+    return page.n * 2 + (page.v ? 1 : 0);
+  }
+
   private countRowsBetween(a: CodRowPage, b: CodRowPage): number {
     // we assume that a/b belong to the same type
-    const n = b.n - a.n;
-    return n <= 0 ? 0 : n - 1 + (b.v ? 1 : 0);
+    const n = this.getPagePosition(b) - this.getPagePosition(a) - 1;
+    return n < 0 ? 0 : n;
   }
 
   private adjustForTargetColumn(cell: CodLabelCell): number {
@@ -433,141 +438,125 @@ export class CodSheetTable {
     }
   }
 
-  private adjustForTargetRow(cell: CodLabelCell): {
-    rowIndex: number;
-    rows: CodRowViewModel[];
-  } | null {
+  /**
+   * Locate the row with the specified ID in rows, optionally inserting it
+   * when missing. When inserting the target row or interpolating, rows are
+   * placed after the last row of the same type preceding the target (or after
+   * the rows of the preceding types), and all the missing rows between that
+   * row and the target are interpolated.
+   *
+   * @param rows The rows to work on. This is modified in place.
+   * @param rowId The target row ID.
+   * @param interpolate True to insert the missing rows preceding the target.
+   * @param insertTarget True to insert the target row if missing.
+   * @returns The index of the target row, or -1 if not present.
+   */
+  private ensureRow(
+    rows: CodRowViewModel[],
+    rowId: string,
+    interpolate: boolean,
+    insertTarget: boolean,
+  ): number {
     // if the target row is already present, just ret its index
-    const rows = [...this._rows$.value];
-    let rowIndex = rows.findIndex((r) => r.id === cell.rowId);
-    if (rowIndex > -1) {
-      return {
-        rowIndex,
-        rows,
-      };
+    const index = rows.findIndex((r) => r.id === rowId);
+    if (index > -1 || (!interpolate && !insertTarget)) {
+      return index;
     }
 
-    // else, first locate the last row having the same type,
-    // or the last having the type coming before the target type
-    const b = this.parseRowId(cell.rowId);
+    const b = this.parseRowId(rowId);
     if (!b) {
-      return null;
-    }
-    rowIndex = rows.length - 1;
-    while (rowIndex > -1 && rows[rowIndex].type > b.type) {
-      rowIndex--;
+      return -1;
     }
 
-    // if we reached the last row of the same type, this is the A-term
-    // for calculating interpolation delta
-    let a: CodRowPage | null = null;
-    if (rowIndex > -1 && rows[rowIndex].type !== b.type) {
-      a = this.parseRowId(rows[rowIndex].id);
-      if (!a) {
-        return null;
-      }
-    } else {
-      if (rows[rowIndex].type === b.type) {
-        // we reached the last row of the same type
-        if (!a) {
-          a = this.parseRowId(rows[rowIndex].id);
-          if (!a) {
-            return null;
-          }
-        }
-      } else {
-        // we reached the last row of the preceding type, or the top
-        // the A-term is 0
-        a = {
-          n: 0,
-          v: true,
-          type: b.type,
-        };
-      }
+    // locate the last row preceding the target: this is either a row of
+    // the same type coming before the target, or a row of a preceding type
+    let i = rows.length - 1;
+    while (
+      i > -1 &&
+      (rows[i].type > b.type ||
+        (rows[i].type === b.type &&
+          this.getPagePosition(rows[i]) > this.getPagePosition(b)))
+    ) {
+      i--;
     }
+
+    // the A-term for interpolation is the preceding row of the same type,
+    // or 0 if there is none
+    const a: CodRowPage =
+      i > -1 && rows[i].type === b.type
+        ? { type: b.type, n: rows[i].n, v: rows[i].v }
+        : { type: b.type, n: 0, v: true };
 
     // interpolate rows between a and b if any
-    const delta = this.countRowsBetween(a, b);
-    let interp: CodRowPage = { ...a };
-    for (let i = 0; i < delta; i++) {
-      // next page (each row is a page)
-      rowIndex++;
-      this.incRowPage(interp);
-      rows.splice(rowIndex++, 0, {
-        id: this.buildRowId(interp.type, interp.n, interp.v),
-        columns: this.getNewColumns(),
-        ...interp,
-      });
+    let insertIndex = i + 1;
+    if (interpolate) {
+      const delta = this.countRowsBetween(a, b);
+      const interp: CodRowPage = { ...a };
+      for (let j = 0; j < delta; j++) {
+        // next page (each row is a page)
+        this.incRowPage(interp);
+        rows.splice(insertIndex++, 0, {
+          id: this.buildRowId(interp.type, interp.n, interp.v),
+          columns: this.getNewColumns(),
+          ...interp,
+        });
+      }
     }
 
-    // point to the target row
-    return {
-      rowIndex,
-      rows,
-    };
+    if (!insertTarget) {
+      return -1;
+    }
+    rows.splice(insertIndex, 0, {
+      id: rowId,
+      columns: this.getNewColumns(),
+      ...b,
+    });
+    return insertIndex;
   }
 
   /**
    * Add the specified cells to the table. All the cells belong to the same
-   * column, specified by columnId. If this is not found, it will be added.
-   * Also, cells are a range of consecutive sheets, e.g. 3r-5v. All the rows
-   * preceding the first row of the range being added are inserted if they
-   * are missing.
+   * column, specified by the ID of the first cell. If this is not found, it
+   * will be added. Each cell is placed in the row matching its row ID.
+   * The rows preceding the first cell's row are inserted if they are missing.
+   * The rows of the other cells are inserted when missing only when appending
+   * is enabled; otherwise, their cells are dropped.
    *
    * @param cells The cells to add.
+   * @param appendMissing True to insert all the missing rows targeted by
+   * cells; false to drop cells targeting missing rows. When not specified,
+   * this is the opposite of overflowDropping.
    */
-  public addCells(cells: CodLabelCell[]): void {
+  public addCells(cells: CodLabelCell[], appendMissing?: boolean): void {
     if (!cells.length) {
       return;
     }
+    const append = appendMissing ?? !this.overflowDropping;
+
     // adjust and locate target column
     const columnIndex = this.adjustForTargetColumn(cells[0]);
 
-    // adjust and locate target row
-    const ir = this.adjustForTargetRow(cells[0]);
-    if (!ir) {
-      return;
-    }
-    let { rowIndex, rows } = ir;
-
-    // set cells starting from 1st
-    const p = this.parseRowId(cells[0].rowId)!;
-    // determine the limit for the target rows area
-    let limit = rowIndex;
-    while (limit < rows.length && rows[limit].type === p.type) {
-      limit++;
-    }
-
+    const rows = structuredClone(this._rows$.value);
     for (let i = 0; i < cells.length; i++) {
-      // if the row does not exist, append it
-      if (rowIndex >= limit) {
-        if (this.overflowDropping) {
-          break;
-        }
-        const row = {
-          id: cells[i].rowId,
-          columns: this.getNewColumns(),
-          ...p,
-        };
-        const col = row.columns.find((c) => c.id === cells[0].id);
-        col!.value = cells[i].value;
-        col!.features = cells[i].features;
-        col!.note = cells[i].note;
-        rows.splice(rowIndex, 0, row);
-      } else {
-        rows[rowIndex].columns[columnIndex].value = cells[i].value;
-        rows[rowIndex].columns[columnIndex].features = cells[i].features;
-        rows[rowIndex].columns[columnIndex].note = cells[i].note;
+      const cell = cells[i];
+      // rows preceding the first cell are always interpolated
+      const rowIndex = this.ensureRow(
+        rows,
+        cell.rowId,
+        i === 0 || append,
+        append,
+      );
+      if (rowIndex === -1) {
+        continue;
       }
-
-      // next page (each row is a page)
-      this.incRowPage(p);
-      rowIndex++;
+      const col = rows[rowIndex].columns[columnIndex];
+      col.value = cell.value;
+      col.features = cell.features;
+      col.note = cell.note;
     }
 
     // save
-    const rowsCopy = structuredClone(rows);
-    this._rows$.next(rowsCopy);
+    this._rows$.next(rows);
   }
 
   private isRowEmpty(row: CodRowViewModel): boolean {

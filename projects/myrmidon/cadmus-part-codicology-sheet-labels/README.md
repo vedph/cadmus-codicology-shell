@@ -32,6 +32,16 @@ N[rv] [x*%] count[:step] = value
 - **[:step]**: Optional. Step for skipping rows (default is 1, meaning all rows are labeled)
 - **= value**: The starting label value (see value types below)
 
+### Missing Rows
+
+Each generated label targets the row matching its location (e.g. `3r`). When that row is not in the table:
+
+- the rows preceding the first label's row are always inserted when missing;
+- for **quires** (`q{quireNum}/{sheetsPerQuire}`), all the missing rows are always inserted, as quires define the structure of the sheets;
+- for all the other labels, the missing rows are inserted only when the **auto-append** option is checked in the editor; otherwise, the labels targeting them are dropped.
+
+For instance, in an empty table `1x2=q1/4` creates rows `1r`-`8v` with their quire labels, whatever the auto-append option; while `1%4=1` adds rows `1r`-`2v` only when auto-append is checked.
+
 ### Value Types
 
 | Type              | Examples           | Behavior                                                              |
@@ -210,6 +220,7 @@ N[rv] [x*%] count[:step] = value
 - Start at row 1, sheet mode
 - Label 2 quires (q1, q2), each with 4 sheets
 - Generates values like `1.1/4`, `1.2/4`, ..., `1.4/4`, `2.1/4`, ...
+- Missing rows are always added (here up to `8v`), even without auto-append
 
 **Output**:
 
@@ -413,9 +424,9 @@ Constant (custom) values never change, so for them the step is ignored.
 
 Format: `q{quireNumber}/{sheetsPerQuire}`
 
-Example: `q1/4` generates labels for 2 quires with 4 sheets each:
+Here the count of the add action is the number of quires. Example: `1x2=q1/4` generates labels for 2 quires with 4 sheets each:
 
 - Quire 1: 1.1/4, 1.2/4, 1.3/4, 1.4/4
 - Quire 2: 2.1/4, 2.2/4, 2.3/4, 2.4/4
 
-Both recto and verso of each sheet share the same quire label.
+Both recto and verso of each sheet share the same quire label. Quires always add the rows they need when missing (see [Missing Rows](#missing-rows)); the step does not apply to them.

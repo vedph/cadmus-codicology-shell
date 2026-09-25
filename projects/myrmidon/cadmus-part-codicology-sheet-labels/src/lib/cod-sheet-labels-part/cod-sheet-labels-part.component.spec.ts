@@ -216,6 +216,27 @@ describe('CodSheetLabelsPartComponent', () => {
     expect(within(bodyRows()[2]).getByText('3')).toBeInTheDocument();
   });
 
+  it('should drop labels overflowing the table without auto-append', async () => {
+    const { user } = await setup({ part: { rows: [] } });
+    await add(user, 'body', '1');
+    await add(user, 'numbering');
+
+    await runAction(user, 'n', '1r%3=1');
+
+    expect(rowIds()).toEqual(['1r', '1v']);
+  });
+
+  it('should always append missing rows for quires', async () => {
+    const { user } = await setup({ part: { rows: [] } });
+    await add(user, 'quire');
+
+    // auto-append is off, but quires add their rows
+    await runAction(user, 'q', '1x1=q1/2');
+
+    expect(rowIds()).toEqual(['1r', '1v', '2r', '2v']);
+    expect(within(bodyRows()[3]).getByText('1.2/2')).toBeInTheDocument();
+  });
+
   it('should set labels with a set action', async () => {
     const { user } = await setup({ part: { rows: ROWS } });
 

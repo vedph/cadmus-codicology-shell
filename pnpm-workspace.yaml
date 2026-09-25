@@ -16,3 +16,5 @@ minimumReleaseAgeExclude:
   - marked@18.0.7 || 18.0.14
   - '@myrmidon/cadmus-cod-location@10.0.3'
   - '@myrmidon/cadmus-refs-lookup@11.0.5 || 11.0.6'
+  - '@analogjs/vite-plugin-angular@2.7.5'
+  - '@rollup/rollup-win32-arm64-msvc@4.63.5'

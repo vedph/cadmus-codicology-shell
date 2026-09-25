@@ -1,5 +1,6 @@
 # History
 
+- 2026-09-25: fix regression in sheet labels add actions: quire actions (e.g. `1x8=q1/4`) again always add the missing rows, independently from the auto-append option (other labels still add them only when auto-append is checked). Also, labels are now placed in the rows matching their location (so that add actions with a step no longer write skipped labels into consecutive rows), and fixed rows interpolation when the target row is missing (crash on empty table, wrong target row, wrong count of interpolated rows).
 - 2026-09-23:
   - 🆕 added clear column button to sheet labels part.
   - made `CodUnit.state` not required (like in backend).

@@ -23,17 +23,17 @@
     "build-lib": "npm run build-ui && npm run build-bnd && npm run build-cnt && npm run build-dec && npm run build-edt && npm run build-hnd && npm run build-lbl && npm run build-lay && npm run build-mat && npm run build-shm && npm run build-wat && npm run build-pg && npm run build-loc"
   },
   "private": true,
-  "packageManager": "pnpm@12.5.1",
+  "packageManager": "pnpm@12.6.0",
   "dependencies": {
-    "@angular/animations": "^22.0.7",
-    "@angular/cdk": "^22.0.5",
-    "@angular/common": "^22.0.7",
-    "@angular/compiler": "^22.0.7",
-    "@angular/core": "^22.0.7",
-    "@angular/forms": "^22.0.7",
-    "@angular/material": "^22.0.5",
-    "@angular/platform-browser": "^22.0.7",
-    "@angular/router": "^22.0.7",
+    "@angular/animations": "^22.2.0",
+    "@angular/cdk": "^22.2.0",
+    "@angular/common": "^22.2.0",
+    "@angular/compiler": "^22.2.0",
+    "@angular/core": "^22.2.0",
+    "@angular/forms": "^22.2.0",
+    "@angular/material": "^22.2.0",
+    "@angular/platform-browser": "^22.2.0",
+    "@angular/router": "^22.2.0",
     "@auth0/angular-jwt": "^5.2.0",
     "@jean-merelis/ngx-monaco-editor": "^21.0.0",
     "@myrmidon/auth-jwt-admin": "^10.0.0",
@@ -96,23 +96,23 @@
     "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@analogjs/vite-plugin-angular": "^2.6.1",
-    "@angular/build": "^22.0.7",
-    "@angular/cli": "^22.0.7",
-    "@angular/compiler-cli": "^22.0.7",
-    "@angular/localize": "^22.0.7",
-    "@testing-library/angular": "^19.4.1",
-    "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^7.0.0",
-    "@testing-library/user-event": "^14.6.1",
-    "jsdom": "^30.0.1",
-    "ng-packagr": "^22.0.1",
+    "@analogjs/vite-plugin-angular": "^2.7.5",
+    "@angular/build": "^22.2.0",
+    "@angular/cli": "^22.2.0",
+    "@angular/compiler-cli": "^22.2.0",
+    "@angular/localize": "^22.2.0",
+    "@testing-library/angular": "^19.5.0",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/user-event": "^14.6.7",
+    "jsdom": "^30.1.1",
+    "ng-packagr": "^22.2.1",
     "typescript": "~6.0.3",
     "vitest": "^5.0.1",
-    "zone.js": "0.16.2"
+    "zone.js": "0.16.3"
   },
   "optionalDependencies": {
-    "@rollup/rollup-win32-arm64-msvc": "^4.63.4"
+    "@rollup/rollup-win32-arm64-msvc": "^4.63.5"
   },
   "pnpm": {
     "overrides": {

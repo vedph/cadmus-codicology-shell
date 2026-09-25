@@ -66,7 +66,12 @@ import {
   COD_SHEET_LABELS_PART_TYPEID,
   CodQuireDescription,
 } from '../cod-sheet-labels-part';
-import { CodLabelCell, LabelGenerator } from '../label-generator';
+import {
+  CodLabelAction,
+  CodLabelActionType,
+  CodLabelCell,
+  LabelGenerator,
+} from '../label-generator';
 import { CodRowType, CodRowViewModel, CodSheetTable } from '../cod-sheet-table';
 import { CodNColDefinitionComponent } from '../cod-n-col-definition/cod-n-col-definition.component';
 import { CodCColDefinitionComponent } from '../cod-c-col-definition/cod-c-col-definition.component';
@@ -613,11 +618,19 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
       this._table.setCells(cells);
       this.form.markAsDirty();
     } else {
-      const cells = LabelGenerator.generateFrom(
-        this.opColumn.value!,
-        this.opAction.value!,
+      const action = LabelGenerator.parseAction(
+        this.opAction.value,
+      ) as CodLabelAction | null;
+      if (!action) {
+        return;
+      }
+      const cells = LabelGenerator.generate(this.opColumn.value!, action);
+      // quires always append missing rows, as they define the sheets
+      // structure; other labels follow the auto-append option
+      this._table.addCells(
+        cells,
+        action.type === CodLabelActionType.Quire ? true : undefined,
       );
-      this._table.addCells(cells);
       this.form.markAsDirty();
     }
   }
