@@ -18,3 +18,7 @@ minimumReleaseAgeExclude:
   - '@myrmidon/cadmus-refs-lookup@11.0.5 || 11.0.6'
   - '@analogjs/vite-plugin-angular@2.7.5'
   - '@rollup/rollup-win32-arm64-msvc@4.63.5'
+  - '@myrmidon/cod-layout-view@2.0.3'
+  - '@vitest/mocker@5.0.2'
+  - '@vitest/spy@5.0.2'
+  - vitest@5.0.2
