@@ -57,6 +57,9 @@ import { CodUnit } from '../cod-material-dsc-part';
 })
 export class CodUnitEditorComponent {
   public readonly unit = model<CodUnit>();
+  // hide format field by default as it is obsoleted in the model
+  // but we must ensure backwards compatibility.
+  public readonly noFormat = input<boolean>(true);
 
   // cod-unit-tags
   public readonly tagEntries = input<ThesaurusEntry[]>();

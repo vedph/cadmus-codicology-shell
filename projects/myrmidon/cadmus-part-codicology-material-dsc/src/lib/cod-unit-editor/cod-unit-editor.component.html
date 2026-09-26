@@ -73,38 +73,40 @@
       </mat-form-field>
     }
 
-    <!-- format (bound) -->
-    @if (formatEntries()?.length) {
-      <mat-form-field>
-        <mat-label>format</mat-label>
-        <mat-select [formControl]="format">
-          @for (e of formatEntries(); track e.id) {
-            <mat-option [value]="e.id">{{ e.value }}</mat-option>
+    @if (!noFormat()) {
+      <!-- format (bound) -->
+      @if (formatEntries()?.length) {
+        <mat-form-field>
+          <mat-label>format</mat-label>
+          <mat-select [formControl]="format">
+            @for (e of formatEntries(); track e.id) {
+              <mat-option [value]="e.id">{{ e.value }}</mat-option>
+            }
+          </mat-select>
+          @if (
+            $any(format).errors?.required && (format.dirty || format.touched)
+          ) {
+            <mat-error>format required</mat-error>
           }
-        </mat-select>
-        @if (
-          $any(format).errors?.required && (format.dirty || format.touched)
-        ) {
-          <mat-error>format required</mat-error>
-        }
-      </mat-form-field>
-    }
-    <!-- format (free) -->
-    @else {
-      <mat-form-field>
-        <mat-label>format</mat-label>
-        <input matInput [formControl]="format" />
-        @if (
-          $any(format).errors?.required && (format.dirty || format.touched)
-        ) {
-          <mat-error>format required</mat-error>
-        }
-        @if (
-          $any(format).errors?.maxLength && (format.dirty || format.touched)
-        ) {
-          <mat-error>format too long</mat-error>
-        }
-      </mat-form-field>
+        </mat-form-field>
+      }
+      <!-- format (free) -->
+      @else {
+        <mat-form-field>
+          <mat-label>format</mat-label>
+          <input matInput [formControl]="format" />
+          @if (
+            $any(format).errors?.required && (format.dirty || format.touched)
+          ) {
+            <mat-error>format required</mat-error>
+          }
+          @if (
+            $any(format).errors?.maxLength && (format.dirty || format.touched)
+          ) {
+            <mat-error>format too long</mat-error>
+          }
+        </mat-form-field>
+      }
     }
 
     <!-- state (bound) -->
@@ -134,9 +136,7 @@
         }
       </mat-form-field>
     }
-  </div>
 
-  <div>
     <!-- ranges -->
     <cadmus-cod-location
       label="range(s)"
@@ -188,5 +188,6 @@
     >
       <mat-icon class="mat-primary">check_circle</mat-icon>
     </button>
+    unit
   </div>
 </form>

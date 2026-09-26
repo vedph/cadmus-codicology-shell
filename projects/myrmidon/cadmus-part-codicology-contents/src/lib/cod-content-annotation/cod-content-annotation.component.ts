@@ -113,10 +113,7 @@ export class CodContentAnnotationComponent {
     });
     this.features = formBuilder.control([], { nonNullable: true });
     this.languages = formBuilder.control([], { nonNullable: true });
-    this.incipit = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(500),
-    ]);
+    this.incipit = formBuilder.control(null, Validators.maxLength(500));
     this.explicit = formBuilder.control(null, Validators.maxLength(500));
     this.text = formBuilder.control(null, Validators.maxLength(1000));
     this.note = formBuilder.control(null, Validators.maxLength(5000));
@@ -170,8 +167,8 @@ export class CodContentAnnotationComponent {
     // ignore emissions not changing the location (the location editor
     // emits its initial value when initialized)
     if (
-      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
-      (CodLocationParser.rangesToString(this.ranges.value) || '')
+      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) ||
+        '') === (CodLocationParser.rangesToString(this.ranges.value) || '')
     ) {
       return;
     }

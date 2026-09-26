@@ -65,11 +65,6 @@
       <mat-label>incipit</mat-label>
       <input matInput [formControl]="incipit" />
       @if (
-        $any(incipit).errors?.required && (incipit.dirty || incipit.touched)
-      ) {
-        <mat-error>incipit required</mat-error>
-      }
-      @if (
         $any(incipit).errors?.maxLength && (incipit.dirty || incipit.touched)
       ) {
         <mat-error>incipit too long</mat-error>
@@ -130,5 +125,6 @@
     >
       <mat-icon class="mat-primary">check_circle</mat-icon>
     </button>
+    annotation
   </div>
 </form>
