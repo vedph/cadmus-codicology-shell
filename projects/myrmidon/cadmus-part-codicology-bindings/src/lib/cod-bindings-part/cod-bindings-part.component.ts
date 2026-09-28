@@ -44,6 +44,7 @@ import {
 import {
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
+  HelpLinkComponent
 } from '@myrmidon/cadmus-ui';
 import { PhysicalSizePipe } from '@myrmidon/cadmus-mat-physical-size';
 import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
@@ -90,6 +91,7 @@ interface CodBindingsPartSettings {
     FlatLookupPipe,
     HistoricalDatePipe,
     PhysicalSizePipe,
+    HelpLinkComponent
   ],
 })
 export class CodBindingsPartComponent

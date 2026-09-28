@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-shelfmarks",
-  "version": "15.0.1",
+  "version": "15.0.2",
   "description": "Cadmus codicology - shelfmarks part.",
   "keywords": [
     "Cadmus"
@@ -14,12 +14,12 @@
     "name": "Daniele Fusi"
   },
   "peerDependencies": {
-    "@angular/common": "^22.0.1",
-    "@angular/core": "^22.0.1",
-    "@angular/material": "^22.0.1",
+    "@angular/common": "^22.2.0",
+    "@angular/core": "^22.2.0",
+    "@angular/material": "^22.2.0",
     "@myrmidon/cadmus-state": "^16.0.1",
-    "@myrmidon/cadmus-ui": "^18.0.0",
-    "@myrmidon/cadmus-item-editor": "^18.0.0"
+    "@myrmidon/cadmus-ui": "^18.0.1",
+    "@myrmidon/cadmus-item-editor": "^18.0.1"
   },
   "dependencies": {
     "tslib": "^2.3.0"

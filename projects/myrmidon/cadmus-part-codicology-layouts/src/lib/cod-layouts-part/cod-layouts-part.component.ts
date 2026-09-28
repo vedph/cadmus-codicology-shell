@@ -40,6 +40,7 @@ import {
 import {
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
+  HelpLinkComponent,
 } from '@myrmidon/cadmus-ui';
 
 import {
@@ -78,6 +79,7 @@ import { CodLayoutEditorComponent } from '../cod-layout-editor/cod-layout-editor
     CloseSaveButtonsComponent,
     CodLocationPipe,
     CodLocationRangePipe,
+    HelpLinkComponent,
   ],
 })
 export class CodLayoutsPartComponent

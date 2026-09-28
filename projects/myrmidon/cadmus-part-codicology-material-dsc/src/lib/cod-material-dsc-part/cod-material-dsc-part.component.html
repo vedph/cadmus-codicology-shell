@@ -7,6 +7,7 @@
       <mat-card-title>{{
         (modelName() | titlecase) || "Material Description Part"
       }}</mat-card-title>
+      <cadmus-help-link [url]="helpUrl()" />
     </mat-card-header>
     <mat-card-content>
       <!-- units -->
@@ -188,7 +189,12 @@
                     </td>
                     <td>{{ entry.ranges | codLocationRange }}</td>
                     <td>{{ entry.chronotope?.place?.value }}</td>
-                    <td>{{ $safeNavigationMigration(entry.chronotope?.date) | historicalDate }}</td>
+                    <td>
+                      {{
+                        $safeNavigationMigration(entry.chronotope?.date)
+                          | historicalDate
+                      }}
+                    </td>
                   </tr>
                 }
               </tbody>

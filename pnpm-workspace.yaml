@@ -5,9 +5,9 @@ allowBuilds:
   msgpackr-extract: true
 minimumReleaseAgeExclude:
   - '@myrmidon/cadmus-part-general-pg@18.0.0'
-  - '@myrmidon/cadmus-part-general-ui@18.0.1 || 18.0.3'
+  - '@myrmidon/cadmus-part-general-ui@18.0.1 || 18.0.3 || 18.0.4'
   - '@myrmidon/cadmus-part-philology-pg@18.0.0'
-  - '@myrmidon/cadmus-part-philology-ui@19.0.1'
+  - '@myrmidon/cadmus-part-philology-ui@19.0.1 || 19.0.3'
   - '@myrmidon/cadmus-text-ed-md@12.0.0'
   - '@myrmidon/cadmus-text-ed-txt@11.0.0'
   - '@myrmidon/cadmus-text-ed@11.0.0'
@@ -22,3 +22,5 @@ minimumReleaseAgeExclude:
   - '@vitest/mocker@5.0.2'
   - '@vitest/spy@5.0.2'
   - vitest@5.0.2
+  - '@myrmidon/cadmus-item-editor@18.0.1'
+  - '@myrmidon/cadmus-ui@18.0.1'

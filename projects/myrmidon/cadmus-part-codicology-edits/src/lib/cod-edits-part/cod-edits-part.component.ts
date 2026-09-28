@@ -39,6 +39,7 @@ import {
 import {
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
+  HelpLinkComponent,
 } from '@myrmidon/cadmus-ui';
 import { CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
 import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
@@ -86,6 +87,7 @@ interface CodEditsPartSettings {
     EllipsisPipe,
     FlatLookupPipe,
     CodLocationRangePipe,
+    HelpLinkComponent,
   ],
 })
 export class CodEditsPartComponent

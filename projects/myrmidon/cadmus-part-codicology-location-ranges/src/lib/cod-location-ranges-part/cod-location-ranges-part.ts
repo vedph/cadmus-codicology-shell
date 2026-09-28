@@ -22,6 +22,7 @@ import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 import {
   CloseSaveButtonsComponent,
   ModelEditorComponentBase,
+  HelpLinkComponent,
 } from '@myrmidon/cadmus-ui';
 import { EditedObject } from '@myrmidon/cadmus-core';
 
@@ -53,6 +54,7 @@ import {
     MatTooltipModule,
     CloseSaveButtonsComponent,
     CodLocationComponent,
+    HelpLinkComponent,
   ],
   templateUrl: './cod-location-ranges-part.html',
   styleUrl: './cod-location-ranges-part.css',

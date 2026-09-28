@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-contents",
-  "version": "15.0.2",
+  "version": "15.0.3",
   "description": "Cadmus codicology - contents.",
   "keywords": [
     "Cadmus"
@@ -24,8 +24,8 @@
     "@myrmidon/cadmus-refs-citation": "^2.0.2",
     "@myrmidon/cadmus-ui-flag-set": "^10.0.2",
     "@myrmidon/cadmus-state": "^16.0.1",
-    "@myrmidon/cadmus-ui": "^18.0.0",
-    "@myrmidon/cadmus-item-editor": "^18.0.0"
+    "@myrmidon/cadmus-ui": "^18.0.1",
+    "@myrmidon/cadmus-item-editor": "^18.0.1"
   },
   "dependencies": {
     "tslib": "^2.3.0"

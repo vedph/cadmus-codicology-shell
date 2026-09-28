@@ -45,6 +45,7 @@ import {
 import {
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
+  HelpLinkComponent,
 } from '@myrmidon/cadmus-ui';
 
 import {
@@ -96,6 +97,7 @@ interface CodDecorationsPartSettings {
     CodDecorationComponent,
     MatCardActions,
     TitleCasePipe,
+    HelpLinkComponent,
     CloseSaveButtonsComponent,
   ],
 })

@@ -41,6 +41,7 @@ import {
 import {
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
+  HelpLinkComponent,
 } from '@myrmidon/cadmus-ui';
 import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
@@ -85,6 +86,7 @@ interface CodWatermarksPartSettings {
     MatCardActions,
     CloseSaveButtonsComponent,
     CodLocationRangePipe,
+    HelpLinkComponent,
   ],
 })
 export class CodWatermarksPartComponent
