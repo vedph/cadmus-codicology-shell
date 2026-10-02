@@ -90,4 +90,30 @@ describe('CodDecorationArtistStyleComponent', () => {
 
     expect(editorClose).toHaveBeenCalled();
   });
+
+  // signal forms regressions
+
+  it('should ignore a child echo of its chronotope', async () => {
+    const { fixture } = await setup(STYLE);
+
+    fixture.componentInstance.onChronotopeChange({
+      place: { value: 'Paris', tag: undefined },
+    } as any);
+    fixture.detectChanges();
+
+    expect(saveButton()).toBeDisabled();
+  });
+
+  it('should save on Enter in the name when dirty', async () => {
+    const { user, model } = await setup(STYLE);
+
+    await user.type(nameInput(), 'x{Enter}');
+
+    expect(model()!.name).toBe('gothicx');
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup(STYLE);
+    expect(container.querySelector('form')).toBeNull();
+  });
 });

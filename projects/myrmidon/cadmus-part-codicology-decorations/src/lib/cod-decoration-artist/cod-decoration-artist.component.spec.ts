@@ -202,4 +202,31 @@ describe('CodDecorationArtistComponent', () => {
 
     expect(editorClose).toHaveBeenCalled();
   });
+
+  // signal forms regressions
+
+  it('should ignore a child echo of its IDs', async () => {
+    const { fixture } = await setup(ARTIST);
+
+    fixture.componentInstance.onIdsChange([]);
+    fixture.detectChanges();
+
+    expect(saveButton()).toBeDisabled();
+  });
+
+  it('should save styles without the form identity tags', async () => {
+    const { user, model } = await setup(ARTIST);
+
+    await user.type(textbox(/^EID/), 'x');
+    await user.click(saveButton());
+
+    for (const s of model()!.styles!) {
+      expect(Object.getOwnPropertySymbols(s)).toHaveLength(0);
+    }
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup(ARTIST);
+    expect(container.querySelector('form')).toBeNull();
+  });
 });

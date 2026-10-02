@@ -272,9 +272,33 @@ describe('CodLayoutFormulaComponent', () => {
     expect(cells[cells.length - 1].textContent).toMatch(/^\s*1\s/);
 
     await user.click(getSaveButton());
-    expect(
-      (model()!.dimensions[0] as unknown as { ordinal: number }).ordinal,
-    ).toBe(1);
+    // ordinals are not part of the data, but the draft keeps them
+    expect(model()!.dimensions[0]).toEqual({
+      tag: 'custom',
+      value: 1,
+      unit: 'mm',
+    });
+    const savedCells = within(getDimensionRows()[0]).getAllByRole('cell');
+    expect(savedCells[savedCells.length - 1].textContent).toMatch(/^\s*1\s/);
+  });
+
+  it('should not warn about the edited dimension own ordinal', async () => {
+    const { user, fixture } = await setup({ formula: FORMULA, dimensions: [] });
+    await user.click(
+      screen.getAllByRole('button', { description: /import dimensions/i })[0],
+    );
+    const component = fixture.componentInstance;
+    const dimensions = component.form.dimensions().value();
+    const index = dimensions.findIndex((d) => d.ordinal === 2);
+    expect(index).toBeGreaterThan(-1);
+
+    // open another ordinal first: the warnings must not depend on it
+    component.editOrdinal(dimensions.findIndex((d) => d.ordinal === 1));
+    component.editOrdinal(index);
+
+    const warnValues = component.editedOrdinalValue()!.warnValues!;
+    expect(warnValues).not.toContain(2);
+    expect(warnValues).toContain(1);
   });
 
   it('should close the ordinal editor on cancel', async () => {
@@ -306,5 +330,80 @@ describe('CodLayoutFormulaComponent', () => {
     );
 
     expect(cancelEdit).toHaveBeenCalled();
+  });
+
+  // signal forms regressions
+
+  it('should keep edited ordinals when the consumer binds back the saved data without them', async () => {
+    const { user, model, fixture } = await setup({
+      formula: FORMULA,
+      dimensions: [{ tag: 'custom', value: 1, unit: 'mm' }],
+    });
+
+    await user.click(
+      screen.getByRole('button', { description: /edit ordinal/i }),
+    );
+    const ordinalInput = screen.getByRole('spinbutton', { name: /value/i });
+    await user.clear(ordinalInput);
+    await user.type(ordinalInput, '1');
+    await user.click(
+      screen.getAllByRole('button', { description: /accept changes/i })[0],
+    );
+    await user.click(getSaveButton());
+
+    // like the layout editor, bind back a copy without ordinals
+    const saved = model()!;
+    model.set({
+      ...saved,
+      dimensions: saved.dimensions.map((d) => {
+        const { ordinal, ...rest } = d as any;
+        return rest;
+      }),
+    });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    // from the formula, 'custom' would get ordinal 0
+    const cells = within(getDimensionRows()[0]).getAllByRole('cell');
+    expect(cells[cells.length - 1].textContent).toMatch(/^\s*1\s/);
+    expect(getSaveButton()).toBeDisabled();
+  });
+
+  it('should close the dimension editor and be pristine when new data is bound', async () => {
+    const { user, model, fixture } = await setup({
+      formula: FORMULA,
+      dimensions: [{ tag: 'custom', value: 1, unit: 'mm' }],
+    });
+    await user.type(getFormulaInput(), ' ');
+    await user.click(
+      screen.getByRole('button', { description: /edit this dimension/i }),
+    );
+    expect(screen.getByText('dimension #1')).toBeInTheDocument();
+
+    model.set({ formula: FORMULA, dimensions: [] });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(screen.queryByText('dimension #1')).not.toBeInTheDocument();
+    expect(getFormulaInput()).toHaveValue(FORMULA);
+    expect(getSaveButton()).toBeDisabled();
+  });
+
+  it('should save dimensions without the form identity tags', async () => {
+    const { user, model } = await setup({ formula: FORMULA, dimensions: [] });
+
+    await user.click(
+      screen.getAllByRole('button', { description: /import dimensions/i })[0],
+    );
+    await user.click(getSaveButton());
+
+    for (const d of model()!.dimensions) {
+      expect(Object.getOwnPropertySymbols(d)).toHaveLength(0);
+    }
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup({ formula: FORMULA, dimensions: [] });
+    expect(container.querySelector('form')).toBeNull();
   });
 });

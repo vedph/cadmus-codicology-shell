@@ -1,23 +1,18 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
+  inject,
   input,
   model,
-  OnInit,
   signal,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { form, FormField, required } from '@angular/forms/signals';
 import { AsyncPipe } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { debounceTime, distinctUntilChanged, Observable, take } from 'rxjs';
+import { debounceTime, Observable, Subject, take } from 'rxjs';
 
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatProgressBar } from '@angular/material/progress-bar';
@@ -42,6 +37,17 @@ import {
 } from '../cod-sheet-labels-part';
 import { CodLocationConverter } from '../cod-location-converter';
 
+interface CodLocationConverterControls {
+  system: string | null;
+  autoCopy: boolean;
+  location: string;
+  label: string;
+}
+
+function makeDefaultDraft(): CodLocationConverterControls {
+  return { system: null, autoCopy: false, location: '', label: '' };
+}
+
 /**
  * Codicological location converter component.
  */
@@ -51,8 +57,7 @@ import { CodLocationConverter } from '../cod-location-converter';
   styleUrls: ['./cod-location-converter.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatProgressBar,
     RefLookupComponent,
     MatSlideToggle,
@@ -67,21 +72,21 @@ import { CodLocationConverter } from '../cod-location-converter';
     AsyncPipe,
   ],
 })
-export class CodLocationConverterComponent implements OnInit {
-  private readonly _converter: CodLocationConverter;
-  private _locFrozen?: boolean;
-  private _labFrozen?: boolean;
+export class CodLocationConverterComponent {
+  private readonly _itemService = inject(ItemService);
+  private readonly _clipboard = inject(Clipboard);
+  private readonly _snackbar = inject(MatSnackBar);
+  private readonly _converter = new CodLocationConverter();
+  // the user's input in the label and location fields
+  private readonly _labelInput = new Subject<void>();
+  private readonly _locationInput = new Subject<void>();
 
+  public readonly lookupService = inject(ItemRefLookupService);
   public readonly loading = signal<boolean>(false);
-  public readonly baseFilter = signal<any>(undefined);
 
-  public system: FormControl<string | null>;
-  public autoCopy: FormControl<boolean>;
-  public location: FormControl<string | null>;
-  public label: FormControl<string | null>;
-  public form: FormGroup;
-  public systems$: Observable<string[]>;
-  public user$: Observable<User | null>;
+  public readonly systems$: Observable<string[]> = this._converter.systems$;
+  public readonly user$: Observable<User | null> =
+    inject(AuthJwtService).currentUser$;
 
   /**
    * The current item.
@@ -93,76 +98,64 @@ export class CodLocationConverterComponent implements OnInit {
    */
   public readonly facetId = input<string>();
 
-  constructor(
-    public lookupService: ItemRefLookupService,
-    private _itemService: ItemService,
-    authService: AuthJwtService,
-    private _clipboard: Clipboard,
-    private _snackbar: MatSnackBar,
-    formBuilder: FormBuilder,
-  ) {
-    this._converter = new CodLocationConverter();
-    this.systems$ = this._converter.systems$;
-    this.user$ = authService.currentUser$;
-    // form
-    this.system = formBuilder.control(null, Validators.required);
-    this.autoCopy = formBuilder.control(false, { nonNullable: true });
-    this.location = formBuilder.control(null);
-    this.label = formBuilder.control(null);
-    this.form = formBuilder.group({
-      system: this.system,
-      autoCopy: this.autoCopy,
-      location: this.location,
-      label: this.label,
-    });
+  public readonly baseFilter = computed<any>(() =>
+    this.facetId() ? { facetId: this.facetId() } : undefined,
+  );
 
+  private readonly _draft = signal<CodLocationConverterControls>(
+    makeDefaultDraft(),
+  );
+  public readonly form = form(this._draft, (p) => {
+    required(p.system);
+  });
+
+  constructor() {
     effect(() => {
       this.updateForm(this.item());
     });
 
-    effect(() => {
-      this.baseFilter.set(
-        this.facetId() ? { facetId: this.facetId() } : undefined,
-      );
-    });
+    // auto convert from label, when the user types in it: setting the
+    // other field from code does not fire input events, so the two
+    // conversions cannot trigger each other
+    this._labelInput
+      .pipe(debounceTime(300), takeUntilDestroyed())
+      .subscribe(() => {
+        const draft = this._draft();
+        if (draft.system) {
+          const result = this._converter.getLocation(draft.system, draft.label);
+          this.copy(result);
+          this.form.location().value.set(result || '');
+        }
+      });
+
+    // auto convert from location, when the user types in it
+    this._locationInput
+      .pipe(debounceTime(300), takeUntilDestroyed())
+      .subscribe(() => {
+        const draft = this._draft();
+        if (draft.system) {
+          const result = this._converter.getLabel(draft.system, draft.location);
+          this.copy(result);
+          this.form.label().value.set(result || '');
+        }
+      });
   }
 
-  public ngOnInit(): void {
-    // auto convert from label
-    this.label.valueChanges
-      .pipe(distinctUntilChanged(), debounceTime(300))
-      .subscribe((value) => {
-        if (this.system.value && !this._labFrozen) {
-          this._locFrozen = true;
-          const result = this._converter.getLocation(this.system.value, value!);
-          if (this.autoCopy.value && result) {
-            this._clipboard.copy(result);
-            this._snackbar.open('Copied ' + result, 'OK', {
-              duration: 1000,
-            });
-          }
-          this.location.setValue(result, { emitEvent: false });
-          this._locFrozen = false;
-        }
+  private copy(result: string | null): void {
+    if (this._draft().autoCopy && result) {
+      this._clipboard.copy(result);
+      this._snackbar.open('Copied ' + result, 'OK', {
+        duration: 1000,
       });
+    }
+  }
 
-    // auto convert from location
-    this.location.valueChanges
-      .pipe(distinctUntilChanged(), debounceTime(300))
-      .subscribe((value) => {
-        if (this.system.value && !this._locFrozen) {
-          this._labFrozen = true;
-          const result = this._converter.getLabel(this.system.value, value!);
-          if (this.autoCopy.value && result) {
-            this._clipboard.copy(result);
-            this._snackbar.open('Copied ' + result, 'OK', {
-              duration: 1000,
-            });
-          }
-          this.label.setValue(result, { emitEvent: false });
-          this._labFrozen = false;
-        }
-      });
+  public onLabelInput(): void {
+    this._labelInput.next();
+  }
+
+  public onLocationInput(): void {
+    this._locationInput.next();
   }
 
   public onItemChange(item: unknown): void {
@@ -171,7 +164,8 @@ export class CodLocationConverterComponent implements OnInit {
 
   private resetForm(): void {
     this._converter.setRows([]);
-    this.form.reset();
+    this._draft.set(makeDefaultDraft());
+    this.form().reset();
   }
 
   private updateForm(item?: Item): void {
@@ -185,7 +179,8 @@ export class CodLocationConverterComponent implements OnInit {
       .pipe(take(1))
       .subscribe({
         next: (part) => {
-          this.form.reset();
+          this._draft.set(makeDefaultDraft());
+          this.form().reset();
           const p = part as CodSheetLabelsPart;
           if (!p) {
             this.resetForm();

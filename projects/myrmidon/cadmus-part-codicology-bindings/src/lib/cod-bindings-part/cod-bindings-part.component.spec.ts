@@ -263,4 +263,46 @@ describe('CodBindingsPartComponent', () => {
       undefined,
     );
   });
+
+  // signal forms regressions
+
+  it('should be pristine after binding data', async () => {
+    const { fixture } = await setup({ bindings: [B1, B2] });
+    expect(fixture.componentInstance.isDirty()).toBe(false);
+  });
+
+  it('should be dirty after an edit, and pristine again after saving', async () => {
+    const { user, fixture } = await setup({ bindings: [B1, B2] });
+
+    await user.click(
+      within(rows()[0]).getByRole('button', {
+        description: /move this binding down/i,
+      }),
+    );
+    expect(fixture.componentInstance.isDirty()).toBe(true);
+
+    await user.click(partSaveButton());
+    expect(fixture.componentInstance.isDirty()).toBe(false);
+  });
+
+  it('should save bindings without the form identity tags', async () => {
+    const { user, data } = await setup({ bindings: [B1, B2] });
+
+    await user.click(
+      within(rows()[0]).getByRole('button', {
+        description: /move this binding down/i,
+      }),
+    );
+    await user.click(partSaveButton());
+
+    for (const b of data()!.value!.bindings) {
+      expect(Object.getOwnPropertySymbols(b)).toHaveLength(0);
+    }
+    expect(Object.getOwnPropertySymbols(B1)).toHaveLength(0);
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup({ bindings: [B1] });
+    expect(container.querySelector('form')).toBeNull();
+  });
 });

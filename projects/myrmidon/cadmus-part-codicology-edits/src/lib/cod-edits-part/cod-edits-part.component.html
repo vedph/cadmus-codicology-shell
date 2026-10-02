@@ -1,127 +1,127 @@
-<form [formGroup]="form" (submit)="save()">
-  <mat-card appearance="outlined">
-    <mat-card-header>
-      <div mat-card-avatar>
-        <mat-icon>picture_in_picture</mat-icon>
-      </div>
-      <mat-card-title>{{
-        (modelName() | titlecase) || "Manuscript Edits Part"
-      }}</mat-card-title>
-      <cadmus-help-link [url]="helpUrl()" />
-    </mat-card-header>
-    <mat-card-content>
-      <div>
-        <button
-          type="button"
-          mat-flat-button
-          class="mat-primary"
-          (click)="addEdit()"
-        >
-          <mat-icon>add_circle</mat-icon> edit
-        </button>
-      </div>
-      @if (edits.value && edits.value.length) {
-        <table>
-          <thead>
-            <tr>
-              <th></th>
-              <th>type</th>
-              <th>extent</th>
-              <th>text</th>
+<!-- no <form> here: the part is saved by the save button -->
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <div mat-card-avatar>
+      <mat-icon>picture_in_picture</mat-icon>
+    </div>
+    <mat-card-title>{{
+      (modelName() | titlecase) || "Manuscript Edits Part"
+    }}</mat-card-title>
+    <cadmus-help-link [url]="helpUrl()" />
+  </mat-card-header>
+  <mat-card-content>
+    <div>
+      <button
+        type="button"
+        mat-flat-button
+        class="mat-primary"
+        (click)="addEdit()"
+      >
+        <mat-icon>add_circle</mat-icon> edit
+      </button>
+    </div>
+    @if (form.edits().value() && form.edits().value().length) {
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>type</th>
+            <th>extent</th>
+            <th>text</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (
+            entry of form.edits().value();
+            track entry;
+            let i = $index;
+            let first = $first;
+            let last = $last
+          ) {
+            <tr [class.selected]="editedIndex() === i">
+              <td class="fit-width">
+                <button
+                  type="button"
+                  mat-icon-button
+                  matTooltip="Edit this edit"
+                  (click)="editEdit(entry, i)"
+                >
+                  <mat-icon class="mat-primary">edit</mat-icon>
+                </button>
+                <button
+                  type="button"
+                  mat-icon-button
+                  matTooltip="Move this edit up"
+                  [disabled]="first"
+                  (click)="moveEditUp(i)"
+                >
+                  <mat-icon>arrow_upward</mat-icon>
+                </button>
+                <button
+                  type="button"
+                  mat-icon-button
+                  matTooltip="Move this edit down"
+                  [disabled]="last"
+                  (click)="moveEditDown(i)"
+                >
+                  <mat-icon>arrow_downward</mat-icon>
+                </button>
+                <button
+                  type="button"
+                  mat-icon-button
+                  matTooltip="Delete this edit"
+                  (click)="deleteEdit(i)"
+                >
+                  <mat-icon class="mat-warn">remove_circle</mat-icon>
+                </button>
+              </td>
+              <td>
+                {{ entry.type | flatLookup: typeEntries() : "id" : "value" }}
+              </td>
+              <td>{{ entry.ranges | codLocationRange }}</td>
+              <td>
+                {{ entry.text | ellipsis }}
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            @for (
-              entry of edits.value;
-              track entry;
-              let i = $index;
-              let first = $first;
-              let last = $last
-            ) {
-              <tr [class.selected]="editedIndex() === i">
-                <td class="fit-width">
-                  <button
-                    type="button"
-                    mat-icon-button
-                    matTooltip="Edit this edit"
-                    (click)="editEdit(entry, i)"
-                  >
-                    <mat-icon class="mat-primary">edit</mat-icon>
-                  </button>
-                  <button
-                    type="button"
-                    mat-icon-button
-                    matTooltip="Move this edit up"
-                    [disabled]="first"
-                    (click)="moveEditUp(i)"
-                  >
-                    <mat-icon>arrow_upward</mat-icon>
-                  </button>
-                  <button
-                    type="button"
-                    mat-icon-button
-                    matTooltip="Move this edit down"
-                    [disabled]="last"
-                    (click)="moveEditDown(i)"
-                  >
-                    <mat-icon>arrow_downward</mat-icon>
-                  </button>
-                  <button
-                    type="button"
-                    mat-icon-button
-                    matTooltip="Delete this edit"
-                    (click)="deleteEdit(i)"
-                  >
-                    <mat-icon class="mat-warn">remove_circle</mat-icon>
-                  </button>
-                </td>
-                <td>
-                  {{ entry.type | flatLookup: typeEntries() : "id" : "value" }}
-                </td>
-                <td>{{ entry.ranges | codLocationRange }}</td>
-                <td>
-                  {{ entry.text | ellipsis }}
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      }
-      @if (editedEdit()) {
-        <mat-expansion-panel
-          [expanded]="editedEdit()"
-          [disabled]="!editedEdit()"
-        >
-          <mat-expansion-panel-header>
-            <mat-panel-title> #{{ editedIndex() + 1 }} </mat-panel-title>
-          </mat-expansion-panel-header>
+          }
+        </tbody>
+      </table>
+    }
+    @if (editedEdit()) {
+      <mat-expansion-panel
+        [expanded]="!!editedEdit()"
+        [disabled]="!editedEdit()"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title> #{{ editedIndex() + 1 }} </mat-panel-title>
+        </mat-expansion-panel-header>
 
-          <cadmus-cod-edit-editor
-            [tagEntries]="tagEntries()"
-            [posEntries]="posEntries()"
-            [langEntries]="langEntries()"
-            [techEntries]="techEntries()"
-            [typeEntries]="typeEntries()"
-            [colorEntries]="colorEntries()"
-            [refTagEntries]="refTagEntries()"
-            [refTypeEntries]="refTypeEntries()"
-            [assTagEntries]="assTagEntries()"
-            [idScopeEntries]="idScopeEntries()"
-            [idTagEntries]="idTagEntries()"
-            [lookupProviderOptions]="lookupProviderOptions()"
-            [edit]="editedEdit()"
-            (editChange)="onEditChange($event!)"
-            (editorClose)="editEdit(null)"
-          />
-        </mat-expansion-panel>
-      }
-    </mat-card-content>
-    <mat-card-actions>
-      <cadmus-close-save-buttons
-        [form]="form"
-        [noSave]="userLevel < 2"
-        (closeRequest)="close()"
-      />
-    </mat-card-actions>
-  </mat-card>
-</form>
+        <cadmus-cod-edit-editor
+          [tagEntries]="tagEntries()"
+          [posEntries]="posEntries()"
+          [langEntries]="langEntries()"
+          [techEntries]="techEntries()"
+          [typeEntries]="typeEntries()"
+          [colorEntries]="colorEntries()"
+          [refTagEntries]="refTagEntries()"
+          [refTypeEntries]="refTypeEntries()"
+          [assTagEntries]="assTagEntries()"
+          [idScopeEntries]="idScopeEntries()"
+          [idTagEntries]="idTagEntries()"
+          [lookupProviderOptions]="lookupProviderOptions()"
+          [edit]="editedEdit()"
+          (editChange)="onEditChange($event!)"
+          (editorClose)="editEdit(null)"
+        />
+      </mat-expansion-panel>
+    }
+  </mat-card-content>
+  <mat-card-actions>
+    <cadmus-close-save-buttons
+      [form]="form"
+      [noSave]="userLevel < 2"
+      (closeRequest)="close()"
+      (saveRequest)="save()"
+    />
+  </mat-card-actions>
+</mat-card>

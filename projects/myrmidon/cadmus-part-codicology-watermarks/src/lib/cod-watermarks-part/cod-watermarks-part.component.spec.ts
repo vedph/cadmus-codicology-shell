@@ -225,4 +225,31 @@ describe('CodWatermarksPartComponent', () => {
       undefined,
     );
   });
+
+  // signal forms regressions
+
+  it('should be pristine after binding data', async () => {
+    const { fixture } = await setup({ entries: [E1, E2] });
+    expect(fixture.componentInstance.isDirty()).toBe(false);
+  });
+
+  it('should be dirty after moving an entry, and pristine after saving', async () => {
+    const { user, fixture, data } = await setup({ entries: [E1, E2] });
+
+    await user.click(
+      within(rows()[0]).getByRole('button', { description: /move this watermark down/i }),
+    );
+    expect(fixture.componentInstance.isDirty()).toBe(true);
+
+    await user.click(partSaveButton());
+    expect(fixture.componentInstance.isDirty()).toBe(false);
+    for (const e of (data()!.value as any).watermarks) {
+      expect(Object.getOwnPropertySymbols(e)).toHaveLength(0);
+    }
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup({ entries: [E1] });
+    expect(container.querySelector('form')).toBeNull();
+  });
 });

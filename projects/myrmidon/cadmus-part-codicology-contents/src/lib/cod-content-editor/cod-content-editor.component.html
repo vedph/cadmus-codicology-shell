@@ -1,10 +1,10 @@
-<form [formGroup]="form" (submit)="save(); $event.stopPropagation()">
+<div (keydown.enter)="onEnterKey($event)">
   <div class="form-row">
     <!-- eid -->
     <mat-form-field>
       <mat-label>EID</mat-label>
-      <input matInput [formControl]="eid" />
-      @if ($any(eid).errors?.maxLength && (eid.dirty || eid.touched)) {
+      <input matInput [formField]="form.eid" />
+      @if (form.eid().getError("maxLength") && (form.eid().dirty() || form.eid().touched())) {
         <mat-error>EID too long</mat-error>
       }
     </mat-form-field>
@@ -12,14 +12,14 @@
     <cadmus-cod-location
       label="ranges"
       [required]="true"
-      [location]="ranges.value"
+      [location]="form.ranges().value()"
       (locationChange)="onLocationChange($event)"
     />
     <!-- tag (bound) -->
     @if (tagEntries()?.length) {
       <mat-form-field>
         <mat-label>tag</mat-label>
-        <mat-select [formControl]="tag">
+        <mat-select [formField]="form.tag">
           @for (e of tagEntries(); track e.id) {
             <mat-option [value]="e.id">{{ e.value }}</mat-option>
           }
@@ -30,8 +30,8 @@
     @else {
       <mat-form-field>
         <mat-label>tag</mat-label>
-        <input matInput [formControl]="tag" />
-        @if ($any(tag).errors?.maxLength && (tag.dirty || tag.touched)) {
+        <input matInput [formField]="form.tag" />
+        @if (form.tag().getError("maxLength") && (form.tag().dirty() || form.tag().touched())) {
           <mat-error>tag too long</mat-error>
         }
       </mat-form-field>
@@ -41,8 +41,8 @@
     <!-- author -->
     <mat-form-field>
       <mat-label>author</mat-label>
-      <input matInput [formControl]="author" />
-      @if ($any(author).errors?.maxLength && (author.dirty || author.touched)) {
+      <input matInput [formField]="form.author" />
+      @if (form.author().getError("maxLength") && (form.author().dirty() || form.author().touched())) {
         <mat-error>author too long</mat-error>
       }
     </mat-form-field>
@@ -50,11 +50,8 @@
     <!-- title -->
     <mat-form-field>
       <mat-label>title</mat-label>
-      <input matInput [formControl]="title" />
-      @if ($any(title).errors?.required && (title.dirty || title.touched)) {
-        <mat-error>title required</mat-error>
-      }
-      @if ($any(title).errors?.maxLength && (title.dirty || title.touched)) {
+      <input matInput [formField]="form.title" />
+      @if (form.title().getError("maxLength") && (form.title().dirty() || form.title().touched())) {
         <mat-error>title too long</mat-error>
       }
     </mat-form-field>
@@ -62,9 +59,9 @@
     <!-- location -->
     <mat-form-field>
       <mat-label>location</mat-label>
-      <input matInput [formControl]="location" />
+      <input matInput [formField]="form.location" />
       @if (
-        $any(location).errors?.maxLength && (location.dirty || location.touched)
+        form.location().getError("maxLength") && (form.location().dirty() || form.location().touched())
       ) {
         <mat-error>location too long</mat-error>
       }
@@ -86,10 +83,10 @@
     <!-- claimedAuthor -->
     <mat-form-field>
       <mat-label>claimed author</mat-label>
-      <input matInput [formControl]="claimedAuthor" />
+      <input matInput [formField]="form.claimedAuthor" />
       @if (
-        $any(claimedAuthor).errors?.maxLength &&
-        (claimedAuthor.dirty || claimedAuthor.touched)
+        form.claimedAuthor().getError("maxLength") &&
+        (form.claimedAuthor().dirty() || form.claimedAuthor().touched())
       ) {
         <mat-error>author too long</mat-error>
       }
@@ -98,17 +95,17 @@
     <!-- claimedAuthorRanges -->
     <cadmus-cod-location
       label="claimed author ranges"
-      [location]="claimedAuthorRanges.value"
+      [location]="form.claimedAuthorRanges().value()"
       (locationChange)="onCALocationChange($event)"
     />
 
     <!-- claimedTitle -->
     <mat-form-field>
       <mat-label>claimed title</mat-label>
-      <input matInput [formControl]="claimedTitle" />
+      <input matInput [formField]="form.claimedTitle" />
       @if (
-        $any(claimedTitle).errors?.maxLength &&
-        (claimedTitle.dirty || claimedTitle.touched)
+        form.claimedTitle().getError("maxLength") &&
+        (form.claimedTitle().dirty() || form.claimedTitle().touched())
       ) {
         <mat-error>title too long</mat-error>
       }
@@ -117,7 +114,7 @@
     <!-- claimedTitleRanges -->
     <cadmus-cod-location
       label="claimed title ranges"
-      [location]="claimedTitleRanges.value"
+      [location]="form.claimedTitleRanges().value()"
       (locationChange)="onCTLocationChange($event)"
     />
   </div>
@@ -125,8 +122,8 @@
     <!-- note -->
     <mat-form-field class="long-text">
       <mat-label>note</mat-label>
-      <input matInput [formControl]="note" />
-      @if ($any(note).errors?.maxLength && (note.dirty || note.touched)) {
+      <input matInput [formField]="form.note" />
+      @if (form.note().getError("maxLength") && (form.note().dirty() || form.note().touched())) {
         <mat-error>note too long</mat-error>
       }
     </mat-form-field>
@@ -135,9 +132,9 @@
     <!-- incipit -->
     <mat-form-field class="long-text">
       <mat-label>incipit</mat-label>
-      <textarea rows="2" matInput [formControl]="incipit"></textarea>
+      <textarea rows="2" matInput [formField]="form.incipit"></textarea>
       @if (
-        $any(incipit).errors?.maxLength && (incipit.dirty || incipit.touched)
+        form.incipit().getError("maxLength") && (form.incipit().dirty() || form.incipit().touched())
       ) {
         <mat-error>incipit too long</mat-error>
       }
@@ -147,9 +144,9 @@
     <!-- explicit -->
     <mat-form-field class="long-text">
       <mat-label>explicit</mat-label>
-      <textarea rows="2" matInput [formControl]="explicit"></textarea>
+      <textarea rows="2" matInput [formField]="form.explicit"></textarea>
       @if (
-        $any(explicit).errors?.maxLength && (explicit.dirty || explicit.touched)
+        form.explicit().getError("maxLength") && (form.explicit().dirty() || form.explicit().touched())
       ) {
         <mat-error>explicit too long</mat-error>
       }
@@ -165,7 +162,7 @@
         [refTagEntries]="refTagEntries()"
         [idScopeEntries]="idScopeEntries()"
         [refTypeEntries]="refTypeEntries()"
-        [id]="workId.value || undefined"
+        [id]="form.workId().value() || undefined"
         [canSwitchMode]="true"
         [canEditTarget]="true"
         [lookupProviderOptions]="lookupProviderOptions()"
@@ -177,7 +174,7 @@
     <!-- states -->
     <cadmus-ui-flag-set
       [flags]="stateFlags()"
-      [checkedIds]="states.value"
+      [checkedIds]="form.states().value()"
       (checkedIdsChange)="onStateIdsChange($event!)"
     />
   </div>
@@ -187,7 +184,7 @@
       <mat-panel-title>gaps</mat-panel-title>
     </mat-expansion-panel-header>
     <cadmus-cod-content-gaps
-      [gaps]="gaps.value"
+      [gaps]="form.gaps().value()"
       [gapTypeEntries]="gapTypeEntries()"
       [gapTagEntries]="gapTagEntries()"
       (gapsChange)="onGapsChange($event)"
@@ -198,8 +195,8 @@
     <mat-expansion-panel-header>
       <mat-panel-title>annotations</mat-panel-title>
       <mat-panel-description>
-        @if (annotations.value.length) {
-          {{ annotations.value.length }}
+        @if (form.annotations().value().length) {
+          {{ form.annotations().value().length }}
         }
       </mat-panel-description>
     </mat-expansion-panel-header>
@@ -214,7 +211,7 @@
         <mat-icon>add_circle</mat-icon> annotation
       </button>
     </div>
-    @if (annotations.value && annotations.value.length) {
+    @if (form.annotations().value() && form.annotations().value().length) {
       <table>
         <thead>
           <tr>
@@ -226,7 +223,7 @@
         </thead>
         <tbody>
           @for (
-            entry of annotations.value;
+            entry of form.annotations().value();
             track entry;
             let i = $index;
             let first = $first;
@@ -283,7 +280,7 @@
     }
 
     <mat-expansion-panel
-      [expanded]="editedAnnotation()"
+      [expanded]="!!editedAnnotation()"
       [disabled]="!editedAnnotation()"
     >
       <mat-expansion-panel-header>annotation</mat-expansion-panel-header>
@@ -309,13 +306,14 @@
       <mat-icon class="mat-warn">clear</mat-icon>
     </button>
     <button
-      type="submit"
+      type="button"
       mat-icon-button
       matTooltip="Accept changes"
-      [disabled]="form.invalid || form.pristine"
+      [disabled]="form().invalid() || !form().dirty()"
+      (click)="save()"
     >
       <mat-icon class="mat-primary">check_circle</mat-icon>
     </button>
     content
   </div>
-</form>
+</div>

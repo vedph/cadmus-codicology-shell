@@ -96,7 +96,8 @@ describe('CodSColDefinitionComponent', () => {
       system: 'numbers',
       position: 'bottom',
       links: undefined,
-      note: '',
+      // empty optional text is now saved as missing
+      note: undefined,
     });
   });
 

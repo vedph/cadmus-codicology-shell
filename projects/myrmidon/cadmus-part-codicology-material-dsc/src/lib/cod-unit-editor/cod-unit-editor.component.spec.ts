@@ -30,6 +30,8 @@ describe('CodUnitEditorComponent', () => {
       materials?: ThesaurusEntry[];
       formats?: ThesaurusEntry[];
       states?: ThesaurusEntry[];
+      // format is hidden by default: show it unless specified
+      noFormat?: boolean;
     },
   ) {
     const model = signal<CodUnit | undefined>(unit);
@@ -40,6 +42,7 @@ describe('CodUnitEditorComponent', () => {
         inputBinding('materialEntries', () => entries?.materials),
         inputBinding('formatEntries', () => entries?.formats),
         inputBinding('stateEntries', () => entries?.states),
+        inputBinding('noFormat', () => entries?.noFormat ?? false),
         outputBinding('editorClose', editorClose),
       ],
     });
@@ -66,18 +69,29 @@ describe('CodUnitEditorComponent', () => {
     expect(saveButton()).toBeDisabled();
   });
 
-  it.each([
-    [/^material/, 'material required'],
-    [/^format/, 'format required'],
-    [/^state/, 'state required'],
-  ])('should require %s', async (name, error) => {
+  it('should require material', async () => {
     const { user } = await setup(UNIT);
 
-    await user.clear(textbox(name));
+    await user.clear(textbox(/^material/));
     await user.tab();
 
-    expect(screen.getByText(error)).toBeInTheDocument();
+    expect(screen.getByText('material required')).toBeInTheDocument();
     expect(saveButton()).toBeDisabled();
+  });
+
+  it('should save a unit without format', async () => {
+    const { user, model } = await setup(UNIT);
+
+    await user.clear(textbox(/^format/));
+    await user.tab();
+    expect(screen.queryByText(/format required/)).toBeNull();
+    await user.click(saveButton());
+
+    expect(model()).toEqual({
+      ...UNIT,
+      format: undefined,
+      chronotopes: undefined,
+    });
   });
 
   it('should use selects when entries are provided', async () => {
@@ -133,5 +147,82 @@ describe('CodUnitEditorComponent', () => {
     );
 
     expect(editorClose).toHaveBeenCalled();
+  });
+
+  // signal forms regressions
+
+  it('should ignore child echoes of its data', async () => {
+    const { fixture } = await setup(UNIT);
+
+    fixture.componentInstance.onChronotopesChange([]);
+    fixture.componentInstance.onLocationChange([{ start: { n: 1 }, end: { n: 10 } }]);
+    fixture.detectChanges();
+
+    expect(saveButton()).toBeDisabled();
+  });
+
+  it('should get dirty for a real child change', async () => {
+    const { fixture } = await setup(UNIT);
+
+    fixture.componentInstance.onLocationChange([{ start: { n: 2 }, end: { n: 10 } }]);
+    fixture.detectChanges();
+
+    expect(saveButton()).toBeEnabled();
+  });
+
+  it('should save on Enter in a text input when dirty', async () => {
+    const { user, model } = await setup(UNIT);
+
+    await user.type(textbox(/^EID/), 'x{Enter}');
+
+    expect((model() as any).eid).toBe('u1x');
+  });
+
+  it('should not save on Enter while pristine', async () => {
+    const { user, model } = await setup(UNIT);
+
+    await user.type(textbox(/^EID/), '{Enter}');
+
+    expect(model()).toBe(UNIT);
+  });
+
+  it('should save without the form identity tags', async () => {
+    const { user, model } = await setup(UNIT);
+
+    await user.type(textbox(/^EID/), 'x');
+    await user.click(saveButton());
+
+    const check = (v: any): void => {
+      if (Array.isArray(v)) v.forEach(check);
+      else if (v && typeof v === 'object') {
+        expect(Object.getOwnPropertySymbols(v)).toHaveLength(0);
+        Object.values(v).forEach(check);
+      }
+    };
+    check(model());
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup(UNIT);
+    expect(container.querySelector('form')).toBeNull();
+  });
+
+  it('should hide the format by default', async () => {
+    // noFormat not bound
+    await render(CodUnitEditorComponent, {
+      bindings: [twoWayBinding('unit', signal<CodUnit | undefined>(UNIT))],
+    });
+    expect(screen.queryByRole('textbox', { name: /^format/ })).toBeNull();
+  });
+
+  it('should not accept a unit without ranges', async () => {
+    // Validators.required flagged an empty array; required() does not
+    const { fixture } = await setup(UNIT);
+
+    fixture.componentInstance.onLocationChange([]);
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.form.ranges().invalid()).toBe(true);
+    expect(saveButton()).toBeDisabled();
   });
 });

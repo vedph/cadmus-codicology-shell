@@ -3,17 +3,12 @@ import {
   Component,
   effect,
   input,
+  linkedSignal,
   model,
   output,
+  untracked,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { form, FormField, maxLength, required } from '@angular/forms/signals';
 
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatSelect } from '@angular/material/select';
@@ -23,9 +18,13 @@ import { MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { NgxToolsSignalValidators } from '@myrmidon/ngx-tools';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  copyFormValue,
+  isImplicitSubmission,
+} from '@myrmidon/cadmus-ui';
 import {
   CodLocationRange,
   CodLocationComponent,
@@ -34,13 +33,28 @@ import {
 
 import { CodHandSubscription } from '../cod-hands-part';
 
+interface CodHandSubscriptionControls {
+  ranges: CodLocationRange[];
+  language: string;
+  text: string;
+  note: string;
+}
+
+function toDraft(subscription?: CodHandSubscription): CodHandSubscriptionControls {
+  return {
+    ranges: copyFormValue(subscription?.ranges || []),
+    language: subscription?.language || '',
+    text: subscription?.text || '',
+    note: subscription?.note || '',
+  };
+}
+
 @Component({
   selector: 'cadmus-cod-hand-subscription',
   templateUrl: './cod-hand-subscription.component.html',
   styleUrls: ['./cod-hand-subscription.component.css'],
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     CodLocationComponent,
     MatFormField,
     MatLabel,
@@ -57,75 +71,49 @@ import { CodHandSubscription } from '../cod-hands-part';
 export class CodHandSubscriptionComponent {
   public readonly subscription = model<CodHandSubscription>();
 
+  private readonly _draft = linkedSignal(() => toDraft(this.subscription()));
+  public readonly form = form(this._draft, (p) => {
+    NgxToolsSignalValidators.strictMinLength(p.ranges, 1);
+    required(p.language);
+    maxLength(p.language, 50);
+    maxLength(p.text, 1000);
+    maxLength(p.note, 1000);
+  });
+
   // cod-hand-subscription-languages
   public readonly langEntries = input<ThesaurusEntry[]>();
 
   public readonly editorClose = output();
 
-  public ranges: FormControl<CodLocationRange[]>;
-  public language: FormControl<string | null>;
-  public text: FormControl<string | null>;
-  public note: FormControl<string | null>;
-  public form: FormGroup;
-
-  constructor(formBuilder: FormBuilder) {
-    this.ranges = formBuilder.control([], {
-      validators: NgxToolsValidators.strictMinLengthValidator(1),
-      nonNullable: true,
-    });
-    this.language = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
-    this.text = formBuilder.control(null, Validators.maxLength(1000));
-    this.note = formBuilder.control(null, Validators.maxLength(1000));
-    this.form = formBuilder.group({
-      ranges: this.ranges,
-      language: this.language,
-      text: this.text,
-      note: this.note,
-    });
-
+  constructor() {
+    // new subscription: clear the interaction state
     effect(() => {
-      const subscription = this.subscription();
-      this.updateForm(subscription);
+      this.subscription();
+      untracked(() => this.form().reset());
     });
   }
 
-  private updateForm(subscription: CodHandSubscription | undefined): void {
-    if (!subscription) {
-      this.form.reset();
-      return;
-    }
-
-    this.ranges.setValue(subscription.ranges || []);
-    this.language.setValue(subscription.language);
-    this.text.setValue(subscription.text || null);
-    this.note.setValue(subscription.note || null);
-
-    this.form.markAsPristine();
-  }
-
-  public onLocationChange(ranges: unknown): void {
+  public onLocationChange(location: unknown): void {
+    const ranges = location as CodLocationRange[] | null;
     // ignore emissions not changing the location (the location editor
     // emits its initial value when initialized)
     if (
-      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
-      (CodLocationParser.rangesToString(this.ranges.value) || '')
+      (CodLocationParser.rangesToString(ranges) || '') ===
+      (CodLocationParser.rangesToString(this.form.ranges().value()) || '')
     ) {
       return;
     }
-    this.ranges.setValue((ranges as CodLocationRange[]) || []);
-    this.ranges.updateValueAndValidity();
-    this.ranges.markAsDirty();
+    this.form.ranges().value.set(copyFormValue(ranges || []));
+    this.form.ranges().markAsDirty();
   }
 
   private getSubscription(): CodHandSubscription {
+    const draft = this._draft();
     return {
-      ranges: this.ranges.value || [],
-      language: this.language.value?.trim() || '',
-      text: this.text.value?.trim(),
-      note: this.note.value?.trim(),
+      ranges: copyFormValue(draft.ranges),
+      language: draft.language.trim(),
+      text: draft.text.trim() || undefined,
+      note: draft.note.trim() || undefined,
     };
   }
 
@@ -133,11 +121,23 @@ export class CodHandSubscriptionComponent {
     this.editorClose.emit();
   }
 
-  public save(): void {
-    if (this.form.invalid) {
+  public onEnterKey(event: Event): void {
+    if (
+      !isImplicitSubmission(event) ||
+      this.form().invalid() ||
+      !this.form().dirty()
+    ) {
       return;
     }
-    const subscription = this.getSubscription();
-    this.subscription.set(subscription);
+    event.preventDefault();
+    this.save();
+  }
+
+  public save(): void {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
+      return;
+    }
+    this.subscription.set(this.getSubscription());
   }
 }

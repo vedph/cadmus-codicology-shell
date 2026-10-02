@@ -2,17 +2,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   effect,
+  linkedSignal,
   model,
   output,
+  untracked,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+import { form, FormField, max, min } from '@angular/forms/signals';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -27,10 +22,18 @@ export interface CodOrdinalValue {
   warnValues?: number[];
 }
 
+interface CodOrdinalControls {
+  value: number | null;
+}
+
+function toDraft(ordinal?: CodOrdinalValue | null): CodOrdinalControls {
+  return { value: ordinal?.value ?? 0 };
+}
+
 @Component({
   selector: 'cadmus-cod-ordinal-editor',
   imports: [
-    ReactiveFormsModule,
+    FormField,
     MatButtonModule,
     MatFormFieldModule,
     MatIconModule,
@@ -45,53 +48,24 @@ export class CodOrdinalEditorComponent {
   public readonly ordinal = model<CodOrdinalValue>();
   public readonly cancelEdit = output();
 
-  public value: FormControl<number>;
-  public form: FormGroup;
+  private readonly _draft = linkedSignal(() => toDraft(this.ordinal()));
 
-  constructor(private formBuilder: FormBuilder) {
-    // form
-    this.value = formBuilder.control<number>(0, {
-      nonNullable: true,
-    });
-    this.form = formBuilder.group({
-      value: this.value,
-    });
+  public readonly form = form(this._draft, (p) => {
+    // optional range from the bound ordinal
+    min(p.value, () => this.ordinal()?.min);
+    max(p.value, () => this.ordinal()?.max);
+  });
 
-    // when model changes, update form
+  constructor() {
+    // the draft mirrors the bound ordinal again: clear interaction state
     effect(() => {
-      const data = this.ordinal();
-      this.updateForm(data);
-    });
-  }
-
-  private updateForm(data: CodOrdinalValue | undefined | null): void {
-    if (!data) {
-      this.form.reset();
-    } else {
-      // if specified in data set min and max for ordinal control
-      const validators: ValidatorFn[] = [];
-      if (data.min !== undefined) {
-        validators.push(Validators.min(data.min));
-      }
-      if (data.max !== undefined) {
-        validators.push(Validators.max(data.max));
-      }
-      this.value.setValidators(validators);
-      this.value.setValue(data.value, {
-        emitEvent: false,
+      const draft = this._draft();
+      untracked(() => {
+        if (draft.value === toDraft(this.ordinal()).value) {
+          this.form().reset();
+        }
       });
-      this.value.updateValueAndValidity();
-    }
-
-    this.form.updateValueAndValidity();
-    this.form.markAsPristine();
-  }
-
-  private getData(): CodOrdinalValue {
-    return {
-      ...this.ordinal(),
-      value: this.value.value,
-    };
+    });
   }
 
   public cancel(): void {
@@ -99,25 +73,37 @@ export class CodOrdinalEditorComponent {
   }
 
   /**
-   * Saves the current form data by updating the `data` model signal.
-   * This method can be called manually (e.g., by a Save button) or
-   * automatically (via auto-save).
-   * @param pristine If true (default), the form is marked as pristine
-   * after saving.
-   * Set to false for auto-save if you want the form to remain dirty.
+   * Save the edited value when the user presses Enter in its input, like
+   * the implicit submission of a form would: only when the save button is
+   * enabled.
+   */
+  public onEnterKey(event: Event): void {
+    event.preventDefault();
+    if (this.form().invalid() || !this.form().dirty()) {
+      return;
+    }
+    this.save();
+  }
+
+  /**
+   * Saves the current form data by updating the `ordinal` model signal.
+   * @param pristine If true (default), the form's interaction state is
+   * cleared after saving.
    */
   public save(pristine = true): void {
-    if (this.form.invalid) {
+    if (this.form().invalid()) {
       // show validation errors
-      this.form.markAllAsTouched();
+      this.form().markAsTouched();
       return;
     }
 
-    const data = this.getData();
-    this.ordinal.set(data);
+    this.ordinal.set({
+      ...this.ordinal(),
+      value: this._draft().value ?? 0,
+    });
 
     if (pristine) {
-      this.form.markAsPristine();
+      this.form().reset();
     }
   }
 }

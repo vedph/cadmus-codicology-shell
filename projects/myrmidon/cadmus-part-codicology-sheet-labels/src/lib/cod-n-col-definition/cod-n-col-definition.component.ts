@@ -4,17 +4,12 @@ import {
   computed,
   effect,
   input,
+  linkedSignal,
   model,
   output,
+  untracked,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { form, FormField, maxLength, required, min } from '@angular/forms/signals';
 
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -38,6 +33,11 @@ import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
+  copyFormValue,
+  isImplicitSubmission,
+  setFieldFromChild,
+} from '@myrmidon/cadmus-ui';
+import {
   CodLocationComponent,
   CodLocationRange,
   CodLocationParser,
@@ -52,14 +52,45 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   };
 }
 
+interface CodNColDefinitionControls {
+  rank: number | null;
+  isPagination: boolean;
+  isByScribe: boolean;
+  system: string;
+  technique: string;
+  position: string;
+  colors: string[];
+  hasDate: boolean;
+  date: HistoricalDateModel | null;
+  canonicalRanges: CodLocationRange[];
+  links: AssertedCompositeId[];
+  note: string;
+}
+
+function toDraft(model?: CodNColDefinition): CodNColDefinitionControls {
+  return {
+    rank: model?.rank || 0,
+    isPagination: model?.isPagination || false,
+    isByScribe: model?.isByScribe || false,
+    system: model?.system || '',
+    technique: model?.technique || '',
+    position: model?.position || '',
+    colors: [...(model?.colors || [])],
+    hasDate: model?.date ? true : false,
+    date: copyFormValue(model?.date) || null,
+    canonicalRanges: copyFormValue(model?.canonicalRanges || []),
+    links: copyFormValue(model?.links || []),
+    note: model?.note || '',
+  };
+}
+
 @Component({
   selector: 'cadmus-cod-n-col-definition',
   templateUrl: './cod-n-col-definition.component.html',
   styleUrls: ['./cod-n-col-definition.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatFormField,
     MatLabel,
     MatInput,
@@ -78,6 +109,18 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
 })
 export class CodNColDefinitionComponent {
   public readonly definition = model<CodNColDefinition>();
+
+  private readonly _draft = linkedSignal(() => toDraft(this.definition()));
+  public readonly form = form(this._draft, (p) => {
+    min(p.rank, 0);
+    required(p.system);
+    maxLength(p.system, 50);
+    required(p.technique);
+    maxLength(p.technique, 50);
+    required(p.position);
+    maxLength(p.position, 50);
+    maxLength(p.note, 1000);
+  });
 
   // cod-numbering-systems
   public readonly sysEntries = input<ThesaurusEntry[]>();
@@ -106,127 +149,50 @@ export class CodNColDefinitionComponent {
 
   public readonly editorClose = output();
 
-  public id: string;
-  public rank: FormControl<number>;
-  public isPagination: FormControl<boolean>;
-  public isByScribe: FormControl<boolean>;
-  public system: FormControl<string | null>;
-  public technique: FormControl<string | null>;
-  public position: FormControl<string | null>;
-  public colors: FormControl<string[]>;
-  public hasDate: FormControl<boolean>;
-  public date: FormControl<HistoricalDateModel | null>;
-  public canonicalRanges: FormControl<CodLocationRange[]>;
-  public links: FormControl<AssertedCompositeId[]>;
-  public note: FormControl<string | null>;
-  public form: FormGroup;
+  // the ID of the bound definition
+  public readonly id = computed<string>(() => this.definition()?.id || '');
 
   // flags
   public readonly colorFlags = computed<Flag[]>(
     () => this.clrEntries()?.map(entryToFlag) || [],
   );
 
-  constructor(formBuilder: FormBuilder) {
-    this.id = '';
-    this.rank = formBuilder.control(0, { nonNullable: true });
-    this.isPagination = formBuilder.control(false, { nonNullable: true });
-    this.isByScribe = formBuilder.control(false, { nonNullable: true });
-    this.system = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
-    this.technique = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
-    this.position = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
-    this.colors = formBuilder.control([], { nonNullable: true });
-    this.hasDate = formBuilder.control(false, { nonNullable: true });
-    this.date = formBuilder.control(null);
-    this.canonicalRanges = formBuilder.control([], { nonNullable: true });
-    this.links = formBuilder.control([], { nonNullable: true });
-    this.note = formBuilder.control(null, Validators.maxLength(1000));
-    this.form = formBuilder.group({
-      rank: this.rank,
-      isPagination: this.isPagination,
-      isByScribe: this.isByScribe,
-      system: this.system,
-      technique: this.technique,
-      position: this.position,
-      colors: this.colors,
-      hasDate: this.hasDate,
-      date: this.date,
-      canonicalRanges: this.canonicalRanges,
-      links: this.links,
-      note: this.note,
-    });
-
+  constructor() {
+    // new definition: clear the interaction state
     effect(() => {
-      const definition = this.definition();
-      this.updateForm(definition);
+      this.definition();
+      untracked(() => this.form().reset());
     });
-  }
-
-  private updateForm(model: CodNColDefinition | undefined): void {
-    if (!model) {
-      this.form.reset();
-      return;
-    }
-
-    this.id = model.id;
-    this.rank.setValue(model.rank || 0);
-    this.isPagination.setValue(model.isPagination || false);
-    this.isByScribe.setValue(model.isByScribe || false);
-    this.system.setValue(model.system);
-    this.technique.setValue(model.technique);
-    this.position.setValue(model.position);
-    this.colors.setValue(model.colors || []);
-    this.hasDate.setValue(model.date ? true : false);
-    this.date.setValue(model.date || null);
-    this.canonicalRanges.setValue(model.canonicalRanges || []);
-    this.links.setValue(model.links || []);
-    this.note.setValue(model.note || null);
-    this.form.markAsPristine();
   }
 
   private getModel(): CodNColDefinition {
+    const draft = this._draft();
     return {
-      id: this.id,
-      rank: +this.rank.value || 0,
-      isPagination: this.isPagination.value ? true : undefined,
-      isByScribe: this.isByScribe.value ? true : undefined,
-      system: this.system.value?.trim() || '',
-      technique: this.technique.value?.trim() || '',
-      position: this.position.value?.trim() || '',
-      colors: this.colors.value?.length ? this.colors.value : undefined,
-      date: this.hasDate.value ? this.date.value || undefined : undefined,
-      canonicalRanges: this.canonicalRanges.value?.length
-        ? this.canonicalRanges.value
-        : undefined,
-      links: this.links.value?.length ? this.links.value : undefined,
-      note: this.note.value?.trim(),
+      id: this.id(),
+      rank: draft.rank || 0,
+      isPagination: draft.isPagination ? true : undefined,
+      isByScribe: draft.isByScribe ? true : undefined,
+      system: draft.system.trim(),
+      technique: draft.technique.trim(),
+      position: draft.position.trim(),
+      colors: draft.colors.length ? [...draft.colors] : undefined,
+      date: draft.hasDate ? copyFormValue(draft.date) || undefined : undefined,
+      canonicalRanges: draft.canonicalRanges.length ? copyFormValue(draft.canonicalRanges) : undefined,
+      links: draft.links.length ? copyFormValue(draft.links) : undefined,
+      note: draft.note.trim() || undefined,
     };
   }
 
   public onColorIdsChange(ids: string[]): void {
-    this.colors.setValue(ids);
-    this.colors.updateValueAndValidity();
-    this.colors.markAsDirty();
+    setFieldFromChild(this.form.colors, [...(ids || [])]);
   }
 
   public onDateChange(date: HistoricalDateModel): void {
-    this.date.setValue(date);
-    this.date.updateValueAndValidity();
-    this.date.markAsDirty();
+    setFieldFromChild(this.form.date, copyFormValue(date) || null);
   }
 
   public onLinkIdsChange(ids: AssertedCompositeId[]): void {
-    this.links.setValue(ids);
-    this.links.updateValueAndValidity();
-    this.links.markAsDirty();
+    setFieldFromChild(this.form.links, copyFormValue(ids || []));
   }
 
   public onRangeChange(ranges: CodLocationRange[]): void {
@@ -234,21 +200,33 @@ export class CodNColDefinitionComponent {
     // emits its initial value when initialized)
     if (
       (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
-      (CodLocationParser.rangesToString(this.canonicalRanges.value) || '')
+      (CodLocationParser.rangesToString(this.form.canonicalRanges().value()) || '')
     ) {
       return;
     }
-    this.canonicalRanges.setValue(ranges);
-    this.canonicalRanges.updateValueAndValidity();
-    this.canonicalRanges.markAsDirty();
+    this.form.canonicalRanges().value.set(ranges);
+    this.form.canonicalRanges().markAsDirty();
   }
 
   public cancel(): void {
     this.editorClose.emit();
   }
 
+  public onEnterKey(event: Event): void {
+    if (
+      !isImplicitSubmission(event) ||
+      this.form().invalid() ||
+      !this.form().dirty()
+    ) {
+      return;
+    }
+    event.preventDefault();
+    this.save();
+  }
+
   public save(): void {
-    if (this.form.invalid) {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
       return;
     }
     this.definition.set(this.getModel());

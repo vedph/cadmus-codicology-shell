@@ -1,17 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  OnInit,
+  computed,
+  inject,
+  linkedSignal,
   signal,
 } from '@angular/core';
-import {
-  FormControl,
-  FormBuilder,
-  FormGroup,
-  UntypedFormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
 import { take } from 'rxjs/operators';
 import { TitleCasePipe } from '@angular/common';
 
@@ -28,23 +22,16 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 
-import {
-  NgxToolsValidators,
-  FlatLookupPipe,
-} from '@myrmidon/ngx-tools';
+import { NgxToolsSignalValidators, FlatLookupPipe } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
-import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 import { HistoricalDatePipe } from '@myrmidon/cadmus-refs-historical-date';
 
-import {
-  ThesauriSet,
-  ThesaurusEntry,
-  EditedObject,
-} from '@myrmidon/cadmus-core';
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
-  HelpLinkComponent
+  HelpLinkComponent,
+  copyFormValue,
 } from '@myrmidon/cadmus-ui';
 import { PhysicalSizePipe } from '@myrmidon/cadmus-mat-physical-size';
 import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
@@ -60,6 +47,15 @@ interface CodBindingsPartSettings {
   lookupProviderOptions?: LookupProviderOptions;
 }
 
+interface CodBindingsPartControls {
+  bindings: CodBinding[];
+}
+
+function toDraft(part?: CodBindingsPart | null): CodBindingsPartControls {
+  // copy: the form tags the objects in its arrays
+  return { bindings: copyFormValue(part?.bindings || []) };
+}
+
 /**
  * CodBindingsPart editor component.
  * Thesauri: cod-binding-tags, cod-binding-cover-materials, cod-binding-board-materials;
@@ -72,8 +68,6 @@ interface CodBindingsPartSettings {
   styleUrls: ['./cod-bindings-part.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
     MatCard,
     MatCardHeader,
     MatCardAvatar,
@@ -94,50 +88,51 @@ interface CodBindingsPartSettings {
     HelpLinkComponent
   ],
 })
-export class CodBindingsPartComponent
-  extends ModelEditorComponentBase<CodBindingsPart>
-  implements OnInit
-{
+export class CodBindingsPartComponent extends ModelEditorComponentBase<CodBindingsPart> {
+  private readonly _dialogService = inject(DialogService);
+
   public readonly editedIndex = signal<number>(-1);
   public readonly editedBinding = signal<CodBinding | undefined>(undefined);
 
   // cod-binding-tags
-  public readonly tagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly tagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-binding-tags']?.entries,
+  );
   // cod-binding-cover-materials
-  public readonly coverEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly coverEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-binding-cover-materials']?.entries,
   );
   // cod-binding-board-materials
-  public readonly boardEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly boardEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-binding-board-materials']?.entries,
   );
   // chronotope-tags
-  public readonly ctTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly ctTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['chronotope-tags']?.entries,
   );
   // assertion-tags
-  public readonly assTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly assTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['assertion-tags']?.entries,
   );
   // doc-reference-types
-  public readonly refTypeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly refTypeEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['doc-reference-types']?.entries,
   );
   // doc-reference-tags
-  public readonly refTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly refTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['doc-reference-tags']?.entries,
   );
   // physical-size-tags
-  public readonly szTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly szTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['physical-size-tags']?.entries,
   );
   // physical-size-dim-tags
-  public readonly szDimTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly szDimTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['physical-size-dim-tags']?.entries,
   );
   // physical-size-units
-  public readonly szUnitEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly szUnitEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['physical-size-units']?.entries,
   );
 
   // lookup options depending on role
@@ -145,127 +140,31 @@ export class CodBindingsPartComponent
     LookupProviderOptions | undefined
   >(undefined);
 
-  public bindings: FormControl<CodBinding[]>;
+  private readonly _draft = linkedSignal(() => toDraft(this.data()?.value));
+  public readonly form = this.createForm(this._draft, (p) => {
+    NgxToolsSignalValidators.strictMinLength(p.bindings, 1);
+  });
 
-  constructor(
-    authService: AuthJwtService,
-    formBuilder: FormBuilder,
-    private _dialogService: DialogService,
-  ) {
-    super(authService, formBuilder);
-    this.editedIndex.set(-1);
-    // form
-    this.bindings = formBuilder.control([], {
-      validators: NgxToolsValidators.strictMinLengthValidator(1),
-      nonNullable: true,
-    });
-  }
-
-  public override ngOnInit(): void {
-    super.ngOnInit();
-  }
-
-  protected buildForm(formBuilder: FormBuilder): FormGroup | UntypedFormGroup {
-    return formBuilder.group({
-      entries: this.bindings,
-    });
-  }
-
-  private updateThesauri(thesauri: ThesauriSet): void {
-    let key = 'cod-binding-tags';
-    if (this.hasThesaurus(key)) {
-      this.tagEntries.set(thesauri[key].entries);
-    } else {
-      this.tagEntries.set(undefined);
-    }
-    key = 'cod-binding-cover-materials';
-    if (this.hasThesaurus(key)) {
-      this.coverEntries.set(thesauri[key].entries);
-    } else {
-      this.coverEntries.set(undefined);
-    }
-    key = 'cod-binding-board-materials';
-    if (this.hasThesaurus(key)) {
-      this.boardEntries.set(thesauri[key].entries);
-    } else {
-      this.boardEntries.set(undefined);
-    }
-    key = 'chronotope-tags';
-    if (this.hasThesaurus(key)) {
-      this.ctTagEntries.set(thesauri[key].entries);
-    } else {
-      this.ctTagEntries.set(undefined);
-    }
-    key = 'assertion-tags';
-    if (this.hasThesaurus(key)) {
-      this.assTagEntries.set(thesauri[key].entries);
-    } else {
-      this.assTagEntries.set(undefined);
-    }
-    key = 'doc-reference-types';
-    if (this.hasThesaurus(key)) {
-      this.refTypeEntries.set(thesauri[key].entries);
-    } else {
-      this.refTypeEntries.set(undefined);
-    }
-    key = 'doc-reference-tags';
-    if (this.hasThesaurus(key)) {
-      this.refTagEntries.set(thesauri[key].entries);
-    } else {
-      this.refTagEntries.set(undefined);
-    }
-    key = 'physical-size-tags';
-    if (this.hasThesaurus(key)) {
-      this.szTagEntries.set(thesauri[key].entries);
-    } else {
-      this.szTagEntries.set(undefined);
-    }
-    key = 'physical-size-dim-tags';
-    if (this.hasThesaurus(key)) {
-      this.szDimTagEntries.set(thesauri[key].entries);
-    } else {
-      this.szDimTagEntries.set(undefined);
-    }
-    key = 'physical-size-units';
-    if (this.hasThesaurus(key)) {
-      this.szUnitEntries.set(thesauri[key].entries);
-    } else {
-      this.szUnitEntries.set(undefined);
-    }
-  }
-
-  private updateForm(part?: CodBindingsPart | null): void {
-    if (!part) {
-      this.form.reset();
-      return;
-    }
-    this.bindings.setValue(part.bindings || []);
-    this.form.markAsPristine();
-  }
-
-  protected override onDataSet(data?: EditedObject<CodBindingsPart>): void {
-    // thesauri
-    if (data?.thesauri) {
-      this.updateThesauri(data.thesauri);
-    }
-    this._appRepository
-      ?.getSettingFor<CodBindingsPartSettings>(
-        COD_BINDINGS_PART_TYPEID,
-        this.identity()?.roleId || undefined,
-      )
-      .then((settings) => {
-        const options = settings?.lookupProviderOptions;
-        this.lookupProviderOptions.set(options || undefined);
-      });
-
-    // form
-    this.updateForm(data?.value);
+  constructor() {
+    super();
+    this.initSettings<CodBindingsPartSettings>(
+      COD_BINDINGS_PART_TYPEID,
+      (settings) =>
+        this.lookupProviderOptions.set(
+          settings?.lookupProviderOptions || undefined,
+        ),
+    );
   }
 
   protected getValue(): CodBindingsPart {
-    let part = this.getEditedPart(COD_BINDINGS_PART_TYPEID) as CodBindingsPart;
-    part.bindings = this.bindings.value || [];
+    const part = this.getEditedPart(COD_BINDINGS_PART_TYPEID) as CodBindingsPart;
+    part.bindings = copyFormValue(this._draft().bindings);
     return part;
+  }
+
+  private setBindings(bindings: CodBinding[]): void {
+    this.form.bindings().value.set(bindings);
+    this.form.bindings().markAsDirty();
   }
 
   public addBinding(): void {
@@ -291,15 +190,13 @@ export class CodBindingsPartComponent
   }
 
   public onBindingChange(binding: CodBinding): void {
-    const bindings = [...this.bindings.value];
+    const bindings = [...this.form.bindings().value()];
     if (this.editedIndex() > -1) {
       bindings.splice(this.editedIndex(), 1, binding);
     } else {
       bindings.push(binding);
     }
-    this.bindings.setValue(bindings);
-    this.bindings.updateValueAndValidity();
-    this.bindings.markAsDirty();
+    this.setBindings(bindings);
     this.editBinding(null);
   }
 
@@ -309,11 +206,9 @@ export class CodBindingsPartComponent
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          const entries = [...this.bindings.value];
+          const entries = [...this.form.bindings().value()];
           entries.splice(index, 1);
-          this.bindings.setValue(entries);
-          this.bindings.updateValueAndValidity();
-          this.bindings.markAsDirty();
+          this.setBindings(entries);
         }
       });
   }
@@ -322,25 +217,21 @@ export class CodBindingsPartComponent
     if (index < 1) {
       return;
     }
-    const entry = this.bindings.value[index];
-    const entries = [...this.bindings.value];
+    const entries = [...this.form.bindings().value()];
+    const entry = entries[index];
     entries.splice(index, 1);
     entries.splice(index - 1, 0, entry);
-    this.bindings.setValue(entries);
-    this.bindings.updateValueAndValidity();
-    this.bindings.markAsDirty();
+    this.setBindings(entries);
   }
 
   public moveBindingDown(index: number): void {
-    if (index + 1 >= this.bindings.value.length) {
+    if (index + 1 >= this.form.bindings().value().length) {
       return;
     }
-    const entry = this.bindings.value[index];
-    const entries = [...this.bindings.value];
+    const entries = [...this.form.bindings().value()];
+    const entry = entries[index];
     entries.splice(index, 1);
     entries.splice(index + 1, 0, entry);
-    this.bindings.setValue(entries);
-    this.bindings.updateValueAndValidity();
-    this.bindings.markAsDirty();
+    this.setBindings(entries);
   }
 }

@@ -285,4 +285,31 @@ describe('CodShelfmarksPartComponent', () => {
 
     expect(editorClose).toHaveBeenCalled();
   });
+
+  // signal forms regressions
+
+  it('should be pristine after binding data', async () => {
+    const { fixture } = await setup({ shelfmarks: [S1, S2] });
+    expect(fixture.componentInstance.isDirty()).toBe(false);
+  });
+
+  it('should be dirty after moving an entry, and pristine after saving', async () => {
+    const { user, fixture, data } = await setup({ shelfmarks: [S1, S2] });
+
+    await user.click(
+      within(rows()[0]).getByRole('button', { description: /move this shelfmark down/i }),
+    );
+    expect(fixture.componentInstance.isDirty()).toBe(true);
+
+    await user.click(partSaveButton());
+    expect(fixture.componentInstance.isDirty()).toBe(false);
+    for (const e of (data()!.value as any).shelfmarks) {
+      expect(Object.getOwnPropertySymbols(e)).toHaveLength(0);
+    }
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup({ shelfmarks: [S1] });
+    expect(container.querySelector('form')).toBeNull();
+  });
 });

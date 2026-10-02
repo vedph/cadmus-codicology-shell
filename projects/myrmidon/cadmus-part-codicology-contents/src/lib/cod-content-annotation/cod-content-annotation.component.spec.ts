@@ -72,7 +72,6 @@ describe('CodContentAnnotationComponent', () => {
 
   it.each([
     [/^type/, 'type required'],
-    [/^incipit/, 'incipit required'],
   ])('should require %s', async (name, error) => {
     const { user } = await setup(ANNOTATION);
 
@@ -140,5 +139,39 @@ describe('CodContentAnnotationComponent', () => {
     );
 
     expect(editorClose).toHaveBeenCalled();
+  });
+
+  // signal forms regressions
+
+  it('should save on Enter in a text input when dirty', async () => {
+    const { user, model } = await setup(ANNOTATION);
+
+    await user.type(textbox(/^incipit/), 'x{Enter}');
+
+    expect(model()!.incipit).toBe(ANNOTATION.incipit + 'x');
+  });
+
+  it('should not save on Enter while pristine', async () => {
+    const { user, model } = await setup(ANNOTATION);
+
+    await user.type(textbox(/^incipit/), '{Enter}');
+
+    expect(model()).toBe(ANNOTATION);
+  });
+
+  it('should ignore a child echo of its features', async () => {
+    const { fixture } = await setup(ANNOTATION);
+
+    fixture.componentInstance.onFeatCheckedIdsChange([
+      ...(ANNOTATION.features || []),
+    ]);
+    fixture.detectChanges();
+
+    expect(saveButton()).toBeDisabled();
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup(ANNOTATION);
+    expect(container.querySelector('form')).toBeNull();
   });
 });

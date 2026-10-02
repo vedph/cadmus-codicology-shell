@@ -203,4 +203,73 @@ describe('CodDecorationElementComponent', () => {
 
     expect(editorClose).toHaveBeenCalled();
   });
+
+  // signal forms regressions
+
+  it('should reset the type-dependent values when the user changes the type', async () => {
+    const { user, fixture } = await setup(ELEMENT);
+
+    await user.click(screen.getByRole('combobox', { name: /type/ }));
+    await user.click(await screen.findByRole('option', { name: 'frame' }));
+
+    // like before: subject is cleared (and hidden for frame), while the
+    // other values are those of the bound element
+    expect(fixture.componentInstance.form.subject().value()).toBe('');
+    expect(fixture.componentInstance.form.flags().value()).toEqual([
+      'initial.gold',
+    ]);
+    expect(saveButton()).toBeEnabled();
+  });
+
+  it('should not reset the type-dependent values when an element is bound', async () => {
+    const { user, model, fixture } = await setup(ELEMENT);
+
+    model.set({ ...ELEMENT, type: 'frame', subject: 'another' });
+    fixture.detectChanges();
+    await fixture.whenStable();
+    await openTypologies(user);
+
+    expect(textbox(/^text relation/)).toBeInTheDocument();
+    expect(fixture.componentInstance.form.subject().value()).toBe('another');
+    expect(saveButton()).toBeDisabled();
+  });
+
+  it('should ignore a child echo of its flags and description', async () => {
+    const { fixture } = await setup({ ...ELEMENT, description: 'd' });
+
+    fixture.componentInstance.onGenIdsChange(['initial.gold']);
+    fixture.componentInstance.onColorIdsChange(['initial.red']);
+    fixture.componentInstance.setFieldFromEditor(
+      fixture.componentInstance.form.description,
+      'd',
+    );
+    fixture.detectChanges();
+
+    expect(saveButton()).toBeDisabled();
+  });
+
+  it('should get dirty for a real child change', async () => {
+    const { fixture } = await setup(ELEMENT);
+
+    fixture.componentInstance.onGenIdsChange(['initial.big']);
+    fixture.detectChanges();
+
+    expect(saveButton()).toBeEnabled();
+  });
+
+  it('should save an element without the form identity tags', async () => {
+    const { user, model } = await setup(ELEMENT);
+
+    await user.type(textbox(/^tag/), 'x');
+    await user.click(saveButton());
+
+    expect(model()!.tag).toBe('tx');
+    expect(Object.getOwnPropertySymbols(model()!.ranges[0])).toHaveLength(0);
+    expect(model()!.ranges[0]).not.toBe(ELEMENT.ranges[0]);
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup(ELEMENT);
+    expect(container.querySelector('form')).toBeNull();
+  });
 });

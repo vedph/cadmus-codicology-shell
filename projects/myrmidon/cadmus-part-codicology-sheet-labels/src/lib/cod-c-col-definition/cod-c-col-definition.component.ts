@@ -1,19 +1,15 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   input,
+  linkedSignal,
   model,
   output,
+  untracked,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { form, FormField, maxLength, required, min } from '@angular/forms/signals';
 
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -31,8 +27,33 @@ import {
 import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  copyFormValue,
+  isImplicitSubmission,
+  setFieldFromChild,
+} from '@myrmidon/cadmus-ui';
 
 import { CodCColDefinition } from '../cod-sheet-labels-part';
+
+interface CodCColDefinitionControls {
+  rank: number | null;
+  position: string;
+  isVertical: boolean;
+  decoration: string;
+  links: AssertedCompositeId[];
+  note: string;
+}
+
+function toDraft(model?: CodCColDefinition): CodCColDefinitionControls {
+  return {
+    rank: model?.rank || 0,
+    position: model?.position || '',
+    isVertical: model?.isVertical ? true : false,
+    decoration: model?.decoration || '',
+    links: copyFormValue(model?.links || []),
+    note: model?.note || '',
+  };
+}
 
 @Component({
   selector: 'cadmus-cod-c-col-definition',
@@ -40,8 +61,7 @@ import { CodCColDefinition } from '../cod-sheet-labels-part';
   styleUrls: ['./cod-c-col-definition.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatFormField,
     MatLabel,
     MatInput,
@@ -57,6 +77,15 @@ import { CodCColDefinition } from '../cod-sheet-labels-part';
 })
 export class CodCColDefinitionComponent {
   public readonly definition = model<CodCColDefinition>();
+
+  private readonly _draft = linkedSignal(() => toDraft(this.definition()));
+  public readonly form = form(this._draft, (p) => {
+    min(p.rank, 0);
+    required(p.position);
+    maxLength(p.position, 50);
+    maxLength(p.decoration, 1000);
+    maxLength(p.note, 1000);
+  });
 
   // cod-catchwords-positions
   public readonly posEntries = input<ThesaurusEntry[]>();
@@ -77,71 +106,31 @@ export class CodCColDefinitionComponent {
 
   public readonly editorClose = output();
 
-  public id: string;
-  public rank: FormControl<number>;
-  public position: FormControl<string | null>;
-  public isVertical: FormControl<boolean>;
-  public decoration: FormControl<string | null>;
-  public links: FormControl<AssertedCompositeId[]>;
-  public note: FormControl<string | null>;
-  public form: FormGroup;
+  // the ID of the bound definition
+  public readonly id = computed<string>(() => this.definition()?.id || '');
 
-  constructor(formBuilder: FormBuilder) {
-    this.id = '';
-    this.rank = formBuilder.control(0, { nonNullable: true });
-    this.position = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
-    this.isVertical = formBuilder.control(false, { nonNullable: true });
-    this.decoration = formBuilder.control(null, Validators.maxLength(1000));
-    this.links = formBuilder.control([], { nonNullable: true });
-    this.note = formBuilder.control(null, Validators.maxLength(1000));
-    this.form = formBuilder.group({
-      rank: this.rank,
-      position: this.position,
-      isVertical: this.isVertical,
-      decoration: this.decoration,
-      links: this.links,
-      note: this.note,
-    });
-
+  constructor() {
+    // new definition: clear the interaction state
     effect(() => {
-      this.updateForm(this.definition());
+      this.definition();
+      untracked(() => this.form().reset());
     });
   }
 
   public onLinkIdsChange(ids: AssertedCompositeId[]): void {
-    this.links.setValue(ids);
-    this.links.updateValueAndValidity();
-    this.links.markAsDirty();
-  }
-
-  private updateForm(model: CodCColDefinition | undefined): void {
-    if (!model) {
-      this.form.reset();
-      return;
-    }
-
-    this.id = model.id;
-    this.rank.setValue(model.rank || 0);
-    this.position.setValue(model.position);
-    this.isVertical.setValue(model.isVertical ? true : false);
-    this.decoration.setValue(model.decoration || null);
-    this.links.setValue(model.links || []);
-    this.note.setValue(model.note || null);
-    this.form.markAsPristine();
+    setFieldFromChild(this.form.links, copyFormValue(ids || []));
   }
 
   private getModel(): CodCColDefinition {
+    const draft = this._draft();
     return {
-      id: this.id,
-      rank: +this.rank.value || 0,
-      position: this.position.value?.trim() || '',
-      isVertical: this.isVertical.value ? true : false,
-      decoration: this.decoration.value?.trim(),
-      links: this.links.value || undefined,
-      note: this.note.value?.trim(),
+      id: this.id(),
+      rank: draft.rank || 0,
+      position: draft.position.trim(),
+      isVertical: draft.isVertical ? true : false,
+      decoration: draft.decoration.trim() || undefined,
+      links: copyFormValue(draft.links),
+      note: draft.note.trim() || undefined,
     };
   }
 
@@ -149,8 +138,21 @@ export class CodCColDefinitionComponent {
     this.editorClose.emit();
   }
 
+  public onEnterKey(event: Event): void {
+    if (
+      !isImplicitSubmission(event) ||
+      this.form().invalid() ||
+      !this.form().dirty()
+    ) {
+      return;
+    }
+    event.preventDefault();
+    this.save();
+  }
+
   public save(): void {
-    if (this.form.invalid) {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
       return;
     }
     this.definition.set(this.getModel());

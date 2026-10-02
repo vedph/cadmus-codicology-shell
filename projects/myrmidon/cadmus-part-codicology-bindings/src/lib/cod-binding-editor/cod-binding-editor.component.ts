@@ -3,18 +3,12 @@ import {
   Component,
   effect,
   input,
+  linkedSignal,
   model,
   output,
-  signal,
+  untracked,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { form, FormField, maxLength, required } from '@angular/forms/signals';
 
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatSelect } from '@angular/material/select';
@@ -26,6 +20,11 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  copyFormValue,
+  isImplicitSubmission,
+  setFieldFromChild,
+} from '@myrmidon/cadmus-ui';
 import {
   PhysicalSize,
   PhysicalSizeComponent,
@@ -39,13 +38,34 @@ import {
 import { CodBinding } from '../cod-bindings-part';
 import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
+interface CodBindingControls {
+  tag: string;
+  coverMaterial: string;
+  boardMaterial: string;
+  chronotope: AssertedChronotope | null;
+  size: PhysicalSize | null;
+  hasSize: boolean;
+  description: string;
+}
+
+function toDraft(binding?: CodBinding): CodBindingControls {
+  return {
+    tag: binding?.tag || '',
+    coverMaterial: binding?.coverMaterial || '',
+    boardMaterial: binding?.boardMaterial || '',
+    chronotope: copyFormValue(binding?.chronotope) || null,
+    size: copyFormValue(binding?.size) || null,
+    hasSize: !!binding?.size,
+    description: binding?.description || '',
+  };
+}
+
 @Component({
   selector: 'cadmus-cod-binding-editor',
   templateUrl: './cod-binding-editor.component.html',
   styleUrls: ['./cod-binding-editor.component.css'],
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatFormField,
     MatLabel,
     MatSelect,
@@ -89,93 +109,68 @@ export class CodBindingEditorComponent {
     LookupProviderOptions | undefined
   >();
 
-  public editorClose = output();
+  public readonly editorClose = output();
 
-  public tag: FormControl<string | null>;
-  public coverMaterial: FormControl<string | null>;
-  public boardMaterial: FormControl<string | null>;
-  public chronotope: FormControl<AssertedChronotope | null>;
-  public size: FormControl<PhysicalSize | null>;
-  public hasSize: FormControl<boolean>;
-  public description: FormControl<string | null>;
-  public form: FormGroup;
+  private readonly _draft = linkedSignal(() => toDraft(this.binding()));
+  public readonly form = form(this._draft, (p) => {
+    maxLength(p.tag, 50);
+    required(p.coverMaterial);
+    maxLength(p.coverMaterial, 50);
+    required(p.boardMaterial);
+    maxLength(p.boardMaterial, 50);
+    required(p.chronotope);
+    maxLength(p.description, 5000);
+  });
 
-  constructor(formBuilder: FormBuilder) {
-    // form
-    this.tag = formBuilder.control(null, Validators.maxLength(50));
-    this.coverMaterial = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
-    this.boardMaterial = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
-    this.chronotope = formBuilder.control(null, Validators.required);
-    this.size = formBuilder.control(null);
-    this.hasSize = formBuilder.control(false, { nonNullable: true });
-    this.description = formBuilder.control(null, Validators.maxLength(5000));
-    this.form = formBuilder.group({
-      tag: this.tag,
-      coverMaterial: this.coverMaterial,
-      boardMaterial: this.boardMaterial,
-      chronotope: this.chronotope,
-      size: this.size,
-      hasSize: this.hasSize,
-      description: this.description,
-    });
-
+  constructor() {
+    // new binding: clear the interaction state
     effect(() => {
-      this.updateForm(this.binding());
+      this.binding();
+      untracked(() => this.form().reset());
     });
-  }
-
-  private updateForm(binding: CodBinding | undefined): void {
-    if (!binding) {
-      this.form.reset();
-      return;
-    }
-
-    this.tag.setValue(binding.tag || null);
-    this.coverMaterial.setValue(binding.coverMaterial);
-    this.boardMaterial.setValue(binding.boardMaterial);
-    this.description.setValue(binding.description || null);
-    this.size.setValue(structuredClone(binding.size) || null);
-    this.hasSize.setValue(binding.size ? true : false);
-    this.chronotope.setValue(binding.chronotope || null);
-    this.form.markAsPristine();
   }
 
   private getBinding(): CodBinding {
+    const draft = this._draft();
     return {
-      tag: this.tag.value?.trim(),
-      coverMaterial: this.coverMaterial.value?.trim() || '',
-      boardMaterial: this.boardMaterial.value?.trim() || '',
-      chronotope: this.chronotope.value!,
-      size: this.hasSize.value ? this.size.value || undefined : undefined,
-      description: this.description.value?.trim(),
+      tag: draft.tag.trim() || undefined,
+      coverMaterial: draft.coverMaterial.trim(),
+      boardMaterial: draft.boardMaterial.trim(),
+      chronotope: copyFormValue(draft.chronotope)!,
+      size: draft.hasSize ? copyFormValue(draft.size) || undefined : undefined,
+      description: draft.description.trim() || undefined,
     };
   }
 
-  public onSizeChange(size: PhysicalSize): void {
-    this.size.setValue(size);
-    this.size.markAsDirty();
+  public onSizeChange(size: PhysicalSize | undefined): void {
+    setFieldFromChild(this.form.size, copyFormValue(size) || null);
   }
 
   public onChronotopeChange(chronotope: AssertedChronotope | undefined): void {
-    this.chronotope.setValue(chronotope || null);
-    this.chronotope.markAsDirty();
+    setFieldFromChild(this.form.chronotope, copyFormValue(chronotope) || null);
   }
 
   public cancel(): void {
     this.editorClose.emit();
   }
 
-  public save(): void {
-    if (this.form.invalid) {
+  public onEnterKey(event: Event): void {
+    if (
+      !isImplicitSubmission(event) ||
+      this.form().invalid() ||
+      !this.form().dirty()
+    ) {
       return;
     }
-    const binding = this.getBinding();
-    this.binding.set(binding);
+    event.preventDefault();
+    this.save();
+  }
+
+  public save(): void {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
+      return;
+    }
+    this.binding.set(this.getBinding());
   }
 }

@@ -2,18 +2,14 @@ import {
   ChangeDetectionStrategy,
   Component,
   effect,
+  inject,
   input,
+  linkedSignal,
   model,
   output,
+  untracked,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { form, FormField, maxLength, required } from '@angular/forms/signals';
 
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatSelect } from '@angular/material/select';
@@ -24,7 +20,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 
 import {
-  NgxToolsValidators,
+  NgxToolsSignalValidators,
   SafeHtmlPipe,
   ReplaceStringPipe,
 } from '@myrmidon/ngx-tools';
@@ -42,16 +38,42 @@ import {
 } from '@myrmidon/cadmus-refs-mufi-lookup';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  copyFormValue,
+  isImplicitSubmission,
+} from '@myrmidon/cadmus-ui';
 
 import { CodHandSign } from '../cod-hands-part';
+
+interface CodHandSignControls {
+  eid: string;
+  mufi: MufiChar | null;
+  type: string;
+  sampleRanges: CodLocationRange[];
+  description: string;
+}
+
+function toDraft(sign?: CodHandSign): CodHandSignControls {
+  return {
+    eid: sign?.eid || '',
+    // the MUFI character is looked up from its code once bound
+    mufi: null,
+    type: sign?.type || '',
+    sampleRanges: sign?.sampleLocation
+      ? copyFormValue([
+          { start: sign.sampleLocation, end: sign.sampleLocation },
+        ])
+      : [],
+    description: sign?.description || '',
+  };
+}
 
 @Component({
   selector: 'cadmus-cod-hand-sign',
   templateUrl: './cod-hand-sign.component.html',
   styleUrls: ['./cod-hand-sign.component.css'],
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatFormField,
     MatLabel,
     MatSelect,
@@ -69,83 +91,56 @@ import { CodHandSign } from '../cod-hands-part';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodHandSignComponent {
+  public readonly lookupService = inject(MufiRefLookupService);
+  private readonly _mufiService = inject(MufiService);
+
   public readonly sign = model<CodHandSign>();
+
+  private readonly _draft = linkedSignal(() => toDraft(this.sign()));
+  public readonly form = form(this._draft, (p) => {
+    maxLength(p.eid, 100);
+    required(p.type);
+    maxLength(p.type, 50);
+    NgxToolsSignalValidators.strictMinLength(p.sampleRanges, 1);
+    maxLength(p.description, 1000);
+  });
 
   // cod-hand-sign-types
   public readonly typeEntries = input<ThesaurusEntry[]>();
 
   public editorClose = output();
 
-  public eid: FormControl<string | null>;
-  public mufi: FormControl<MufiChar | null>;
-  public type: FormControl<string | null>;
-  public sampleRanges: FormControl<CodLocationRange[] | null>;
-  public description: FormControl<string | null>;
-  public form: FormGroup;
-
-  constructor(
-    formBuilder: FormBuilder,
-    public lookupService: MufiRefLookupService,
-    private _mufiService: MufiService,
-  ) {
-    this.eid = formBuilder.control(null, Validators.maxLength(100));
-    this.mufi = formBuilder.control(null);
-    this.type = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
-    this.sampleRanges = formBuilder.control(
-      [],
-      NgxToolsValidators.strictMinLengthValidator(1),
-    );
-    this.description = formBuilder.control(null, Validators.maxLength(1000));
-    this.form = formBuilder.group({
-      eid: this.eid,
-      mufi: this.mufi,
-      type: this.type,
-      sampleRanges: this.sampleRanges,
-      description: this.description,
-    });
-
+  constructor() {
+    // new sign: clear the interaction state
     effect(() => {
-      this.updateForm(this.sign());
+      this.sign();
+      untracked(() => this.form().reset());
     });
-  }
 
-  private updateForm(sign: CodHandSign | undefined): void {
-    if (!sign) {
-      this.form.reset();
-      return;
-    }
-
-    this.eid.setValue(sign.eid || null);
-    this.type.setValue(sign.type);
-    this.sampleRanges.setValue(
-      sign.sampleLocation
-        ? [{ start: sign.sampleLocation, end: sign.sampleLocation }]
-        : [],
-    );
-    this.description.setValue(sign.description || null);
-
-    // if sign.mufi is set, lookup the char and set it
-    if (sign.mufi) {
-      this._mufiService.get(sign.mufi).subscribe((char) => {
-        this.mufi.setValue(char, { emitEvent: false });
-      });
-    }
-
-    this.form.markAsPristine();
+    // look up the MUFI character of the bound sign, if any: this is not
+    // a user change, so it does not make the form dirty
+    effect((onCleanup) => {
+      const code = this.sign()?.mufi;
+      if (!code) {
+        return;
+      }
+      const sub = this._mufiService
+        .get(code)
+        .subscribe((char) => this.form.mufi().value.set(char || null));
+      onCleanup(() => sub.unsubscribe());
+    });
   }
 
   private getSign(): CodHandSign {
+    const draft = this._draft();
     return {
-      eid: this.eid.value?.trim(),
-      mufi: this.mufi.value?.code || undefined,
-      type: this.type.value?.trim() || '',
-      sampleLocation: this.sampleRanges.value?.length
-        ? this.sampleRanges.value[0].start
+      eid: draft.eid.trim() || undefined,
+      mufi: draft.mufi?.code || undefined,
+      type: draft.type.trim(),
+      sampleLocation: draft.sampleRanges.length
+        ? copyFormValue(draft.sampleRanges[0].start)
         : ({} as CodLocation),
-      description: this.description.value?.trim(),
+      description: draft.description.trim() || undefined,
     };
   }
 
@@ -153,37 +148,47 @@ export class CodHandSignComponent {
     // ignore emissions not changing the location (the location editor
     // emits its initial value when initialized)
     if (
-      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
-      (CodLocationParser.rangesToString(this.sampleRanges.value) || '')
+      (CodLocationParser.rangesToString(ranges) || '') ===
+      (CodLocationParser.rangesToString(this.form.sampleRanges().value()) || '')
     ) {
       return;
     }
-    this.sampleRanges.setValue(ranges || []);
-    this.sampleRanges.updateValueAndValidity();
-    this.sampleRanges.markAsDirty();
+    this.form.sampleRanges().value.set(copyFormValue(ranges || []));
+    this.form.sampleRanges().markAsDirty();
   }
 
   public onMufiItemChange(mufi: unknown | null): void {
-    const mufiChar = mufi as MufiChar;
+    const mufiChar = mufi as MufiChar | null;
     // the lookup emits an empty item when initializing: ignore it when
     // there is no change, so that the form is not marked as dirty
-    if ((mufiChar?.code ?? null) === (this.mufi.value?.code ?? null)) {
+    if ((mufiChar?.code ?? null) === (this.form.mufi().value()?.code ?? null)) {
       return;
     }
-    this.mufi.setValue(mufiChar);
-    this.mufi.markAsDirty();
-    this.mufi.updateValueAndValidity();
+    this.form.mufi().value.set(mufiChar);
+    this.form.mufi().markAsDirty();
   }
 
   public cancel(): void {
     this.editorClose.emit();
   }
 
-  public save(): void {
-    if (this.form.invalid) {
+  public onEnterKey(event: Event): void {
+    if (
+      !isImplicitSubmission(event) ||
+      this.form().invalid() ||
+      !this.form().dirty()
+    ) {
       return;
     }
-    const sign = this.getSign();
-    this.sign.set(sign);
+    event.preventDefault();
+    this.save();
+  }
+
+  public save(): void {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
+      return;
+    }
+    this.sign.set(this.getSign());
   }
 }

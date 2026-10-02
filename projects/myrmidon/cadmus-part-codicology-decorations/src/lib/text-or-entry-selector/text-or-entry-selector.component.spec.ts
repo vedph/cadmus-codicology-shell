@@ -99,4 +99,36 @@ describe('TextOrEntrySelectorComponent', () => {
 
     expect(screen.getByText('required')).toBeInTheDocument();
   });
+
+  // signal forms regressions
+
+  const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+  it('should not emit back a prefixed copy of a free ID it was given', async () => {
+    // formerly, the selector rewrote a bound free ID "red" to "$red"
+    const { id } = await setup({ id: 'red', free: true });
+
+    await wait(400); // past the debounce
+
+    expect(id()).toBe('red');
+  });
+
+  it('should keep an in-progress edit when its own emission echoes back', async () => {
+    const { user, id } = await setup({ free: true });
+    const input = screen.getByPlaceholderText('entry');
+
+    await user.type(input, 'abc');
+    await waitFor(() => expect(id()).toBe('$abc'));
+    // the draft still holds what the user typed
+    expect(input).toHaveValue('abc');
+
+    await user.type(input, 'd');
+    await waitFor(() => expect(id()).toBe('$abcd'));
+    expect(input).toHaveValue('abcd');
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup({ id: "x" });
+    expect(container.querySelector('form')).toBeNull();
+  });
 });

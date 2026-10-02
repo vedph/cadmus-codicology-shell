@@ -1,5 +1,5 @@
 @if (user$ | async) {
-  <form [formGroup]="form">
+  <div>
     @if (loading()) {
       <mat-progress-bar mode="indeterminate" />
     }
@@ -13,7 +13,7 @@
     />
     <!-- autoCopy -->
     <div>
-      <mat-slide-toggle [formControl]="autoCopy" matTooltip="Toggle auto-copy"
+      <mat-slide-toggle [formField]="form.autoCopy" matTooltip="Toggle auto-copy"
         >copy</mat-slide-toggle
       >
     </div>
@@ -24,7 +24,7 @@
           @if (systems.length) {
             <mat-form-field>
               <mat-label>system</mat-label>
-              <mat-select [formControl]="system">
+              <mat-select [formField]="form.system">
                 @for (s of systems; track s) {
                   <mat-option [value]="s">
                     {{ s }}
@@ -32,33 +32,37 @@
                 }
               </mat-select>
               @if (
-                $any(system).errors?.required &&
-                (system.dirty || system.touched)
+                form.system().getError("required") &&
+                (form.system().dirty() || form.system().touched())
               ) {
                 <mat-error>system required</mat-error>
               }
             </mat-form-field>
           }
         </div>
-        @if (system.value) {
+        @if (form.system().value()) {
           <div class="form-row">
             <!-- label -->
             <mat-form-field style="width: 5em">
               <mat-label>label</mat-label>
-              <input matInput [formControl]="label" />
+              <input matInput [formField]="form.label" (input)="onLabelInput()" />
             </mat-form-field>
             <mat-icon>sync_alt</mat-icon>
             <!-- location -->
             <mat-form-field style="width: 5em">
               <mat-label>location</mat-label>
-              <input matInput [formControl]="location" />
+              <input
+                matInput
+                [formField]="form.location"
+                (input)="onLocationInput()"
+              />
             </mat-form-field>
           </div>
         }
-        @if (!system.value) {
+        @if (!form.system().value()) {
           <span style="color: silver">(no systems)</span>
         }
       </div>
     }
-  </form>
+  </div>
 }

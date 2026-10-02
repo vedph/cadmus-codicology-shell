@@ -1,13 +1,11 @@
 import {
-  ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
-import {
-  FormControl,
-  FormBuilder,
-  FormGroup,
-  UntypedFormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  linkedSignal,
+  signal,
+} from '@angular/core';
 import { take } from 'rxjs/operators';
 import { TitleCasePipe } from '@angular/common';
 
@@ -26,23 +24,19 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 
 // myrmidon
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { NgxToolsSignalValidators } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
-import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 
 // bricks
 import { CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
 
 // cadmus
-import {
-  ThesauriSet,
-  ThesaurusEntry,
-  EditedObject,
-} from '@myrmidon/cadmus-core';
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
-  HelpLinkComponent
+  HelpLinkComponent,
+  copyFormValue,
 } from '@myrmidon/cadmus-ui';
 import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
@@ -56,6 +50,15 @@ import { CodContentEditorComponent } from '../cod-content-editor/cod-content-edi
 
 interface CodContentsPartSettings {
   lookupProviderOptions?: LookupProviderOptions;
+}
+
+interface CodContentsPartControls {
+  contents: CodContent[];
+}
+
+function toDraft(part?: CodContentsPart | null): CodContentsPartControls {
+  // copy: the form tags the objects in its arrays
+  return { contents: copyFormValue(part?.contents || []) };
 }
 
 /**
@@ -72,8 +75,6 @@ interface CodContentsPartSettings {
   styleUrls: ['./cod-contents-part.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
     TitleCasePipe,
     // material
     MatButton,
@@ -95,58 +96,59 @@ interface CodContentsPartSettings {
     HelpLinkComponent,
   ],
 })
-export class CodContentsPartComponent
-  extends ModelEditorComponentBase<CodContentsPart>
-  implements OnInit
-{
+export class CodContentsPartComponent extends ModelEditorComponentBase<CodContentsPart> {
+  private readonly _dialogService = inject(DialogService);
+
   public readonly editedIndex = signal<number>(-1);
   public readonly editedContent = signal<CodContent | undefined>(undefined);
 
   // cod-content-states
-  public readonly stateEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly stateEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-content-states']?.entries,
   );
   // cod-content-tags
-  public readonly tagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly tagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-content-tags']?.entries,
+  );
   // cod-content-annotation-types
-  public readonly annTypeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly annTypeEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-content-annotation-types']?.entries,
   );
   // cod-content-annotation-features
-  public readonly annFeatureEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly annFeatureEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-content-annotation-features']?.entries,
   );
   // cod-content-annotation-languages
-  public readonly annLangEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly annLangEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-content-annotation-languages']?.entries,
   );
   // cod-content-gap-types
-  public readonly gapTypeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly gapTypeEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-content-gap-types']?.entries,
   );
   // cod-content-gap-tags
-  public readonly gapTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly gapTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-content-gap-tags']?.entries,
   );
   // assertion-tags
-  public readonly assTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly assTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['assertion-tags']?.entries,
   );
   // doc-reference-types
-  public readonly refTypeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly refTypeEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['doc-reference-types']?.entries,
   );
   // doc-reference-tags
-  public readonly refTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly refTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['doc-reference-tags']?.entries,
   );
   // external-id-tags
-  public readonly idTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly idTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['external-id-tags']?.entries,
   );
   // external-id-scopes
-  public readonly idScopeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly idScopeEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['external-id-scopes']?.entries,
   );
 
   // lookup options depending on role
@@ -154,139 +156,31 @@ export class CodContentsPartComponent
     LookupProviderOptions | undefined
   >(undefined);
 
-  public contents: FormControl<CodContent[]>;
+  private readonly _draft = linkedSignal(() => toDraft(this.data()?.value));
+  public readonly form = this.createForm(this._draft, (p) => {
+    NgxToolsSignalValidators.strictMinLength(p.contents, 1);
+  });
 
-  constructor(
-    authService: AuthJwtService,
-    formBuilder: FormBuilder,
-    private _dialogService: DialogService,
-  ) {
-    super(authService, formBuilder);
-    // form
-    this.contents = formBuilder.control([], {
-      validators: NgxToolsValidators.strictMinLengthValidator(1),
-      nonNullable: true,
-    });
-  }
-
-  public override ngOnInit(): void {
-    super.ngOnInit();
-  }
-
-  protected buildForm(formBuilder: FormBuilder): FormGroup | UntypedFormGroup {
-    return formBuilder.group({
-      contents: this.contents,
-    });
-  }
-
-  private updateThesauri(thesauri: ThesauriSet): void {
-    let key = 'cod-content-states';
-    if (this.hasThesaurus(key)) {
-      this.stateEntries.set(thesauri[key].entries);
-    } else {
-      this.stateEntries.set(undefined);
-    }
-    key = 'cod-content-tags';
-    if (this.hasThesaurus(key)) {
-      this.tagEntries.set(thesauri[key].entries);
-    } else {
-      this.tagEntries.set(undefined);
-    }
-    key = 'cod-content-annotation-features';
-    if (this.hasThesaurus(key)) {
-      this.annFeatureEntries.set(thesauri[key].entries);
-    } else {
-      this.annFeatureEntries.set(undefined);
-    }
-    key = 'cod-content-annotation-languages';
-    if (this.hasThesaurus(key)) {
-      this.annLangEntries.set(thesauri[key].entries);
-    } else {
-      this.annLangEntries.set(undefined);
-    }
-    key = 'cod-content-annotation-types';
-    if (this.hasThesaurus(key)) {
-      this.annTypeEntries.set(thesauri[key].entries);
-    } else {
-      this.annTypeEntries.set(undefined);
-    }
-    key = 'cod-content-gap-types';
-    if (this.hasThesaurus(key)) {
-      this.gapTypeEntries.set(thesauri[key].entries);
-    } else {
-      this.gapTypeEntries.set(undefined);
-    }
-    key = 'cod-content-gap-tags';
-    if (this.hasThesaurus(key)) {
-      this.gapTagEntries.set(thesauri[key].entries);
-    } else {
-      this.gapTagEntries.set(undefined);
-    }
-    key = 'assertion-tags';
-    if (this.hasThesaurus(key)) {
-      this.assTagEntries.set(thesauri[key].entries);
-    } else {
-      this.assTagEntries.set(undefined);
-    }
-    key = 'doc-reference-types';
-    if (this.hasThesaurus(key)) {
-      this.refTypeEntries.set(thesauri[key].entries);
-    } else {
-      this.refTypeEntries.set(undefined);
-    }
-    key = 'doc-reference-tags';
-    if (this.hasThesaurus(key)) {
-      this.refTagEntries.set(thesauri[key].entries);
-    } else {
-      this.refTagEntries.set(undefined);
-    }
-    key = 'external-id-tags';
-    if (this.hasThesaurus(key)) {
-      this.idTagEntries.set(thesauri[key].entries);
-    } else {
-      this.idTagEntries.set(undefined);
-    }
-    key = 'external-id-scopes';
-    if (this.hasThesaurus(key)) {
-      this.idScopeEntries.set(thesauri[key].entries);
-    } else {
-      this.idScopeEntries.set(undefined);
-    }
-  }
-
-  private updateForm(part?: CodContentsPart | null): void {
-    if (!part) {
-      this.form.reset();
-      return;
-    }
-    this.contents.setValue(part.contents || []);
-    this.form.markAsPristine();
-  }
-
-  protected override onDataSet(data?: EditedObject<CodContentsPart>): void {
-    // thesauri
-    if (data?.thesauri) {
-      this.updateThesauri(data.thesauri);
-    }
-    // settings
-    this._appRepository
-      ?.getSettingFor<CodContentsPartSettings>(
-        COD_CONTENTS_PART_TYPEID,
-        this.identity()?.roleId || undefined,
-      )
-      .then((settings) => {
-        const options = settings?.lookupProviderOptions;
-        this.lookupProviderOptions.set(options || undefined);
-      });
-
-    // form
-    this.updateForm(data?.value);
+  constructor() {
+    super();
+    this.initSettings<CodContentsPartSettings>(
+      COD_CONTENTS_PART_TYPEID,
+      (settings) =>
+        this.lookupProviderOptions.set(
+          settings?.lookupProviderOptions || undefined,
+        ),
+    );
   }
 
   protected getValue(): CodContentsPart {
-    let part = this.getEditedPart(COD_CONTENTS_PART_TYPEID) as CodContentsPart;
-    part.contents = this.contents.value || [];
+    const part = this.getEditedPart(COD_CONTENTS_PART_TYPEID) as CodContentsPart;
+    part.contents = copyFormValue(this._draft().contents);
     return part;
+  }
+
+  private setContents(contents: CodContent[]): void {
+    this.form.contents().value.set(contents);
+    this.form.contents().markAsDirty();
   }
 
   public addContent(): void {
@@ -308,7 +202,7 @@ export class CodContentsPartComponent
   }
 
   public onContentSave(content: CodContent): void {
-    const contents = [...this.contents.value];
+    const contents = [...this.form.contents().value()];
 
     if (this.editedIndex() > -1) {
       contents.splice(this.editedIndex(), 1, content);
@@ -316,7 +210,7 @@ export class CodContentsPartComponent
       contents.push(content);
     }
 
-    this.contents.setValue(contents);
+    this.setContents(contents);
     this.editContent(null);
   }
 
@@ -326,9 +220,9 @@ export class CodContentsPartComponent
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          const contents = [...this.contents.value];
+          const contents = [...this.form.contents().value()];
           contents.splice(index, 1);
-          this.contents.setValue(contents);
+          this.setContents(contents);
         }
       });
   }
@@ -337,21 +231,21 @@ export class CodContentsPartComponent
     if (index < 1) {
       return;
     }
-    const content = this.contents.value[index];
-    const contents = [...this.contents.value];
+    const contents = [...this.form.contents().value()];
+    const content = contents[index];
     contents.splice(index, 1);
     contents.splice(index - 1, 0, content);
-    this.contents.setValue(contents);
+    this.setContents(contents);
   }
 
   public moveContentDown(index: number): void {
-    if (index + 1 >= this.contents.value.length) {
+    const contents = [...this.form.contents().value()];
+    if (index + 1 >= contents.length) {
       return;
     }
-    const content = this.contents.value[index];
-    const contents = [...this.contents.value];
+    const content = contents[index];
     contents.splice(index, 1);
     contents.splice(index + 1, 0, content);
-    this.contents.setValue(contents);
+    this.setContents(contents);
   }
 }

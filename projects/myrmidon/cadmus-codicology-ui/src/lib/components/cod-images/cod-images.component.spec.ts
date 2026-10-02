@@ -140,4 +140,55 @@ describe('CodImagesComponent', () => {
 
     expect(screen.getByText('ID required')).toBeInTheDocument();
   });
+
+  // signal forms regressions
+
+  const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+  it('should not autosave a normalized copy of the images it was given', async () => {
+    const { model } = await setup([{ id: '  untrimmed  ', type: 'photo' }]);
+
+    await wait(500); // past the autosave debounce
+
+    expect(model()![0].id).toBe('  untrimmed  ');
+  });
+
+  it('should keep an in-progress edit when its own save echoes back normalized', async () => {
+    const { user, model } = await setup(IMAGES);
+
+    await user.clear(idInputs()[0]);
+    await user.type(idInputs()[0], 'abc ');
+    await waitFor(() => expect(model()![0].id).toBe('abc'));
+    // the draft still holds what the user typed
+    expect(idInputs()[0]).toHaveValue('abc ');
+
+    await user.type(idInputs()[0], 'd');
+    await waitFor(() => expect(model()![0].id).toBe('abc d'));
+    expect(idInputs()[0]).toHaveValue('abc d');
+  });
+
+  it('should rebuild the editors when new images are bound', async () => {
+    const { model, fixture } = await setup(IMAGES);
+
+    model.set([{ id: 'other', type: 'scan' }]);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(idInputs().map((i) => i.value)).toEqual(['other']);
+  });
+
+  it('should emit images without the form identity tags', async () => {
+    const { user, model } = await setup(IMAGES);
+
+    await user.type(idInputs()[1], 'x');
+    await waitFor(() => expect(model()![1].id).toBe('img2x'));
+
+    expect(Object.getOwnPropertySymbols(model()![0])).toHaveLength(0);
+    expect(Object.getOwnPropertySymbols(IMAGES[0])).toHaveLength(0);
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup(IMAGES);
+    expect(container.querySelector('form')).toBeNull();
+  });
 });

@@ -3,25 +3,22 @@ import {
   Component,
   effect,
   computed,
+  inject,
   input,
+  linkedSignal,
   model,
-  OnDestroy,
-  OnInit,
   output,
   ViewChild,
-  signal,
-  Inject,
-  Optional,
+  untracked,
 } from '@angular/core';
 import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import { debounceTime, distinctUntilChanged } from 'rxjs';
+  form,
+  FormField,
+  maxLength,
+  min,
+  pattern,
+  required,
+} from '@angular/forms/signals';
 
 import { MatTabGroup, MatTab } from '@angular/material/tabs';
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
@@ -52,6 +49,12 @@ import {
 } from '@myrmidon/cadmus-text-ed';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  copyFormValue,
+  isImplicitSubmission,
+  setFieldFromChild,
+  setFieldFromEditor,
+} from '@myrmidon/cadmus-ui';
 import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 import {
   AssertedCompositeId,
@@ -96,14 +99,101 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   };
 }
 
+interface CodDecorationElementControls {
+  // general
+  key: string;
+  parentKey: string;
+  type: string;
+  tag: string;
+  flags: string[];
+  ranges: CodLocationRange[];
+  links: AssertedCompositeId[];
+  instanceCount: number | null;
+  // typologies
+  typologies: string[];
+  subject: string;
+  colors: string[];
+  gildings: string[];
+  techniques: string[];
+  tools: string[];
+  positions: string[];
+  refSign: string;
+  lineHeight: number | null;
+  textRelation: string;
+  // description
+  description: string;
+  images: CodImage[];
+  references: DocReference[];
+  note: string;
+}
+
+function toDraft(
+  element?: CodDecorationElement,
+): CodDecorationElementControls {
+  return {
+    key: element?.key || '',
+    parentKey: element?.parentKey || '',
+    type: element?.type || '',
+    tag: element?.tag || '',
+    flags: [...(element?.flags || [])],
+    ranges: copyFormValue(element?.ranges || []),
+    links: copyFormValue(element?.links || []),
+    instanceCount: element?.instanceCount || 0,
+    typologies: [...(element?.typologies || [])],
+    subject: element?.subject || '',
+    colors: [...(element?.colors || [])],
+    gildings: [...(element?.gildings || [])],
+    techniques: [...(element?.techniques || [])],
+    tools: [...(element?.tools || [])],
+    positions: [...(element?.positions || [])],
+    refSign: element?.refSign || '',
+    lineHeight: element?.lineHeight || 0,
+    textRelation: element?.textRelation || '',
+    description: element?.description || '',
+    images: copyFormValue(element?.images || []),
+    references: copyFormValue(element?.references || []),
+    note: element?.note || '',
+  };
+}
+
+/**
+ * Determine if the specified thesaurus entries represent a free set.
+ * This happens when we just have a single entry with a single dot
+ * followed by "-".
+ *
+ * @param entries The thesaurus entries to test.
+ * @returns True if the entries represent a free set.
+ */
+function isFreeSet(entries: ThesaurusEntry[] | undefined): boolean {
+  if (entries?.length !== 1) {
+    return false;
+  }
+  const tokens = entries[0].id.split('.');
+  return tokens.length === 2 && tokens[1] === '-';
+}
+
+/**
+ * Get the entries of a type-dependent thesaurus for the specified type:
+ * when the thesaurus is hierarchical, only those with the type prefix.
+ */
+function getFilteredEntries(
+  entries: ThesaurusEntry[] | undefined | null,
+  prefix: string | null,
+): ThesaurusEntry[] | undefined {
+  if (!prefix || !entries?.some((e) => e.id.indexOf('.') > -1)) {
+    return entries ? [...entries] : undefined;
+  }
+  const p = prefix + '.';
+  return entries.filter((e) => e.id.startsWith(p));
+}
+
 @Component({
   selector: 'cadmus-cod-decoration-element',
   templateUrl: './cod-decoration-element.component.html',
   styleUrls: ['./cod-decoration-element.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatTabGroup,
     MatTab,
     MatFormField,
@@ -125,7 +215,13 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
     AssertedCompositeIdsComponent,
   ],
 })
-export class CodDecorationElementComponent implements OnInit {
+export class CodDecorationElementComponent {
+  private readonly _editService = inject(CadmusTextEdService);
+  private readonly _editorBindings = inject<CadmusTextEdBindings>(
+    CADMUS_TEXT_ED_BINDINGS_TOKEN,
+    { optional: true },
+  );
+
   // monaco
   private _editor?: StandaloneCodeEditor;
 
@@ -134,9 +230,7 @@ export class CodDecorationElementComponent implements OnInit {
     wordWrap: 'on',
     automaticLayout: true,
   };
-
-  private _updatingForm?: boolean;
-  private _adjustingUI?: boolean;
+  public readonly setFieldFromEditor = setFieldFromEditor;
 
   @ViewChild('dsceditor', { static: false }) dscEditor: any;
 
@@ -145,56 +239,6 @@ export class CodDecorationElementComponent implements OnInit {
   public readonly parentKeys = input<string[]>();
 
   public readonly editorClose = output();
-
-  // general
-  public key: FormControl<string | null>;
-  public parentKey: FormControl<string | null>;
-  public type: FormControl<string | null>;
-  public tag: FormControl<string | null>;
-  public flags: FormControl<string[]>;
-  public ranges: FormControl<CodLocationRange[]>;
-  public links: FormControl<AssertedCompositeId[]>;
-  public instanceCount: FormControl<number>;
-  // typologies
-  public typologies: FormControl<string[]>;
-  public subject: FormControl<string | null>;
-  public colors: FormControl<string[]>;
-  public gildings: FormControl<string[]>;
-  public techniques: FormControl<string[]>;
-  public tools: FormControl<string[]>;
-  public positions: FormControl<string[]>;
-  public refSign: FormControl<string | null>;
-  public lineHeight: FormControl<number>;
-  public textRelation: FormControl<string | null>;
-  // description
-  public description: FormControl<string | null>;
-  public images: FormControl<CodImage[]>;
-  public references: FormControl<DocReference[]>;
-  public note: FormControl<string | null>;
-  public form: FormGroup;
-
-  // flags are computed from filtered entries
-  public readonly genFlags = computed<Flag[]>(() => {
-    return this.elemFlagEntries()?.map(entryToFlag) || [];
-  });
-  public readonly typologyFlags = computed<Flag[]>(() => {
-    return this.elemTypolEntries()?.map(entryToFlag) || [];
-  });
-  public readonly colorFlags = computed<Flag[]>(() => {
-    return this.elemColorEntries()?.map(entryToFlag) || [];
-  });
-  public readonly gildingFlags = computed<Flag[]>(() => {
-    return this.elemGildingEntries()?.map(entryToFlag) || [];
-  });
-  public readonly techniqueFlags = computed<Flag[]>(() => {
-    return this.elemTechEntries()?.map(entryToFlag) || [];
-  });
-  public readonly toolFlags = computed<Flag[]>(() => {
-    return this.elemToolEntries()?.map(entryToFlag) || [];
-  });
-  public readonly positionFlags = computed<Flag[]>(() => {
-    return this.elemPosEntries()?.map(entryToFlag) || [];
-  });
 
   public readonly lookupProviderOptions = input<
     LookupProviderOptions | undefined
@@ -237,146 +281,107 @@ export class CodDecorationElementComponent implements OnInit {
   // cod-decoration-element-typologies
   public readonly decElemTypolEntries = input<ThesaurusEntry[]>();
 
-  // their filtered entries (set in adjustUI):
-  public readonly elemFlagEntries = signal<ThesaurusEntry[]>([]);
-  public readonly elemColorEntries = signal<ThesaurusEntry[]>([]);
-  public readonly elemGildingEntries = signal<ThesaurusEntry[]>([]);
-  public readonly elemTechEntries = signal<ThesaurusEntry[]>([]);
-  public readonly elemPosEntries = signal<ThesaurusEntry[]>([]);
-  public readonly elemToolEntries = signal<ThesaurusEntry[]>([]);
-  public readonly elemTypolEntries = signal<ThesaurusEntry[]>([]);
+  private readonly _draft = linkedSignal(() => toDraft(this.element()));
+  public readonly form = form(this._draft, (p) => {
+    pattern(p.key, /^[-a-zA-Z0-9_]+$/);
+    maxLength(p.key, 50);
+    pattern(p.parentKey, /^[-a-zA-Z0-9_]+$/);
+    maxLength(p.parentKey, 50);
+    required(p.type);
+    maxLength(p.type, 50);
+    maxLength(p.tag, 50);
+    min(p.instanceCount, 0);
+    maxLength(p.subject, 100);
+    maxLength(p.refSign, 50);
+    min(p.lineHeight, 0);
+    maxLength(p.textRelation, 100);
+    maxLength(p.description, 1000);
+    maxLength(p.note, 500);
+  });
 
-  public readonly elemGildingFree = signal<boolean | undefined>(undefined);
-  public readonly elemTechniqueFree = signal<boolean | undefined>(undefined);
-  public readonly elemPositionFree = signal<boolean | undefined>(undefined);
-  public readonly elemToolFree = signal<boolean | undefined>(undefined);
+  // the type-dependent thesauri entries, filtered by the selected type
+  private readonly _type = computed(() => this.form.type().value() || null);
+  public readonly elemFlagEntries = computed<ThesaurusEntry[]>(
+    () => getFilteredEntries(this.decElemFlagEntries(), this._type()) || [],
+  );
+  public readonly elemColorEntries = computed<ThesaurusEntry[]>(
+    () => getFilteredEntries(this.decElemColorEntries(), this._type()) || [],
+  );
+  public readonly elemGildingEntries = computed<ThesaurusEntry[]>(
+    () => getFilteredEntries(this.decElemGildingEntries(), this._type()) || [],
+  );
+  public readonly elemTechEntries = computed<ThesaurusEntry[]>(
+    () => getFilteredEntries(this.decElemTechEntries(), this._type()) || [],
+  );
+  public readonly elemPosEntries = computed<ThesaurusEntry[]>(
+    () => getFilteredEntries(this.decElemPosEntries(), this._type()) || [],
+  );
+  public readonly elemToolEntries = computed<ThesaurusEntry[]>(
+    () => getFilteredEntries(this.decElemToolEntries(), this._type()) || [],
+  );
+  public readonly elemTypolEntries = computed<ThesaurusEntry[]>(
+    () => getFilteredEntries(this.decElemTypolEntries(), this._type()) || [],
+  );
+
+  // free sets
+  public readonly elemGildingFree = computed<boolean>(() =>
+    isFreeSet(getFilteredEntries(this.decElemGildingEntries(), this._type())),
+  );
+  public readonly elemTechniqueFree = computed<boolean>(() =>
+    isFreeSet(getFilteredEntries(this.decElemTechEntries(), this._type())),
+  );
+  public readonly elemPositionFree = computed<boolean>(() =>
+    isFreeSet(getFilteredEntries(this.decElemPosEntries(), this._type())),
+  );
+  public readonly elemToolFree = computed<boolean>(() =>
+    isFreeSet(getFilteredEntries(this.decElemToolEntries(), this._type())),
+  );
+
+  // flags are computed from filtered entries
+  public readonly genFlags = computed<Flag[]>(() => {
+    return this.elemFlagEntries()?.map(entryToFlag) || [];
+  });
+  public readonly typologyFlags = computed<Flag[]>(() => {
+    return this.elemTypolEntries()?.map(entryToFlag) || [];
+  });
+  public readonly colorFlags = computed<Flag[]>(() => {
+    return this.elemColorEntries()?.map(entryToFlag) || [];
+  });
+  public readonly gildingFlags = computed<Flag[]>(() => {
+    return this.elemGildingEntries()?.map(entryToFlag) || [];
+  });
+  public readonly techniqueFlags = computed<Flag[]>(() => {
+    return this.elemTechEntries()?.map(entryToFlag) || [];
+  });
+  public readonly toolFlags = computed<Flag[]>(() => {
+    return this.elemToolEntries()?.map(entryToFlag) || [];
+  });
+  public readonly positionFlags = computed<Flag[]>(() => {
+    return this.elemPosEntries()?.map(entryToFlag) || [];
+  });
 
   // this object has a property for each control
   // to be hidden, having the same name of the control
   // and value=true.
-  public readonly hidden = signal<HiddenDecElemFields | undefined>(undefined);
-
-  constructor(
-    formBuilder: FormBuilder,
-    private _editService: CadmusTextEdService,
-    @Inject(CADMUS_TEXT_ED_BINDINGS_TOKEN)
-    @Optional()
-    private _editorBindings?: CadmusTextEdBindings,
-  ) {
-    this.key = formBuilder.control(null, [
-      Validators.pattern('^[-a-zA-Z0-9_]+$'),
-      Validators.maxLength(50),
-    ]);
-    this.parentKey = formBuilder.control(null, [
-      Validators.pattern('^[-a-zA-Z0-9_]+$'),
-      Validators.maxLength(50),
-    ]);
-    this.type = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
-    this.tag = formBuilder.control(null, Validators.maxLength(50));
-    this.flags = formBuilder.control([], { nonNullable: true });
-    this.ranges = formBuilder.control([], { nonNullable: true });
-    this.links = formBuilder.control([], { nonNullable: true });
-    this.instanceCount = formBuilder.control(0, { nonNullable: true });
-    this.typologies = formBuilder.control([], { nonNullable: true });
-    this.subject = formBuilder.control(null, Validators.maxLength(100));
-    this.colors = formBuilder.control([], { nonNullable: true });
-    this.gildings = formBuilder.control([], { nonNullable: true });
-    this.techniques = formBuilder.control([], { nonNullable: true });
-    this.tools = formBuilder.control([], { nonNullable: true });
-    this.positions = formBuilder.control([], { nonNullable: true });
-    this.refSign = formBuilder.control(null, Validators.maxLength(50));
-    this.lineHeight = formBuilder.control(0, {
-      validators: Validators.min(0),
-      nonNullable: true,
-    });
-    this.textRelation = formBuilder.control(null, Validators.maxLength(100));
-    this.description = formBuilder.control(null, Validators.maxLength(1000));
-    this.images = formBuilder.control([], { nonNullable: true });
-    this.references = formBuilder.control([], { nonNullable: true });
-    this.note = formBuilder.control(null, Validators.maxLength(500));
-    this.form = formBuilder.group({
-      key: this.key,
-      parentKey: this.parentKey,
-      type: this.type,
-      tag: this.tag,
-      flags: this.flags,
-      instanceCount: this.instanceCount,
-      ranges: this.ranges,
-      links: this.links,
-      typologies: this.typologies,
-      subject: this.subject,
-      colors: this.colors,
-      gildings: this.gildings,
-      techniques: this.techniques,
-      tools: this.tools,
-      positions: this.positions,
-      refSign: this.refSign,
-      lineHeight: this.lineHeight,
-      textRelation: this.textRelation,
-      description: this.description,
-      images: this.images,
-      references: this.references,
-      note: this.note,
-    });
-
-    effect(() => {
-      const element = this.element();
-      this.updateForm(element);
-    });
-  }
-
-  /**
-   * Determine if the specified thesaurus entries represent a free set.
-   * This happens when we just have a single entry with a single dot
-   * followed by "-".
-   *
-   * @param entries The thesaurus entries to test.
-   * @returns True if the entries represent a free set.
-   */
-  private isFreeSet(entries: ThesaurusEntry[] | undefined): boolean {
-    if (entries?.length !== 1) {
-      return false;
-    }
-    const tokens = entries[0].id.split('.');
-    return tokens.length === 2 && tokens[1] === '-';
-  }
-
-  private getFilteredEntries(
-    entries: ThesaurusEntry[] | undefined | null,
-    prefix: string | null,
-  ): ThesaurusEntry[] | undefined {
-    if (!prefix || !entries?.some((e) => e.id.indexOf('.') > -1)) {
-      return entries ? [...entries] : undefined;
-    }
-    const p = prefix + '.';
-    return entries.filter((e) => e.id.startsWith(p));
-  }
-
-  private updateVisibility(): void {
+  public readonly hidden = computed<HiddenDecElemFields>(() => {
     const hidden: any = {};
-    const entry = this.decTypeHiddenEntries()?.find(
-      (e) => e.id === this.type.value,
-    );
+    const type = this._type();
+    const entry = this.decTypeHiddenEntries()?.find((e) => e.id === type);
     if (entry) {
       const names = entry.value.split(' ').filter((s) => s);
       names.forEach((n) => {
         hidden[n] = true;
       });
     }
-    this.hidden.set(hidden);
-  }
+    return hidden;
+  });
 
-  public ngOnInit(): void {
-    this.type.valueChanges
-      .pipe(distinctUntilChanged(), debounceTime(300))
-      .subscribe((_value) => {
-        if (!this._adjustingUI && !this._updatingForm) {
-          this.adjustUI();
-        }
-      });
+  constructor() {
+    // new element: clear the interaction state
+    effect(() => {
+      this.element();
+      untracked(() => this.form().reset());
+    });
   }
 
   private async applyEdit(selector: string) {
@@ -413,276 +418,131 @@ export class CodDecorationElementComponent implements OnInit {
     }
   }
 
-  private adjustUI(skipFormValues = false): void {
-    if (this._adjustingUI) {
-      return;
-    }
-    this._adjustingUI = true;
-
-    if (!skipFormValues) {
-      // reset type-dependent values
-      this.flags.reset();
-      this.typologies.reset();
-      this.subject.reset();
-      this.lineHeight.reset();
-      this.textRelation.reset();
-    }
-
-    // calculate filtered entries
-    this.elemFlagEntries.set(
-      this.getFilteredEntries(this.decElemFlagEntries(), this.type.value) || [],
-    );
-    this.elemColorEntries.set(
-      this.getFilteredEntries(this.decElemColorEntries(), this.type.value) ||
-        [],
-    );
-    this.elemGildingEntries.set(
-      this.getFilteredEntries(this.decElemGildingEntries(), this.type.value) ||
-        [],
-    );
-    this.elemTechEntries.set(
-      this.getFilteredEntries(this.decElemTechEntries(), this.type.value) || [],
-    );
-    this.elemPosEntries.set(
-      this.getFilteredEntries(this.decElemPosEntries(), this.type.value) || [],
-    );
-    this.elemToolEntries.set(
-      this.getFilteredEntries(this.decElemToolEntries(), this.type.value) || [],
-    );
-    this.elemTypolEntries.set(
-      this.getFilteredEntries(this.decElemTypolEntries(), this.type.value) ||
-        [],
-    );
-
-    // free-set flags (always computed, regardless of skipFormValues)
-    let entries = this.getFilteredEntries(
-      this.decElemGildingEntries(),
-      this.type.value,
-    );
-    this.elemGildingFree.set(this.isFreeSet(entries));
-
-    entries = this.getFilteredEntries(
-      this.decElemTechEntries(),
-      this.type.value,
-    );
-    this.elemTechniqueFree.set(this.isFreeSet(entries));
-
-    entries = this.getFilteredEntries(
-      this.decElemPosEntries(),
-      this.type.value,
-    );
-    this.elemPositionFree.set(this.isFreeSet(entries));
-
-    entries = this.getFilteredEntries(
-      this.decElemToolEntries(),
-      this.type.value,
-    );
-    this.elemToolFree.set(this.isFreeSet(entries));
-
-    if (!skipFormValues) {
-      // set form values from current element (for interactive type change)
-      this.flags.setValue(this.element()?.flags || []);
-      this.colors.setValue(this.element()?.colors || []);
-      this.gildings.setValue(this.element()?.gildings || []);
-      this.techniques.setValue(this.element()?.techniques || []);
-      this.positions.setValue(this.element()?.positions || []);
-      this.tools.setValue(this.element()?.tools || []);
-      this.typologies.setValue(this.element()?.typologies || []);
-    }
-
-    // visibility
-    this.updateVisibility();
-    this._adjustingUI = false;
-  }
-
-  private updateTypeDependencies(element: CodDecorationElement): void {
-    this.key.setValue(element.key || null);
-    this.parentKey.setValue(element.parentKey || null);
-    this.instanceCount.setValue(element.instanceCount || 0);
-
-    this.ranges.setValue(element.ranges);
-    this.links.setValue(element.links || []);
-
-    this.flags.setValue(element.flags || []);
-
-    // typologies
-    this.subject.setValue(element.subject || null);
-    // colors
-    this.colors.setValue(element.colors || []);
-    // typologies
-    this.typologies.setValue(element.typologies || []);
-    // gildings
-    this.gildings.setValue(element.gildings || []);
-    // techniques
-    this.techniques.setValue(element.techniques || []);
-    // tools
-    this.tools.setValue(element.tools || []);
-    // positions
-    this.positions.setValue(element.positions || []);
-    this.refSign.setValue(element.refSign || null);
-    this.lineHeight.setValue(element.lineHeight || 0);
-    this.textRelation.setValue(element.textRelation || null);
-    // description
-    this.description.setValue(element.description || null);
-    this.images.setValue(element.images || []);
-    this.note.setValue(element.note || null);
-
-    this.form.markAsPristine();
-    this._updatingForm = false;
-  }
-
-  private updateForm(element: CodDecorationElement | undefined): void {
-    this._updatingForm = true;
-    if (!element) {
-      this.form.reset();
-      this._updatingForm = false;
-      return;
-    }
-    // general
-    this.type.setValue(element.type, { emitEvent: false });
-    this.tag.setValue(element.tag || null, { emitEvent: false });
-    this.references.setValue(element.references || []);
-
-    // compute filtered entries and visibility (skip form value resets/sets
-    // since updateTypeDependencies will set all values from element)
-    this.adjustUI(true);
-    // set all type-dependent control values from element
-    this.updateTypeDependencies(element);
+  /**
+   * Handle the user's change of the type: reset the type-dependent values.
+   */
+  public onTypeChange(): void {
+    const element = this.element();
+    const draft = this._draft();
+    this._draft.set({
+      ...draft,
+      flags: [...(element?.flags || [])],
+      typologies: [...(element?.typologies || [])],
+      subject: '',
+      lineHeight: 0,
+      textRelation: '',
+      colors: [...(element?.colors || [])],
+      gildings: [...(element?.gildings || [])],
+      techniques: [...(element?.techniques || [])],
+      positions: [...(element?.positions || [])],
+      tools: [...(element?.tools || [])],
+    });
   }
 
   private getElement(): CodDecorationElement {
+    const draft = this._draft();
     return {
-      key: this.key.value?.trim(),
-      parentKey: this.parentKey.value?.trim(),
-      type: this.type.value?.trim() || '',
-      tag: this.tag.value?.trim(),
-      flags: this.flags.value,
-      ranges: this.ranges.value || [],
-      links: this.links.value?.length ? this.links.value : undefined,
-      instanceCount: this.instanceCount.value || 0,
-      typologies: this.typologies.value,
-      subject: this.subject.value?.trim(),
-      colors: this.colors.value,
-      gildings: this.gildings.value,
-      techniques: this.techniques.value,
-      tools: this.tools.value,
-      positions: this.positions.value,
-      refSign: this.refSign.value?.trim() || undefined,
-      lineHeight: this.lineHeight.value,
-      textRelation: this.textRelation.value?.trim(),
-      description: this.description.value?.trim(),
-      images: this.images.value?.length ? this.images.value : undefined,
-      references: this.references.value?.length
-        ? this.references.value
+      key: draft.key.trim() || undefined,
+      parentKey: draft.parentKey.trim() || undefined,
+      type: draft.type.trim(),
+      tag: draft.tag.trim() || undefined,
+      flags: [...draft.flags],
+      ranges: copyFormValue(draft.ranges),
+      links: draft.links.length ? copyFormValue(draft.links) : undefined,
+      instanceCount: draft.instanceCount || 0,
+      typologies: [...draft.typologies],
+      subject: draft.subject.trim() || undefined,
+      colors: [...draft.colors],
+      gildings: [...draft.gildings],
+      techniques: [...draft.techniques],
+      tools: [...draft.tools],
+      positions: [...draft.positions],
+      refSign: draft.refSign.trim() || undefined,
+      lineHeight: draft.lineHeight ?? 0,
+      textRelation: draft.textRelation.trim() || undefined,
+      description: draft.description.trim() || undefined,
+      images: draft.images.length ? copyFormValue(draft.images) : undefined,
+      references: draft.references.length
+        ? copyFormValue(draft.references)
         : undefined,
-      note: this.note.value?.trim(),
+      note: draft.note.trim() || undefined,
     };
   }
 
   public onLinksChange(ids: AssertedCompositeId[]): void {
-    this.links.setValue(ids || []);
-    this.links.updateValueAndValidity();
-    this.links.markAsDirty();
+    setFieldFromChild(this.form.links, copyFormValue(ids || []));
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
     // ignore emissions not changing the location (the location editor
     // emits its initial value when initialized)
     if (
-      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
-      (CodLocationParser.rangesToString(this.ranges.value) || '')
+      (CodLocationParser.rangesToString(ranges) || '') ===
+      (CodLocationParser.rangesToString(this.form.ranges().value()) || '')
     ) {
       return;
     }
-    this.ranges.setValue(ranges || []);
-    this.ranges.updateValueAndValidity();
-    this.ranges.markAsDirty();
+    this.form.ranges().value.set(copyFormValue(ranges || []));
+    this.form.ranges().markAsDirty();
   }
 
   public onImagesChange(images: CodImage[] | undefined): void {
-    this.images.setValue(images || []);
-    this.images.updateValueAndValidity();
-    this.images.markAsDirty();
+    setFieldFromChild(this.form.images, copyFormValue(images || []));
   }
 
   public onGenIdsChange(ids: string[]): void {
-    if (this._updatingForm) {
-      return;
-    }
-    this.flags.setValue(ids);
-    this.flags.updateValueAndValidity();
-    this.flags.markAsDirty();
+    setFieldFromChild(this.form.flags, [...(ids || [])]);
   }
 
   public onTypologyIdsChange(ids: string[]): void {
-    if (this._updatingForm) {
-      return;
-    }
-    this.typologies.setValue(ids);
-    this.typologies.updateValueAndValidity();
-    this.typologies.markAsDirty();
+    setFieldFromChild(this.form.typologies, [...(ids || [])]);
   }
 
   public onColorIdsChange(ids: string[]): void {
-    if (this._updatingForm) {
-      return;
-    }
-    this.colors.setValue(ids);
-    this.colors.updateValueAndValidity();
-    this.colors.markAsDirty();
+    setFieldFromChild(this.form.colors, [...(ids || [])]);
   }
 
   public onGildingIdsChange(ids: string[]): void {
-    if (this._updatingForm) {
-      return;
-    }
-    this.gildings.setValue(ids);
-    this.gildings.updateValueAndValidity();
-    this.gildings.markAsDirty();
+    setFieldFromChild(this.form.gildings, [...(ids || [])]);
   }
 
   public onTechniqueIdsChange(ids: string[]): void {
-    if (this._updatingForm) {
-      return;
-    }
-    this.techniques.setValue(ids);
-    this.techniques.updateValueAndValidity();
-    this.techniques.markAsDirty();
+    setFieldFromChild(this.form.techniques, [...(ids || [])]);
   }
 
   public onToolIdsChange(ids: string[]): void {
-    if (this._updatingForm) {
-      return;
-    }
-    this.tools.setValue(ids);
-    this.tools.updateValueAndValidity();
-    this.tools.markAsDirty();
+    setFieldFromChild(this.form.tools, [...(ids || [])]);
   }
 
   public onPositionIdsChange(ids: string[]): void {
-    if (this._updatingForm) {
-      return;
-    }
-    this.positions.setValue(ids);
-    this.positions.updateValueAndValidity();
-    this.positions.markAsDirty();
+    setFieldFromChild(this.form.positions, [...(ids || [])]);
   }
 
   public onReferencesChange(references: DocReference[]): void {
-    this.references.setValue(references);
-    this.references.updateValueAndValidity();
-    this.references.markAsDirty();
+    setFieldFromChild(this.form.references, copyFormValue(references || []));
   }
 
   public cancel(): void {
     this.editorClose.emit();
   }
 
-  public save(): void {
-    if (this.form.invalid) {
+  public onEnterKey(event: Event): void {
+    if (
+      !isImplicitSubmission(event) ||
+      this.form().invalid() ||
+      !this.form().dirty()
+    ) {
       return;
     }
-    const element = this.getElement();
-    this.element.set(element);
+    event.preventDefault();
+    this.save();
+  }
+
+  public save(): void {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
+      return;
+    }
+    this.element.set(this.getElement());
   }
 }

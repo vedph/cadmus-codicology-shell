@@ -1,13 +1,14 @@
 import {
-  ChangeDetectionStrategy, Component, effect, input, model, output } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  input,
+  linkedSignal,
+  model,
+  output,
+  untracked,
+} from '@angular/core';
+import { form, FormField, maxLength, required } from '@angular/forms/signals';
 
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -36,8 +37,41 @@ import {
 import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  copyFormValue,
+  isImplicitSubmission,
+  setFieldFromChild,
+} from '@myrmidon/cadmus-ui';
 
 import { CodWatermark } from '../cod-watermarks-part';
+
+interface CodWatermarkControls {
+  name: string;
+  sampleRanges: CodLocationRange[];
+  ranges: CodLocationRange[];
+  rangesAsQuire: boolean;
+  description: string;
+  ids: AssertedCompositeId[];
+  hasSize: boolean;
+  size: PhysicalSize | null;
+  chronotopes: AssertedChronotope[];
+}
+
+function toDraft(model?: CodWatermark): CodWatermarkControls {
+  return {
+    name: model?.name || '',
+    sampleRanges: model?.sampleRange
+      ? copyFormValue([model.sampleRange])
+      : [],
+    ranges: copyFormValue(model?.ranges || []),
+    rangesAsQuire: model?.rangesAsQuire || false,
+    description: model?.description || '',
+    ids: copyFormValue(model?.ids || []),
+    hasSize: model?.size ? true : false,
+    size: copyFormValue(model?.size) || null,
+    chronotopes: copyFormValue(model?.chronotopes || []),
+  };
+}
 
 @Component({
   selector: 'cadmus-cod-watermark-editor',
@@ -45,8 +79,7 @@ import { CodWatermark } from '../cod-watermarks-part';
   styleUrls: ['./cod-watermark-editor.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatFormField,
     MatLabel,
     MatInput,
@@ -63,6 +96,13 @@ import { CodWatermark } from '../cod-watermarks-part';
 })
 export class CodWatermarkEditorComponent {
   public readonly watermark = model<CodWatermark>();
+
+  private readonly _draft = linkedSignal(() => toDraft(this.watermark()));
+  public readonly form = form(this._draft, (p) => {
+    required(p.name);
+    maxLength(p.name, 50);
+    maxLength(p.description, 5000);
+  });
 
   // asserted-id-tags
   public readonly idTagEntries = input<ThesaurusEntry[]>();
@@ -89,65 +129,12 @@ export class CodWatermarkEditorComponent {
 
   public editorClose = output();
 
-  public name: FormControl<string | null>;
-  public sampleRanges: FormControl<CodLocationRange[]>;
-  public ranges: FormControl<CodLocationRange[]>;
-  public rangesAsQuire: FormControl<boolean>;
-  public description: FormControl<string | null>;
-  public ids: FormControl<AssertedCompositeId[]>;
-  public hasSize: FormControl<boolean>;
-  public size: FormControl<PhysicalSize | null>;
-  public chronotopes: FormControl<AssertedChronotope[]>;
-  public form: FormGroup;
-
-  constructor(formBuilder: FormBuilder) {
-    this.name = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
-    this.sampleRanges = formBuilder.control([], {
-      nonNullable: true,
-    });
-    this.ranges = formBuilder.control([], { nonNullable: true });
-    this.rangesAsQuire = formBuilder.control(false, { nonNullable: true });
-    this.description = formBuilder.control(null, Validators.maxLength(5000));
-    this.ids = formBuilder.control([], { nonNullable: true });
-    this.hasSize = formBuilder.control(false, { nonNullable: true });
-    this.size = formBuilder.control(null);
-    this.chronotopes = formBuilder.control([], { nonNullable: true });
-    this.form = formBuilder.group({
-      name: this.name,
-      sampleRanges: this.sampleRanges,
-      ranges: this.ranges,
-      rangesAsQuire: this.rangesAsQuire,
-      description: this.description,
-      ids: this.ids,
-      hasSize: this.hasSize,
-      size: this.size,
-      chronotopes: this.chronotopes,
-    });
-
+  constructor() {
+    // new watermark: clear the interaction state
     effect(() => {
-      this.updateForm(this.watermark());
+      this.watermark();
+      untracked(() => this.form().reset());
     });
-  }
-
-  private updateForm(model: CodWatermark | undefined): void {
-    if (!model) {
-      this.form.reset();
-      return;
-    }
-
-    this.name.setValue(model.name);
-    this.sampleRanges.setValue(model.sampleRange ? [model.sampleRange] : []);
-    this.ranges.setValue(model.ranges || []);
-    this.rangesAsQuire.setValue(model.rangesAsQuire || false);
-    this.ids.setValue(model.ids || []);
-    this.size.setValue(model.size || null);
-    this.hasSize.setValue(model.size ? true : false);
-    this.chronotopes.setValue(model.chronotopes || []);
-    this.description.setValue(model.description || null);
-    this.form.markAsPristine();
   }
 
   public onSampleRangesChange(ranges: CodLocationRange[] | null) {
@@ -155,13 +142,12 @@ export class CodWatermarkEditorComponent {
     // emits its initial value when initialized)
     if (
       (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
-      (CodLocationParser.rangesToString(this.sampleRanges.value) || '')
+      (CodLocationParser.rangesToString(this.form.sampleRanges().value()) || '')
     ) {
       return;
     }
-    this.sampleRanges.setValue(ranges || []);
-    this.sampleRanges.updateValueAndValidity();
-    this.sampleRanges.markAsDirty();
+    this.form.sampleRanges().value.set(copyFormValue(ranges || []));
+    this.form.sampleRanges().markAsDirty();
   }
 
   public onRangesChange(ranges: CodLocationRange[] | null) {
@@ -169,47 +155,39 @@ export class CodWatermarkEditorComponent {
     // emits its initial value when initialized)
     if (
       (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
-      (CodLocationParser.rangesToString(this.ranges.value) || '')
+      (CodLocationParser.rangesToString(this.form.ranges().value()) || '')
     ) {
       return;
     }
-    this.ranges.setValue(ranges || []);
-    this.ranges.updateValueAndValidity();
-    this.ranges.markAsDirty();
+    this.form.ranges().value.set(copyFormValue(ranges || []));
+    this.form.ranges().markAsDirty();
   }
 
-  public onIdsChange(ids: AssertedCompositeId[]) {
-    this.ids.setValue(ids || [], { emitEvent: false });
-    this.ids.updateValueAndValidity();
-    this.ids.markAsDirty();
+  public onIdsChange(ids: AssertedCompositeId[]): void {
+    setFieldFromChild(this.form.ids, copyFormValue(ids || []));
   }
 
-  public onSizeChange(size: PhysicalSize | null) {
-    this.size.setValue(size);
-    this.size.updateValueAndValidity();
-    this.size.markAsDirty();
+  public onSizeChange(size: PhysicalSize | null): void {
+    setFieldFromChild(this.form.size, copyFormValue(size) || null);
   }
 
   public onChronotopesChange(chronotopes: AssertedChronotope[]): void {
-    this.chronotopes.setValue(chronotopes);
-    this.chronotopes.updateValueAndValidity();
-    this.chronotopes.markAsDirty();
+    setFieldFromChild(this.form.chronotopes, copyFormValue(chronotopes || []));
   }
 
   private getModel(): CodWatermark {
+    const draft = this._draft();
     return {
-      name: this.name.value?.trim() || '',
-      sampleRange: this.sampleRanges.value
-        ? this.sampleRanges.value[0]
+      name: draft.name.trim(),
+      sampleRange: copyFormValue(draft.sampleRanges[0]),
+      ranges: draft.ranges.length ? copyFormValue(draft.ranges) : undefined,
+      rangesAsQuire: draft.rangesAsQuire ? true : undefined,
+      ids: draft.ids.length ? copyFormValue(draft.ids) : undefined,
+      size: draft.hasSize ? copyFormValue(draft.size) || undefined : undefined,
+      chronotopes: draft.chronotopes.length
+        ? copyFormValue(draft.chronotopes)
         : undefined,
-      ranges: this.ranges.value?.length ? this.ranges.value : undefined,
-      rangesAsQuire: this.rangesAsQuire.value ? true : undefined,
-      ids: this.ids.value?.length ? this.ids.value : undefined,
-      size: this.hasSize.value ? this.size.value || undefined : undefined,
-      chronotopes: this.chronotopes.value.length
-        ? this.chronotopes.value
-        : undefined,
-      description: this.description.value?.trim(),
+      description: draft.description.trim() || undefined,
     };
   }
 
@@ -217,8 +195,21 @@ export class CodWatermarkEditorComponent {
     this.editorClose.emit();
   }
 
+  public onEnterKey(event: Event): void {
+    if (
+      !isImplicitSubmission(event) ||
+      this.form().invalid() ||
+      !this.form().dirty()
+    ) {
+      return;
+    }
+    event.preventDefault();
+    this.save();
+  }
+
   public save(): void {
-    if (this.form.invalid) {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
       return;
     }
     this.watermark.set(this.getModel());

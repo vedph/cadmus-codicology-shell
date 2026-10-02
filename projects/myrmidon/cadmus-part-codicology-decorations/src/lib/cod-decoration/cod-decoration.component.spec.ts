@@ -295,4 +295,43 @@ describe('CodDecorationComponent', () => {
 
     expect(editorClose).toHaveBeenCalled();
   });
+
+  // signal forms regressions
+
+  it('should ignore a child echo of its flags and references', async () => {
+    const { fixture } = await setup(DECORATION);
+
+    fixture.componentInstance.onFlagIdsChange(['rich']);
+    fixture.componentInstance.onReferencesChange([]);
+    fixture.componentInstance.onChronotopesChange([]);
+    fixture.detectChanges();
+
+    expect(saveButton()).toBeDisabled();
+  });
+
+  it('should get dirty for a real child change', async () => {
+    const { fixture } = await setup(DECORATION);
+
+    fixture.componentInstance.onFlagIdsChange(['rich', 'poor']);
+    fixture.detectChanges();
+
+    expect(saveButton()).toBeEnabled();
+  });
+
+  it('should list the element keys as parent keys', async () => {
+    const { fixture } = await setup({
+      ...DECORATION,
+      elements: [
+        { ...E1, key: 'b' },
+        { ...E2, key: 'a' },
+      ],
+    });
+
+    expect(fixture.componentInstance.parentKeys()).toEqual(['a', 'b']);
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup(DECORATION);
+    expect(container.querySelector('form')).toBeNull();
+  });
 });

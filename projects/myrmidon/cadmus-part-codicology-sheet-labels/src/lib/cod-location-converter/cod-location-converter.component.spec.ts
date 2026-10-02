@@ -223,4 +223,31 @@ describe('CodLocationConverterComponent', () => {
     );
     expect(clipboard.copy).not.toHaveBeenCalled();
   });
+
+  // signal forms regressions
+
+  it('should not convert back the result of a conversion', async () => {
+    const { user, clipboard } = await setup();
+    await pickItem(user);
+    await pickSystem(user, 'n.alpha');
+    await user.click(screen.getByRole('switch', { name: /copy/ }));
+
+    await user.type(screen.getByRole('textbox', { name: /label/ }), 'ii');
+    await waitFor(() =>
+      expect(screen.getByRole('textbox', { name: /location/ })).toHaveValue(
+        '1v',
+      ),
+    );
+    // wait past another debounce: the location set from code must not
+    // trigger the location -> label conversion
+    await new Promise((r) => setTimeout(r, 400));
+
+    expect(clipboard.copy).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole('textbox', { name: /label/ })).toHaveValue('ii');
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup();
+    expect(container.querySelector('form')).toBeNull();
+  });
 });

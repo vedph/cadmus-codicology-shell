@@ -212,4 +212,73 @@ describe('CodHandDescriptionComponent', () => {
 
     expect(editorClose).toHaveBeenCalled();
   });
+
+  // signal forms regressions
+
+  it('should ignore child echoes of its data', async () => {
+    const { fixture } = await setup(DESCRIPTION);
+
+    fixture.componentInstance.onNoteChange({ key: 'i', value: 'red initials' });
+    fixture.componentInstance.onNoteChange({ key: 'c', value: null });
+    fixture.detectChanges();
+
+    expect(saveButton()).toBeDisabled();
+  });
+
+  it('should get dirty for a real child change', async () => {
+    const { fixture } = await setup(DESCRIPTION);
+
+    fixture.componentInstance.onNoteChange({ key: 'c', value: 'x' });
+    fixture.detectChanges();
+
+    expect(saveButton()).toBeEnabled();
+  });
+
+  it('should save on Enter in a text input when dirty', async () => {
+    const { user, model } = await setup(DESCRIPTION);
+
+    await user.type(textbox(/^key/), 'x{Enter}');
+
+    expect((model() as any).key).toBe('mainx');
+  });
+
+  it('should not save on Enter while pristine', async () => {
+    const { user, model } = await setup(DESCRIPTION);
+
+    await user.type(textbox(/^key/), '{Enter}');
+
+    expect(model()).toBe(DESCRIPTION);
+  });
+
+  it('should save without the form identity tags', async () => {
+    const { user, model } = await setup(DESCRIPTION);
+
+    await user.type(textbox(/^key/), 'x');
+    await user.click(saveButton());
+
+    const check = (v: any): void => {
+      if (Array.isArray(v)) v.forEach(check);
+      else if (v && typeof v === 'object') {
+        expect(Object.getOwnPropertySymbols(v)).toHaveLength(0);
+        Object.values(v).forEach(check);
+      }
+    };
+    check(model());
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup(DESCRIPTION);
+    expect(container.querySelector('form')).toBeNull();
+  });
+
+  it('should keep the same note set object while editing', async () => {
+    const { fixture } = await setup(DESCRIPTION);
+    const set = fixture.componentInstance.initialNoteSet();
+
+    fixture.componentInstance.onNoteChange({ key: 'c', value: 'x' });
+    fixture.detectChanges();
+
+    // the note set component resets on a new object
+    expect(fixture.componentInstance.initialNoteSet()).toBe(set);
+  });
 });

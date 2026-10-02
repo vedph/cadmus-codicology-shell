@@ -557,4 +557,62 @@ describe('CodSheetLabelsPartComponent', () => {
       ),
     );
   });
+
+  // signal forms regressions
+
+  it('should be pristine after binding data', async () => {
+    const { fixture } = await setup({ part: { rows: ROWS, endleaves: [E1] } });
+    expect(fixture.componentInstance.isDirty()).toBe(false);
+  });
+
+  it('should not get dirty by just choosing a column or an adder type', async () => {
+    const { user, fixture } = await setup({ part: { rows: ROWS } });
+
+    await pickOption(user, /^column/, 'n');
+    await pickOption(user, /^type/, 'numbering');
+
+    expect(fixture.componentInstance.isDirty()).toBe(false);
+  });
+
+  it('should run the action on Enter, without saving the part', async () => {
+    const { user, data, fixture } = await setup({ part: { rows: ROWS } });
+    const saved = data()!.value;
+
+    await pickOption(user, /^column/, 'n');
+    await user.type(
+      screen.getByRole('textbox', { name: /^action/ }),
+      '1r 1v:=x{Enter}',
+    );
+
+    expect(within(bodyRows()[2]).getByText('x')).toBeInTheDocument();
+    expect(fixture.componentInstance.isDirty()).toBe(true);
+    expect(data()!.value).toBe(saved);
+  });
+
+  it('should save the quire description, and be pristine after saving', async () => {
+    const { user, fixture, data } = await setup({ part: { rows: ROWS } });
+
+    fixture.componentInstance.saveQuireDsc({ note: 'a note' });
+    expect(fixture.componentInstance.isDirty()).toBe(true);
+
+    await user.click(partSaveButton());
+
+    expect(data()!.value!.quireDescription).toEqual({ note: 'a note' });
+    expect(fixture.componentInstance.isDirty()).toBe(false);
+  });
+
+  it('should not add a name to a quire column', async () => {
+    const { user, fixture } = await setup({ part: { rows: [] } });
+    await add(user, 'body', '1');
+    fixture.componentInstance.addForm.addName().value.set('x');
+
+    await add(user, 'quire');
+
+    expect(headerIds()).toEqual(['q']);
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup({ part: { rows: ROWS } });
+    expect(container.querySelector('form')).toBeNull();
+  });
 });

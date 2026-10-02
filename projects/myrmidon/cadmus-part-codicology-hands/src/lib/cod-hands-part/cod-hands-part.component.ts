@@ -1,17 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  OnInit,
+  computed,
+  inject,
+  linkedSignal,
   signal,
 } from '@angular/core';
-import {
-  FormControl,
-  FormBuilder,
-  FormGroup,
-  UntypedFormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
 import { TitleCasePipe } from '@angular/common';
 import { take } from 'rxjs/operators';
 
@@ -28,19 +22,15 @@ import { MatTabGroup, MatTab } from '@angular/material/tabs';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { NgxToolsSignalValidators } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
-import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 
-import {
-  ThesauriSet,
-  ThesaurusEntry,
-  EditedObject,
-} from '@myrmidon/cadmus-core';
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
   HelpLinkComponent,
+  copyFormValue,
 } from '@myrmidon/cadmus-ui';
 import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
@@ -53,6 +43,15 @@ import { CodHandComponent } from '../cod-hand/cod-hand.component';
 
 interface CodHandsPartSettings {
   lookupProviderOptions?: LookupProviderOptions;
+}
+
+interface CodHandsPartControls {
+  hands: CodHand[];
+}
+
+function toDraft(part?: CodHandsPart | null): CodHandsPartControls {
+  // copy: the form tags the objects in its arrays
+  return { hands: copyFormValue(part?.hands || []) };
 }
 
 /**
@@ -68,8 +67,6 @@ interface CodHandsPartSettings {
   templateUrl: './cod-hands-part.component.html',
   styleUrls: ['./cod-hands-part.component.css'],
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
     MatCard,
     MatCardHeader,
     MatCardAvatar,
@@ -90,62 +87,64 @@ interface CodHandsPartSettings {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodHandsPartComponent
-  extends ModelEditorComponentBase<CodHandsPart>
-  implements OnInit
-{
+  extends ModelEditorComponentBase<CodHandsPart> {
+  private readonly _dialogService = inject(DialogService);
+
   public readonly tabIndex = signal<number>(0);
   public readonly editedIndex = signal<number>(-1);
   public readonly editedHand = signal<CodHand | undefined>(undefined);
 
   // thesauri from description:
   // cod-hand-sign-types
-  public readonly sgnTypeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly sgnTypeEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-hand-sign-types']?.entries,
   );
   // thesauri from instance:
   // cod-hand-scripts
-  public readonly scriptEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly scriptEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-hand-scripts']?.entries,
   );
   // cod-hand-typologies
-  public readonly typeEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly typeEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-hand-typologies']?.entries,
+  );
   // cod-hand-colors
-  public readonly colorEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly colorEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-hand-colors']?.entries,
   );
   // chronotope-tags
-  public readonly ctTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly ctTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['chronotope-tags']?.entries,
   );
   // assertion-tags
-  public readonly assTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly assTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['assertion-tags']?.entries,
   );
   // doc-reference-types
-  public readonly refTypeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly refTypeEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['doc-reference-types']?.entries,
   );
   // doc-reference-tags
-  public readonly refTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly refTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['doc-reference-tags']?.entries,
   );
   // cod-image-types
-  public readonly imgTypeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly imgTypeEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-image-types']?.entries,
   );
   // external-id-tags
-  public readonly idTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly idTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['external-id-tags']?.entries,
   );
   // external-id-scopes
-  public readonly idScopeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly idScopeEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['external-id-scopes']?.entries,
   );
 
   // thesauri from subscription:
   // cod-hand-subscription-languages
-  public readonly subLangEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly subLangEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-hand-subscription-languages']?.entries,
   );
 
   // lookup options depending on role
@@ -153,114 +152,28 @@ export class CodHandsPartComponent
     LookupProviderOptions | undefined
   >(undefined);
 
-  public hands: FormControl<CodHand[]>;
 
-  constructor(
-    authService: AuthJwtService,
-    formBuilder: FormBuilder,
-    private _dialogService: DialogService,
-  ) {
-    super(authService, formBuilder);
-    // form
-    this.hands = formBuilder.control([], {
-      validators: NgxToolsValidators.strictMinLengthValidator(1),
-      nonNullable: true,
-    });
-  }
+  private readonly _draft = linkedSignal(() => toDraft(this.data()?.value));
+  public readonly form = this.createForm(this._draft, (p) => {
+    NgxToolsSignalValidators.strictMinLength(p.hands, 1);
+  });
 
-  public override ngOnInit(): void {
-    super.ngOnInit();
-  }
-
-  protected buildForm(formBuilder: FormBuilder): FormGroup | UntypedFormGroup {
-    return formBuilder.group({
-      hands: this.hands,
-    });
-  }
-
-  private updateThesauri(thesauri: ThesauriSet): void {
-    let key = 'cod-hand-sign-types';
-    this.sgnTypeEntries.set(
-      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
+  constructor() {
+    super();
+    this.initSettings<CodHandsPartSettings>(COD_HANDS_PART_TYPEID, (settings) =>
+      this.lookupProviderOptions.set(settings?.lookupProviderOptions || undefined),
     );
-    key = 'cod-hand-scripts';
-    this.scriptEntries.set(
-      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
-    );
-    key = 'cod-hand-typologies';
-    this.typeEntries.set(
-      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
-    );
-    key = 'cod-hand-colors';
-    this.colorEntries.set(
-      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
-    );
-    key = 'chronotope-tags';
-    this.ctTagEntries.set(
-      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
-    );
-    key = 'assertion-tags';
-    this.assTagEntries.set(
-      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
-    );
-    key = 'doc-reference-types';
-    this.refTypeEntries.set(
-      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
-    );
-    key = 'doc-reference-tags';
-    this.refTagEntries.set(
-      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
-    );
-    key = 'cod-image-types';
-    this.imgTypeEntries.set(
-      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
-    );
-    key = 'cod-hand-subscription-languages';
-    this.subLangEntries.set(
-      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
-    );
-    key = 'external-id-tags';
-    this.idTagEntries.set(
-      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
-    );
-    key = 'external-id-scopes';
-    this.idScopeEntries.set(
-      this.hasThesaurus(key) ? thesauri[key].entries : undefined,
-    );
-  }
-
-  private updateForm(part?: CodHandsPart | null): void {
-    if (!part) {
-      this.form.reset();
-      return;
-    }
-    this.hands.setValue(part.hands || []);
-    this.form.markAsPristine();
-  }
-
-  protected override onDataSet(data?: EditedObject<CodHandsPart>): void {
-    // thesauri
-    if (data?.thesauri) {
-      this.updateThesauri(data.thesauri);
-    }
-    // settings
-    this._appRepository
-      ?.getSettingFor<CodHandsPartSettings>(
-        COD_HANDS_PART_TYPEID,
-        this.identity()?.roleId || undefined,
-      )
-      .then((settings) => {
-        const options = settings?.lookupProviderOptions;
-        this.lookupProviderOptions.set(options || undefined);
-      });
-    // form
-    this.updateForm(data?.value);
   }
 
   protected getValue(): CodHandsPart {
-    let part = this.getEditedPart(COD_HANDS_PART_TYPEID) as CodHandsPart;
-    part.hands = this.hands.value || [];
+    const part = this.getEditedPart(COD_HANDS_PART_TYPEID) as CodHandsPart;
+    part.hands = copyFormValue(this._draft().hands);
     return part;
+  }
+
+  private setHands(hands: CodHand[]): void {
+    this.form.hands().value.set(hands);
+    this.form.hands().markAsDirty();
   }
 
   public addHand(): void {
@@ -278,15 +191,13 @@ export class CodHandsPartComponent
   }
 
   public onHandChange(hand: CodHand): void {
-    const hands = [...this.hands.value];
+    const hands = [...this.form.hands().value()];
     if (this.editedIndex() > -1) {
       hands.splice(this.editedIndex(), 1, hand);
     } else {
       hands.push(hand);
     }
-    this.hands.setValue(hands);
-    this.hands.updateValueAndValidity();
-    this.hands.markAsDirty();
+    this.setHands(hands);
     this.editHand(null);
   }
 
@@ -300,11 +211,9 @@ export class CodHandsPartComponent
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          const entries = [...this.hands.value];
+          const entries = [...this.form.hands().value()];
           entries.splice(index, 1);
-          this.hands.setValue(entries);
-          this.hands.updateValueAndValidity();
-          this.hands.markAsDirty();
+          this.setHands(entries);
         }
       });
   }
@@ -313,25 +222,21 @@ export class CodHandsPartComponent
     if (index < 1) {
       return;
     }
-    const entry = this.hands.value[index];
-    const entries = [...this.hands.value];
+    const entry = this.form.hands().value()[index];
+    const entries = [...this.form.hands().value()];
     entries.splice(index, 1);
     entries.splice(index - 1, 0, entry);
-    this.hands.setValue(entries);
-    this.hands.updateValueAndValidity();
-    this.hands.markAsDirty();
+    this.setHands(entries);
   }
 
   public moveHandDown(index: number): void {
-    if (index + 1 >= this.hands.value.length) {
+    if (index + 1 >= this.form.hands().value().length) {
       return;
     }
-    const entry = this.hands.value[index];
-    const entries = [...this.hands.value];
+    const entry = this.form.hands().value()[index];
+    const entries = [...this.form.hands().value()];
     entries.splice(index, 1);
     entries.splice(index + 1, 0, entry);
-    this.hands.setValue(entries);
-    this.hands.updateValueAndValidity();
-    this.hands.markAsDirty();
+    this.setHands(entries);
   }
 }

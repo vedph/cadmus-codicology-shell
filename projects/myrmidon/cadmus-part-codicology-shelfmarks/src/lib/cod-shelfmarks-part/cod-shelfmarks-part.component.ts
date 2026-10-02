@@ -1,17 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  OnInit,
+  computed,
+  inject,
+  linkedSignal,
   signal,
 } from '@angular/core';
-import {
-  FormControl,
-  FormBuilder,
-  FormGroup,
-  UntypedFormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
 import { TitleCasePipe } from '@angular/common';
 import { take } from 'rxjs/operators';
 
@@ -30,20 +24,16 @@ import { MatTooltip } from '@angular/material/tooltip';
 
 import {
   FlatLookupPipe,
-  NgxToolsValidators,
+  NgxToolsSignalValidators,
 } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
-import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 
-import {
-  ThesauriSet,
-  ThesaurusEntry,
-  EditedObject,
-} from '@myrmidon/cadmus-core';
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
   HelpLinkComponent,
+  copyFormValue,
 } from '@myrmidon/cadmus-ui';
 
 import {
@@ -55,6 +45,17 @@ import { CodShelfmarkEditorComponent } from '../cod-shelfmark-editor/cod-shelfma
 
 interface CodShelfmarksPartSettings {
   cityFromLibPattern?: string;
+}
+
+interface CodShelfmarksPartControls {
+  shelfmarks: CodShelfmark[];
+}
+
+function toDraft(part?: CodShelfmarksPart | null): CodShelfmarksPartControls {
+  // copy: the form tags the objects in its arrays
+  return {
+    shelfmarks: copyFormValue(part?.shelfmarks || []),
+  };
 }
 
 /**
@@ -72,8 +73,6 @@ interface CodShelfmarksPartSettings {
   styleUrls: ['./cod-shelfmarks-part.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
     MatCard,
     MatCardHeader,
     MatCardAvatar,
@@ -93,18 +92,24 @@ interface CodShelfmarksPartSettings {
   ],
 })
 export class CodShelfmarksPartComponent
-  extends ModelEditorComponentBase<CodShelfmarksPart>
-  implements OnInit
-{
+  extends ModelEditorComponentBase<CodShelfmarksPart> {
+  private readonly _dialogService = inject(DialogService);
+
   public readonly editedIndex = signal<number>(-1);
   public readonly editedShelfmark = signal<CodShelfmark | undefined>(undefined);
 
   // cod-shelfmark-tags
-  public readonly tagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly tagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-shelfmark-tags']?.entries,
+  );
   // cod-shelfmark-cities
-  public readonly cityEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly cityEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-shelfmark-cities']?.entries,
+  );
   // cod-shelfmark-libraries
-  public readonly libEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly libEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-shelfmark-libraries']?.entries,
+  );
 
   /**
    * This contains the regular expression pattern (when specified in settings)
@@ -116,88 +121,28 @@ export class CodShelfmarksPartComponent
    */
   public readonly cityFromLibPattern = signal<string | undefined>(undefined);
 
-  public shelfmarks: FormControl<CodShelfmark[]>;
 
-  constructor(
-    authService: AuthJwtService,
-    formBuilder: FormBuilder,
-    private _dialogService: DialogService,
-  ) {
-    super(authService, formBuilder);
-    // form
-    this.shelfmarks = formBuilder.control([], {
-      nonNullable: true,
-      validators: NgxToolsValidators.strictMinLengthValidator(1),
-    });
-  }
+  private readonly _draft = linkedSignal(() => toDraft(this.data()?.value));
+  public readonly form = this.createForm(this._draft, (p) => {
+    NgxToolsSignalValidators.strictMinLength(p.shelfmarks, 1);
+  });
 
-  public override async ngOnInit(): Promise<void> {
-    super.ngOnInit();
-
-    // load settings for this part
-    if (this._appRepository) {
-      const settings = (await this._appRepository.getSettingFor(
-        COD_SHELFMARKS_PART_TYPEID,
-        this.identity()?.roleId || undefined,
-      )) as CodShelfmarksPartSettings | null;
-      if (settings) {
-        this.cityFromLibPattern.set(settings.cityFromLibPattern);
-      }
-    }
-  }
-
-  protected buildForm(formBuilder: FormBuilder): FormGroup | UntypedFormGroup {
-    return formBuilder.group({
-      shelfmarks: this.shelfmarks,
-    });
-  }
-
-  private updateThesauri(thesauri: ThesauriSet): void {
-    let key = 'cod-shelfmark-tags';
-    if (this.hasThesaurus(key)) {
-      this.tagEntries.set(thesauri[key].entries);
-    } else {
-      this.tagEntries.set(undefined);
-    }
-    key = 'cod-shelfmark-cities';
-    if (this.hasThesaurus(key)) {
-      this.cityEntries.set(thesauri[key].entries);
-    } else {
-      this.cityEntries.set(undefined);
-    }
-    key = 'cod-shelfmark-libraries';
-    if (this.hasThesaurus(key)) {
-      this.libEntries.set(thesauri[key].entries);
-    } else {
-      this.libEntries.set(undefined);
-    }
-  }
-
-  private updateForm(part?: CodShelfmarksPart | null): void {
-    if (!part) {
-      this.form.reset();
-      return;
-    }
-    this.shelfmarks.setValue(part.shelfmarks || []);
-    this.form.markAsPristine();
-  }
-
-  protected override onDataSet(data?: EditedObject<CodShelfmarksPart>): void {
-    // thesauri
-    if (data?.thesauri) {
-      this.updateThesauri(data.thesauri);
-    }
-
-    // form
-    this.updateForm(data?.value);
+  constructor() {
+    super();
+    this.initSettings<CodShelfmarksPartSettings>(COD_SHELFMARKS_PART_TYPEID, (settings) =>
+      this.cityFromLibPattern.set(settings?.cityFromLibPattern),
+    );
   }
 
   protected getValue(): CodShelfmarksPart {
-    let part = this.getEditedPart(
-      COD_SHELFMARKS_PART_TYPEID,
-    ) as CodShelfmarksPart;
-    part.shelfmarks = this.shelfmarks.value || [];
+    const part = this.getEditedPart(COD_SHELFMARKS_PART_TYPEID) as CodShelfmarksPart;
+    part.shelfmarks = copyFormValue(this._draft().shelfmarks);
     return part;
+  }
+
+  private setShelfmarks(shelfmarks: CodShelfmark[]): void {
+    this.form.shelfmarks().value.set(shelfmarks);
+    this.form.shelfmarks().markAsDirty();
   }
 
   public addShelfmark(): void {
@@ -219,7 +164,7 @@ export class CodShelfmarksPartComponent
   }
 
   public onShelfmarkChange(shelfmark: CodShelfmark): void {
-    const shelfmarks = [...this.shelfmarks.value];
+    const shelfmarks = [...this.form.shelfmarks().value()];
 
     if (this.editedIndex() > -1) {
       shelfmarks.splice(this.editedIndex(), 1, shelfmark);
@@ -227,11 +172,7 @@ export class CodShelfmarksPartComponent
       shelfmarks.push(shelfmark);
     }
 
-    this.shelfmarks.setValue(shelfmarks);
-
-    this.shelfmarks.updateValueAndValidity();
-
-    this.shelfmarks.markAsDirty();
+    this.setShelfmarks(shelfmarks);
     this.editShelfmark(null);
   }
 
@@ -241,11 +182,9 @@ export class CodShelfmarksPartComponent
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          const entries = [...this.shelfmarks.value];
+          const entries = [...this.form.shelfmarks().value()];
           entries.splice(index, 1);
-          this.shelfmarks.setValue(entries);
-          this.shelfmarks.updateValueAndValidity();
-          this.shelfmarks.markAsDirty();
+          this.setShelfmarks(entries);
         }
       });
   }
@@ -254,25 +193,21 @@ export class CodShelfmarksPartComponent
     if (index < 1) {
       return;
     }
-    const entry = this.shelfmarks.value[index];
-    const entries = [...this.shelfmarks.value];
+    const entry = this.form.shelfmarks().value()[index];
+    const entries = [...this.form.shelfmarks().value()];
     entries.splice(index, 1);
     entries.splice(index - 1, 0, entry);
-    this.shelfmarks.setValue(entries);
-    this.shelfmarks.updateValueAndValidity();
-    this.shelfmarks.markAsDirty();
+    this.setShelfmarks(entries);
   }
 
   public moveShelfmarkDown(index: number): void {
-    if (index + 1 >= this.shelfmarks.value.length) {
+    if (index + 1 >= this.form.shelfmarks().value().length) {
       return;
     }
-    const entry = this.shelfmarks.value[index];
-    const entries = [...this.shelfmarks.value];
+    const entry = this.form.shelfmarks().value()[index];
+    const entries = [...this.form.shelfmarks().value()];
     entries.splice(index, 1);
     entries.splice(index + 1, 0, entry);
-    this.shelfmarks.setValue(entries);
-    this.shelfmarks.updateValueAndValidity();
-    this.shelfmarks.markAsDirty();
+    this.setShelfmarks(entries);
   }
 }

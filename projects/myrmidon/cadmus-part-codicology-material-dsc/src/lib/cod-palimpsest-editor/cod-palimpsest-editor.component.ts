@@ -1,12 +1,14 @@
-import { ChangeDetectionStrategy, Component, effect, input, model, output } from '@angular/core';
 import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  input,
+  linkedSignal,
+  model,
+  output,
+  untracked,
+} from '@angular/core';
+import { form, FormField, maxLength } from '@angular/forms/signals';
 
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -14,7 +16,7 @@ import { MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { NgxToolsSignalValidators } from '@myrmidon/ngx-tools';
 import {
   CodLocationRange,
   CodLocationComponent,
@@ -27,16 +29,34 @@ import {
 import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  copyFormValue,
+  isImplicitSubmission,
+  setFieldFromChild,
+} from '@myrmidon/cadmus-ui';
 
 import { CodPalimpsest } from '../cod-material-dsc-part';
+
+interface CodPalimpsestControls {
+  ranges: CodLocationRange[];
+  chronotope: AssertedChronotope | null;
+  note: string;
+}
+
+function toDraft(palimpsest?: CodPalimpsest): CodPalimpsestControls {
+  return {
+    ranges: copyFormValue(palimpsest?.ranges || []),
+    chronotope: copyFormValue(palimpsest?.chronotope) || null,
+    note: palimpsest?.note || '',
+  };
+}
 
 @Component({
   selector: 'cadmus-cod-palimpsest-editor',
   templateUrl: './cod-palimpsest-editor.component.html',
   styleUrls: ['./cod-palimpsest-editor.component.css'],
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     CodLocationComponent,
     AssertedChronotopeComponent,
     MatFormField,
@@ -51,6 +71,12 @@ import { CodPalimpsest } from '../cod-material-dsc-part';
 })
 export class CodPalimpsestEditorComponent {
   public readonly palimpsest = model<CodPalimpsest>();
+
+  private readonly _draft = linkedSignal(() => toDraft(this.palimpsest()));
+  public readonly form = form(this._draft, (p) => {
+    NgxToolsSignalValidators.strictMinLength(p.ranges, 1);
+    maxLength(p.note, 1000);
+  });
 
   // chronotope-tags
   public readonly ctTagEntries = input<ThesaurusEntry[]>();
@@ -67,39 +93,12 @@ export class CodPalimpsestEditorComponent {
 
   public readonly editorClose = output();
 
-  public ranges: FormControl<CodLocationRange[]>;
-  public chronotope: FormControl<AssertedChronotope | null>;
-  public note: FormControl<string | null>;
-  public form: FormGroup;
-
-  constructor(formBuilder: FormBuilder) {
-    this.ranges = formBuilder.control([], {
-      validators: NgxToolsValidators.strictMinLengthValidator(1),
-      nonNullable: true,
-    });
-    this.chronotope = formBuilder.control(null);
-    this.note = formBuilder.control(null, Validators.maxLength(1000));
-    this.form = formBuilder.group({
-      ranges: this.ranges,
-      chronotope: this.chronotope,
-      note: this.note,
-    });
-
+  constructor() {
+    // new palimpsest: clear the interaction state
     effect(() => {
-      this.updateForm(this.palimpsest());
+      this.palimpsest();
+      untracked(() => this.form().reset());
     });
-  }
-
-  private updateForm(palimpsest: CodPalimpsest | undefined): void {
-    if (!palimpsest) {
-      this.form.reset();
-      return;
-    }
-
-    this.ranges.setValue(palimpsest.ranges);
-    this.chronotope.setValue(palimpsest.chronotope || null);
-    this.note.setValue(palimpsest.note || null);
-    this.form.markAsPristine();
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
@@ -107,26 +106,24 @@ export class CodPalimpsestEditorComponent {
     // emits its initial value when initialized)
     if (
       (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
-      (CodLocationParser.rangesToString(this.ranges.value) || '')
+      (CodLocationParser.rangesToString(this.form.ranges().value()) || '')
     ) {
       return;
     }
-    this.ranges.setValue(ranges || []);
-    this.ranges.updateValueAndValidity();
-    this.ranges.markAsDirty();
+    this.form.ranges().value.set(copyFormValue(ranges || []));
+    this.form.ranges().markAsDirty();
   }
 
   public onChronotopeChange(chronotope: AssertedChronotope | null): void {
-    this.chronotope.setValue(chronotope);
-    this.chronotope.updateValueAndValidity();
-    this.chronotope.markAsDirty();
+    setFieldFromChild(this.form.chronotope, copyFormValue(chronotope) || null);
   }
 
   private getModel(): CodPalimpsest {
+    const draft = this._draft();
     return {
-      ranges: this.ranges.value,
-      chronotope: this.chronotope.value!,
-      note: this.note.value?.trim(),
+      ranges: copyFormValue(draft.ranges),
+      chronotope: copyFormValue(draft.chronotope)!,
+      note: draft.note.trim() || undefined,
     };
   }
 
@@ -134,8 +131,21 @@ export class CodPalimpsestEditorComponent {
     this.editorClose.emit();
   }
 
+  public onEnterKey(event: Event): void {
+    if (
+      !isImplicitSubmission(event) ||
+      this.form().invalid() ||
+      !this.form().dirty()
+    ) {
+      return;
+    }
+    event.preventDefault();
+    this.save();
+  }
+
   public save(): void {
-    if (this.form.invalid) {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
       return;
     }
     this.palimpsest.set(this.getModel());

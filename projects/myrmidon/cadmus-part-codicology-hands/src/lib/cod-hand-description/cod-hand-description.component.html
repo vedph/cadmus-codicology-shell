@@ -1,10 +1,10 @@
-<form [formGroup]="form" (submit)="save(); $event.stopPropagation()">
+<div (keydown.enter)="onEnterKey($event)">
   <div>
     <!-- key -->
     <mat-form-field>
       <mat-label>key</mat-label>
-      <input matInput [formControl]="key" />
-      @if ($any(key).errors?.maxLength && (key.dirty || key.touched)) {
+      <input matInput [formField]="form.key" />
+      @if (form.key().getError("maxLength") && (form.key().dirty() || form.key().touched())) {
         <mat-error>key too long</mat-error>
       }
     </mat-form-field>
@@ -13,8 +13,8 @@
     <!-- description -->
     <mat-form-field class="long-text">
       <mat-label>description</mat-label>
-      <textarea matInput rows="2" [formControl]="dsc"></textarea>
-      @if ($any(dsc).errors?.maxLength && (dsc.dirty || dsc.touched)) {
+      <textarea matInput rows="2" [formField]="form.dsc"></textarea>
+      @if (form.dsc().getError("maxLength") && (form.dsc().dirty() || form.dsc().touched())) {
         <mat-error>description too long</mat-error>
       }
     </mat-form-field>
@@ -41,7 +41,7 @@
           <mat-icon>add_circle</mat-icon> sign
         </button>
       </div>
-      @if (signs.value && signs.value.length) {
+      @if (form.signs().value() && form.signs().value().length) {
         <table>
           <thead>
             <tr>
@@ -53,7 +53,7 @@
           </thead>
           <tbody>
             @for (
-              sign of signs.value;
+              sign of form.signs().value();
               track sign;
               let i = $index;
               let first = $first;
@@ -109,7 +109,7 @@
       @if (editedSign()) {
         <mat-expansion-panel
           [disabled]="!editedSign()"
-          [expanded]="editedSign()"
+          [expanded]="!!editedSign()"
         >
           <mat-expansion-panel-header
             >sign #{{ editedSignIndex() + 1 }}</mat-expansion-panel-header
@@ -136,13 +136,14 @@
       <mat-icon class="mat-warn">clear</mat-icon>
     </button>
     <button
-      type="submit"
+      type="button"
       mat-icon-button
       matTooltip="Accept changes"
-      [disabled]="form.invalid || form.pristine"
+      [disabled]="form().invalid() || !form().dirty()"
+      (click)="save()"
     >
       <mat-icon class="mat-primary">check_circle</mat-icon>
     </button>
     <span>description</span>
   </div>
-</form>
+</div>

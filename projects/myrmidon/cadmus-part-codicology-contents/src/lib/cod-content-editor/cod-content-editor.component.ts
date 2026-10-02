@@ -1,21 +1,17 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
+  inject,
   input,
+  linkedSignal,
   model,
-  Optional,
   output,
   signal,
+  untracked,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { form, FormField, maxLength } from '@angular/forms/signals';
 import { take } from 'rxjs';
 
 // material
@@ -36,7 +32,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 
 // myrmidon
 import {
-  NgxToolsValidators,
+  NgxToolsSignalValidators,
   EllipsisPipe,
   FlatLookupPipe,
 } from '@myrmidon/ngx-tools';
@@ -59,6 +55,11 @@ import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 // cadmus
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  copyFormValue,
+  isImplicitSubmission,
+  setFieldFromChild,
+} from '@myrmidon/cadmus-ui';
 
 // local
 import {
@@ -77,14 +78,68 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   };
 }
 
+interface CodContentControls {
+  eid: string;
+  workId: AssertedCompositeId | null;
+  author: string;
+  ranges: CodLocationRange[];
+  gaps: CodContentGap[];
+  tag: string;
+  title: string;
+  location: string;
+  claimedAuthor: string;
+  claimedAuthorRanges: CodLocationRange[];
+  claimedTitle: string;
+  claimedTitleRanges: CodLocationRange[];
+  note: string;
+  incipit: string;
+  explicit: string;
+  states: string[];
+  annotations: CodContentAnnotation[];
+}
+
+function toDraft(content?: CodContent): CodContentControls {
+  return {
+    eid: content?.eid || '',
+    workId: copyFormValue(content?.workId) || null,
+    author: content?.author || '',
+    ranges: copyFormValue(content?.ranges || []),
+    gaps: copyFormValue(content?.gaps || []),
+    tag: content?.tag || '',
+    title: content?.title || '',
+    location: content?.location || '',
+    claimedAuthor: content?.claimedAuthor || '',
+    claimedAuthorRanges: copyFormValue(content?.claimedAuthorRanges || []),
+    claimedTitle: content?.claimedTitle || '',
+    claimedTitleRanges: copyFormValue(content?.claimedTitleRanges || []),
+    note: content?.note || '',
+    incipit: content?.incipit || '',
+    explicit: content?.explicit || '',
+    states: [...(content?.states || [])],
+    annotations: copyFormValue(content?.annotations || []),
+  };
+}
+
+/**
+ * True if the two location ranges are the same location.
+ */
+function sameRanges(
+  a: CodLocationRange[] | null,
+  b: CodLocationRange[] | null,
+): boolean {
+  return (
+    (CodLocationParser.rangesToString(a) || '') ===
+    (CodLocationParser.rangesToString(b) || '')
+  );
+}
+
 @Component({
   selector: 'cadmus-cod-content-editor',
   templateUrl: './cod-content-editor.component.html',
   styleUrls: ['./cod-content-editor.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     // material
     MatButton,
     MatError,
@@ -114,6 +169,12 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   ],
 })
 export class CodContentEditorComponent {
+  private readonly _dialogService = inject(DialogService);
+  private readonly _dialog = inject(MatDialog);
+  public readonly citSchemeService = inject(CitSchemeService, {
+    optional: true,
+  });
+
   public readonly content = model<CodContent>();
 
   // cod-content-states
@@ -149,24 +210,20 @@ export class CodContentEditorComponent {
 
   public readonly lastPickedCitation = signal<Citation | undefined>(undefined);
 
-  public eid: FormControl<string | null>;
-  public workId: FormControl<AssertedCompositeId | null>;
-  public author: FormControl<string | null>;
-  public ranges: FormControl<CodLocationRange[]>;
-  public gaps: FormControl<CodContentGap[]>;
-  public tag: FormControl<string | null>;
-  public title: FormControl<string | null>;
-  public location: FormControl<string | null>;
-  public claimedAuthor: FormControl<string | null>;
-  public claimedAuthorRanges: FormControl<CodLocationRange[]>;
-  public claimedTitle: FormControl<string | null>;
-  public claimedTitleRanges: FormControl<CodLocationRange[]>;
-  public note: FormControl<string | null>;
-  public incipit: FormControl<string | null>;
-  public explicit: FormControl<string | null>;
-  public states: FormControl<string[]>;
-  public annotations: FormControl<CodContentAnnotation[]>;
-  public form: FormGroup;
+  private readonly _draft = linkedSignal(() => toDraft(this.content()));
+  public readonly form = form(this._draft, (p) => {
+    maxLength(p.eid, 100);
+    maxLength(p.author, 50);
+    NgxToolsSignalValidators.strictMinLength(p.ranges, 1);
+    maxLength(p.tag, 50);
+    maxLength(p.title, 200);
+    maxLength(p.location, 50);
+    maxLength(p.claimedAuthor, 50);
+    maxLength(p.claimedTitle, 200);
+    maxLength(p.note, 1000);
+    maxLength(p.incipit, 1000);
+    maxLength(p.explicit, 1000);
+  });
 
   public readonly editedAnnotation = signal<CodContentAnnotation | undefined>(
     undefined,
@@ -174,90 +231,16 @@ export class CodContentEditorComponent {
   public readonly editedIndex = signal<number>(-1);
 
   // flags
-  public readonly stateFlags = signal<Flag[]>([]);
+  public readonly stateFlags = computed<Flag[]>(
+    () => this.stateEntries()?.map(entryToFlag) || [],
+  );
 
-  constructor(
-    formBuilder: FormBuilder,
-    private _dialogService: DialogService,
-    private _dialog: MatDialog,
-    @Optional()
-    public citSchemeService?: CitSchemeService,
-  ) {
-    // form
-    this.eid = formBuilder.control(null, Validators.maxLength(100));
-    this.workId = formBuilder.control(null);
-    this.author = formBuilder.control(null, Validators.maxLength(50));
-    this.ranges = formBuilder.control([], {
-      validators: NgxToolsValidators.strictMinLengthValidator(1),
-      nonNullable: true,
-    });
-    this.gaps = formBuilder.control([], { nonNullable: true });
-    this.tag = formBuilder.control(null, Validators.maxLength(50));
-    this.title = formBuilder.control(null, Validators.maxLength(200));
-    this.location = formBuilder.control(null, Validators.maxLength(50));
-    this.claimedAuthor = formBuilder.control(null, Validators.maxLength(50));
-    this.claimedAuthorRanges = formBuilder.control([], { nonNullable: true });
-    this.claimedTitle = formBuilder.control(null, Validators.maxLength(200));
-    this.claimedTitleRanges = formBuilder.control([], { nonNullable: true });
-    this.note = formBuilder.control(null, Validators.maxLength(1000));
-    this.incipit = formBuilder.control(null, Validators.maxLength(1000));
-    this.explicit = formBuilder.control(null, Validators.maxLength(1000));
-    this.states = formBuilder.control([], { nonNullable: true });
-    this.annotations = formBuilder.control([], { nonNullable: true });
-    this.form = formBuilder.group({
-      eid: this.eid,
-      workId: this.workId,
-      author: this.author,
-      ranges: this.ranges,
-      gaps: this.gaps,
-      tag: this.tag,
-      title: this.title,
-      location: this.location,
-      claimedAuthor: this.claimedAuthor,
-      claimedAuthorRanges: this.claimedAuthorRanges,
-      claimedTitle: this.claimedTitle,
-      claimedTitleRanges: this.claimedTitleRanges,
-      note: this.note,
-      incipit: this.incipit,
-      explicit: this.explicit,
-      states: this.states,
-      annotations: this.annotations,
-    });
-
+  constructor() {
+    // new content: clear the interaction state
     effect(() => {
-      this.updateForm(this.content());
+      this.content();
+      untracked(() => this.form().reset());
     });
-
-    effect(() => {
-      this.stateFlags.set(this.stateEntries()?.map(entryToFlag) || []);
-    });
-  }
-
-  private updateForm(content: CodContent | undefined): void {
-    if (!content) {
-      this.form.reset();
-      return;
-    }
-
-    this.eid.setValue(content.eid || null);
-    this.workId.setValue(content.workId || null);
-    this.author.setValue(content.author || null);
-    this.ranges.setValue(content.ranges || []);
-    this.states.setValue(content.states || []);
-    this.gaps.setValue(content.gaps || []);
-    this.tag.setValue(content.tag || null);
-    this.title.setValue(content.title || null);
-    this.location.setValue(content.location || null);
-    this.claimedAuthor.setValue(content.claimedAuthor || null);
-    this.claimedAuthorRanges.setValue(content.claimedAuthorRanges || []);
-    this.claimedTitle.setValue(content.claimedTitle || null);
-    this.claimedTitleRanges.setValue(content.claimedTitleRanges || []);
-    this.note.setValue(content.note || null);
-    this.incipit.setValue(content.incipit || null);
-    this.explicit.setValue(content.explicit || null);
-    this.annotations.setValue(content.annotations || []);
-
-    this.form.markAsPristine();
   }
 
   public pickCitation(): void {
@@ -277,102 +260,90 @@ export class CodContentEditorComponent {
         const citation = this.citSchemeService!.toString(result);
 
         // append the new citation to location preceded by ; and space
-        let location = this.location.value?.trim() || '';
+        let location = this.form.location().value().trim();
         if (location && !location.endsWith(';')) {
           location += '; ';
         }
         location += citation;
-        this.location.setValue(location);
-        this.location.markAsDirty();
+        this.form.location().value.set(location);
+        this.form.location().markAsDirty();
       }
     });
   }
 
   private getContent(): CodContent {
+    const draft = this._draft();
     return {
-      eid: this.eid.value?.trim(),
-      workId: this.workId.value || undefined,
-      author: this.author.value?.trim(),
-      ranges: this.ranges.value || [],
-      states: this.states.value,
-      title: this.title.value?.trim() || '',
-      location: this.location.value?.trim(),
-      claimedAuthor: this.claimedAuthor.value?.trim(),
-      claimedAuthorRanges: this.claimedAuthorRanges.value || undefined,
-      claimedTitle: this.claimedTitle.value?.trim(),
-      claimedTitleRanges: this.claimedTitleRanges.value || undefined,
-      gaps: this.gaps.value?.length ? this.gaps.value : undefined,
-      tag: this.tag.value?.trim(),
-      note: this.note.value?.trim(),
-      incipit: this.incipit.value?.trim(),
-      explicit: this.explicit.value?.trim(),
-      annotations: this.annotations.value?.length
-        ? this.annotations.value
+      eid: draft.eid.trim() || undefined,
+      workId: copyFormValue(draft.workId) || undefined,
+      author: draft.author.trim() || undefined,
+      ranges: copyFormValue(draft.ranges),
+      states: [...draft.states],
+      title: draft.title.trim(),
+      location: draft.location.trim() || undefined,
+      claimedAuthor: draft.claimedAuthor.trim() || undefined,
+      claimedAuthorRanges: draft.claimedAuthorRanges.length
+        ? copyFormValue(draft.claimedAuthorRanges)
+        : undefined,
+      claimedTitle: draft.claimedTitle.trim() || undefined,
+      claimedTitleRanges: draft.claimedTitleRanges.length
+        ? copyFormValue(draft.claimedTitleRanges)
+        : undefined,
+      gaps: draft.gaps.length ? copyFormValue(draft.gaps) : undefined,
+      tag: draft.tag.trim() || undefined,
+      note: draft.note.trim() || undefined,
+      incipit: draft.incipit.trim() || undefined,
+      explicit: draft.explicit.trim() || undefined,
+      annotations: draft.annotations.length
+        ? copyFormValue(draft.annotations)
         : undefined,
     };
   }
 
+  // the location editor emits its initial value when initialized: ignore
+  // emissions not changing the location
   public onLocationChange(ranges: CodLocationRange[] | null): void {
-    // ignore emissions not changing the location (the location editor
-    // emits its initial value when initialized)
-    if (
-      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
-      (CodLocationParser.rangesToString(this.ranges.value) || '')
-    ) {
+    if (sameRanges(ranges, this.form.ranges().value())) {
       return;
     }
-    this.ranges.setValue(ranges || []);
-    this.ranges.updateValueAndValidity();
-    this.ranges.markAsDirty();
-  }
-
-  public onStateIdsChange(ids: string[]): void {
-    this.states.setValue(ids);
-    this.states.markAsDirty();
-    this.states.updateValueAndValidity();
-  }
-
-  public onIdChange(id: AssertedCompositeId): void {
-    this.workId.setValue(id);
-    this.workId.markAsDirty();
-    this.workId.updateValueAndValidity();
+    this.form.ranges().value.set(copyFormValue(ranges || []));
+    this.form.ranges().markAsDirty();
   }
 
   public onCALocationChange(ranges: CodLocationRange[] | null): void {
-    // ignore emissions not changing the location (the location editor
-    // emits its initial value when initialized)
-    if (
-      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
-      (CodLocationParser.rangesToString(this.claimedAuthorRanges.value) || '')
-    ) {
+    if (sameRanges(ranges, this.form.claimedAuthorRanges().value())) {
       return;
     }
-    this.claimedAuthorRanges.setValue(ranges || []);
-    this.claimedAuthorRanges.updateValueAndValidity();
-    this.claimedAuthorRanges.markAsDirty();
+    this.form.claimedAuthorRanges().value.set(copyFormValue(ranges || []));
+    this.form.claimedAuthorRanges().markAsDirty();
   }
 
   public onCTLocationChange(ranges: CodLocationRange[] | null): void {
-    // ignore emissions not changing the location (the location editor
-    // emits its initial value when initialized)
-    if (
-      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
-      (CodLocationParser.rangesToString(this.claimedTitleRanges.value) || '')
-    ) {
+    if (sameRanges(ranges, this.form.claimedTitleRanges().value())) {
       return;
     }
-    this.claimedTitleRanges.setValue(ranges || []);
-    this.claimedTitleRanges.updateValueAndValidity();
-    this.claimedTitleRanges.markAsDirty();
+    this.form.claimedTitleRanges().value.set(copyFormValue(ranges || []));
+    this.form.claimedTitleRanges().markAsDirty();
+  }
+
+  public onStateIdsChange(ids: string[]): void {
+    setFieldFromChild(this.form.states, [...(ids || [])]);
+  }
+
+  public onIdChange(id: AssertedCompositeId | undefined): void {
+    setFieldFromChild(this.form.workId, copyFormValue(id) || null);
   }
 
   public onGapsChange(gaps: CodContentGap[] | undefined): void {
-    this.gaps.setValue(gaps || []);
-    this.gaps.updateValueAndValidity();
-    this.gaps.markAsDirty();
+    setFieldFromChild(this.form.gaps, copyFormValue(gaps || []));
   }
 
   //#region Annotations
+  private setAnnotations(annotations: CodContentAnnotation[]): void {
+    this.form.annotations().value.set(annotations);
+    this.form.annotations().markAsDirty();
+  }
+
   public addAnnotation(): void {
     // the new annotation is added to the list only when saved
     this.editedIndex.set(-1);
@@ -391,21 +362,20 @@ export class CodContentEditorComponent {
       this.editedAnnotation.set(undefined);
     } else {
       this.editedIndex.set(index);
-      const annotations = this.annotations.value || [];
-      this.editedAnnotation.set(annotations[index]);
+      this.editedAnnotation.set(
+        copyFormValue(this.form.annotations().value()[index]),
+      );
     }
   }
 
   public onAnnotationSave(annotation: CodContentAnnotation): void {
-    const annotations = [...(this.annotations.value || [])];
+    const annotations = [...this.form.annotations().value()];
     if (this.editedIndex() > -1) {
       annotations.splice(this.editedIndex(), 1, annotation);
     } else {
       annotations.push(annotation);
     }
-    this.annotations.setValue(annotations);
-    this.annotations.updateValueAndValidity();
-    this.annotations.markAsDirty();
+    this.setAnnotations(annotations);
     this.editAnnotation(-1);
   }
 
@@ -419,43 +389,33 @@ export class CodContentEditorComponent {
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          const entries = [...(this.annotations.value || [])];
+          const entries = [...this.form.annotations().value()];
           entries.splice(index, 1);
-          this.annotations.setValue(entries);
-          this.annotations.updateValueAndValidity();
-          this.annotations.markAsDirty();
+          this.setAnnotations(entries);
         }
       });
   }
 
   public moveAnnotationUp(index: number): void {
-    if (index < 1) {
+    const annotations = [...this.form.annotations().value()];
+    if (index < 1 || index >= annotations.length) {
       return;
     }
-    const annotationsArray = this.annotations.value || [];
-    if (index >= annotationsArray.length) return;
-
-    const annotation = annotationsArray[index];
-    const annotations = [...annotationsArray];
+    const annotation = annotations[index];
     annotations.splice(index, 1);
     annotations.splice(index - 1, 0, annotation);
-    this.annotations.setValue(annotations);
-    this.annotations.updateValueAndValidity();
-    this.annotations.markAsDirty();
+    this.setAnnotations(annotations);
   }
 
   public moveAnnotationDown(index: number): void {
-    const annotationsArray = this.annotations.value || [];
-    if (index + 1 >= annotationsArray.length) {
+    const annotations = [...this.form.annotations().value()];
+    if (index + 1 >= annotations.length) {
       return;
     }
-    const annotation = annotationsArray[index];
-    const annotations = [...annotationsArray];
+    const annotation = annotations[index];
     annotations.splice(index, 1);
     annotations.splice(index + 1, 0, annotation);
-    this.annotations.setValue(annotations);
-    this.annotations.updateValueAndValidity();
-    this.annotations.markAsDirty();
+    this.setAnnotations(annotations);
   }
   //#endregion
 
@@ -463,11 +423,23 @@ export class CodContentEditorComponent {
     this.editorClose.emit();
   }
 
-  public save(): void {
-    if (this.form.invalid) {
+  public onEnterKey(event: Event): void {
+    if (
+      !isImplicitSubmission(event) ||
+      this.form().invalid() ||
+      !this.form().dirty()
+    ) {
       return;
     }
-    const content = this.getContent();
-    this.content.set(content);
+    event.preventDefault();
+    this.save();
+  }
+
+  public save(): void {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
+      return;
+    }
+    this.content.set(this.getContent());
   }
 }

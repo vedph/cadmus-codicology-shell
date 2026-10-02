@@ -1,13 +1,13 @@
-<form [formGroup]="form" (submit)="save(); $event.stopPropagation()">
+<div (keydown.enter)="onEnterKey($event)">
   <div class="form-row">
     <!-- name -->
     <mat-form-field>
       <mat-label>name</mat-label>
-      <input matInput [formControl]="name" />
-      @if ($any(name).errors?.required && (name.dirty || name.touched)) {
+      <input matInput [formField]="form.name" />
+      @if (form.name().getError("required") && (form.name().dirty() || form.name().touched())) {
         <mat-error>name required</mat-error>
       }
-      @if ($any(name).errors?.maxLength && (name.dirty || name.touched)) {
+      @if (form.name().getError("maxLength") && (form.name().dirty() || form.name().touched())) {
         <mat-error>name too long</mat-error>
       }
     </mat-form-field>
@@ -16,19 +16,19 @@
     <cadmus-cod-location
       label="sample"
       [single]="true"
-      [location]="sampleRanges.value"
+      [location]="form.sampleRanges().value()"
       (locationChange)="onSampleRangesChange($event)"
     />
 
     <!-- ranges -->
     <cadmus-cod-location
       label="ranges"
-      [location]="ranges.value"
+      [location]="form.ranges().value()"
       (locationChange)="onRangesChange($event)"
     />
 
     <!-- rangesAsQuire -->
-    <mat-checkbox [formControl]="rangesAsQuire"
+    <mat-checkbox [formField]="form.rangesAsQuire"
       >range &#x2192; quire</mat-checkbox
     >
   </div>
@@ -36,10 +36,10 @@
     <!-- description -->
     <mat-form-field class="long-text">
       <mat-label>description</mat-label>
-      <textarea matInput rows="2" [formControl]="description"></textarea>
+      <textarea matInput rows="2" [formField]="form.description"></textarea>
       @if (
-        $any(description).errors?.maxLength &&
-        (description.dirty || description.touched)
+        form.description().getError("maxLength") &&
+        (form.description().dirty() || form.description().touched())
       ) {
         <mat-error>description too long</mat-error>
       }
@@ -56,14 +56,14 @@
       [canSwitchMode]="true"
       [canEditTarget]="true"
       [lookupProviderOptions]="lookupProviderOptions()"
-      [ids]="ids.value"
+      [ids]="form.ids().value()"
       (idsChange)="onIdsChange($event!)"
     />
   </fieldset>
   <br />
   <div>
-    <mat-checkbox [formControl]="hasSize">has size</mat-checkbox>
-    @if (hasSize.value) {
+    <mat-checkbox [formField]="form.hasSize">has size</mat-checkbox>
+    @if (form.hasSize().value()) {
       <fieldset>
         <legend>size</legend>
         <cadmus-mat-physical-size
@@ -74,7 +74,7 @@
           defaultWUnit="mm"
           defaultHUnit="mm"
           defaultDUnit="mm"
-          [size]="size.value || undefined"
+          [size]="form.size().value() || undefined"
           (sizeChange)="onSizeChange($event!)"
         />
       </fieldset>
@@ -84,7 +84,7 @@
     <fieldset>
       <legend>chronotopes</legend>
       <cadmus-asserted-chronotope-set
-        [chronotopes]="chronotopes.value"
+        [chronotopes]="form.chronotopes().value()"
         [tagEntries]="ctTagEntries()"
         [assTagEntries]="assTagEntries()"
         [refTagEntries]="refTagEntries()"
@@ -106,12 +106,13 @@
       <mat-icon class="mat-warn">clear</mat-icon>
     </button>
     <button
-      type="submit"
+      type="button"
       mat-icon-button
       matTooltip="Accept changes"
-      [disabled]="form.invalid || form.pristine"
+      [disabled]="form().invalid() || !form().dirty()"
+      (click)="save()"
     >
       <mat-icon class="mat-primary">check_circle</mat-icon>
     </button>
   </div>
-</form>
+</div>

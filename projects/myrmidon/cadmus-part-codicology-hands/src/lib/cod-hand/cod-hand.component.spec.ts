@@ -361,4 +361,67 @@ describe('CodHandComponent', () => {
 
     expect(editorClose).toHaveBeenCalled();
   });
+
+  // signal forms regressions
+
+  it('should ignore child echoes of its data', async () => {
+    const { fixture } = await setup(HAND);
+
+    fixture.componentInstance.onIdsChange([]);
+    fixture.componentInstance.onReferencesChange([]);
+    fixture.detectChanges();
+
+    expect(saveButton()).toBeDisabled();
+  });
+
+  it('should get dirty for a real child change', async () => {
+    const { fixture } = await setup(HAND);
+
+    fixture.componentInstance.onReferencesChange([{ citation: 'x' } as any]);
+    fixture.detectChanges();
+
+    expect(saveButton()).toBeEnabled();
+  });
+
+  it('should save on Enter in a text input when dirty', async () => {
+    const { user, model } = await setup(HAND);
+
+    await user.type(textbox(/^name/), 'x{Enter}');
+
+    expect((model() as any).name).toBe('Hand Ax');
+  });
+
+  it('should not save on Enter while pristine', async () => {
+    const { user, model } = await setup(HAND);
+
+    await user.type(textbox(/^name/), '{Enter}');
+
+    expect(model()).toBe(HAND);
+  });
+
+  it('should save without the form identity tags', async () => {
+    const { user, model } = await setup(HAND);
+
+    await user.type(textbox(/^name/), 'x');
+    await user.click(saveButton());
+
+    const check = (v: any): void => {
+      if (Array.isArray(v)) v.forEach(check);
+      else if (v && typeof v === 'object') {
+        expect(Object.getOwnPropertySymbols(v)).toHaveLength(0);
+        Object.values(v).forEach(check);
+      }
+    };
+    check(model());
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup(HAND);
+    expect(container.querySelector('form')).toBeNull();
+  });
+
+  it('should list the description keys for the instances', async () => {
+    const { fixture } = await setup(HAND);
+    expect(fixture.componentInstance.dscKeys()).toEqual(['alpha', 'beta']);
+  });
 });

@@ -1,10 +1,10 @@
-<form [formGroup]="form" (submit)="save(); $event.stopPropagation()">
+<div (keydown.enter)="onEnterKey($event)">
   <div class="form-row">
     <!-- eid -->
     <mat-form-field>
       <mat-label>EID</mat-label>
-      <input matInput [formControl]="eid" />
-      @if ($any(eid).errors?.maxLength && (eid.dirty || eid.touched)) {
+      <input matInput [formField]="form.eid" />
+      @if (form.eid().getError("maxLength") && (form.eid().dirty() || form.eid().touched())) {
         <mat-error>EID too long</mat-error>
       }
     </mat-form-field>
@@ -12,8 +12,8 @@
     <!-- name -->
     <mat-form-field>
       <mat-label>name</mat-label>
-      <input matInput [formControl]="name" />
-      @if ($any(name).errors?.maxLength && (name.dirty || name.touched)) {
+      <input matInput [formField]="form.name" />
+      @if (form.name().getError("maxLength") && (form.name().dirty() || form.name().touched())) {
         <mat-error>name too long</mat-error>
       }
     </mat-form-field>
@@ -27,7 +27,7 @@
       [assTagEntries]="assTagEntries()"
       [refTypeEntries]="refTypeEntries()"
       [refTagEntries]="refTagEntries()"
-      [ids]="ids.value"
+      [ids]="form.ids().value()"
       [canSwitchMode]="true"
       [canEditTarget]="true"
       (idsChange)="onIdsChange($event)"
@@ -42,7 +42,7 @@
         descriptions
       </mat-panel-title>
       <mat-panel-description>{{
-        descriptions.value.length
+        form.descriptions().value().length
       }}</mat-panel-description>
     </mat-expansion-panel-header>
     <div>
@@ -55,7 +55,7 @@
         <mat-icon>add_circle</mat-icon> description
       </button>
     </div>
-    @if (descriptions.value && descriptions.value.length) {
+    @if (form.descriptions().value() && form.descriptions().value().length) {
       <table>
         <thead>
           <tr>
@@ -66,7 +66,7 @@
         </thead>
         <tbody>
           @for (
-            description of descriptions.value;
+            description of form.descriptions().value();
             track description;
             let i = $index;
             let first = $first;
@@ -118,7 +118,7 @@
       </table>
     }
     @if (editedDsc()) {
-      <mat-expansion-panel [expanded]="editedDsc()" [disabled]="!editedDsc()">
+      <mat-expansion-panel [expanded]="!!editedDsc()" [disabled]="!editedDsc()">
         <mat-expansion-panel-header
           >description #{{ editedDscIndex() + 1 }}</mat-expansion-panel-header
         >
@@ -140,7 +140,7 @@
         instances
       </mat-panel-title>
       <mat-panel-description>{{
-        instances.value.length
+        form.instances().value().length
       }}</mat-panel-description>
     </mat-expansion-panel-header>
     <div>
@@ -153,7 +153,7 @@
         <mat-icon>add_circle</mat-icon> instance
       </button>
     </div>
-    @if (instances.value && instances.value.length) {
+    @if (form.instances().value() && form.instances().value().length) {
       <table>
         <thead>
           <tr>
@@ -164,7 +164,7 @@
         </thead>
         <tbody>
           @for (
-            instance of instances.value;
+            instance of form.instances().value();
             track instance;
             let i = $index;
             let first = $first;
@@ -220,7 +220,7 @@
       </table>
     }
     @if (editedIst()) {
-      <mat-expansion-panel [expanded]="editedIst()" [disabled]="!editedIst()">
+      <mat-expansion-panel [expanded]="!!editedIst()" [disabled]="!editedIst()">
         <mat-expansion-panel-header
           >instance #{{ editedIstIndex() + 1 }}</mat-expansion-panel-header
         >
@@ -235,7 +235,7 @@
           [refTypeEntries]="refTypeEntries()"
           [lookupProviderOptions]="lookupProviderOptions()"
           [instance]="editedIst()"
-          [dscKeys]="dscKeys"
+          [dscKeys]="dscKeys()"
           (instanceChange)="onInstanceChange($event!)"
           (editorClose)="editInstance(null)"
         />
@@ -251,7 +251,7 @@
         subscriptions
       </mat-panel-title>
       <mat-panel-description>{{
-        subscriptions.value.length
+        form.subscriptions().value().length
       }}</mat-panel-description>
     </mat-expansion-panel-header>
     <div>
@@ -264,7 +264,7 @@
         <mat-icon>add_circle</mat-icon> subscription
       </button>
     </div>
-    @if (subscriptions.value && subscriptions.value.length) {
+    @if (form.subscriptions().value() && form.subscriptions().value().length) {
       <table>
         <thead>
           <tr>
@@ -275,7 +275,7 @@
         </thead>
         <tbody>
           @for (
-            subscription of subscriptions.value;
+            subscription of form.subscriptions().value();
             track subscription;
             let i = $index;
             let first = $first;
@@ -331,7 +331,7 @@
       </table>
     }
     @if (editedSub()) {
-      <mat-expansion-panel [expanded]="editedSub()" [disabled]="!editedSub()">
+      <mat-expansion-panel [expanded]="!!editedSub()" [disabled]="!editedSub()">
         <mat-expansion-panel-header
           >subscription #{{ editedSubIndex() + 1 }}</mat-expansion-panel-header
         >
@@ -355,13 +355,13 @@
         references
       </mat-panel-title>
       <mat-panel-description>{{
-        references.value.length
+        form.references().value().length
       }}</mat-panel-description>
     </mat-expansion-panel-header>
     <cadmus-refs-lookup-doc-references
       [tagEntries]="refTagEntries()"
       [typeEntries]="refTypeEntries()"
-      [references]="references.value"
+      [references]="form.references().value()"
       [lookupProviderOptions]="lookupProviderOptions()"
       defaultPicker="lookup"
       (referencesChange)="onReferencesChange($event)"
@@ -379,13 +379,14 @@
       <mat-icon class="mat-warn">clear</mat-icon>
     </button>
     <button
-      type="submit"
+      type="button"
       mat-icon-button
       matTooltip="Accept changes"
-      [disabled]="form.invalid || form.pristine"
+      [disabled]="form().invalid() || !form().dirty()"
+      (click)="save()"
     >
       <mat-icon class="mat-primary">check_circle</mat-icon>
     </button>
     <span style="margin-left: 8px">hand</span>
   </div>
-</form>
+</div>

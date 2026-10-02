@@ -1,13 +1,16 @@
-<form [formGroup]="form">
+<div>
   <!-- bound -->
   @if (!free() && entries()?.length) {
     <mat-form-field>
-      <mat-select [formControl]="idCtl" [placeholder]="label()">
+      <mat-select [formField]="form.id" [placeholder]="label()">
         @for (e of entries(); track e.id) {
           <mat-option [value]="e.id">{{ e.value }}</mat-option>
         }
       </mat-select>
-      @if ($any(idCtl).errors?.required && (idCtl.dirty || idCtl.touched)) {
+      @if (
+        form.id().getError("required") &&
+        (form.id().dirty() || form.id().touched())
+      ) {
         <mat-error>required</mat-error>
       }
     </mat-form-field>
@@ -16,16 +19,26 @@
   <!-- free -->
   @else {
     <mat-form-field>
-      <input matInput [formControl]="idCtl" [placeholder]="label()" />
-      @if ($any(idCtl).errors?.required && (idCtl.dirty || idCtl.touched)) {
+      <input matInput [formField]="form.id" [placeholder]="label()" />
+      @if (
+        form.id().getError("required") &&
+        (form.id().dirty() || form.id().touched())
+      ) {
         <mat-error>required</mat-error>
       }
-      @if ($any(idCtl).errors?.maxLength && (idCtl.dirty || idCtl.touched)) {
+      <!-- the error keys are those of the reactive validators -->
+      @if (
+        form.id().getError("maxlength") &&
+        (form.id().dirty() || form.id().touched())
+      ) {
         <mat-error>too long</mat-error>
       }
-      @if ($any(idCtl).errors?.invalidCtl && (idCtl.dirty || idCtl.touched)) {
+      @if (
+        form.id().getError("invalidCtl") &&
+        (form.id().dirty() || form.id().touched())
+      ) {
         <mat-error>invalid</mat-error>
       }
     </mat-form-field>
   }
-</form>
+</div>

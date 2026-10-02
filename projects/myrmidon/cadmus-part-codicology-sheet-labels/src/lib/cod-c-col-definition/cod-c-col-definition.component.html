@@ -1,9 +1,9 @@
-<form [formGroup]="form" (submit)="save(); $event.stopPropagation()">
+<div (keydown.enter)="onEnterKey($event)">
   <div class="form-row">
     <!-- rank -->
     <mat-form-field style="width: 6em">
       <mat-label>rank</mat-label>
-      <input matInput [formControl]="rank" type="number" min="0" />
+      <input matInput [formField]="form.rank" type="number" />
     </mat-form-field>
   </div>
 
@@ -12,14 +12,14 @@
     @if (posEntries()?.length) {
       <mat-form-field class="form-col">
         <mat-label>position</mat-label>
-        <mat-select [formControl]="position">
+        <mat-select [formField]="form.position">
           @for (e of posEntries(); track e.id) {
             <mat-option [value]="e.id">{{ e.value }}</mat-option>
           }
         </mat-select>
         @if (
-          $any(position).errors?.required &&
-          (position.dirty || position.touched)
+          form.position().getError("required") &&
+          (form.position().dirty() || form.position().touched())
         ) {
           <mat-error>position required</mat-error>
         }
@@ -29,16 +29,16 @@
     @else {
       <mat-form-field class="form-col">
         <mat-label>position</mat-label>
-        <input matInput [formControl]="position" />
+        <input matInput [formField]="form.position" />
         @if (
-          $any(position).errors?.required &&
-          (position.dirty || position.touched)
+          form.position().getError("required") &&
+          (form.position().dirty() || form.position().touched())
         ) {
           <mat-error>position required</mat-error>
         }
         @if (
-          $any(position).errors?.maxLength &&
-          (position.dirty || position.touched)
+          form.position().getError("maxLength") &&
+          (form.position().dirty() || form.position().touched())
         ) {
           <mat-error>position too long</mat-error>
         }
@@ -46,17 +46,17 @@
     }
 
     <!-- isVertical -->
-    <mat-checkbox [formControl]="isVertical">vertical</mat-checkbox>
+    <mat-checkbox [formField]="form.isVertical">vertical</mat-checkbox>
   </div>
 
   <div>
     <!-- decoration -->
     <mat-form-field class="long-text">
       <mat-label>decoration</mat-label>
-      <input matInput [formControl]="decoration" />
+      <input matInput [formField]="form.decoration" />
       @if (
-        $any(decoration).errors?.maxLength &&
-        (decoration.dirty || decoration.touched)
+        form.decoration().getError("maxLength") &&
+        (form.decoration().dirty() || form.decoration().touched())
       ) {
         <mat-error>decoration too long</mat-error>
       }
@@ -76,7 +76,7 @@
         [canSwitchMode]="true"
         [canEditTarget]="true"
         [lookupProviderOptions]="lookupProviderOptions()"
-        [ids]="links.value"
+        [ids]="form.links().value()"
         (idsChange)="onLinkIdsChange($event)"
       />
     </fieldset>
@@ -86,8 +86,8 @@
     <!-- note -->
     <mat-form-field class="long-text">
       <mat-label>note</mat-label>
-      <input matInput [formControl]="note" />
-      @if ($any(note).errors?.maxLength && (note.dirty || note.touched)) {
+      <input matInput [formField]="form.note" />
+      @if (form.note().getError("maxLength") && (form.note().dirty() || form.note().touched())) {
         <mat-error>note too long</mat-error>
       }
     </mat-form-field>
@@ -104,12 +104,13 @@
       <mat-icon class="mat-warn">clear</mat-icon>
     </button>
     <button
-      type="submit"
+      type="button"
       mat-icon-button
       matTooltip="Accept changes"
-      [disabled]="form.invalid || form.pristine"
+      [disabled]="form().invalid() || !form().dirty()"
+      (click)="save()"
     >
       <mat-icon class="mat-primary">check_circle</mat-icon>
     </button>
   </div>
-</form>
+</div>

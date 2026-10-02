@@ -1,16 +1,16 @@
 <div id="container">
-  <form [formGroup]="form" (submit)="save(); $event.stopPropagation()" id="editor">
+  <div id="editor" (keydown.enter)="onEnterKey($event)">
     <div class="form-row">
       <!-- tag (bound) -->
       @if (tagEntries()?.length) {
         <mat-form-field>
           <mat-label>tag</mat-label>
-          <mat-select [formControl]="tag">
+          <mat-select [formField]="form.tag">
             @for (e of tagEntries(); track e.id) {
               <mat-option [value]="e.id">{{ e.value }}</mat-option>
             }
           </mat-select>
-          @if ($any(tag).errors?.required && (tag.dirty || tag.touched)) {
+          @if (form.tag().getError("required") && (form.tag().dirty() || form.tag().touched())) {
             <mat-error>tag required</mat-error>
           }
         </mat-form-field>
@@ -19,8 +19,8 @@
       @else {
         <mat-form-field>
           <mat-label>tag</mat-label>
-          <input matInput [formControl]="tag" />
-          @if ($any(tag).errors?.maxLength && (tag.dirty || tag.touched)) {
+          <input matInput [formField]="form.tag" />
+          @if (form.tag().getError("maxLength") && (form.tag().dirty() || form.tag().touched())) {
             <mat-error>tag too long</mat-error>
           }
         </mat-form-field>
@@ -30,7 +30,7 @@
       <cadmus-cod-location
         label="sample"
         [single]="true"
-        [location]="sampleRanges.value"
+        [location]="form.sampleRanges().value()"
         (locationChange)="onSampleLocationChange($event)"
       />
 
@@ -38,7 +38,7 @@
       <cadmus-cod-location
         label="range(s)"
         [required]="true"
-        [location]="ranges.value"
+        [location]="form.ranges().value()"
         (locationChange)="onRangeLocationChange($event)"
       />
     </div>
@@ -49,7 +49,7 @@
         <legend>rulings</legend>
         <cadmus-ui-flag-set
           [flags]="rulFlags()"
-          [checkedIds]="rulings.value"
+          [checkedIds]="form.rulings().value()"
           (checkedIdsChange)="onCheckedIdsChange($event)"
         />
       </fieldset>
@@ -60,7 +60,7 @@
       @if (drzEntries()?.length) {
         <mat-form-field>
           <mat-label>derolez</mat-label>
-          <mat-select [formControl]="derolez">
+          <mat-select [formField]="form.derolez">
             @for (e of drzEntries(); track e.id) {
               <mat-option [value]="e.id">{{ e.value }}</mat-option>
             }
@@ -71,10 +71,10 @@
       @else {
         <mat-form-field>
           <mat-label>derolez</mat-label>
-          <input matInput [formControl]="derolez" />
+          <input matInput [formField]="form.derolez" />
           @if (
-            $any(derolez).errors?.maxLength &&
-            (derolez.dirty || derolez.touched)
+            form.derolez().getError("maxLength") &&
+            (form.derolez().dirty() || form.derolez().touched())
           ) {
             <mat-error>derolez too long</mat-error>
           }
@@ -85,7 +85,7 @@
       @if (prkEntries()?.length) {
         <mat-form-field>
           <mat-label>pricking</mat-label>
-          <mat-select [formControl]="pricking">
+          <mat-select [formField]="form.pricking">
             @for (e of prkEntries(); track e.id) {
               <mat-option [value]="e.id">{{ e.value }}</mat-option>
             }
@@ -96,10 +96,10 @@
       @else {
         <mat-form-field>
           <mat-label>pricking</mat-label>
-          <input matInput [formControl]="pricking" />
+          <input matInput [formField]="form.pricking" />
           @if (
-            $any(pricking).errors?.maxLength &&
-            (pricking.dirty || pricking.touched)
+            form.pricking().getError("maxLength") &&
+            (form.pricking().dirty() || form.pricking().touched())
           ) {
             <mat-error>pricking too long</mat-error>
           }
@@ -112,15 +112,20 @@
         <input
           matInput
           type="number"
-          min="0"
-          max="18"
-          [formControl]="columnCount"
+          [formField]="form.columnCount"
         />
         @if (
-          $any(columnCount).errors?.required &&
-          (columnCount.dirty || columnCount.touched)
+          form.columnCount().getError("required") &&
+          (form.columnCount().dirty() || form.columnCount().touched())
         ) {
           <mat-error>count required</mat-error>
+        }
+        @if (
+          (form.columnCount().getError("min") ||
+            form.columnCount().getError("max")) &&
+          (form.columnCount().dirty() || form.columnCount().touched())
+        ) {
+          <mat-error>0-18</mat-error>
         }
       </mat-form-field>
     </div>
@@ -131,7 +136,7 @@
       <cadmus-refs-decorated-counts
         [idEntries]="cntIdEntries()"
         [tagEntries]="cntTagEntries()"
-        [counts]="counts.value"
+        [counts]="form.counts().value()"
         (countsChange)="onCountsChange($event!)"
       />
     </fieldset>
@@ -141,8 +146,8 @@
       <!-- note -->
       <mat-form-field class="long-text">
         <mat-label>note</mat-label>
-        <input matInput [formControl]="note" />
-        @if ($any(note).errors?.maxLength && (note.dirty || note.touched)) {
+        <input matInput [formField]="form.note" />
+        @if (form.note().getError("maxLength") && (form.note().dirty() || form.note().touched())) {
           <mat-error>note too long</mat-error>
         }
       </mat-form-field>
@@ -158,20 +163,21 @@
         <mat-icon class="mat-warn">clear</mat-icon>
       </button>
       <button
-        type="submit"
+        type="button"
         mat-icon-button
         matTooltip="Accept changes"
-        [disabled]="form.invalid || form.pristine"
+        [disabled]="form().invalid() || !form().dirty()"
+        (click)="save()"
       >
         <mat-icon class="mat-primary">check_circle</mat-icon>
       </button>
     </div>
-  </form>
+  </div>
 
   <!-- formula -->
   <div id="formula">
     <cadmus-cod-layout-formula
-      [data]="formulaWithDimensions() || undefined"
+      [data]="form.formula().value() || undefined"
       (dataChange)="onFormulaChange($event!)"
     />
   </div>

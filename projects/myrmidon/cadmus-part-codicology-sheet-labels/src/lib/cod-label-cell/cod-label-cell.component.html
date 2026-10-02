@@ -51,7 +51,7 @@
 
     <!-- EDIT -->
     @else {
-      <form [formGroup]="form" (submit)="saveEdit(); $event.stopPropagation()" class="form-row">
+      <div class="form-row">
         <!-- value -->
         @if (editMode() === "value") {
           <mat-form-field>
@@ -61,11 +61,13 @@
               matInput
               type="text"
               spellcheck="false"
-              [formControl]="value"
+              [formField]="form.value"
+              (keydown.enter)="onEnterKey($event)"
               (keydown.esc)="cancelEdit()"
             />
             @if (
-              value.hasError("maxLength") && (value.dirty || value.touched)
+              form.value().getError("maxLength") &&
+              (form.value().dirty() || form.value().touched())
             ) {
               <mat-error>value too long</mat-error>
             }
@@ -79,10 +81,14 @@
               #noteInput
               matInput
               type="text"
-              [formControl]="note"
+              [formField]="form.note"
+              (keydown.enter)="onEnterKey($event)"
               (keydown.esc)="cancelEdit()"
             />
-            @if (note.hasError("maxLength") && (note.dirty || note.touched)) {
+            @if (
+              form.note().getError("maxLength") &&
+              (form.note().dirty() || form.note().touched())
+            ) {
               <mat-error>note too long</mat-error>
             }
           </mat-form-field>
@@ -96,14 +102,15 @@
           <mat-icon class="mat-warn">clear</mat-icon>
         </button>
         <button
-          type="submit"
-          [disabled]="form.invalid"
+          type="button"
+          [disabled]="form().invalid()"
+          (click)="saveEdit()"
           mat-icon-button
           matTooltip="Save edit"
         >
           <mat-icon class="mat-primary">check_circle</mat-icon>
         </button>
-      </form>
+      </div>
     }
   </div>
 }

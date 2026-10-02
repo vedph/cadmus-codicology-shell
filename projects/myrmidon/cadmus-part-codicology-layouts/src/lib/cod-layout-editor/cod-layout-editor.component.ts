@@ -3,19 +3,14 @@ import {
   Component,
   computed,
   effect,
+  inject,
   input,
+  linkedSignal,
   model,
   output,
-  signal,
+  untracked,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { form, FormField, max, maxLength, min } from '@angular/forms/signals';
 
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatSelect } from '@angular/material/select';
@@ -26,7 +21,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { NgxToolsSignalValidators } from '@myrmidon/ngx-tools';
 import {
   CodLocationRange,
   CodLocationComponent,
@@ -38,6 +33,11 @@ import {
 } from '@myrmidon/cadmus-refs-decorated-counts';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  copyFormValue,
+  isImplicitSubmission,
+  setFieldFromChild,
+} from '@myrmidon/cadmus-ui';
 import {
   CodLayoutFormulaComponent,
   CodLayoutFormulaWithDimensions,
@@ -54,13 +54,48 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   };
 }
 
+interface CodLayoutControls {
+  sampleRanges: CodLocationRange[];
+  ranges: CodLocationRange[];
+  rulings: string[];
+  derolez: string;
+  pricking: string;
+  columnCount: number | null;
+  counts: DecoratedCount[];
+  tag: string;
+  note: string;
+  // edited by the formula editor
+  formula: CodLayoutFormulaWithDimensions | null;
+}
+
+function toDraft(layout?: CodLayout): CodLayoutControls {
+  return {
+    sampleRanges: layout?.sample
+      ? copyFormValue([{ start: layout.sample, end: layout.sample }])
+      : [],
+    ranges: copyFormValue(layout?.ranges || []),
+    rulings: [...(layout?.rulingTechniques || [])],
+    derolez: layout?.derolez || '',
+    pricking: layout?.pricking || '',
+    columnCount: layout?.columnCount ?? null,
+    counts: copyFormValue(layout?.counts || []),
+    tag: layout?.tag || '',
+    note: layout?.note || '',
+    formula: layout
+      ? {
+          formula: layout.formula || '',
+          dimensions: copyFormValue(layout.dimensions || []),
+        }
+      : null,
+  };
+}
+
 @Component({
   selector: 'cadmus-cod-layout-editor',
   templateUrl: './cod-layout-editor.component.html',
   styleUrls: ['./cod-layout-editor.component.css'],
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatFormField,
     MatLabel,
     MatSelect,
@@ -79,7 +114,20 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodLayoutEditorComponent {
+  private readonly _snackbar = inject(MatSnackBar);
+
   public readonly layout = model<CodLayout>();
+
+  private readonly _draft = linkedSignal(() => toDraft(this.layout()));
+  public readonly form = form(this._draft, (p) => {
+    NgxToolsSignalValidators.strictMinLength(p.ranges, 1);
+    maxLength(p.derolez, 50);
+    min(p.columnCount, 0);
+    max(p.columnCount, 18);
+    maxLength(p.pricking, 50);
+    maxLength(p.tag, 50);
+    maxLength(p.note, 1000);
+  });
 
   // cod-layout-tags
   public readonly tagEntries = input<ThesaurusEntry[]>();
@@ -100,78 +148,13 @@ export class CodLayoutEditorComponent {
     () => this.rulTechEntries()?.map(entryToFlag) || []
   );
 
-  public readonly formulaWithDimensions =
-    signal<CodLayoutFormulaWithDimensions | null>(null);
 
-  public sampleRanges: FormControl<CodLocationRange[]>;
-  public ranges: FormControl<CodLocationRange[]>;
-  public rulings: FormControl<string[]>;
-  public derolez: FormControl<string | null>;
-  public pricking: FormControl<string | null>;
-  public columnCount: FormControl<number>;
-  public counts: FormControl<DecoratedCount[]>;
-  public tag: FormControl<string | null>;
-  public note: FormControl<string | null>;
-  public form: FormGroup;
-
-  constructor(formBuilder: FormBuilder, private _snackbar: MatSnackBar) {
-    // form
-    this.sampleRanges = formBuilder.control([], {
-      nonNullable: true,
-    });
-    this.ranges = formBuilder.control([], {
-      validators: NgxToolsValidators.strictMinLengthValidator(1),
-      nonNullable: true,
-    });
-    this.rulings = formBuilder.control([], { nonNullable: true });
-    this.derolez = formBuilder.control(null, Validators.maxLength(50));
-    this.pricking = formBuilder.control(null, Validators.maxLength(50));
-    this.columnCount = formBuilder.control(0, { nonNullable: true });
-    this.counts = formBuilder.control([], { nonNullable: true });
-    this.tag = formBuilder.control(null, Validators.maxLength(50));
-    this.note = formBuilder.control(null, Validators.maxLength(1000));
-    this.form = formBuilder.group({
-      sampleRanges: this.sampleRanges,
-      ranges: this.ranges,
-      rulings: this.rulings,
-      derolez: this.derolez,
-      pricking: this.pricking,
-      columnCount: this.columnCount,
-      counts: this.counts,
-      tag: this.tag,
-      note: this.note,
-    });
-
+  constructor() {
+    // new layout: clear the interaction state
     effect(() => {
-      this.updateForm(this.layout());
+      this.layout();
+      untracked(() => this.form().reset());
     });
-  }
-
-  private updateForm(layout: CodLayout | undefined): void {
-    if (!layout) {
-      this.form.reset();
-      this.formulaWithDimensions.set(null);
-      return;
-    }
-
-    this.sampleRanges.setValue(
-      layout.sample ? [{ start: layout.sample, end: layout.sample }] : []
-    );
-    this.ranges.setValue(layout.ranges || []);
-    this.rulings.setValue(layout.rulingTechniques || []);
-    this.derolez.setValue(layout.derolez || null);
-    this.pricking.setValue(layout.pricking || null);
-    this.columnCount.setValue(layout.columnCount);
-    this.counts.setValue(layout.counts || []);
-    this.tag.setValue(layout.tag || null);
-    this.note.setValue(layout.note || null);
-
-    this.formulaWithDimensions.set({
-      formula: layout.formula || '',
-      dimensions: layout.dimensions || [],
-    });
-
-    this.form.markAsPristine();
   }
 
   public onFormulaChange(data: CodLayoutFormulaWithDimensions): void {
@@ -185,28 +168,25 @@ export class CodLayoutEditorComponent {
         }) || [],
     };
 
-    this.formulaWithDimensions.set(cleanedData);
-    // the formula is not a form control: mark the form as dirty
-    this.form.markAsDirty();
+    this.form.formula().value.set(cleanedData);
+    this.form.formula().markAsDirty();
     this._snackbar.open('Formula updated', 'OK', { duration: 2000 });
   }
 
   private getLayout(): CodLayout {
-    const formulaWithDimensions = this.formulaWithDimensions();
+    const draft = this._draft();
     return {
-      sample: this.sampleRanges.value[0]?.start,
-      ranges: this.ranges.value || [],
-      formula: formulaWithDimensions?.formula || undefined,
-      dimensions: formulaWithDimensions?.dimensions || undefined,
-      rulingTechniques: this.rulings.value?.length
-        ? this.rulings.value
-        : undefined,
-      derolez: this.derolez.value?.trim(),
-      pricking: this.pricking.value?.trim(),
-      columnCount: this.columnCount.value || 0,
-      counts: this.counts.value?.length ? this.counts.value : undefined,
-      tag: this.tag.value?.trim(),
-      note: this.note.value?.trim(),
+      sample: copyFormValue(draft.sampleRanges[0]?.start),
+      ranges: copyFormValue(draft.ranges),
+      formula: draft.formula?.formula || undefined,
+      dimensions: copyFormValue(draft.formula?.dimensions) || undefined,
+      rulingTechniques: draft.rulings.length ? [...draft.rulings] : undefined,
+      derolez: draft.derolez.trim() || undefined,
+      pricking: draft.pricking.trim() || undefined,
+      columnCount: draft.columnCount || 0,
+      counts: draft.counts.length ? copyFormValue(draft.counts) : undefined,
+      tag: draft.tag.trim() || undefined,
+      note: draft.note.trim() || undefined,
     };
   }
 
@@ -215,13 +195,12 @@ export class CodLayoutEditorComponent {
     // emits its initial value when initialized)
     if (
       (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
-      (CodLocationParser.rangesToString(this.sampleRanges.value) || '')
+      (CodLocationParser.rangesToString(this.form.sampleRanges().value()) || '')
     ) {
       return;
     }
-    this.sampleRanges.setValue(ranges || []);
-    this.sampleRanges.updateValueAndValidity();
-    this.sampleRanges.markAsDirty();
+    this.form.sampleRanges().value.set(copyFormValue(ranges || []));
+    this.form.sampleRanges().markAsDirty();
   }
 
   public onRangeLocationChange(ranges: CodLocationRange[] | null): void {
@@ -229,33 +208,41 @@ export class CodLayoutEditorComponent {
     // emits its initial value when initialized)
     if (
       (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
-      (CodLocationParser.rangesToString(this.ranges.value) || '')
+      (CodLocationParser.rangesToString(this.form.ranges().value()) || '')
     ) {
       return;
     }
-    this.ranges.setValue(ranges || []);
-    this.ranges.updateValueAndValidity();
-    this.ranges.markAsDirty();
+    this.form.ranges().value.set(copyFormValue(ranges || []));
+    this.form.ranges().markAsDirty();
   }
 
   public onCountsChange(counts: DecoratedCount[]): void {
-    this.counts.setValue(counts);
-    this.counts.updateValueAndValidity();
-    this.counts.markAsDirty();
+    setFieldFromChild(this.form.counts, copyFormValue(counts || []));
   }
 
   public onCheckedIdsChange(ids: string[]): void {
-    this.rulings.setValue(ids);
-    this.rulings.updateValueAndValidity();
-    this.rulings.markAsDirty();
+    setFieldFromChild(this.form.rulings, [...(ids || [])]);
   }
 
   public cancel(): void {
     this.editorClose.emit();
   }
 
+  public onEnterKey(event: Event): void {
+    if (
+      !isImplicitSubmission(event) ||
+      this.form().invalid() ||
+      !this.form().dirty()
+    ) {
+      return;
+    }
+    event.preventDefault();
+    this.save();
+  }
+
   public save(): void {
-    if (this.form.invalid) {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
       return;
     }
     this.layout.set(this.getLayout());

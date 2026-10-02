@@ -204,4 +204,32 @@ describe('CodHandInstanceComponent', () => {
 
     expect(editorClose).toHaveBeenCalled();
   });
+
+  // signal forms regressions
+
+  it('should ignore child echoes of its data', async () => {
+    const { fixture } = await setup(INSTANCE);
+
+    fixture.componentInstance.onTypologyIdsChange(['book']);
+    fixture.componentInstance.onColorIdsChange([]);
+    fixture.componentInstance.onImagesChange(undefined);
+    fixture.componentInstance.onChronotopeChange(undefined);
+    fixture.detectChanges();
+
+    expect(saveButton()).toBeDisabled();
+  });
+
+  it('should get dirty for a real child change', async () => {
+    const { fixture } = await setup(INSTANCE);
+
+    fixture.componentInstance.onColorIdsChange(['red']);
+    fixture.detectChanges();
+
+    expect(saveButton()).toBeEnabled();
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup(INSTANCE);
+    expect(container.querySelector('form')).toBeNull();
+  });
 });

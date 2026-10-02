@@ -103,7 +103,8 @@ describe('CodBindingEditorComponent', () => {
       boardMaterial: 'wood',
       chronotope: BINDING.chronotope,
       size: undefined,
-      description: '',
+      // empty optional text is now saved as missing
+      description: undefined,
     });
   });
 
@@ -171,5 +172,84 @@ describe('CodBindingEditorComponent', () => {
     await user.click(getCancelButton());
 
     expect(editorClose).toHaveBeenCalled();
+  });
+
+  // signal forms regressions
+
+  const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+  it('should stay pristine when its child editors echo their data', async () => {
+    await setup({
+      ...BINDING,
+      size: {
+        w: { value: 10, unit: 'cm' },
+        h: { value: 20, unit: 'cm' },
+      },
+    });
+
+    // past the debounce of the autosaving child editors
+    await wait(600);
+
+    expect(getSaveButton()).toBeDisabled();
+  });
+
+  it('should save on Enter in a text input when dirty', async () => {
+    const { user, model } = await setup(BINDING);
+
+    await user.type(
+      screen.getByRole('textbox', { name: /board material/ }),
+      'x{Enter}',
+    );
+
+    expect(model()!.boardMaterial).toBe('woodx');
+  });
+
+  it('should not save on Enter while pristine', async () => {
+    const { user, model } = await setup(BINDING);
+
+    await user.type(
+      screen.getByRole('textbox', { name: /board material/ }),
+      '{Enter}',
+    );
+
+    expect(model()).toBe(BINDING);
+  });
+
+  it('should save a binding without the form identity tags', async () => {
+    const { user, model } = await setup(BINDING);
+
+    await user.type(screen.getByRole('textbox', { name: /^tag/ }), 'x');
+    await user.click(getSaveButton());
+
+    expect(Object.getOwnPropertySymbols(model()!.chronotope)).toHaveLength(0);
+    expect(model()!.chronotope).not.toBe(BINDING.chronotope);
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup(BINDING);
+    expect(container.querySelector('form')).toBeNull();
+  });
+
+  it('should ignore a child echo of its data, also when normalized', async () => {
+    const { fixture } = await setup(BINDING);
+
+    // an autosaving child emits a normalized copy of what it got
+    fixture.componentInstance.onChronotopeChange({
+      place: { value: 'Rome', tag: undefined },
+    } as any);
+    fixture.detectChanges();
+
+    expect(getSaveButton()).toBeDisabled();
+  });
+
+  it('should get dirty for a real child change', async () => {
+    const { fixture } = await setup(BINDING);
+
+    fixture.componentInstance.onChronotopeChange({
+      place: { value: 'Milan' },
+    });
+    fixture.detectChanges();
+
+    expect(getSaveButton()).toBeEnabled();
   });
 });

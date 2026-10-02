@@ -165,4 +165,83 @@ describe('CodHandSignComponent', () => {
 
     expect(editorClose).toHaveBeenCalled();
   });
+
+  // signal forms regressions
+
+  it('should ignore child echoes of its data', async () => {
+    const { fixture } = await setup(SIGN);
+
+    fixture.componentInstance.onMufiItemChange(null);
+    fixture.componentInstance.onLocationChange([{ start: { n: 3 }, end: { n: 3 } }]);
+    fixture.detectChanges();
+
+    expect(saveButton()).toBeDisabled();
+  });
+
+  it('should get dirty for a real child change', async () => {
+    const { fixture } = await setup(SIGN);
+
+    fixture.componentInstance.onLocationChange([{ start: { n: 4 }, end: { n: 4 } }]);
+    fixture.detectChanges();
+
+    expect(saveButton()).toBeEnabled();
+  });
+
+  it('should save on Enter in a text input when dirty', async () => {
+    const { user, model } = await setup(SIGN);
+
+    await user.type(textbox(/^EID/), 'x{Enter}');
+
+    expect((model() as any).eid).toBe('s1x');
+  });
+
+  it('should not save on Enter while pristine', async () => {
+    const { user, model } = await setup(SIGN);
+
+    await user.type(textbox(/^EID/), '{Enter}');
+
+    expect(model()).toBe(SIGN);
+  });
+
+  it('should save without the form identity tags', async () => {
+    const { user, model } = await setup(SIGN);
+
+    await user.type(textbox(/^EID/), 'x');
+    await user.click(saveButton());
+
+    const check = (v: any): void => {
+      if (Array.isArray(v)) v.forEach(check);
+      else if (v && typeof v === 'object') {
+        expect(Object.getOwnPropertySymbols(v)).toHaveLength(0);
+        Object.values(v).forEach(check);
+      }
+    };
+    check(model());
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup(SIGN);
+    expect(container.querySelector('form')).toBeNull();
+  });
+
+  it('should look up the bound MUFI character without getting dirty', async () => {
+    const { fixture } = await setup({ ...SIGN, mufi: CHAR.code });
+
+    await waitFor(() =>
+      expect(fixture.componentInstance.form.mufi().value()?.code).toBe(
+        CHAR.code,
+      ),
+    );
+    expect(saveButton()).toBeDisabled();
+  });
+
+  it('should ignore a stale MUFI lookup after a new sign is bound', async () => {
+    const { fixture, model } = await setup({ ...SIGN, mufi: CHAR.code });
+
+    model.set({ ...SIGN, eid: 's2' });
+    fixture.detectChanges();
+    await new Promise((r) => setTimeout(r, 10));
+
+    expect(fixture.componentInstance.form.mufi().value()).toBeNull();
+  });
 });

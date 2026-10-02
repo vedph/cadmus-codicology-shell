@@ -139,4 +139,47 @@ describe('CodLocationRangesPartComponent', () => {
 
     expect(editorClose).toHaveBeenCalled();
   });
+
+  // signal forms regressions
+
+  const PART = {
+    ranges: [{ start: { n: 1 }, end: { n: 2 } }],
+    note: 'a note',
+  };
+
+  it('should be pristine after binding data, also after a location echo', async () => {
+    const { fixture } = await setup({ part: PART });
+
+    fixture.componentInstance.onLocationChange([
+      { start: { n: 1 }, end: { n: 2 } },
+    ]);
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.isDirty()).toBe(false);
+  });
+
+  it('should be dirty after an edit, and pristine after saving', async () => {
+    const { user, fixture, data } = await setup({ part: PART });
+
+    await user.type(noteInput(), 'x');
+    expect(fixture.componentInstance.isDirty()).toBe(true);
+
+    await user.click(saveButton());
+    expect(fixture.componentInstance.isDirty()).toBe(false);
+    expect(Object.getOwnPropertySymbols(data()!.value!.ranges[0])).toHaveLength(0);
+  });
+
+  it('should not save the part on Enter', async () => {
+    const { user, data } = await setup({ part: PART });
+    const before = data();
+
+    await user.type(locationInput(), '{Enter}');
+
+    expect(data()).toBe(before);
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup({ part: PART });
+    expect(container.querySelector('form')).toBeNull();
+  });
 });

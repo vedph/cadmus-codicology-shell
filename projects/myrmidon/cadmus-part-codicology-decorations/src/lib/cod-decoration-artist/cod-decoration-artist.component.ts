@@ -2,19 +2,15 @@ import {
   ChangeDetectionStrategy,
   Component,
   effect,
+  inject,
   input,
+  linkedSignal,
   model,
   output,
   signal,
+  untracked,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { form, FormField, maxLength } from '@angular/forms/signals';
 import { take } from 'rxjs';
 
 import {
@@ -42,6 +38,11 @@ import {
 import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  copyFormValue,
+  isImplicitSubmission,
+  setFieldFromChild,
+} from '@myrmidon/cadmus-ui';
 
 import {
   CodDecorationArtist,
@@ -49,6 +50,43 @@ import {
 } from '../cod-decorations-part';
 import { CodDecorationArtistStyleComponent } from '../cod-decoration-artist-style/cod-decoration-artist-style.component';
 
+interface CodDecorationArtistControls {
+  eid: string;
+  type: string;
+  name: string;
+  ids: AssertedCompositeId[];
+  styles: CodDecorationArtistStyle[];
+  // space-delimited text
+  elementKeys: string;
+  note: string;
+}
+
+function toDraft(artist?: CodDecorationArtist): CodDecorationArtistControls {
+  return {
+    eid: artist?.eid || '',
+    type: artist?.type || '',
+    name: artist?.name || '',
+    ids: copyFormValue(artist?.ids || []),
+    styles: copyFormValue(artist?.styles || []),
+    // element keys are edited as text separated by space
+    elementKeys: artist?.elementKeys ? artist.elementKeys.join(' ') : '',
+    note: artist?.note || '',
+  };
+}
+
+function parseElementKeys(text: string): string[] | undefined {
+  if (!text) {
+    return undefined;
+  }
+  const keys = [
+    ...new Set(
+      text.split(' ').filter((k) => {
+        return k.trim()?.length ? true : false;
+      }),
+    ),
+  ];
+  return keys.length ? keys.sort() : undefined;
+}
 
 @Component({
   selector: 'cadmus-cod-decoration-artist',
@@ -56,8 +94,7 @@ import { CodDecorationArtistStyleComponent } from '../cod-decoration-artist-styl
   styleUrls: ['./cod-decoration-artist.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatFormField,
     MatLabel,
     MatSelect,
@@ -76,6 +113,8 @@ import { CodDecorationArtistStyleComponent } from '../cod-decoration-artist-styl
   ],
 })
 export class CodDecorationArtistComponent {
+  private readonly _dialogService = inject(DialogService);
+
   public readonly artist = model<CodDecorationArtist>();
 
   // cod-decoration-artist-types
@@ -101,102 +140,51 @@ export class CodDecorationArtistComponent {
 
   public readonly editorClose = output();
 
-  public eid: FormControl<string | null>;
-  public type: FormControl<string | null>;
-  public name: FormControl<string | null>;
-  public ids: FormControl<AssertedCompositeId[]>;
-  public styles: FormControl<CodDecorationArtistStyle[]>;
-  public elementKeys: FormControl<string | null>;
-  public note: FormControl<string | null>;
-  public form: FormGroup;
+  private readonly _draft = linkedSignal(() => toDraft(this.artist()));
+  public readonly form = form(this._draft, (p) => {
+    maxLength(p.eid, 100);
+    maxLength(p.type, 50);
+    maxLength(p.name, 100);
+    maxLength(p.elementKeys, 500);
+    maxLength(p.note, 1000);
+  });
 
   public readonly editedStyleIndex = signal<number>(-1);
   public readonly editedStyle = signal<CodDecorationArtistStyle | undefined>(
     undefined,
   );
 
-  constructor(
-    formBuilder: FormBuilder,
-    private _dialogService: DialogService,
-  ) {
-    // form
-    this.eid = formBuilder.control(null, Validators.maxLength(100));
-    this.type = formBuilder.control(null, Validators.maxLength(50));
-    this.name = formBuilder.control(null, Validators.maxLength(100));
-    this.ids = formBuilder.control([], { nonNullable: true });
-    this.styles = formBuilder.control([], { nonNullable: true });
-    // space-delimited text
-    this.elementKeys = formBuilder.control(null);
-    this.note = formBuilder.control(null, Validators.maxLength(1000));
-    this.form = formBuilder.group({
-      eid: this.eid,
-      type: this.type,
-      name: this.name,
-      ids: this.ids,
-      styles: this.styles,
-      elementKeys: this.elementKeys,
-      note: this.note,
-    });
-
+  constructor() {
+    // new artist: clear the interaction state
     effect(() => {
-      this.updateForm(this.artist());
+      this.artist();
+      untracked(() => this.form().reset());
     });
-  }
-
-  private updateForm(artist: CodDecorationArtist | undefined): void {
-    if (!artist) {
-      this.form.reset();
-      return;
-    }
-
-    this.eid.setValue(artist.eid || null);
-    this.type.setValue(artist.type);
-    this.name.setValue(artist.name);
-    this.ids.setValue(artist.ids || []);
-    this.styles.setValue(artist.styles || []);
-    // element keys are edited as text separated by space
-    this.elementKeys.setValue(
-      artist.elementKeys ? artist.elementKeys.join(' ') : '',
-    );
-    this.note.setValue(artist.note || null);
-    this.form.markAsPristine();
-  }
-
-  private parseElementKeys(
-    text: string | undefined | null,
-  ): string[] | undefined {
-    if (!text) {
-      return undefined;
-    }
-    const keys = [
-      ...new Set(
-        text.split(' ').filter((k) => {
-          return k.trim()?.length ? true : false;
-        }),
-      ),
-    ];
-    return keys.length ? keys.sort() : undefined;
   }
 
   private getArtist(): CodDecorationArtist {
+    const draft = this._draft();
     return {
-      eid: this.eid.value?.trim(),
-      type: this.type.value?.trim() || '',
-      name: this.name.value?.trim() || '',
-      ids: this.ids.value?.length ? this.ids.value : undefined,
-      styles: this.styles.value?.length ? this.styles.value : undefined,
-      elementKeys: this.parseElementKeys(this.elementKeys.value),
-      note: this.note.value?.trim(),
+      eid: draft.eid.trim() || undefined,
+      type: draft.type.trim(),
+      name: draft.name.trim(),
+      ids: draft.ids.length ? copyFormValue(draft.ids) : undefined,
+      styles: draft.styles.length ? copyFormValue(draft.styles) : undefined,
+      elementKeys: parseElementKeys(draft.elementKeys),
+      note: draft.note.trim() || undefined,
     };
   }
 
   public onIdsChange(ids: AssertedCompositeId[]): void {
-    this.ids.setValue(ids);
-    this.ids.updateValueAndValidity();
-    this.ids.markAsDirty();
+    setFieldFromChild(this.form.ids, copyFormValue(ids || []));
   }
 
   //#region styles
+  private setStyles(styles: CodDecorationArtistStyle[]): void {
+    this.form.styles().value.set(styles);
+    this.form.styles().markAsDirty();
+  }
+
   public addStyle(): void {
     this.editStyle({
       name: this.artStyleEntries()?.length ? this.artStyleEntries()![0].id : '',
@@ -214,7 +202,7 @@ export class CodDecorationArtistComponent {
   }
 
   public onStyleSave(style: CodDecorationArtistStyle): void {
-    const styles = [...this.styles.value];
+    const styles = [...this.form.styles().value()];
 
     if (this.editedStyleIndex() > -1) {
       styles.splice(this.editedStyleIndex(), 1, style);
@@ -222,9 +210,7 @@ export class CodDecorationArtistComponent {
       styles.push(style);
     }
 
-    this.styles.setValue(styles);
-    this.styles.updateValueAndValidity();
-    this.styles.markAsDirty();
+    this.setStyles(styles);
     this.editStyle(null);
   }
 
@@ -234,11 +220,9 @@ export class CodDecorationArtistComponent {
       .pipe(take(1))
       .subscribe((yes: boolean) => {
         if (yes) {
-          const items = [...this.styles.value];
+          const items = [...this.form.styles().value()];
           items.splice(index, 1);
-          this.styles.setValue(items);
-          this.styles.updateValueAndValidity();
-          this.styles.markAsDirty();
+          this.setStyles(items);
         }
       });
   }
@@ -247,26 +231,22 @@ export class CodDecorationArtistComponent {
     if (index < 1) {
       return;
     }
-    const item = this.styles.value[index];
-    const items = [...this.styles.value];
+    const items = [...this.form.styles().value()];
+    const item = items[index];
     items.splice(index, 1);
     items.splice(index - 1, 0, item);
-    this.styles.setValue(items);
-    this.styles.updateValueAndValidity();
-    this.styles.markAsDirty();
+    this.setStyles(items);
   }
 
   public moveStyleDown(index: number): void {
-    if (index + 1 >= this.styles.value.length) {
+    const items = [...this.form.styles().value()];
+    if (index + 1 >= items.length) {
       return;
     }
-    const item = this.styles.value[index];
-    const items = [...this.styles.value];
+    const item = items[index];
     items.splice(index, 1);
     items.splice(index + 1, 0, item);
-    this.styles.setValue(items);
-    this.styles.updateValueAndValidity();
-    this.styles.markAsDirty();
+    this.setStyles(items);
   }
   //#endregion
 
@@ -274,8 +254,21 @@ export class CodDecorationArtistComponent {
     this.editorClose.emit();
   }
 
+  public onEnterKey(event: Event): void {
+    if (
+      !isImplicitSubmission(event) ||
+      this.form().invalid() ||
+      !this.form().dirty()
+    ) {
+      return;
+    }
+    event.preventDefault();
+    this.save();
+  }
+
   public save(): void {
-    if (this.form.invalid) {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
       return;
     }
     this.artist.set(this.getArtist());

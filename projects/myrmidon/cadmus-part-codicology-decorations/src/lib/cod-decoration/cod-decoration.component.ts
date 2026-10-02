@@ -3,19 +3,15 @@ import {
   Component,
   computed,
   effect,
+  inject,
   input,
+  linkedSignal,
   model,
   output,
   signal,
+  untracked,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { form, FormField, maxLength, required } from '@angular/forms/signals';
 import { take } from 'rxjs';
 
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
@@ -44,6 +40,11 @@ import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 import { CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  copyFormValue,
+  isImplicitSubmission,
+  setFieldFromChild,
+} from '@myrmidon/cadmus-ui';
 
 import {
   CodDecoration,
@@ -57,6 +58,30 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   return {
     id: entry.id,
     label: entry.value,
+  };
+}
+
+interface CodDecorationControls {
+  eid: string;
+  name: string;
+  flags: string[];
+  chronotopes: AssertedChronotope[];
+  artists: CodDecorationArtist[];
+  note: string;
+  references: DocReference[];
+  elements: CodDecorationElement[];
+}
+
+function toDraft(decoration?: CodDecoration): CodDecorationControls {
+  return {
+    eid: decoration?.eid || '',
+    name: decoration?.name || '',
+    flags: [...(decoration?.flags || [])],
+    chronotopes: copyFormValue(decoration?.chronotopes || []),
+    artists: copyFormValue(decoration?.artists || []),
+    note: decoration?.note || '',
+    references: copyFormValue(decoration?.references || []),
+    elements: copyFormValue(decoration?.elements || []),
   };
 }
 
@@ -92,8 +117,7 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   styleUrls: ['./cod-decoration.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatFormField,
     MatLabel,
     MatInput,
@@ -115,6 +139,8 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   ],
 })
 export class CodDecorationComponent {
+  private readonly _dialogService = inject(DialogService);
+
   public readonly decoration = model<CodDecoration>();
 
   // cod-decoration-element-flags
@@ -168,21 +194,27 @@ export class CodDecorationComponent {
 
   public readonly editorClose = output();
 
-  public eid: FormControl<string | null>;
-  public name: FormControl<string | null>;
-  public flags: FormControl<string[]>;
-  public chronotopes: FormControl<AssertedChronotope[]>;
-  public artists: FormControl<CodDecorationArtist[]>;
-  public note: FormControl<string | null>;
-  public references: FormControl<DocReference[]>;
-  public elements: FormControl<CodDecorationElement[]>;
-  public form: FormGroup;
+  private readonly _draft = linkedSignal(() => toDraft(this.decoration()));
+  public readonly form = form(this._draft, (p) => {
+    maxLength(p.eid, 100);
+    required(p.name);
+    maxLength(p.name, 50);
+    maxLength(p.note, 1000);
+  });
 
   public readonly editedElementIndex = signal<number>(-1);
   public readonly editedElement = signal<CodDecorationElement | undefined>(
     undefined,
   );
-  public readonly parentKeys = signal<string[]>([]);
+  // the distinct keys of the elements, available as parent keys
+  public readonly parentKeys = computed<string[]>(() => {
+    const keys = this.form
+      .elements()
+      .value()
+      .map((e) => e.key)
+      .filter((k): k is string => !!k);
+    return [...new Set(keys)].sort();
+  });
 
   public readonly editedArtistIndex = signal<number>(-1);
   public readonly editedArtist = signal<CodDecorationArtist | undefined>(
@@ -202,94 +234,52 @@ export class CodDecorationComponent {
     return this.decFlagEntries()?.map(entryToFlag) || [];
   });
 
-  constructor(
-    formBuilder: FormBuilder,
-    private _dialogService: DialogService,
-  ) {
-    // form
-    this.eid = formBuilder.control(null, Validators.maxLength(100));
-    this.name = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
-    this.flags = formBuilder.control([], { nonNullable: true });
-    this.chronotopes = formBuilder.control([], { nonNullable: true });
-    this.artists = formBuilder.control([], { nonNullable: true });
-    this.note = formBuilder.control(null, Validators.maxLength(1000));
-    this.references = formBuilder.control([], { nonNullable: true });
-    this.elements = formBuilder.control([], { nonNullable: true });
-    this.form = formBuilder.group({
-      eid: this.eid,
-      name: this.name,
-      flags: this.flags,
-      chronotopes: this.chronotopes,
-      artists: this.artists,
-      note: this.note,
-      references: this.references,
-      elements: this.elements,
-    });
-
+  constructor() {
+    // new decoration: clear the interaction state
     effect(() => {
-      const decoration = this.decoration();
-      this.updateForm(decoration);
+      this.decoration();
+      untracked(() => this.form().reset());
     });
-  }
-
-  private updateForm(decoration: CodDecoration | undefined): void {
-    if (!decoration) {
-      this.form.reset();
-      return;
-    }
-
-    this.chronotopes.setValue(decoration.chronotopes || []);
-    this.references.setValue(decoration.references || []);
-    this.flags.setValue(decoration.flags || []);
-    this.eid.setValue(decoration.eid || null);
-    this.name.setValue(decoration.name);
-    this.note.setValue(decoration.note || null);
-    this.artists.setValue(decoration.artists || []);
-    this.elements.setValue(decoration.elements || []);
-    this.updateParentKeys();
-
-    this.form.markAsPristine();
   }
 
   public onChronotopesChange(chronotopes: AssertedChronotope[]): void {
-    this.chronotopes.setValue(chronotopes);
-    this.chronotopes.updateValueAndValidity();
-    this.chronotopes.markAsDirty();
+    setFieldFromChild(this.form.chronotopes, copyFormValue(chronotopes || []));
   }
 
   public onReferencesChange(references: DocReference[]): void {
-    this.references.setValue(references);
-    this.references.updateValueAndValidity();
-    this.references.markAsDirty();
+    setFieldFromChild(this.form.references, copyFormValue(references || []));
   }
 
   public onFlagIdsChange(ids: string[]): void {
-    this.flags.setValue(ids);
-    this.flags.updateValueAndValidity();
-    this.flags.markAsDirty();
+    setFieldFromChild(this.form.flags, [...(ids || [])]);
   }
 
   private getDecoration(): CodDecoration {
+    const draft = this._draft();
     return {
-      eid: this.eid.value?.trim(),
-      name: this.name.value?.trim() || '',
-      flags: this.flags.value?.length ? this.flags.value : undefined,
-      chronotopes: this.chronotopes.value?.length
-        ? this.chronotopes.value
+      eid: draft.eid.trim() || undefined,
+      name: draft.name.trim(),
+      flags: draft.flags.length ? [...draft.flags] : undefined,
+      chronotopes: draft.chronotopes.length
+        ? copyFormValue(draft.chronotopes)
         : undefined,
-      references: this.references.value?.length
-        ? this.references.value
+      references: draft.references.length
+        ? copyFormValue(draft.references)
         : undefined,
-      artists: this.artists.value?.length ? this.artists.value : undefined,
-      note: this.note.value?.trim(),
-      elements: this.elements.value?.length ? this.elements.value : undefined,
+      artists: draft.artists.length ? copyFormValue(draft.artists) : undefined,
+      note: draft.note.trim() || undefined,
+      elements: draft.elements.length
+        ? copyFormValue(draft.elements)
+        : undefined,
     };
   }
 
   //#region elements
+  private setElements(elements: CodDecorationElement[]): void {
+    this.form.elements().value.set(elements);
+    this.form.elements().markAsDirty();
+  }
+
   public addElement(): void {
     this.editElement({
       type: this.decElemTypeEntries()?.length
@@ -310,19 +300,8 @@ export class CodDecorationComponent {
     }
   }
 
-  private updateParentKeys(): void {
-    if (!this.elements.value?.length) {
-      this.parentKeys.set([]);
-      return;
-    }
-    let keys: string[] = this.elements.value
-      .map((e: CodDecorationElement) => e.key)
-      .filter((k): k is string => !!k);
-    this.parentKeys.set([...new Set(keys)].sort());
-  }
-
   public onElementSave(element: CodDecorationElement): void {
-    const elements = [...this.elements.value];
+    const elements = [...this.form.elements().value()];
 
     if (this.editedElementIndex() > -1) {
       elements.splice(this.editedElementIndex(), 1, element);
@@ -330,11 +309,8 @@ export class CodDecorationComponent {
       elements.push(element);
     }
 
-    this.elements.setValue(elements);
-    this.elements.updateValueAndValidity();
-    this.elements.markAsDirty();
+    this.setElements(elements);
     this.editElement(null);
-    this.updateParentKeys();
   }
 
   public removeElement(index: number): void {
@@ -343,12 +319,9 @@ export class CodDecorationComponent {
       .pipe(take(1))
       .subscribe((yes: boolean) => {
         if (yes) {
-          const items = [...this.elements.value];
+          const items = [...this.form.elements().value()];
           items.splice(index, 1);
-          this.elements.setValue(items);
-          this.elements.updateValueAndValidity();
-          this.elements.markAsDirty();
-          this.updateParentKeys();
+          this.setElements(items);
         }
       });
   }
@@ -357,30 +330,31 @@ export class CodDecorationComponent {
     if (index < 1) {
       return;
     }
-    const item = this.elements.value[index];
-    const items = [...this.elements.value];
+    const items = [...this.form.elements().value()];
+    const item = items[index];
     items.splice(index, 1);
     items.splice(index - 1, 0, item);
-    this.elements.setValue(items);
-    this.elements.updateValueAndValidity();
-    this.elements.markAsDirty();
+    this.setElements(items);
   }
 
   public moveElementDown(index: number): void {
-    if (index + 1 >= this.elements.value.length) {
+    const items = [...this.form.elements().value()];
+    if (index + 1 >= items.length) {
       return;
     }
-    const item = this.elements.value[index];
-    const items = [...this.elements.value];
+    const item = items[index];
     items.splice(index, 1);
     items.splice(index + 1, 0, item);
-    this.elements.setValue(items);
-    this.elements.updateValueAndValidity();
-    this.elements.markAsDirty();
+    this.setElements(items);
   }
   //#endregion
 
   //#region artists
+  private setArtists(artists: CodDecorationArtist[]): void {
+    this.form.artists().value.set(artists);
+    this.form.artists().markAsDirty();
+  }
+
   public addArtist(): void {
     this.editArtist({
       type: this.artTypeEntries()?.length ? this.artTypeEntries()![0].id : '',
@@ -399,7 +373,7 @@ export class CodDecorationComponent {
   }
 
   public onArtistSave(artist: CodDecorationArtist): void {
-    const artists = [...this.artists.value];
+    const artists = [...this.form.artists().value()];
 
     if (this.editedArtistIndex() > -1) {
       artists.splice(this.editedArtistIndex(), 1, artist);
@@ -407,9 +381,7 @@ export class CodDecorationComponent {
       artists.push(artist);
     }
 
-    this.artists.setValue(artists);
-    this.artists.updateValueAndValidity();
-    this.artists.markAsDirty();
+    this.setArtists(artists);
     this.editArtist(null);
   }
 
@@ -419,11 +391,9 @@ export class CodDecorationComponent {
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          const items = [...this.artists.value];
+          const items = [...this.form.artists().value()];
           items.splice(index, 1);
-          this.artists.setValue(items);
-          this.artists.updateValueAndValidity();
-          this.artists.markAsDirty();
+          this.setArtists(items);
         }
       });
   }
@@ -432,26 +402,22 @@ export class CodDecorationComponent {
     if (index < 1) {
       return;
     }
-    const item = this.artists.value[index];
-    const items = [...this.artists.value];
+    const items = [...this.form.artists().value()];
+    const item = items[index];
     items.splice(index, 1);
     items.splice(index - 1, 0, item);
-    this.artists.setValue(items);
-    this.artists.updateValueAndValidity();
-    this.artists.markAsDirty();
+    this.setArtists(items);
   }
 
   public moveArtistDown(index: number): void {
-    if (index + 1 >= this.artists.value.length) {
+    const items = [...this.form.artists().value()];
+    if (index + 1 >= items.length) {
       return;
     }
-    const item = this.artists.value[index];
-    const items = [...this.artists.value];
+    const item = items[index];
     items.splice(index, 1);
     items.splice(index + 1, 0, item);
-    this.artists.setValue(items);
-    this.artists.updateValueAndValidity();
-    this.artists.markAsDirty();
+    this.setArtists(items);
   }
   //#endregion
 
@@ -459,8 +425,21 @@ export class CodDecorationComponent {
     this.editorClose.emit();
   }
 
+  public onEnterKey(event: Event): void {
+    if (
+      !isImplicitSubmission(event) ||
+      this.form().invalid() ||
+      !this.form().dirty()
+    ) {
+      return;
+    }
+    event.preventDefault();
+    this.save();
+  }
+
   public save(): void {
-    if (this.form.invalid) {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
       return;
     }
     this.decoration.set(this.getDecoration());

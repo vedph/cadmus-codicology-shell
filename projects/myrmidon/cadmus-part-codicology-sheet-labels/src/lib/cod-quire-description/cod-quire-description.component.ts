@@ -4,16 +4,12 @@ import {
   computed,
   effect,
   input,
+  linkedSignal,
   model,
   output,
+  untracked,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { form, FormField, maxLength } from '@angular/forms/signals';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -24,6 +20,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  copyFormValue,
+  isImplicitSubmission,
+  setFieldFromChild,
+} from '@myrmidon/cadmus-ui';
 import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 import { NoteSet, NoteSetComponent } from '@myrmidon/cadmus-ui-note-set';
 
@@ -36,10 +37,51 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   };
 }
 
+interface CodQuireDescriptionControls {
+  features: string[];
+  note: string;
+  scopedNotes: NoteSet;
+}
+
+/**
+ * Get a note set with a note for each quire number in scopes, from the
+ * scoped notes of a quire description.
+ */
+function getNoteSetFromScoped(
+  scopes: number[],
+  scopedNotes?: { [key: number]: string },
+): NoteSet {
+  const set: NoteSet = {
+    definitions: scopes.map((n) => {
+      return {
+        key: `${n}`,
+        label: `${n}`,
+        maxLength: 1000,
+      };
+    }),
+    notes: {},
+  };
+  for (const [key, value] of Object.entries(scopedNotes || {})) {
+    set.notes![key] = value;
+  }
+  return set;
+}
+
+function toDraft(
+  scopes: number[],
+  model?: CodQuireDescription,
+): CodQuireDescriptionControls {
+  return {
+    features: [...(model?.features || [])],
+    note: model?.note || '',
+    scopedNotes: getNoteSetFromScoped(scopes, model?.scopedNotes),
+  };
+}
+
 @Component({
   selector: 'cadmus-cod-quire-description',
   imports: [
-    ReactiveFormsModule,
+    FormField,
     MatButtonModule,
     MatCheckboxModule,
     MatFormFieldModule,
@@ -56,6 +98,19 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
 })
 export class CodQuireDescriptionComponent {
   public readonly description = model<CodQuireDescription>();
+
+  private readonly _draft = linkedSignal(() =>
+    toDraft(this.scopes(), this.description()),
+  );
+
+  // the note set for the bound description: it is built from the bound
+  // description only, as the note set component resets on a new object
+  public readonly initialNoteSet = computed<NoteSet>(() =>
+    getNoteSetFromScoped(this.scopes(), this.description()?.scopedNotes),
+  );
+  public readonly form = form(this._draft, (p) => {
+    maxLength(p.note, 1000);
+  });
   public readonly descriptionCancel = output();
 
   public readonly maxQuireNumber = input<number>(0);
@@ -74,53 +129,13 @@ export class CodQuireDescriptionComponent {
   );
 
   // form
-  public features: FormControl<string[]>;
-  public note: FormControl<string | null>;
-  public scopedNotes: FormControl<NoteSet>;
-  public form: FormGroup;
 
-  constructor(formBuilder: FormBuilder) {
-    // form
-    this.features = formBuilder.control<string[]>([], { nonNullable: true });
-    this.note = formBuilder.control<string | null>(
-      null,
-      Validators.maxLength(1000),
-    );
-    this.scopedNotes = formBuilder.control<NoteSet>(
-      {
-        definitions: [],
-      } as NoteSet,
-      { nonNullable: true },
-    );
-    this.form = formBuilder.group({
-      features: this.features,
-      note: this.note,
-      scopedNotes: this.scopedNotes,
-    });
-
-    // when model changes, update form
+  constructor() {
+    // new description: clear the interaction state
     effect(() => {
-      this.updateForm(this.description());
+      this.description();
+      untracked(() => this.form().reset());
     });
-  }
-
-  private getNoteSetFromScoped(scopedNotes?: {
-    [key: number]: string;
-  }): NoteSet {
-    const set: NoteSet = {
-      definitions: this.scopes().map((n) => {
-        return {
-          key: `${n}`,
-          label: `${n}`,
-          maxLength: 1000,
-        };
-      }),
-      notes: {},
-    };
-    for (const [key, value] of Object.entries(scopedNotes || {})) {
-      set.notes![key] = value;
-    }
-    return set;
   }
 
   private getScopedFromNoteSet(
@@ -144,36 +159,20 @@ export class CodQuireDescriptionComponent {
     return n ? scopedNotes : undefined;
   }
 
-  private updateForm(model: CodQuireDescription | undefined | null): void {
-    if (!model) {
-      this.form.reset();
-      return;
-    }
-
-    this.features.setValue(model.features || []);
-    this.note.setValue(model.note || null);
-    this.scopedNotes.setValue(this.getNoteSetFromScoped(model.scopedNotes));
-
-    this.form.markAsPristine();
-  }
-
   public onFeatureCheckedIdsChange(ids: string[]): void {
-    this.features.setValue(ids);
-    this.features.markAsDirty();
-    this.features.updateValueAndValidity();
+    setFieldFromChild(this.form.features, [...(ids || [])]);
   }
 
   public onSetChange(set: NoteSet): void {
-    this.scopedNotes.setValue(set);
-    this.scopedNotes.markAsDirty();
-    this.scopedNotes.updateValueAndValidity();
+    setFieldFromChild(this.form.scopedNotes, copyFormValue(set));
   }
 
   private getQuire(): CodQuireDescription {
+    const draft = this._draft();
     return {
-      features: this.features.value?.length ? this.features.value : undefined,
-      note: this.note.value || undefined,
-      scopedNotes: this.getScopedFromNoteSet(this.scopedNotes.value),
+      features: draft.features.length ? [...draft.features] : undefined,
+      note: draft.note || undefined,
+      scopedNotes: this.getScopedFromNoteSet(draft.scopedNotes),
     };
   }
 
@@ -181,8 +180,21 @@ export class CodQuireDescriptionComponent {
     this.descriptionCancel.emit();
   }
 
+  public onEnterKey(event: Event): void {
+    if (
+      !isImplicitSubmission(event) ||
+      this.form().invalid() ||
+      !this.form().dirty()
+    ) {
+      return;
+    }
+    event.preventDefault();
+    this.save();
+  }
+
   public save(): void {
-    if (this.form.invalid) {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
       return;
     }
     this.description.set(this.getQuire());

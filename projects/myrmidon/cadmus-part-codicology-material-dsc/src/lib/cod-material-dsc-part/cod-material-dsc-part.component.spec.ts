@@ -106,13 +106,17 @@ describe('CodMaterialDscPartComponent', () => {
   });
 
   it('should add a unit and save the part', async () => {
-    const { user, data } = await setup();
+    // the format is hidden and optional: no cod-unit-formats thesaurus needed
+    const { user, data } = await setup({
+      thesauri: buildThesauri({
+        'cod-unit-materials': [{ id: 'parch', value: 'parchment' }],
+      }),
+    });
 
     await user.click(screen.getByRole('button', { name: /^unit$/ }));
     expect(screen.getByText(/#0/)).toBeInTheDocument();
 
     // material defaults to the first thesaurus entry
-    await user.type(screen.getByRole('textbox', { name: /^format/ }), 'fol');
     await user.type(screen.getByRole('textbox', { name: /^state/ }), 'ok');
     await user.type(screen.getByRole('textbox', { name: /^range/ }), '5r');
     // let the location editor emit its debounced change
@@ -128,7 +132,8 @@ describe('CodMaterialDscPartComponent', () => {
     const part = data()!.value!;
     expect(part.typeId).toBe(COD_MATERIAL_DSC_PART_TYPEID);
     expect(part.units).toHaveLength(1);
-    expect(part.units[0]).toEqual(expect.objectContaining({ material: 'parch', format: 'fol', state: 'ok', ranges: [expect.anything()] }));
+    expect(part.units[0]).toEqual(expect.objectContaining({ material: 'parch', state: 'ok', ranges: [expect.anything()] }));
+    expect(part.units[0].format).toBeUndefined();
   });
 
   it('should edit an existing unit', async () => {
@@ -350,5 +355,32 @@ describe('CodMaterialDscPartComponent', () => {
       await user.click(partSaveButton());
       expect(data()!.value!.palimpsests).toEqual([P1, P2]);
     });
+  });
+
+  // signal forms regressions
+
+  it('should be pristine after binding data', async () => {
+    const { fixture } = await setup({ entries: [E1, E2] });
+    expect(fixture.componentInstance.isDirty()).toBe(false);
+  });
+
+  it('should be dirty after moving an entry, and pristine after saving', async () => {
+    const { user, fixture, data } = await setup({ entries: [E1, E2] });
+
+    await user.click(
+      within(rows()[0]).getByRole('button', { description: /move this unit down/i }),
+    );
+    expect(fixture.componentInstance.isDirty()).toBe(true);
+
+    await user.click(partSaveButton());
+    expect(fixture.componentInstance.isDirty()).toBe(false);
+    for (const e of (data()!.value as any).units) {
+      expect(Object.getOwnPropertySymbols(e)).toHaveLength(0);
+    }
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup({ entries: [E1] });
+    expect(container.querySelector('form')).toBeNull();
   });
 });

@@ -72,4 +72,49 @@ describe('CodOrdinalEditorComponent', () => {
 
     expect(cancelEdit).toHaveBeenCalled();
   });
+
+  // signal forms regressions
+
+  it('should save on Enter in the value input', async () => {
+    const { user, model } = await setup({ value: 3 });
+
+    await user.clear(getValueInput());
+    await user.type(getValueInput(), '4{Enter}');
+
+    expect(model()).toEqual({ value: 4 });
+  });
+
+  it('should not save an out of range value on Enter', async () => {
+    const { user, model } = await setup({ value: 3, max: 5 });
+
+    await user.clear(getValueInput());
+    await user.type(getValueInput(), '9{Enter}');
+
+    expect(model()).toEqual({ value: 3, max: 5 });
+  });
+
+  it('should be pristine again after saving', async () => {
+    const { user } = await setup({ value: 3 });
+
+    await user.clear(getValueInput());
+    await user.type(getValueInput(), '4');
+    expect(getSaveButton()).toBeEnabled();
+    await user.click(getSaveButton());
+
+    expect(getSaveButton()).toBeDisabled();
+  });
+
+  it('should not save on Enter while pristine', async () => {
+    const { user, model } = await setup({ value: 3 });
+    const before = model();
+
+    await user.type(getValueInput(), '{Enter}');
+
+    expect(model()).toBe(before);
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup({ value: 3 });
+    expect(container.querySelector('form')).toBeNull();
+  });
 });

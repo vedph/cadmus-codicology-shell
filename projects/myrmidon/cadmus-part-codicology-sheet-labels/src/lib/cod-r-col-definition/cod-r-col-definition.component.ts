@@ -1,19 +1,15 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   input,
+  linkedSignal,
   model,
   output,
+  untracked,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { form, FormField, maxLength, required, min } from '@angular/forms/signals';
 
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -30,8 +26,29 @@ import {
 import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  copyFormValue,
+  isImplicitSubmission,
+  setFieldFromChild,
+} from '@myrmidon/cadmus-ui';
 
 import { CodRColDefinition } from '../cod-sheet-labels-part';
+
+interface CodRColDefinitionControls {
+  rank: number | null;
+  position: string;
+  links: AssertedCompositeId[];
+  note: string;
+}
+
+function toDraft(model?: CodRColDefinition): CodRColDefinitionControls {
+  return {
+    rank: model?.rank || 0,
+    position: model?.position || '',
+    links: copyFormValue(model?.links || []),
+    note: model?.note || '',
+  };
+}
 
 @Component({
   selector: 'cadmus-cod-r-col-definition',
@@ -39,8 +56,7 @@ import { CodRColDefinition } from '../cod-sheet-labels-part';
   styleUrls: ['./cod-r-col-definition.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatFormField,
     MatLabel,
     MatInput,
@@ -55,6 +71,14 @@ import { CodRColDefinition } from '../cod-sheet-labels-part';
 })
 export class CodRColDefinitionComponent {
   public readonly definition = model<CodRColDefinition>();
+
+  private readonly _draft = linkedSignal(() => toDraft(this.definition()));
+  public readonly form = form(this._draft, (p) => {
+    min(p.rank, 0);
+    required(p.position);
+    maxLength(p.position, 50);
+    maxLength(p.note, 1000);
+  });
 
   // cod-quiresig-positions
   public readonly posEntries = input<ThesaurusEntry[]>();
@@ -76,62 +100,29 @@ export class CodRColDefinitionComponent {
 
   public readonly editorClose = output();
 
-  public id: string;
-  public rank: FormControl<number>;
-  public position: FormControl<string | null>;
-  public links: FormControl<AssertedCompositeId[]>;
-  public note: FormControl<string | null>;
-  public form: FormGroup;
+  // the ID of the bound definition
+  public readonly id = computed<string>(() => this.definition()?.id || '');
 
-  constructor(formBuilder: FormBuilder) {
-    this.id = '';
-    this.rank = formBuilder.control(0, { nonNullable: true });
-    this.position = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
-    this.links = formBuilder.control([], { nonNullable: true });
-    this.note = formBuilder.control(null, Validators.maxLength(1000));
-    this.form = formBuilder.group({
-      id: this.id,
-      rank: this.rank,
-      position: this.position,
-      links: this.links,
-      note: this.note,
-    });
-
+  constructor() {
+    // new definition: clear the interaction state
     effect(() => {
-      this.updateForm(this.definition());
+      this.definition();
+      untracked(() => this.form().reset());
     });
   }
 
   public onLinkIdsChange(ids: AssertedCompositeId[]): void {
-    this.links.setValue(ids);
-    this.links.updateValueAndValidity();
-    this.links.markAsDirty();
-  }
-
-  private updateForm(model: CodRColDefinition | undefined): void {
-    if (!model) {
-      this.form.reset();
-      return;
-    }
-
-    this.id = model.id;
-    this.rank.setValue(model.rank || 0);
-    this.position.setValue(model.position);
-    this.links.setValue(model.links || []);
-    this.note.setValue(model.note || null);
-    this.form.markAsPristine();
+    setFieldFromChild(this.form.links, copyFormValue(ids || []));
   }
 
   private getModel(): CodRColDefinition {
+    const draft = this._draft();
     return {
-      id: this.id,
-      rank: +this.rank.value || 0,
-      position: this.position.value?.trim() || '',
-      links: this.links.value?.length ? this.links.value : undefined,
-      note: this.note.value?.trim(),
+      id: this.id(),
+      rank: draft.rank || 0,
+      position: draft.position.trim(),
+      links: draft.links.length ? copyFormValue(draft.links) : undefined,
+      note: draft.note.trim() || undefined,
     };
   }
 
@@ -139,8 +130,21 @@ export class CodRColDefinitionComponent {
     this.editorClose.emit();
   }
 
+  public onEnterKey(event: Event): void {
+    if (
+      !isImplicitSubmission(event) ||
+      this.form().invalid() ||
+      !this.form().dirty()
+    ) {
+      return;
+    }
+    event.preventDefault();
+    this.save();
+  }
+
   public save(): void {
-    if (this.form.invalid) {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
       return;
     }
     this.definition.set(this.getModel());

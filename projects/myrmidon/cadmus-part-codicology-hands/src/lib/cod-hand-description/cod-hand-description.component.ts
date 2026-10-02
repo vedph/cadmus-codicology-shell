@@ -2,20 +2,17 @@ import { KeyValue } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
+  inject,
   input,
+  linkedSignal,
   model,
   output,
   signal,
+  untracked,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { form, FormField, maxLength } from '@angular/forms/signals';
 import { take } from 'rxjs';
 
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
@@ -37,9 +34,68 @@ import {
 import { CodLocationPipe } from '@myrmidon/cadmus-cod-location';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  copyFormValue,
+  isImplicitSubmission,
+  setFieldFromChild,
+} from '@myrmidon/cadmus-ui';
 
 import { CodHandDescription, CodHandSign } from '../cod-hands-part';
 import { CodHandSignComponent } from '../cod-hand-sign/cod-hand-sign.component';
+
+// the definitions of the notes edited in the note set
+const NOTE_DEFS: NoteSetDefinition[] = [
+  {
+    key: 'i',
+    label: 'initials',
+    maxLength: 500,
+  },
+  {
+    key: 'c',
+    label: 'corrections',
+    maxLength: 500,
+  },
+  {
+    key: 'p',
+    label: 'punctuation',
+    maxLength: 500,
+  },
+  {
+    key: 'a',
+    label: 'abbreviations',
+    markdown: true,
+    maxLength: 1000,
+  },
+  {
+    key: 'n',
+    label: 'note',
+    maxLength: 1000,
+  },
+];
+
+interface CodHandDescriptionControls {
+  key: string;
+  dsc: string;
+  initials: string;
+  corrections: string;
+  punctuation: string;
+  abbreviations: string;
+  note: string;
+  signs: CodHandSign[];
+}
+
+function toDraft(model?: CodHandDescription): CodHandDescriptionControls {
+  return {
+    key: model?.key || '',
+    dsc: model?.description || '',
+    initials: model?.initials || '',
+    corrections: model?.corrections || '',
+    punctuation: model?.punctuation || '',
+    abbreviations: model?.abbreviations || '',
+    note: model?.note || '',
+    signs: copyFormValue(model?.signs || []),
+  };
+}
 
 @Component({
   selector: 'cadmus-cod-hand-description',
@@ -47,8 +103,7 @@ import { CodHandSignComponent } from '../cod-hand-sign/cod-hand-sign.component';
   styleUrls: ['./cod-hand-description.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatFormField,
     MatLabel,
     MatInput,
@@ -65,169 +120,86 @@ import { CodHandSignComponent } from '../cod-hand-sign/cod-hand-sign.component';
   ],
 })
 export class CodHandDescriptionComponent {
-  private _noteDefs: NoteSetDefinition[];
+  private readonly _dialogService = inject(DialogService);
 
   public readonly description = model<CodHandDescription>();
+
+  private readonly _draft = linkedSignal(() => toDraft(this.description()));
+  public readonly form = form(this._draft, (p) => {
+    maxLength(p.key, 100);
+    maxLength(p.dsc, 1000);
+    maxLength(p.note, 1000);
+  });
 
   // cod-hand-sign-types
   public readonly sgnTypeEntries = input<ThesaurusEntry[]>();
 
   public readonly editorClose = output();
 
-  public key: FormControl<string | null>;
-  public dsc: FormControl<string | null>;
-  public initials: FormControl<string | null>;
-  public corrections: FormControl<string | null>;
-  public punctuation: FormControl<string | null>;
-  public abbreviations: FormControl<string | null>;
-  public note: FormControl<string | null>;
-  public signs: FormControl<CodHandSign[]>;
-  public form: FormGroup;
-
-  public readonly initialNoteSet = signal<NoteSet | undefined>(undefined);
+  // the note set for the bound description: it is built from the bound
+  // description only, as the note set component resets on a new object
+  public readonly initialNoteSet = computed<NoteSet>(() => {
+    const model = this.description();
+    const notes: { [key: string]: string } = {};
+    if (model?.initials) {
+      notes['i'] = model.initials;
+    }
+    if (model?.corrections) {
+      notes['c'] = model.corrections;
+    }
+    if (model?.punctuation) {
+      notes['p'] = model.punctuation;
+    }
+    if (model?.abbreviations) {
+      notes['a'] = model.abbreviations;
+    }
+    if (model?.note) {
+      notes['n'] = model.note;
+    }
+    return model ? { definitions: NOTE_DEFS, notes } : { definitions: NOTE_DEFS };
+  });
   public readonly editedSign = signal<CodHandSign | undefined>(undefined);
   public readonly editedSignIndex = signal(-1);
 
-  constructor(
-    formBuilder: FormBuilder,
-    private _dialogService: DialogService,
-  ) {
-    this._noteDefs = [
-      {
-        key: 'i',
-        label: 'initials',
-        maxLength: 500,
-      },
-      {
-        key: 'c',
-        label: 'corrections',
-        maxLength: 500,
-      },
-      {
-        key: 'p',
-        label: 'punctuation',
-        maxLength: 500,
-      },
-      {
-        key: 'a',
-        label: 'abbreviations',
-        markdown: true,
-        maxLength: 1000,
-      },
-      {
-        key: 'n',
-        label: 'note',
-        maxLength: 1000,
-      },
-    ];
-    // form
-    this.key = formBuilder.control(null, Validators.maxLength(100));
-    this.dsc = formBuilder.control(null, Validators.maxLength(1000));
-    this.initials = formBuilder.control(null);
-    this.corrections = formBuilder.control(null);
-    this.punctuation = formBuilder.control(null);
-    this.abbreviations = formBuilder.control(null);
-    this.note = formBuilder.control(null, Validators.maxLength(1000));
-    this.signs = formBuilder.control([], { nonNullable: true });
-    this.form = formBuilder.group({
-      key: this.key,
-      description: this.dsc,
-      initials: this.initials,
-      corrections: this.corrections,
-      punctuation: this.punctuation,
-      abbreviations: this.abbreviations,
-      note: this.note,
-      signs: this.signs,
-    });
-
+  constructor() {
+    // new description: clear the interaction state
     effect(() => {
-      const description = this.description();
-      this.updateForm(description);
+      this.description();
+      untracked(() => this.form().reset());
     });
-  }
-
-  private updateForm(model: CodHandDescription | undefined): void {
-    if (!model) {
-      this.form.reset();
-      this.initialNoteSet.set({
-        definitions: this._noteDefs,
-      });
-      return;
-    }
-
-    this.key.setValue(model.key || null);
-    this.dsc.setValue(model.description || null);
-
-    const map: { [key: string]: string } = {};
-    this.initials.setValue(model.initials || null);
-    this.corrections.setValue(model.corrections || null);
-    this.punctuation.setValue(model.punctuation || null);
-    this.abbreviations.setValue(model.abbreviations || null);
-    this.note.setValue(model.note || null);
-
-    if (model.initials) {
-      map['i'] = model.initials;
-    }
-    if (model.corrections) {
-      map['c'] = model.corrections;
-    }
-    if (model.punctuation) {
-      map['p'] = model.punctuation;
-    }
-    if (model.abbreviations) {
-      map['a'] = model.abbreviations;
-    }
-    if (model.note) {
-      map['n'] = model.note;
-    }
-    this.initialNoteSet.set({
-      definitions: this._noteDefs,
-      notes: map,
-    });
-
-    this.signs.setValue(model.signs || []);
-    this.form.markAsPristine();
   }
 
   private getDescription(): CodHandDescription {
+    const draft = this._draft();
     return {
-      key: this.key.value?.trim(),
-      description: this.dsc.value?.trim(),
-      initials: this.initials.value?.trim(),
-      corrections: this.corrections.value?.trim(),
-      punctuation: this.punctuation.value?.trim(),
-      abbreviations: this.abbreviations.value?.trim(),
-      note: this.note.value?.trim(),
-      signs: this.signs.value?.length ? this.signs.value : undefined,
+      key: draft.key.trim() || undefined,
+      description: draft.dsc.trim() || undefined,
+      initials: draft.initials.trim() || undefined,
+      corrections: draft.corrections.trim() || undefined,
+      punctuation: draft.punctuation.trim() || undefined,
+      abbreviations: draft.abbreviations.trim() || undefined,
+      note: draft.note.trim() || undefined,
+      signs: draft.signs.length ? copyFormValue(draft.signs) : undefined,
     };
   }
 
-  public onNoteChange(pair: KeyValue<string, string | null>) {
+  public onNoteChange(pair: KeyValue<string, string | null>): void {
+    const value = pair.value || '';
     switch (pair.key) {
       case 'i':
-        this.initials.setValue(pair.value);
-        this.initials.updateValueAndValidity();
-        this.initials.markAsDirty();
+        setFieldFromChild(this.form.initials, value);
         break;
       case 'c':
-        this.corrections.setValue(pair.value);
-        this.corrections.updateValueAndValidity();
-        this.corrections.markAsDirty();
+        setFieldFromChild(this.form.corrections, value);
         break;
       case 'p':
-        this.punctuation.setValue(pair.value);
-        this.punctuation.updateValueAndValidity();
-        this.punctuation.markAsDirty();
+        setFieldFromChild(this.form.punctuation, value);
         break;
       case 'a':
-        this.abbreviations.setValue(pair.value);
-        this.abbreviations.updateValueAndValidity();
-        this.abbreviations.markAsDirty();
+        setFieldFromChild(this.form.abbreviations, value);
         break;
       case 'n':
-        this.note.setValue(pair.value);
-        this.note.updateValueAndValidity();
-        this.note.markAsDirty();
+        setFieldFromChild(this.form.note, value);
         break;
     }
   }
@@ -251,15 +223,14 @@ export class CodHandDescriptionComponent {
   }
 
   public onSignChange(sign: CodHandSign): void {
-    const signs = [...this.signs.value];
+    const signs = [...this.form.signs().value()];
     if (this.editedSignIndex() > -1) {
       signs.splice(this.editedSignIndex(), 1, sign);
     } else {
       signs.push(sign);
     }
-    this.signs.setValue(signs);
-    this.signs.updateValueAndValidity();
-    this.signs.markAsDirty();
+    this.form.signs().value.set(signs);
+    this.form.signs().markAsDirty();
     this.editSign(null);
   }
 
@@ -269,11 +240,10 @@ export class CodHandDescriptionComponent {
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          const signs = [...this.signs.value];
+          const signs = [...this.form.signs().value()];
           signs.splice(index, 1);
-          this.signs.setValue(signs);
-          this.signs.updateValueAndValidity();
-          this.signs.markAsDirty();
+          this.form.signs().value.set(signs);
+          this.form.signs().markAsDirty();
         }
       });
   }
@@ -282,26 +252,24 @@ export class CodHandDescriptionComponent {
     if (index < 1) {
       return;
     }
-    const sign = this.signs.value[index];
-    const signs = [...this.signs.value];
+    const sign = this.form.signs().value()[index];
+    const signs = [...this.form.signs().value()];
     signs.splice(index, 1);
     signs.splice(index - 1, 0, sign);
-    this.signs.setValue(signs);
-    this.signs.updateValueAndValidity();
-    this.signs.markAsDirty();
+    this.form.signs().value.set(signs);
+    this.form.signs().markAsDirty();
   }
 
   public moveSignDown(index: number): void {
-    if (index + 1 >= this.signs.value.length) {
+    if (index + 1 >= this.form.signs().value().length) {
       return;
     }
-    const sign = this.signs.value[index];
-    const signs = [...this.signs.value];
+    const sign = this.form.signs().value()[index];
+    const signs = [...this.form.signs().value()];
     signs.splice(index, 1);
     signs.splice(index + 1, 0, sign);
-    this.signs.setValue(signs);
-    this.signs.updateValueAndValidity();
-    this.signs.markAsDirty();
+    this.form.signs().value.set(signs);
+    this.form.signs().markAsDirty();
   }
   //#endregion
 
@@ -309,11 +277,23 @@ export class CodHandDescriptionComponent {
     this.editorClose.emit();
   }
 
-  public save(): void {
-    if (this.form.invalid) {
+  public onEnterKey(event: Event): void {
+    if (
+      !isImplicitSubmission(event) ||
+      this.form().invalid() ||
+      !this.form().dirty()
+    ) {
       return;
     }
-    const description = this.getDescription();
-    this.description.set(description);
+    event.preventDefault();
+    this.save();
+  }
+
+  public save(): void {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
+      return;
+    }
+    this.description.set(this.getDescription());
   }
 }

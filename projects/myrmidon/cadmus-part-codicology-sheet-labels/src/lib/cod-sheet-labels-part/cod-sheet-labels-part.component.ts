@@ -2,17 +2,20 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
+  inject,
+  linkedSignal,
   signal,
 } from '@angular/core';
 import {
-  FormControl,
-  FormBuilder,
-  Validators,
-  FormGroup,
-  UntypedFormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+  disabled,
+  form,
+  FormField,
+  maxLength,
+  min,
+  pattern,
+  required,
+} from '@angular/forms/signals';
 import { AsyncPipe, TitleCasePipe } from '@angular/common';
 import { Observable, take } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -41,19 +44,15 @@ import {
 
 import { FlatLookupPipe } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
-import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 
 import { Flag } from '@myrmidon/cadmus-ui-flag-set';
 
-import {
-  ThesauriSet,
-  ThesaurusEntry,
-  EditedObject,
-} from '@myrmidon/cadmus-core';
+import { EditedObject, ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
-  HelpLinkComponent
+  HelpLinkComponent,
+  copyFormValue,
 } from '@myrmidon/cadmus-ui';
 import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
@@ -98,6 +97,58 @@ interface CodSheetLabelsPartSettings {
 }
 
 /**
+ * The part's draft. The labels table is not here: it is edited through
+ * its own model (CodSheetTable).
+ */
+interface CodSheetLabelsPartControls {
+  quireDsc: CodQuireDescription | null;
+  nDefs: CodNColDefinition[];
+  cDefs: CodCColDefinition[];
+  sDefs: CodSColDefinition[];
+  rDefs: CodRColDefinition[];
+  endleaves: CodEndleaf[];
+}
+
+function toDraft(part?: CodSheetLabelsPart | null): CodSheetLabelsPartControls {
+  // copy: the form tags the objects in its arrays
+  return {
+    quireDsc: copyFormValue(part?.quireDescription) || null,
+    nDefs: copyFormValue(part?.nDefinitions || []),
+    cDefs: copyFormValue(part?.cDefinitions || []),
+    sDefs: copyFormValue(part?.sDefinitions || []),
+    rDefs: copyFormValue(part?.rDefinitions || []),
+    endleaves: copyFormValue(part?.endleaves || []),
+  };
+}
+
+/**
+ * The operation sub-form: it is not part of the edited part.
+ */
+interface CodSheetOperationControls {
+  opColumn: string | null;
+  opAction: string;
+  autoAppend: boolean;
+}
+
+/**
+ * The column/rows adder sub-form: it is not part of the edited part.
+ */
+interface CodSheetAdderControls {
+  addType: string;
+  addName: string;
+  addCount: number | null;
+}
+
+function isQuireDscEmpty(quireDsc: CodQuireDescription | null): boolean {
+  return (
+    !quireDsc ||
+    (!quireDsc.features?.length &&
+      !quireDsc.note &&
+      (!quireDsc.scopedNotes || !Object.keys(quireDsc.scopedNotes).length))
+  );
+}
+
+/**
  * CodSheetLabels part editor component.
  * Thesauri: cod-catchwords-positions, cod-numbering-systems,
  * cod-numbering-techniques, cod-numbering-positions,
@@ -115,8 +166,7 @@ interface CodSheetLabelsPartSettings {
   styleUrls: ['./cod-sheet-labels-part.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatCard,
     MatCardHeader,
     MatCardAvatar,
@@ -156,14 +206,14 @@ interface CodSheetLabelsPartSettings {
   ],
 })
 export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodSheetLabelsPart> {
-  private _table: CodSheetTable;
-  private _editedEndleafIndex;
-  private _editedNDefIndex;
-  private _editedCDefIndex;
-  private _editedSDefIndex;
-  private _editedRDefIndex;
+  private readonly _dialogService = inject(DialogService);
+  private readonly _table: CodSheetTable;
+  private _editedEndleafIndex = -1;
+  private _editedNDefIndex = -1;
+  private _editedCDefIndex = -1;
+  private _editedSDefIndex = -1;
+  private _editedRDefIndex = -1;
 
-  public readonly quireDsc = signal<CodQuireDescription | undefined>(undefined);
   public readonly maxQuireNumber = signal<number>(0);
   public readonly editedNDef = signal<CodNColDefinition | undefined>(undefined);
   public readonly editedCDef = signal<CodCColDefinition | undefined>(undefined);
@@ -183,102 +233,138 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
   public readonly endleafRowIds = signal<string[]>([]);
   public readonly qPresent = signal<boolean>(false);
 
-  public opColumn: FormControl<string | null>;
-  public opAction: FormControl<string | null>;
-  public opForm: FormGroup;
+  // the part's form
+  private readonly _draft = linkedSignal(() => toDraft(this.data()?.value));
+  public readonly form = this.createForm(this._draft);
 
-  public addType: FormControl<string>;
-  public addName: FormControl<string | null>;
-  public addCount: FormControl<number>;
-  public addForm: FormGroup;
+  // the operation sub-form
+  public readonly opForm = form(
+    signal<CodSheetOperationControls>({
+      opColumn: null,
+      opAction: '',
+      autoAppend: false,
+    }),
+    (p) => {
+      required(p.opColumn);
+      required(p.opAction);
+      pattern(p.opAction, LabelGenerator.ANY_PATTERN);
+    },
+  );
 
-  public readonly adderColumn = signal<boolean>(false);
-  public readonly isColQ = signal<boolean>(false);
+  // the adder sub-form
+  public readonly addForm = form(
+    signal<CodSheetAdderControls>({
+      addType: 'row-2',
+      addName: '',
+      addCount: 1,
+    }),
+    (p) => {
+      required(p.addType);
+      maxLength(p.addName, 50);
+      min(p.addCount, 1);
+      disabled(p.addName, () => this.isColQ());
+    },
+  );
 
-  public nDefs: FormControl<CodNColDefinition[]>;
-  public cDefs: FormControl<CodCColDefinition[]>;
-  public sDefs: FormControl<CodSColDefinition[]>;
-  public rDefs: FormControl<CodRColDefinition[]>;
-
-  public endleaves: FormControl<CodEndleaf[]>;
-  public autoAppend: FormControl<boolean>;
+  public readonly adderColumn = computed<boolean>(() =>
+    this.addForm.addType().value().startsWith('col'),
+  );
+  public readonly isColQ = computed<boolean>(
+    () => this.addForm.addType().value() === 'col-q',
+  );
 
   // C-COL
   // cod-catchwords-positions
-  public readonly poscEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly poscEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-catchwords-positions']?.entries,
+  );
   // N-COL
   // cod-numbering-systems
-  public readonly sysnEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly sysnEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-numbering-systems']?.entries,
+  );
   // cod-numbering-techniques
-  public readonly techEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly techEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-numbering-techniques']?.entries,
+  );
   // cod-numbering-positions
-  public readonly posnEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly posnEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-numbering-positions']?.entries,
+  );
   // cod-numbering-colors
-  public readonly clrEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly clrEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-numbering-colors']?.entries,
+  );
   // R/S-COL
   // cod-quire-features
-  public readonly quireFeatEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly quireFeatEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-quire-features']?.entries,
   );
   // cod-quiresig-systems
-  public readonly syssEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly syssEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-quiresig-systems']?.entries,
+  );
   // cod-quiresig-positions
-  public readonly possEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly possEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-quiresig-positions']?.entries,
+  );
   // ENDLEAF
   // cod-endleaf-materials
-  public readonly matEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly matEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-endleaf-materials']?.entries,
+  );
   // chronotope-tags
-  public readonly ctTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly ctTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['chronotope-tags']?.entries,
   );
   // assertion-tags
-  public readonly assTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly assTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['assertion-tags']?.entries,
   );
   // doc-reference-types
-  public readonly refTypeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly refTypeEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['doc-reference-types']?.entries,
   );
   // doc-reference-tags
-  public readonly refTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly refTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['doc-reference-tags']?.entries,
   );
   // LINKS
   // asserted-id-scopes
-  public readonly assIdScopeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly assIdScopeEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['asserted-id-scopes']?.entries,
   );
   // asserted-id-tags
-  public readonly assIdTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly assIdTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['asserted-id-tags']?.entries,
   );
   // external-id-tags
-  public readonly idTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly idTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['external-id-tags']?.entries,
   );
   // external-id-scopes
-  public readonly idScopeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly idScopeEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['external-id-scopes']?.entries,
   );
   // cod-labels-col-q-features
-  public readonly qFeatureEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly qFeatureEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-labels-col-q-features']?.entries,
   );
   // cod-labels-col-n-features
-  public readonly nFeatureEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly nFeatureEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-labels-col-n-features']?.entries,
   );
   // cod-labels-col-c-features
-  public readonly cFeatureEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly cFeatureEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-labels-col-c-features']?.entries,
   );
   // cod-labels-col-s-features
-  public readonly sFeatureEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly sFeatureEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-labels-col-s-features']?.entries,
   );
   // cod-labels-col-r-features
-  public readonly rFeatureEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly rFeatureEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-labels-col-r-features']?.entries,
   );
 
   // flags
@@ -298,66 +384,21 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
     return this.rFeatureEntries()?.map(entryToFlag) ?? [];
   });
 
-  constructor(
-    authService: AuthJwtService,
-    formBuilder: FormBuilder,
-    private _dialogService: DialogService,
-  ) {
-    super(authService, formBuilder);
+  constructor() {
+    super();
     this._table = new CodSheetTable();
     this._table.overflowDropping = true;
 
     this.columns$ = this._table.columnIds$;
     this.rows$ = this._table.rows$;
 
-    this._editedNDefIndex = -1;
-    this._editedCDefIndex = -1;
-    this._editedSDefIndex = -1;
-    this._editedRDefIndex = -1;
-    this._editedEndleafIndex = -1;
-    // forms
-    this.opColumn = formBuilder.control(null, Validators.required);
-    this.opAction = formBuilder.control(null, [
-      Validators.required,
-      Validators.pattern(LabelGenerator.ANY_PATTERN),
-    ]);
-    this.opForm = formBuilder.group({
-      opColumn: this.opColumn,
-      opAction: this.opAction,
-    });
-
-    this.addType = formBuilder.control('row-2', {
-      nonNullable: true,
-      validators: Validators.required,
-    });
-    this.addName = formBuilder.control(null, Validators.maxLength(50));
-    this.addCount = formBuilder.control(1, { nonNullable: true });
-    this.addForm = formBuilder.group({
-      addType: this.addType,
-      addName: this.addName,
-      addCount: this.addCount,
-    });
-
-    this.nDefs = formBuilder.control([], { nonNullable: true });
-    this.cDefs = formBuilder.control([], { nonNullable: true });
-    this.sDefs = formBuilder.control([], { nonNullable: true });
-    this.rDefs = formBuilder.control([], { nonNullable: true });
-
-    this.endleaves = formBuilder.control([], { nonNullable: true });
-
-    this.autoAppend = formBuilder.control(false, { nonNullable: true });
-
-    // subscriptions
-    this.addType.valueChanges.pipe(takeUntilDestroyed()).subscribe((v) => {
-      this.adderColumn.set(v && (v as string).startsWith('col') ? true : false);
-      const isColQ = v === 'col-q';
-      this.isColQ.set(isColQ);
-      if (isColQ) {
-        this.addName.disable();
-      } else {
-        this.addName.enable();
-      }
-    });
+    this.initSettings<CodSheetLabelsPartSettings>(
+      COD_SHEET_LABELS_PART_TYPEID,
+      (settings) =>
+        this.lookupProviderOptions.set(
+          settings?.lookupProviderOptions || undefined,
+        ),
+    );
 
     this.rows$.pipe(takeUntilDestroyed()).subscribe((rows) => {
       this.endleafRowIds.set([
@@ -369,284 +410,137 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
       ]);
     });
 
-    this.autoAppend.valueChanges.pipe(takeUntilDestroyed()).subscribe((v) => {
-      this._table.overflowDropping = v ? false : true;
+    // rows are appended when labels overflow, unless dropping them
+    effect(() => {
+      this._table.overflowDropping = !this.opForm.autoAppend().value();
     });
   }
 
-  protected buildForm(formBuilder: FormBuilder): FormGroup | UntypedFormGroup {
-    return formBuilder.group({
-      nDefs: this.nDefs,
-      cDefs: this.cDefs,
-      sDefs: this.sDefs,
-      rDefs: this.rDefs,
-      endleaves: this.endleaves,
-    });
-  }
-
-  private updateThesauri(thesauri: ThesauriSet): void {
-    let key = 'cod-catchwords-positions';
-    if (this.hasThesaurus(key)) {
-      this.poscEntries.set(thesauri[key].entries);
-    } else {
-      this.poscEntries.set(undefined);
-    }
-    key = 'cod-numbering-systems';
-    if (this.hasThesaurus(key)) {
-      this.sysnEntries.set(thesauri[key].entries);
-    } else {
-      this.sysnEntries.set(undefined);
-    }
-    key = 'cod-numbering-techniques';
-    if (this.hasThesaurus(key)) {
-      this.techEntries.set(thesauri[key].entries);
-    } else {
-      this.techEntries.set(undefined);
-    }
-    key = 'cod-numbering-positions';
-    if (this.hasThesaurus(key)) {
-      this.posnEntries.set(thesauri[key].entries);
-    } else {
-      this.posnEntries.set(undefined);
-    }
-    key = 'cod-numbering-colors';
-    if (this.hasThesaurus(key)) {
-      this.clrEntries.set(thesauri[key].entries);
-    } else {
-      this.clrEntries.set(undefined);
-    }
-    key = 'cod-quire-features';
-    if (this.hasThesaurus(key)) {
-      this.quireFeatEntries.set(thesauri[key].entries);
-    } else {
-      this.quireFeatEntries.set(undefined);
-    }
-    key = 'cod-quiresig-systems';
-    if (this.hasThesaurus(key)) {
-      this.syssEntries.set(thesauri[key].entries);
-    } else {
-      this.syssEntries.set(undefined);
-    }
-    key = 'cod-quiresig-positions';
-    if (this.hasThesaurus(key)) {
-      this.possEntries.set(thesauri[key].entries);
-    } else {
-      this.possEntries.set(undefined);
-    }
-    key = 'cod-endleaf-materials';
-    if (this.hasThesaurus(key)) {
-      this.matEntries.set(thesauri[key].entries);
-    } else {
-      this.matEntries.set(undefined);
-    }
-    key = 'chronotope-tags';
-    if (this.hasThesaurus(key)) {
-      this.ctTagEntries.set(thesauri[key].entries);
-    } else {
-      this.ctTagEntries.set(undefined);
-    }
-    key = 'assertion-tags';
-    if (this.hasThesaurus(key)) {
-      this.assTagEntries.set(thesauri[key].entries);
-    } else {
-      this.assTagEntries.set(undefined);
-    }
-    key = 'doc-reference-types';
-    if (this.hasThesaurus(key)) {
-      this.refTypeEntries.set(thesauri[key].entries);
-    } else {
-      this.refTypeEntries.set(undefined);
-    }
-    key = 'doc-reference-tags';
-    if (this.hasThesaurus(key)) {
-      this.refTagEntries.set(thesauri[key].entries);
-    } else {
-      this.refTagEntries.set(undefined);
-    }
-    key = 'asserted-id-scopes';
-    if (this.hasThesaurus(key)) {
-      this.assIdScopeEntries.set(thesauri[key].entries);
-    } else {
-      this.assIdScopeEntries.set(undefined);
-    }
-    key = 'asserted-id-tags';
-    if (this.hasThesaurus(key)) {
-      this.assIdTagEntries.set(thesauri[key].entries);
-    } else {
-      this.assIdTagEntries.set(undefined);
-    }
-    key = 'external-id-tags';
-    if (this.hasThesaurus(key)) {
-      this.idTagEntries.set(thesauri[key].entries);
-    } else {
-      this.idTagEntries.set(undefined);
-    }
-    key = 'external-id-scopes';
-    if (this.hasThesaurus(key)) {
-      this.idScopeEntries.set(thesauri[key].entries);
-    } else {
-      this.idScopeEntries.set(undefined);
-    }
-    key = 'cod-labels-col-q-features';
-    if (this.hasThesaurus(key)) {
-      this.qFeatureEntries.set(thesauri[key].entries);
-    } else {
-      this.qFeatureEntries.set(undefined);
-    }
-    key = 'cod-labels-col-n-features';
-    if (this.hasThesaurus(key)) {
-      this.nFeatureEntries.set(thesauri[key].entries);
-    } else {
-      this.nFeatureEntries.set(undefined);
-    }
-    key = 'cod-labels-col-c-features';
-    if (this.hasThesaurus(key)) {
-      this.cFeatureEntries.set(thesauri[key].entries);
-    } else {
-      this.cFeatureEntries.set(undefined);
-    }
-    key = 'cod-labels-col-s-features';
-    if (this.hasThesaurus(key)) {
-      this.sFeatureEntries.set(thesauri[key].entries);
-    } else {
-      this.sFeatureEntries.set(undefined);
-    }
-    key = 'cod-labels-col-r-features';
-    if (this.hasThesaurus(key)) {
-      this.rFeatureEntries.set(thesauri[key].entries);
-    } else {
-      this.rFeatureEntries.set(undefined);
-    }
-  }
-
-  private isQuireDscEmpty(): boolean {
-    return (
-      !this.quireDsc() ||
-      (!this.quireDsc()?.features?.length &&
-        !this.quireDsc()?.note &&
-        (!this.quireDsc()?.scopedNotes ||
-          !Object.keys(this.quireDsc()?.scopedNotes || {}).length))
-    );
-  }
-
-  private updateForm(part?: CodSheetLabelsPart | null): void {
+  /**
+   * Load the labels table from new data: the table is edited through its
+   * own model, rather than by the form.
+   */
+  protected override onDataSet(data?: EditedObject<CodSheetLabelsPart>): void {
+    const part = data?.value;
     if (!part) {
-      this.form.reset();
       return;
     }
     this._table.setRows(part.rows || []);
-    this.quireDsc.set(part.quireDescription);
-    this.nDefs.setValue(part.nDefinitions || []);
-    this.cDefs.setValue(part.cDefinitions || []);
-    this.sDefs.setValue(part.sDefinitions || []);
-    this.rDefs.setValue(part.rDefinitions || []);
-    this.endleaves.setValue(part.endleaves || []);
 
     // other values in UI
     this.qPresent.set(this._table.hasColumn('q'));
-    if (!this.addType.value) {
-      this.addType.setValue('row-2');
+    if (!this.addForm.addType().value()) {
+      this.addForm.addType().value.set('row-2');
     }
-
-    this.form.markAsPristine();
   }
 
-  protected override onDataSet(data?: EditedObject<CodSheetLabelsPart>): void {
-    // thesauri
-    if (data?.thesauri) {
-      this.updateThesauri(data.thesauri);
-    }
-    // settings
-    this._appRepository
-      ?.getSettingFor<CodSheetLabelsPartSettings>(
-        COD_SHEET_LABELS_PART_TYPEID,
-        this.identity()?.roleId || undefined,
-      )
-      .then((settings) => {
-        const options = settings?.lookupProviderOptions;
-        this.lookupProviderOptions.set(options || undefined);
-      });
-    // form
-    this.updateForm(data?.value);
-  }
-
-  private pruneQuireDescription(): CodQuireDescription | undefined {
+  private pruneQuireDescription(
+    quireDsc: CodQuireDescription,
+  ): CodQuireDescription {
     const max = this._table.getMaxQuireNumber();
 
     // remove all quire scoped notes with number > max
-    const quireDsc = { ...this.quireDsc() };
-    if (quireDsc?.scopedNotes) {
-      // deep-clone the nested object before mutating
-      quireDsc.scopedNotes = { ...quireDsc.scopedNotes };
-      for (const key of Object.keys(quireDsc.scopedNotes)) {
+    const pruned = copyFormValue(quireDsc);
+    if (pruned.scopedNotes) {
+      for (const key of Object.keys(pruned.scopedNotes)) {
         const n = parseInt(key);
         if (n > max) {
-          delete quireDsc.scopedNotes[n];
+          delete pruned.scopedNotes[n];
         }
       }
     }
-    this.quireDsc.set(quireDsc);
-    return this.quireDsc();
+    return pruned;
   }
 
   protected getValue(): CodSheetLabelsPart {
-    let part = this.getEditedPart(
+    const part = this.getEditedPart(
       COD_SHEET_LABELS_PART_TYPEID,
     ) as CodSheetLabelsPart;
+    const draft = this._draft();
     part.rows = this._table.getRows();
-    part.quireDescription = this.isQuireDscEmpty()
+    part.quireDescription = isQuireDscEmpty(draft.quireDsc)
       ? undefined
-      : this.pruneQuireDescription();
-    part.nDefinitions = this.nDefs.value?.length ? this.nDefs.value : undefined;
-    part.cDefinitions = this.cDefs.value?.length ? this.cDefs.value : undefined;
-    part.sDefinitions = this.sDefs.value?.length ? this.sDefs.value : undefined;
-    part.rDefinitions = this.rDefs.value?.length ? this.rDefs.value : undefined;
-    part.endleaves = this.endleaves.value?.length
-      ? this.endleaves.value
+      : this.pruneQuireDescription(draft.quireDsc!);
+    part.nDefinitions = draft.nDefs.length
+      ? copyFormValue(draft.nDefs)
+      : undefined;
+    part.cDefinitions = draft.cDefs.length
+      ? copyFormValue(draft.cDefs)
+      : undefined;
+    part.sDefinitions = draft.sDefs.length
+      ? copyFormValue(draft.sDefs)
+      : undefined;
+    part.rDefinitions = draft.rDefs.length
+      ? copyFormValue(draft.rDefs)
+      : undefined;
+    part.endleaves = draft.endleaves.length
+      ? copyFormValue(draft.endleaves)
       : undefined;
     return part;
   }
 
+  /**
+   * Run the operation on Enter in its input, if valid.
+   */
+  public onActionEnterKey(event: Event): void {
+    event.preventDefault();
+    if (this.opForm().valid()) {
+      this.onAction();
+    }
+  }
+
+  /**
+   * Add on Enter in an adder input, if valid.
+   */
+  public onAddEnterKey(event: Event): void {
+    event.preventDefault();
+    if (this.addForm().valid()) {
+      this.onTypeAdd();
+    }
+  }
+
   public onAction(): void {
-    if (this.opForm.invalid) {
+    if (this.opForm().invalid()) {
       return;
     }
-    if (this.opAction.value?.includes(':=')) {
-      const action = LabelGenerator.parseSetAction(this.opAction.value);
+    const op = this.opForm().value();
+    if (op.opAction.includes(':=')) {
+      const action = LabelGenerator.parseSetAction(op.opAction);
       if (!action) {
         return;
       }
-      const cells = LabelGenerator.generateSet(this.opColumn.value!, action);
+      const cells = LabelGenerator.generateSet(op.opColumn!, action);
       this._table.setCells(cells);
-      this.form.markAsDirty();
+      this.form().markAsDirty();
     } else {
       const action = LabelGenerator.parseAction(
-        this.opAction.value,
+        op.opAction,
       ) as CodLabelAction | null;
       if (!action) {
         return;
       }
-      const cells = LabelGenerator.generate(this.opColumn.value!, action);
+      const cells = LabelGenerator.generate(op.opColumn!, action);
       // quires always append missing rows, as they define the sheets
       // structure; other labels follow the auto-append option
       this._table.addCells(
         cells,
         action.type === CodLabelActionType.Quire ? true : undefined,
       );
-      this.form.markAsDirty();
+      this.form().markAsDirty();
     }
   }
 
   public onTypeAdd(): void {
-    if (this.addForm.invalid) {
+    if (this.addForm().invalid()) {
       return;
     }
-    if (this.addType.value.startsWith('row-')) {
+    const add = this.addForm().value();
+    if (add.addType.startsWith('row-')) {
       let type: CodRowType;
       // count by 2 as operators work with sheets rather than pages
-      let count = 2 * (this.addCount.value || 1);
+      let count = 2 * (add.addCount || 1);
 
-      switch (this.addType.value) {
+      switch (add.addType) {
         case 'row-0':
           type = CodRowType.CoverFront;
           count = 1;
@@ -666,46 +560,46 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
           break;
       }
       this._table.appendRows(type, count);
-      this.form.markAsDirty();
+      this.form().markAsDirty();
     } else {
-      const id =
-        this.addType.value.charAt(4) +
-        (this.addName.value ? '.' + this.addName.value : '');
+      // the name is not used for quires
+      const name = this.isColQ() ? '' : add.addName;
+      const id = add.addType.charAt(4) + (name ? '.' + name : '');
       this._table.addColumn(id);
-      this.form.markAsDirty();
+      this.form().markAsDirty();
       if (id.charAt(0) === 'q') {
         this.qPresent.set(true);
       }
-      this.opColumn.setValue(id);
+      this.opForm.opColumn().value.set(id);
     }
   }
 
   public onClearColumn(): void {
-    if (!this.opColumn.value) {
+    if (!this.opForm.opColumn().value()) {
       return;
     }
     this._dialogService
-      .confirm('Confirmation', `Clear column ${this.opColumn.value}?`)
+      .confirm('Confirmation', `Clear column ${this.opForm.opColumn().value()}?`)
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          this._table.clearColumnValues(this.opColumn.value!);
-          this.form.markAsDirty();
+          this._table.clearColumnValues(this.opForm.opColumn().value()!);
+          this.form().markAsDirty();
         }
       });
   }
 
   public onDeleteColumn(): void {
-    if (!this.opColumn.value) {
+    if (!this.opForm.opColumn().value()) {
       return;
     }
     this._dialogService
-      .confirm('Confirmation', `Delete column ${this.opColumn.value}?`)
+      .confirm('Confirmation', `Delete column ${this.opForm.opColumn().value()}?`)
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          this._table.deleteColumn(this.opColumn.value!);
-          this.form.markAsDirty();
+          this._table.deleteColumn(this.opForm.opColumn().value()!);
+          this.form().markAsDirty();
         }
       });
   }
@@ -717,7 +611,7 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
       .subscribe((yes) => {
         if (yes) {
           this._table.trim();
-          this.form.markAsDirty();
+          this.form().markAsDirty();
         }
       });
   }
@@ -729,7 +623,7 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
       .subscribe((yes) => {
         if (yes) {
           this._table.trim(true);
-          this.form.markAsDirty();
+          this.form().markAsDirty();
         }
       });
   }
@@ -737,7 +631,7 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
   public onCellChange(cell: CodLabelCell): void {
     // cell was edited, update it
     this._table.updateCell(cell);
-    this.form.markAsDirty();
+    this.form().markAsDirty();
   }
 
   public getColFeatureFlags(cellId?: string): Flag[] {
@@ -781,13 +675,14 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
   }
 
   public onEditColumnDefinition(): void {
-    if (!this.opColumn.value) {
+    const column = this.opForm.opColumn().value();
+    if (!column) {
       return;
     }
 
     this.closeAllDefEditors();
 
-    switch (this.opColumn.value.charAt(0)) {
+    switch (column.charAt(0)) {
       // quire
       case 'q':
         this.maxQuireNumber.set(this._table.getMaxQuireNumber());
@@ -795,11 +690,11 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
         break;
       // numbering
       case 'n':
-        const nDefs = this.nDefs.value as CodNColDefinition[];
-        let nDef = nDefs.find((d) => d.id === this.opColumn.value);
+        const nDefs = this.form.nDefs().value() as CodNColDefinition[];
+        let nDef = nDefs.find((d) => d.id === column);
         if (!nDef) {
           nDef = {
-            id: this.opColumn.value,
+            id: column,
             rank: 0,
             system: this.getDefaultEntryId(this.sysnEntries()),
             technique: this.getDefaultEntryId(this.techEntries()),
@@ -813,11 +708,11 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
         break;
       // catchword
       case 'c':
-        const cDefs = this.cDefs.value as CodCColDefinition[];
-        let cDef = cDefs.find((d) => d.id === this.opColumn.value);
+        const cDefs = this.form.cDefs().value() as CodCColDefinition[];
+        let cDef = cDefs.find((d) => d.id === column);
         if (!cDef) {
           cDef = {
-            id: this.opColumn.value,
+            id: column,
             rank: 0,
             position: this.getDefaultEntryId(this.poscEntries()),
           };
@@ -829,11 +724,11 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
         break;
       // signature
       case 's':
-        const sDefs = this.sDefs.value as CodSColDefinition[];
-        let sDef = sDefs.find((d) => d.id === this.opColumn.value);
+        const sDefs = this.form.sDefs().value() as CodSColDefinition[];
+        let sDef = sDefs.find((d) => d.id === column);
         if (!sDef) {
           sDef = {
-            id: this.opColumn.value,
+            id: column,
             rank: 0,
             system: this.getDefaultEntryId(this.syssEntries()),
             position: this.getDefaultEntryId(this.possEntries()),
@@ -846,11 +741,11 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
         break;
       // register signature
       case 'r':
-        const rDefs = this.rDefs.value as CodRColDefinition[];
-        let rDef = rDefs.find((d) => d.id === this.opColumn.value);
+        const rDefs = this.form.rDefs().value() as CodRColDefinition[];
+        let rDef = rDefs.find((d) => d.id === column);
         if (!rDef) {
           rDef = {
-            id: this.opColumn.value,
+            id: column,
             rank: 0,
             position: this.getDefaultEntryId(this.possEntries()),
           };
@@ -864,8 +759,8 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
   }
 
   public saveQuireDsc(quireDsc: CodQuireDescription): void {
-    this.quireDsc.set(quireDsc);
-    this.form.markAsDirty();
+    this.form.quireDsc().value.set(copyFormValue(quireDsc));
+    this.form.quireDsc().markAsDirty();
     this.onColumnDefClose();
   }
 
@@ -874,54 +769,50 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
   }
 
   public onEditedNDefChange(def: CodNColDefinition): void {
-    const defs = [...this.nDefs.value];
+    const defs = [...this.form.nDefs().value()];
     if (this._editedNDefIndex === -1) {
       defs.push(def);
     } else {
       defs.splice(this._editedNDefIndex, 1, def);
     }
-    this.nDefs.setValue(defs);
-    this.nDefs.updateValueAndValidity();
-    this.nDefs.markAsDirty();
+    this.form.nDefs().value.set(defs);
+    this.form.nDefs().markAsDirty();
     this.closeAllDefEditors();
   }
 
   public onEditedCDefChange(def: CodCColDefinition): void {
-    const defs = [...this.cDefs.value];
+    const defs = [...this.form.cDefs().value()];
     if (this._editedCDefIndex === -1) {
       defs.push(def);
     } else {
       defs.splice(this._editedCDefIndex, 1, def);
     }
-    this.cDefs.setValue(defs);
-    this.cDefs.updateValueAndValidity();
-    this.cDefs.markAsDirty();
+    this.form.cDefs().value.set(defs);
+    this.form.cDefs().markAsDirty();
     this.closeAllDefEditors();
   }
 
   public onEditedSDefChange(def: CodSColDefinition): void {
-    const defs = [...this.sDefs.value];
+    const defs = [...this.form.sDefs().value()];
     if (this._editedSDefIndex === -1) {
       defs.push(def);
     } else {
       defs.splice(this._editedSDefIndex, 1, def);
     }
-    this.sDefs.setValue(defs);
-    this.sDefs.updateValueAndValidity();
-    this.sDefs.markAsDirty();
+    this.form.sDefs().value.set(defs);
+    this.form.sDefs().markAsDirty();
     this.closeAllDefEditors();
   }
 
   public onEditedRDefChange(def: CodRColDefinition): void {
-    const defs = [...this.rDefs.value];
+    const defs = [...this.form.rDefs().value()];
     if (this._editedRDefIndex === -1) {
       defs.push(def);
     } else {
       defs.splice(this._editedRDefIndex, 1, def);
     }
-    this.rDefs.setValue(defs);
-    this.rDefs.updateValueAndValidity();
-    this.rDefs.markAsDirty();
+    this.form.rDefs().value.set(defs);
+    this.form.rDefs().markAsDirty();
     this.closeAllDefEditors();
   }
   //#endregion
@@ -940,20 +831,19 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
       this.editedEndleaf.set(undefined);
     } else {
       this._editedEndleafIndex = index;
-      this.editedEndleaf.set(endleaf);
+      this.editedEndleaf.set(structuredClone(endleaf));
     }
   }
 
   public cloneEndleaf(index: number): void {
-    const endleaves: CodEndleaf[] = [...this.endleaves.value];
+    const endleaves: CodEndleaf[] = [...this.form.endleaves().value()];
     endleaves.splice(index, 0, structuredClone(endleaves[index]));
-    this.endleaves.setValue(endleaves);
-    this.endleaves.updateValueAndValidity();
-    this.endleaves.markAsDirty();
+    this.form.endleaves().value.set(endleaves);
+    this.form.endleaves().markAsDirty();
   }
 
   public onEndleafSave(endleaf: CodEndleaf): void {
-    const endleaves = [...this.endleaves.value];
+    const endleaves = [...this.form.endleaves().value()];
 
     if (this._editedEndleafIndex > -1) {
       endleaves.splice(this._editedEndleafIndex, 1, endleaf);
@@ -961,9 +851,8 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
       endleaves.push(endleaf);
     }
 
-    this.endleaves.setValue(endleaves);
-    this.endleaves.updateValueAndValidity();
-    this.endleaves.markAsDirty();
+    this.form.endleaves().value.set(endleaves);
+    this.form.endleaves().markAsDirty();
     this.editEndleaf(null);
   }
 
@@ -973,11 +862,10 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          const items = [...this.endleaves.value];
+          const items = [...this.form.endleaves().value()];
           items.splice(index, 1);
-          this.endleaves.setValue(items);
-          this.endleaves.updateValueAndValidity();
-          this.endleaves.markAsDirty();
+          this.form.endleaves().value.set(items);
+          this.form.endleaves().markAsDirty();
         }
       });
   }
@@ -986,26 +874,24 @@ export class CodSheetLabelsPartComponent extends ModelEditorComponentBase<CodShe
     if (index < 1) {
       return;
     }
-    const item = this.endleaves.value[index];
-    const items = [...this.endleaves.value];
+    const item = this.form.endleaves().value()[index];
+    const items = [...this.form.endleaves().value()];
     items.splice(index, 1);
     items.splice(index - 1, 0, item);
-    this.endleaves.setValue(items);
-    this.endleaves.updateValueAndValidity();
-    this.endleaves.markAsDirty();
+    this.form.endleaves().value.set(items);
+    this.form.endleaves().markAsDirty();
   }
 
   public moveEndleafDown(index: number): void {
-    if (index + 1 >= this.endleaves.value.length) {
+    if (index + 1 >= this.form.endleaves().value().length) {
       return;
     }
-    const item = this.endleaves.value[index];
-    const items = [...this.endleaves.value];
+    const item = this.form.endleaves().value()[index];
+    const items = [...this.form.endleaves().value()];
     items.splice(index, 1);
     items.splice(index + 1, 0, item);
-    this.endleaves.setValue(items);
-    this.endleaves.updateValueAndValidity();
-    this.endleaves.markAsDirty();
+    this.form.endleaves().value.set(items);
+    this.form.endleaves().markAsDirty();
   }
   //#endregion
 }

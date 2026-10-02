@@ -1,15 +1,15 @@
-<form [formGroup]="form" (submit)="save(); $event.stopPropagation()">
+<div (keydown.enter)="onEnterKey($event)">
   <div class="form-row">
     <!-- type (bound) -->
     @if (typeEntries()?.length) {
       <mat-form-field>
         <mat-label>type</mat-label>
-        <mat-select [formControl]="type">
+        <mat-select [formField]="form.type">
           @for (e of typeEntries(); track e.id) {
             <mat-option [value]="e.id">{{ e.value }}</mat-option>
           }
         </mat-select>
-        @if ($any(type).errors?.required && (type.dirty || type.touched)) {
+        @if (form.type().getError("required") && (form.type().dirty() || form.type().touched())) {
           <mat-error>type required</mat-error>
         }
       </mat-form-field>
@@ -18,11 +18,11 @@
     @else {
       <mat-form-field>
         <mat-label>type</mat-label>
-        <input matInput [formControl]="type" />
-        @if ($any(type).errors?.required && (type.dirty || type.touched)) {
+        <input matInput [formField]="form.type" />
+        @if (form.type().getError("required") && (form.type().dirty() || form.type().touched())) {
           <mat-error>type required</mat-error>
         }
-        @if ($any(type).errors?.maxLength && (type.dirty || type.touched)) {
+        @if (form.type().getError("maxLength") && (form.type().dirty() || form.type().touched())) {
           <mat-error>type too long</mat-error>
         }
       </mat-form-field>
@@ -32,7 +32,7 @@
     <cadmus-cod-location
       label="range"
       [required]="true"
-      [location]="ranges.value"
+      [location]="form.ranges().value()"
       (locationChange)="onLocationChange($event)"
     />
   </div>
@@ -42,7 +42,7 @@
     <div>
       <cadmus-ui-flag-set
         [flags]="featFlags()"
-        [checkedIds]="features.value"
+        [checkedIds]="form.features().value()"
         (checkedIdsChange)="onFeatCheckedIdsChange($event)"
       />
     </div>
@@ -53,7 +53,7 @@
     <div>
       <cadmus-ui-flag-set
         [flags]="langFlags()"
-        [checkedIds]="languages.value"
+        [checkedIds]="form.languages().value()"
         (checkedIdsChange)="onLangCheckedIdsChange($event)"
       />
     </div>
@@ -63,9 +63,9 @@
   <div>
     <mat-form-field class="long-text">
       <mat-label>incipit</mat-label>
-      <input matInput [formControl]="incipit" />
+      <input matInput [formField]="form.incipit" />
       @if (
-        $any(incipit).errors?.maxLength && (incipit.dirty || incipit.touched)
+        form.incipit().getError("maxLength") && (form.incipit().dirty() || form.incipit().touched())
       ) {
         <mat-error>incipit too long</mat-error>
       }
@@ -76,9 +76,9 @@
   <div>
     <mat-form-field class="long-text">
       <mat-label>explicit</mat-label>
-      <input matInput [formControl]="explicit" />
+      <input matInput [formField]="form.explicit" />
       @if (
-        $any(explicit).errors?.maxLength && (explicit.dirty || explicit.touched)
+        form.explicit().getError("maxLength") && (form.explicit().dirty() || form.explicit().touched())
       ) {
         <mat-error>explicit too long</mat-error>
       }
@@ -89,8 +89,8 @@
   <div>
     <mat-form-field class="long-text">
       <mat-label>text</mat-label>
-      <textarea matInput rows="3" [formControl]="text"></textarea>
-      @if ($any(text).errors?.maxLength && (text.dirty || text.touched)) {
+      <textarea matInput rows="3" [formField]="form.text"></textarea>
+      @if (form.text().getError("maxLength") && (form.text().dirty() || form.text().touched())) {
         <mat-error>text too long</mat-error>
       }
     </mat-form-field>
@@ -100,8 +100,8 @@
   <div>
     <mat-form-field class="long-text">
       <mat-label>note</mat-label>
-      <textarea matInput rows="3" [formControl]="note"></textarea>
-      @if ($any(note).errors?.maxLength && (note.dirty || note.touched)) {
+      <textarea matInput rows="3" [formField]="form.note"></textarea>
+      @if (form.note().getError("maxLength") && (form.note().dirty() || form.note().touched())) {
         <mat-error>note too long</mat-error>
       }
     </mat-form-field>
@@ -118,13 +118,14 @@
       <mat-icon class="mat-warn">clear</mat-icon>
     </button>
     <button
-      type="submit"
+      type="button"
       mat-icon-button
       matTooltip="Accept changes"
-      [disabled]="form.invalid || form.pristine"
+      [disabled]="form().invalid() || !form().dirty()"
+      (click)="save()"
     >
       <mat-icon class="mat-primary">check_circle</mat-icon>
     </button>
     annotation
   </div>
-</form>
+</div>

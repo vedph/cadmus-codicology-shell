@@ -158,4 +158,48 @@ describe('CodLabelCellComponent', () => {
 
     expect(model()).toBe(CELL);
   });
+
+  // signal forms regressions
+
+  it('should not rebuild the edit when its features save echoes back', async () => {
+    const { user, model, fixture } = await setup(CELL, {
+      flags: FLAGS,
+      dialogResult: ['err'],
+    });
+
+    await user.click(button(/edit features/i));
+
+    expect(model()!.features).toEqual(['err']);
+    expect(fixture.componentInstance.form.features().value()).toEqual(['err']);
+    expect(fixture.componentInstance.cellFlags()).toEqual([FLAGS[0]]);
+  });
+
+  it('should limit the value length natively', async () => {
+    const { user } = await setup(CELL);
+
+    await user.click(button(/edit value/i));
+
+    // the maxLength rule also sets the native attribute
+    expect(screen.getByRole('textbox', { name: /value/ })).toHaveAttribute(
+      'maxlength',
+      '50',
+    );
+  });
+
+  it('should not save an invalid value on Enter', async () => {
+    const { user, model, fixture } = await setup(CELL);
+
+    await user.click(button(/edit value/i));
+    fixture.componentInstance.form.value().value.set('x'.repeat(51));
+    fixture.detectChanges();
+    await user.type(screen.getByRole('textbox', { name: /value/ }), '{Enter}');
+
+    expect(model()).toBe(CELL);
+  });
+
+  it('should render no form element while editing', async () => {
+    const { user, container } = await setup(CELL);
+    await user.click(button(/edit value/i));
+    expect(container.querySelector('form')).toBeNull();
+  });
 });

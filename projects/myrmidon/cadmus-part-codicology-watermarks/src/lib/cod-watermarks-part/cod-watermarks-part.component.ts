@@ -1,17 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  OnInit,
+  computed,
+  inject,
+  linkedSignal,
   signal,
 } from '@angular/core';
-import {
-  FormControl,
-  FormBuilder,
-  FormGroup,
-  UntypedFormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
 import { TitleCasePipe } from '@angular/common';
 import { take } from 'rxjs/operators';
 
@@ -28,20 +22,16 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { NgxToolsSignalValidators } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
-import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 import { CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
 
-import {
-  ThesauriSet,
-  ThesaurusEntry,
-  EditedObject,
-} from '@myrmidon/cadmus-core';
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
   HelpLinkComponent,
+  copyFormValue,
 } from '@myrmidon/cadmus-ui';
 import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
@@ -54,6 +44,17 @@ import { CodWatermarkEditorComponent } from '../cod-watermark-editor/cod-waterma
 
 interface CodWatermarksPartSettings {
   lookupProviderOptions?: LookupProviderOptions;
+}
+
+interface CodWatermarksPartControls {
+  watermarks: CodWatermark[];
+}
+
+function toDraft(part?: CodWatermarksPart | null): CodWatermarksPartControls {
+  // copy: the form tags the objects in its arrays
+  return {
+    watermarks: copyFormValue(part?.watermarks || []),
+  };
 }
 
 /**
@@ -69,8 +70,6 @@ interface CodWatermarksPartSettings {
   styleUrls: ['./cod-watermarks-part.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
     MatCard,
     MatCardHeader,
     MatCardAvatar,
@@ -90,47 +89,47 @@ interface CodWatermarksPartSettings {
   ],
 })
 export class CodWatermarksPartComponent
-  extends ModelEditorComponentBase<CodWatermarksPart>
-  implements OnInit
-{
+  extends ModelEditorComponentBase<CodWatermarksPart> {
+  private readonly _dialogService = inject(DialogService);
+
   public readonly editedIndex = signal<number>(-1);
   public readonly editedWatermark = signal<CodWatermark | undefined>(undefined);
 
   // asserted-id-tags
-  public readonly idTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly idTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['asserted-id-tags']?.entries,
   );
   // asserted-id-scopes
-  public readonly idScopeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly idScopeEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['asserted-id-scopes']?.entries,
   );
   // chronotope-tags
-  public readonly ctTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly ctTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['chronotope-tags']?.entries,
   );
   // assertion-tags
-  public readonly assTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly assTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['assertion-tags']?.entries,
   );
   // doc-reference-types
-  public readonly refTypeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly refTypeEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['doc-reference-types']?.entries,
   );
   // doc-reference-tags
-  public readonly refTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly refTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['doc-reference-tags']?.entries,
   );
   // physical-size-tags
-  public readonly szTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly szTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['physical-size-tags']?.entries,
   );
   // physical-size-dim-tags
-  public readonly szDimTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly szDimTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['physical-size-dim-tags']?.entries,
   );
   // physical-size-units
-  public readonly szUnitEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly szUnitEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['physical-size-units']?.entries,
   );
 
   // lookup options depending on role
@@ -138,122 +137,28 @@ export class CodWatermarksPartComponent
     LookupProviderOptions | undefined
   >(undefined);
 
-  public watermarks: FormControl<CodWatermark[]>;
 
-  constructor(
-    authService: AuthJwtService,
-    formBuilder: FormBuilder,
-    private _dialogService: DialogService,
-  ) {
-    super(authService, formBuilder);
-    // form
-    this.watermarks = formBuilder.control([], {
-      nonNullable: true,
-      validators: NgxToolsValidators.strictMinLengthValidator(1),
-    });
-  }
+  private readonly _draft = linkedSignal(() => toDraft(this.data()?.value));
+  public readonly form = this.createForm(this._draft, (p) => {
+    NgxToolsSignalValidators.strictMinLength(p.watermarks, 1);
+  });
 
-  public override ngOnInit(): void {
-    super.ngOnInit();
-  }
-
-  protected buildForm(formBuilder: FormBuilder): FormGroup | UntypedFormGroup {
-    return formBuilder.group({
-      watermarks: this.watermarks,
-    });
-  }
-
-  private updateThesauri(thesauri: ThesauriSet): void {
-    let key = 'asserted-id-tags';
-    if (this.hasThesaurus(key)) {
-      this.assTagEntries.set(thesauri[key].entries);
-    } else {
-      this.assTagEntries.set(undefined);
-    }
-    key = 'asserted-id-scopes';
-    if (this.hasThesaurus(key)) {
-      this.idScopeEntries.set(thesauri[key].entries);
-    } else {
-      this.idScopeEntries.set(undefined);
-    }
-    key = 'chronotope-tags';
-    if (this.hasThesaurus(key)) {
-      this.ctTagEntries.set(thesauri[key].entries);
-    } else {
-      this.ctTagEntries.set(undefined);
-    }
-    key = 'assertion-tags';
-    if (this.hasThesaurus(key)) {
-      this.assTagEntries.set(thesauri[key].entries);
-    } else {
-      this.assTagEntries.set(undefined);
-    }
-    key = 'doc-reference-types';
-    if (this.hasThesaurus(key)) {
-      this.refTypeEntries.set(thesauri[key].entries);
-    } else {
-      this.refTypeEntries.set(undefined);
-    }
-    key = 'doc-reference-tags';
-    if (this.hasThesaurus(key)) {
-      this.refTagEntries.set(thesauri[key].entries);
-    } else {
-      this.refTagEntries.set(undefined);
-    }
-    key = 'physical-size-tags';
-    if (this.hasThesaurus(key)) {
-      this.szTagEntries.set(thesauri[key].entries);
-    } else {
-      this.szTagEntries.set(undefined);
-    }
-    key = 'physical-size-dim-tags';
-    if (this.hasThesaurus(key)) {
-      this.szDimTagEntries.set(thesauri[key].entries);
-    } else {
-      this.szDimTagEntries.set(undefined);
-    }
-    key = 'physical-size-units';
-    if (this.hasThesaurus(key)) {
-      this.szUnitEntries.set(thesauri[key].entries);
-    } else {
-      this.szUnitEntries.set(undefined);
-    }
-  }
-
-  private updateForm(part?: CodWatermarksPart | null): void {
-    if (!part) {
-      this.form.reset();
-      return;
-    }
-    this.watermarks.setValue(part.watermarks || []);
-    this.form.markAsPristine();
-  }
-
-  protected override onDataSet(data?: EditedObject<CodWatermarksPart>): void {
-    // thesauri
-    if (data?.thesauri) {
-      this.updateThesauri(data.thesauri);
-    }
-    // settings
-    this._appRepository
-      ?.getSettingFor<CodWatermarksPartSettings>(
-        COD_WATERMARKS_PART_TYPEID,
-        this.identity()?.roleId || undefined,
-      )
-      .then((settings) => {
-        const options = settings?.lookupProviderOptions;
-        this.lookupProviderOptions.set(options || undefined);
-      });
-    // form
-    this.updateForm(data?.value);
+  constructor() {
+    super();
+    this.initSettings<CodWatermarksPartSettings>(COD_WATERMARKS_PART_TYPEID, (settings) =>
+      this.lookupProviderOptions.set(settings?.lookupProviderOptions || undefined),
+    );
   }
 
   protected getValue(): CodWatermarksPart {
-    let part = this.getEditedPart(
-      COD_WATERMARKS_PART_TYPEID,
-    ) as CodWatermarksPart;
-    part.watermarks = this.watermarks.value || [];
+    const part = this.getEditedPart(COD_WATERMARKS_PART_TYPEID) as CodWatermarksPart;
+    part.watermarks = copyFormValue(this._draft().watermarks);
     return part;
+  }
+
+  private setWatermarks(watermarks: CodWatermark[]): void {
+    this.form.watermarks().value.set(watermarks);
+    this.form.watermarks().markAsDirty();
   }
 
   public addWatermark(): void {
@@ -273,7 +178,7 @@ export class CodWatermarksPartComponent
   }
 
   public onWatermarkChange(watermark: CodWatermark): void {
-    const watermarks = [...this.watermarks.value];
+    const watermarks = [...this.form.watermarks().value()];
 
     if (this.editedIndex() > -1) {
       watermarks.splice(this.editedIndex(), 1, watermark);
@@ -281,9 +186,7 @@ export class CodWatermarksPartComponent
       watermarks.push(watermark);
     }
 
-    this.watermarks.setValue(watermarks);
-    this.watermarks.updateValueAndValidity();
-    this.watermarks.markAsDirty();
+    this.setWatermarks(watermarks);
     this.editWatermark(null);
   }
 
@@ -293,11 +196,9 @@ export class CodWatermarksPartComponent
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          const entries = [...this.watermarks.value];
+          const entries = [...this.form.watermarks().value()];
           entries.splice(index, 1);
-          this.watermarks.setValue(entries);
-          this.watermarks.updateValueAndValidity();
-          this.watermarks.markAsDirty();
+          this.setWatermarks(entries);
         }
       });
   }
@@ -306,25 +207,21 @@ export class CodWatermarksPartComponent
     if (index < 1) {
       return;
     }
-    const entry = this.watermarks.value[index];
-    const entries = [...this.watermarks.value];
+    const entry = this.form.watermarks().value()[index];
+    const entries = [...this.form.watermarks().value()];
     entries.splice(index, 1);
     entries.splice(index - 1, 0, entry);
-    this.watermarks.setValue(entries);
-    this.watermarks.updateValueAndValidity();
-    this.watermarks.markAsDirty();
+    this.setWatermarks(entries);
   }
 
   public moveWatermarkDown(index: number): void {
-    if (index + 1 >= this.watermarks.value.length) {
+    if (index + 1 >= this.form.watermarks().value().length) {
       return;
     }
-    const entry = this.watermarks.value[index];
-    const entries = [...this.watermarks.value];
+    const entry = this.form.watermarks().value()[index];
+    const entries = [...this.form.watermarks().value()];
     entries.splice(index, 1);
     entries.splice(index + 1, 0, entry);
-    this.watermarks.setValue(entries);
-    this.watermarks.updateValueAndValidity();
-    this.watermarks.markAsDirty();
+    this.setWatermarks(entries);
   }
 }

@@ -75,7 +75,7 @@ describe('CodLayoutsPartComponent', () => {
   // the layout editor also contains the formula editor with its own
   // accept/discard buttons: scope to the layout editor's form
   const entryForm = () =>
-    screen.getByRole('textbox', { name: /^note/ }).closest('form')!;
+    screen.getByRole('textbox', { name: /^note/ }).closest('#editor') as HTMLElement;
   const acceptEntry = () =>
     within(entryForm())
       .getAllByRole('button', { description: /accept changes/i })
@@ -216,5 +216,32 @@ describe('CodLayoutsPartComponent', () => {
 
     expect(within(rows()[0]).getByText('11')).toBeInTheDocument();
     expect(within(rows()[0]).getByText('2')).toBeInTheDocument();
+  });
+
+  // signal forms regressions
+
+  it('should be pristine after binding data', async () => {
+    const { fixture } = await setup({ entries: [E1, E2] });
+    expect(fixture.componentInstance.isDirty()).toBe(false);
+  });
+
+  it('should be dirty after moving an entry, and pristine after saving', async () => {
+    const { user, fixture, data } = await setup({ entries: [E1, E2] });
+
+    await user.click(
+      within(rows()[0]).getByRole('button', { description: /move this layout down/i }),
+    );
+    expect(fixture.componentInstance.isDirty()).toBe(true);
+
+    await user.click(partSaveButton());
+    expect(fixture.componentInstance.isDirty()).toBe(false);
+    for (const e of (data()!.value as any).layouts) {
+      expect(Object.getOwnPropertySymbols(e)).toHaveLength(0);
+    }
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup({ entries: [E1] });
+    expect(container.querySelector('form')).toBeNull();
   });
 });

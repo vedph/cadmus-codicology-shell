@@ -3,30 +3,26 @@
   <div>
     <mat-form-field class="long-text">
       <mat-label>formula</mat-label>
-      <input matInput [formControl]="formulaCtl" />
+      <input matInput [formField]="form.formula" />
       <mat-hint>{{ hint() }}</mat-hint>
       @if (
-        $any(formulaCtl).errors?.required &&
-        (formulaCtl.dirty || formulaCtl.touched)
+        form.formula().getError("required") &&
+        (form.formula().dirty() || form.formula().touched())
       ) {
         <mat-error>formula required</mat-error>
       }
       @if (
-        $any(formulaCtl).errors?.maxLength &&
-        (formulaCtl.dirty || formulaCtl.touched)
+        form.formula().getError("maxLength") &&
+        (form.formula().dirty() || form.formula().touched())
       ) {
         <mat-error>formula too long</mat-error>
       }
       @if (
-        $any(formulaCtl).errors?.formulaErrors &&
-        (formulaCtl.dirty || formulaCtl.touched)
+        formulaErrors().length &&
+        (form.formula().dirty() || form.formula().touched())
       ) {
         <mat-error>
-          @for (
-            e of $any(formulaCtl).errors!.formulaErrors!;
-            track e;
-            let i = $index
-          ) {
+          @for (e of formulaErrors(); track $index; let i = $index) {
             @if (i > 0) {
               <span>&#x25b3;</span>
             }
@@ -49,7 +45,7 @@
   <!-- viewer -->
   <div id="viewer">
     <cod-layout-view
-      [attr.formula]="formulaCtl.value"
+      [attr.formula]="form.formula().value()"
       style="width: 100%; height: 900px; border: 1px solid silver"
     ></cod-layout-view>
   </div>
@@ -60,7 +56,7 @@
       <mat-expansion-panel-header>
         <mat-panel-title>dimensions</mat-panel-title>
         <mat-panel-description>{{
-          dimensionsCtl.value.length
+          form.dimensions().value().length
         }}</mat-panel-description>
       </mat-expansion-panel-header>
       <div class="form-row">
@@ -95,13 +91,13 @@
         </thead>
         <tbody>
           @for (
-            d of dimensionsCtl.value;
+            d of form.dimensions().value();
             track d;
             let i = $index;
             let first = $first;
             let last = $last
           ) {
-            <tr [class.selected]="d === edited">
+            <tr [class.selected]="d === edited()">
               <td class="fit-width">
                 <button
                   type="button"
@@ -144,9 +140,9 @@
               <td>{{ d.value }}</td>
               <td>{{ d.unit }}</td>
               <td class="vertical-center">
-                @if (editedOrdinalIndex === i) {
+                @if (editedOrdinalIndex() === i) {
                   <cadmus-cod-ordinal-editor
-                    [ordinal]="editedOrdinalValue"
+                    [ordinal]="editedOrdinalValue()"
                     (ordinalChange)="saveOrdinal($event!)"
                     (cancelEdit)="closeOrdinal()"
                   />
@@ -166,16 +162,16 @@
           }
         </tbody>
       </table>
-      @if (edited) {
+      @if (edited()) {
         <fieldset>
-          <mat-expansion-panel [expanded]="edited" [disabled]="!edited">
+          <mat-expansion-panel [expanded]="!!edited()" [disabled]="!edited()">
             <mat-expansion-panel-header>
               <mat-panel-title
-                >dimension #{{ editedIndex + 1 }}</mat-panel-title
+                >dimension #{{ editedIndex() + 1 }}</mat-panel-title
               >
             </mat-expansion-panel-header>
             <cadmus-physical-dimension
-              [dimension]="edited"
+              [dimension]="edited()"
               [unitEntries]="unitEntries()"
               [tagEntries]="tagEntries()"
               [unitDisabled]="true"
@@ -202,7 +198,7 @@
       type="button"
       mat-icon-button
       matTooltip="Accept changes"
-      [disabled]="form.invalid || form.pristine"
+      [disabled]="form().invalid() || !form().dirty()"
       (click)="save()"
     >
       <mat-icon class="mat-primary">check_circle</mat-icon>

@@ -1,13 +1,11 @@
 import {
-  ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
-import {
-  FormControl,
-  FormBuilder,
-  FormGroup,
-  UntypedFormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  linkedSignal,
+  signal,
+} from '@angular/core';
 import { take } from 'rxjs/operators';
 import { TitleCasePipe } from '@angular/common';
 
@@ -22,25 +20,21 @@ import {
 import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { NgxToolsSignalValidators } from '@myrmidon/ngx-tools';
 import { MatExpansionModule } from '@angular/material/expansion';
 
 import { DialogService } from '@myrmidon/ngx-mat-tools';
-import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 import {
   CodLocationPipe,
   CodLocationRangePipe,
 } from '@myrmidon/cadmus-cod-location';
 
-import {
-  ThesauriSet,
-  ThesaurusEntry,
-  EditedObject,
-} from '@myrmidon/cadmus-core';
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
   HelpLinkComponent,
+  copyFormValue,
 } from '@myrmidon/cadmus-ui';
 
 import {
@@ -49,6 +43,15 @@ import {
   COD_LAYOUTS_PART_TYPEID,
 } from '../cod-layouts-part';
 import { CodLayoutEditorComponent } from '../cod-layout-editor/cod-layout-editor.component';
+
+interface CodLayoutsPartControls {
+  entries: CodLayout[];
+}
+
+function toDraft(part?: CodLayoutsPart | null): CodLayoutsPartControls {
+  // copy: the form tags the objects in its arrays
+  return { entries: copyFormValue(part?.layouts || []) };
+}
 
 /**
  * CodLayoutsPart editor component.
@@ -61,8 +64,6 @@ import { CodLayoutEditorComponent } from '../cod-layout-editor/cod-layout-editor
   styleUrls: ['./cod-layouts-part.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
     MatCard,
     MatCardHeader,
     MatCardAvatar,
@@ -83,112 +84,52 @@ import { CodLayoutEditorComponent } from '../cod-layout-editor/cod-layout-editor
   ],
 })
 export class CodLayoutsPartComponent
-  extends ModelEditorComponentBase<CodLayoutsPart>
-  implements OnInit
-{
+  extends ModelEditorComponentBase<CodLayoutsPart> {
+  private readonly _dialogService = inject(DialogService);
+
   public readonly editedIndex = signal<number>(-1);
   public readonly editedLayout = signal<CodLayout | undefined>(undefined);
 
   // cod-layout-tags
-  public readonly tagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly tagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-layout-tags']?.entries,
+  );
   // cod-layout-ruling-techniques
-  public readonly rulTechEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly rulTechEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-layout-ruling-techniques']?.entries,
+  );
   // cod-layout-derolez
-  public readonly drzEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly drzEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-layout-derolez']?.entries,
+  );
   // cod-layout-prickings
-  public readonly prkEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly prkEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-layout-prickings']?.entries,
+  );
   // decorated-count-ids
-  public readonly cntIdEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly cntIdEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['decorated-count-ids']?.entries,
+  );
   // decorated-count-tags
-  public readonly cntTagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly cntTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['decorated-count-tags']?.entries,
+  );
 
-  public entries: FormControl<CodLayout[]>;
 
-  constructor(
-    authService: AuthJwtService,
-    formBuilder: FormBuilder,
-    private _dialogService: DialogService,
-  ) {
-    super(authService, formBuilder);
-    // form
-    this.entries = formBuilder.control([], {
-      validators: NgxToolsValidators.strictMinLengthValidator(1),
-      nonNullable: true,
-    });
-  }
-
-  public override ngOnInit(): void {
-    super.ngOnInit();
-  }
-
-  protected buildForm(formBuilder: FormBuilder): FormGroup | UntypedFormGroup {
-    return formBuilder.group({
-      entries: this.entries,
-    });
-  }
-
-  private updateThesauri(thesauri: ThesauriSet): void {
-    let key = 'cod-layout-tags';
-    if (this.hasThesaurus(key)) {
-      this.tagEntries.set(thesauri[key].entries);
-    } else {
-      this.tagEntries.set(undefined);
-    }
-    key = 'cod-layout-ruling-techniques';
-    if (this.hasThesaurus(key)) {
-      this.rulTechEntries.set(thesauri[key].entries);
-    } else {
-      this.rulTechEntries.set(undefined);
-    }
-    key = 'cod-layout-derolez';
-    if (this.hasThesaurus(key)) {
-      this.drzEntries.set(thesauri[key].entries);
-    } else {
-      this.drzEntries.set(undefined);
-    }
-    key = 'cod-layout-prickings';
-    if (this.hasThesaurus(key)) {
-      this.prkEntries.set(thesauri[key].entries);
-    } else {
-      this.prkEntries.set(undefined);
-    }
-    key = 'decorated-count-ids';
-    if (this.hasThesaurus(key)) {
-      this.cntIdEntries.set(thesauri[key].entries);
-    } else {
-      this.cntIdEntries.set(undefined);
-    }
-    key = 'decorated-count-tags';
-    if (this.hasThesaurus(key)) {
-      this.cntTagEntries.set(thesauri[key].entries);
-    } else {
-      this.cntTagEntries.set(undefined);
-    }
-  }
-
-  private updateForm(part?: CodLayoutsPart | null): void {
-    if (!part) {
-      this.form.reset();
-      return;
-    }
-    this.entries.setValue(part.layouts || []);
-    this.form.markAsPristine();
-  }
-
-  protected override onDataSet(data?: EditedObject<CodLayoutsPart>): void {
-    // thesauri
-    if (data?.thesauri) {
-      this.updateThesauri(data.thesauri);
-    }
-
-    // form
-    this.updateForm(data?.value);
-  }
+  private readonly _draft = linkedSignal(() => toDraft(this.data()?.value));
+  public readonly form = this.createForm(this._draft, (p) => {
+    NgxToolsSignalValidators.strictMinLength(p.entries, 1);
+  });
 
   protected getValue(): CodLayoutsPart {
-    let part = this.getEditedPart(COD_LAYOUTS_PART_TYPEID) as CodLayoutsPart;
-    part.layouts = this.entries.value || [];
+    const part = this.getEditedPart(COD_LAYOUTS_PART_TYPEID) as CodLayoutsPart;
+    part.layouts = copyFormValue(this._draft().entries);
     return part;
+  }
+
+  private setEntries(entries: CodLayout[]): void {
+    this.form.entries().value.set(entries);
+    this.form.entries().markAsDirty();
   }
 
   public addLayout(): void {
@@ -210,7 +151,7 @@ export class CodLayoutsPartComponent
   }
 
   public onLayoutChange(layout: CodLayout): void {
-    const layouts = [...this.entries.value];
+    const layouts = [...this.form.entries().value()];
 
     if (this.editedIndex() > -1) {
       layouts.splice(this.editedIndex(), 1, layout);
@@ -218,7 +159,7 @@ export class CodLayoutsPartComponent
       layouts.push(layout);
     }
 
-    this.entries.setValue(layouts);
+    this.setEntries(layouts);
     this.editLayout(null);
   }
 
@@ -228,9 +169,9 @@ export class CodLayoutsPartComponent
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          const entries = [...this.entries.value];
+          const entries = [...this.form.entries().value()];
           entries.splice(index, 1);
-          this.entries.setValue(entries);
+          this.setEntries(entries);
         }
       });
   }
@@ -239,21 +180,21 @@ export class CodLayoutsPartComponent
     if (index < 1) {
       return;
     }
-    const entry = this.entries.value[index];
-    const entries = [...this.entries.value];
+    const entry = this.form.entries().value()[index];
+    const entries = [...this.form.entries().value()];
     entries.splice(index, 1);
     entries.splice(index - 1, 0, entry);
-    this.entries.setValue(entries);
+    this.setEntries(entries);
   }
 
   public moveLayoutDown(index: number): void {
-    if (index + 1 >= this.entries.value.length) {
+    if (index + 1 >= this.form.entries().value().length) {
       return;
     }
-    const entry = this.entries.value[index];
-    const entries = [...this.entries.value];
+    const entry = this.form.entries().value()[index];
+    const entries = [...this.form.entries().value()];
     entries.splice(index, 1);
     entries.splice(index + 1, 0, entry);
-    this.entries.setValue(entries);
+    this.setEntries(entries);
   }
 }

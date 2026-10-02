@@ -1,25 +1,26 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
+  inject,
   input,
+  linkedSignal,
   model,
   output,
   signal,
+  untracked,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { form, FormField, maxLength } from '@angular/forms/signals';
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  copyFormValue,
+  isImplicitSubmission,
+  setFieldFromChild,
+} from '@myrmidon/cadmus-ui';
 import { DocReference } from '@myrmidon/cadmus-refs-doc-references';
 
-import { debounceTime, take } from 'rxjs';
+import { take } from 'rxjs';
 
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -39,7 +40,7 @@ import {
 } from '@myrmidon/cadmus-refs-lookup';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
 import {
-  NgxToolsValidators,
+  NgxToolsSignalValidators,
   FlatLookupPipe,
 } from '@myrmidon/ngx-tools';
 import {
@@ -58,14 +59,35 @@ import { CodHandDescriptionComponent } from '../cod-hand-description/cod-hand-de
 import { CodHandInstanceComponent } from '../cod-hand-instance/cod-hand-instance.component';
 import { CodHandSubscriptionComponent } from '../cod-hand-subscription/cod-hand-subscription.component';
 
+interface CodHandControls {
+  eid: string;
+  name: string;
+  ids: AssertedCompositeId[];
+  descriptions: CodHandDescription[];
+  instances: CodHandInstance[];
+  subscriptions: CodHandSubscription[];
+  references: DocReference[];
+}
+
+function toDraft(hand?: CodHand): CodHandControls {
+  return {
+    eid: hand?.eid || '',
+    name: hand?.name || '',
+    ids: copyFormValue(hand?.ids || []),
+    descriptions: copyFormValue(hand?.descriptions || []),
+    instances: copyFormValue(hand?.instances || []),
+    subscriptions: copyFormValue(hand?.subscriptions || []),
+    references: copyFormValue(hand?.references || []),
+  };
+}
+
 @Component({
   selector: 'cadmus-cod-hand',
   templateUrl: './cod-hand.component.html',
   styleUrls: ['./cod-hand.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatFormField,
     MatLabel,
     MatInput,
@@ -88,7 +110,16 @@ import { CodHandSubscriptionComponent } from '../cod-hand-subscription/cod-hand-
   ],
 })
 export class CodHandComponent {
+  private readonly _dialogService = inject(DialogService);
+
   public readonly hand = model<CodHand>();
+
+  private readonly _draft = linkedSignal(() => toDraft(this.hand()));
+  public readonly form = form(this._draft, (p) => {
+    maxLength(p.eid, 100);
+    maxLength(p.name, 50);
+    NgxToolsSignalValidators.strictMinLength(p.instances, 1);
+  });
 
   // thesauri from description:
   // cod-hand-sign-types
@@ -126,15 +157,6 @@ export class CodHandComponent {
 
   public readonly editorClose = output();
 
-  public eid: FormControl<string | null>;
-  public name: FormControl<string | null>;
-  public ids: FormControl<AssertedCompositeId[]>;
-  public descriptions: FormControl<CodHandDescription[]>;
-  public instances: FormControl<CodHandInstance[]>;
-  public subscriptions: FormControl<CodHandSubscription[]>;
-  public references: FormControl<DocReference[]>;
-  public form: FormGroup;
-
   public readonly editedDscIndex = signal<number>(-1);
   public readonly editedDsc = signal<CodHandDescription | undefined>(undefined);
 
@@ -146,92 +168,39 @@ export class CodHandComponent {
     undefined,
   );
 
-  public dscKeys: string[];
+  // the sorted keys of the descriptions
+  public readonly dscKeys = computed<string[]>(() =>
+    this.form
+      .descriptions()
+      .value()
+      .filter((d) => d.key)
+      .map((d) => d.key!)
+      .sort(),
+  );
 
-  constructor(
-    formBuilder: FormBuilder,
-    private _dialogService: DialogService,
-  ) {
-    this.dscKeys = [];
-    // form
-    this.eid = formBuilder.control(null, Validators.maxLength(100));
-    this.name = formBuilder.control(null, Validators.maxLength(50));
-    this.ids = formBuilder.control([], { nonNullable: true });
-    this.descriptions = formBuilder.control([], { nonNullable: true });
-    this.instances = formBuilder.control([], {
-      validators: NgxToolsValidators.strictMinLengthValidator(1),
-      nonNullable: true,
-    });
-    this.subscriptions = formBuilder.control([], { nonNullable: true });
-    this.references = formBuilder.control([], { nonNullable: true });
-    this.form = formBuilder.group({
-      eid: this.eid,
-      name: this.name,
-      ids: this.ids,
-      descriptions: this.descriptions,
-      instances: this.instances,
-      subscriptions: this.subscriptions,
-      references: this.references,
-    });
-
+  constructor() {
+    // new hand: clear the interaction state
     effect(() => {
-      this.updateForm(this.hand());
+      this.hand();
+      untracked(() => this.form().reset());
     });
-
-    // whenever descriptions change, update their keys list
-    this.descriptions.valueChanges
-      .pipe(debounceTime(200), takeUntilDestroyed())
-      .subscribe((value) => {
-        this.updateDscKeys(value);
-      });
-  }
-
-  private updateDscKeys(descriptions: CodHandDescription[]): void {
-    const keys: string[] = descriptions.length
-      ? descriptions.filter((d) => d.key).map((d) => d.key!)
-      : [];
-    keys.sort();
-    this.dscKeys = keys;
-  }
-
-  private updateForm(hand: CodHand | undefined): void {
-    if (!hand) {
-      this.form.reset();
-      this.dscKeys = [];
-      return;
-    }
-
-    this.eid.setValue(hand.eid || null);
-    this.name.setValue(hand.name || null);
-    this.ids.setValue(hand.ids || []);
-    this.descriptions.setValue(hand.descriptions || []);
-    this.instances.setValue(hand.instances || []);
-    this.subscriptions.setValue(hand.subscriptions || []);
-    this.references.setValue(hand.references || []);
-    this.updateDscKeys(this.descriptions.value);
-    this.form.markAsPristine();
   }
 
   private getHand(): CodHand {
+    const draft = this._draft();
     return {
-      eid: this.eid.value?.trim(),
-      name: this.name.value?.trim(),
-      ids: this.ids.value?.length ? this.ids.value : undefined,
-      descriptions: this.descriptions.value,
-      instances: this.instances.value || [],
-      subscriptions: this.subscriptions.value?.length
-        ? this.subscriptions.value
-        : undefined,
-      references: this.references.value?.length
-        ? this.references.value
-        : undefined,
+      eid: draft.eid.trim() || undefined,
+      name: draft.name.trim() || undefined,
+      ids: draft.ids.length ? copyFormValue(draft.ids) : undefined,
+      descriptions: copyFormValue(draft.descriptions),
+      instances: copyFormValue(draft.instances),
+      subscriptions: draft.subscriptions.length ? copyFormValue(draft.subscriptions) : undefined,
+      references: draft.references.length ? copyFormValue(draft.references) : undefined,
     };
   }
 
   public onIdsChange(ids: AssertedCompositeId[]): void {
-    this.ids.setValue(ids);
-    this.ids.updateValueAndValidity();
-    this.ids.markAsDirty();
+    setFieldFromChild(this.form.ids, copyFormValue(ids || []));
   }
 
   //#region descriptions
@@ -253,16 +222,15 @@ export class CodHandComponent {
   }
 
   public onDescriptionChange(dsc: CodHandDescription): void {
-    const descriptions = [...this.descriptions.value];
+    const descriptions = [...this.form.descriptions().value()];
     if (this.editedDscIndex() > -1) {
       descriptions.splice(this.editedDscIndex(), 1, dsc);
     } else {
       descriptions.push(dsc);
     }
 
-    this.descriptions.setValue(descriptions);
-    this.descriptions.updateValueAndValidity();
-    this.descriptions.markAsDirty();
+    this.form.descriptions().value.set(descriptions);
+    this.form.descriptions().markAsDirty();
     this.editDescription(null);
   }
 
@@ -272,11 +240,10 @@ export class CodHandComponent {
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          const descriptions = [...this.descriptions.value];
+          const descriptions = [...this.form.descriptions().value()];
           descriptions.splice(index, 1);
-          this.descriptions.setValue(descriptions);
-          this.descriptions.updateValueAndValidity();
-          this.descriptions.markAsDirty();
+          this.form.descriptions().value.set(descriptions);
+          this.form.descriptions().markAsDirty();
         }
       });
   }
@@ -285,26 +252,24 @@ export class CodHandComponent {
     if (index < 1) {
       return;
     }
-    const item = this.descriptions.value[index];
-    const items = [...this.descriptions.value];
+    const item = this.form.descriptions().value()[index];
+    const items = [...this.form.descriptions().value()];
     items.splice(index, 1);
     items.splice(index - 1, 0, item);
-    this.descriptions.setValue(items);
-    this.descriptions.updateValueAndValidity();
-    this.descriptions.markAsDirty();
+    this.form.descriptions().value.set(items);
+    this.form.descriptions().markAsDirty();
   }
 
   public moveDescriptionDown(index: number): void {
-    if (index + 1 >= this.descriptions.value.length) {
+    if (index + 1 >= this.form.descriptions().value().length) {
       return;
     }
-    const item = this.descriptions.value[index];
-    const items = [...this.descriptions.value];
+    const item = this.form.descriptions().value()[index];
+    const items = [...this.form.descriptions().value()];
     items.splice(index, 1);
     items.splice(index + 1, 0, item);
-    this.descriptions.setValue(items);
-    this.descriptions.updateValueAndValidity();
-    this.descriptions.markAsDirty();
+    this.form.descriptions().value.set(items);
+    this.form.descriptions().markAsDirty();
   }
   //#endregion
 
@@ -328,15 +293,14 @@ export class CodHandComponent {
   }
 
   public onInstanceChange(instance: CodHandInstance): void {
-    const instances = [...this.instances.value];
+    const instances = [...this.form.instances().value()];
     if (this.editedIstIndex() > -1) {
       instances.splice(this.editedIstIndex(), 1, instance);
     } else {
       instances.push(instance);
     }
-    this.instances.setValue(instances);
-    this.instances.updateValueAndValidity();
-    this.instances.markAsDirty();
+    this.form.instances().value.set(instances);
+    this.form.instances().markAsDirty();
     this.editInstance(null);
   }
 
@@ -346,11 +310,10 @@ export class CodHandComponent {
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          const items = [...this.instances.value];
+          const items = [...this.form.instances().value()];
           items.splice(index, 1);
-          this.instances.setValue(items);
-          this.instances.updateValueAndValidity();
-          this.instances.markAsDirty();
+          this.form.instances().value.set(items);
+          this.form.instances().markAsDirty();
         }
       });
   }
@@ -359,26 +322,24 @@ export class CodHandComponent {
     if (index < 1) {
       return;
     }
-    const item = this.instances.value[index];
-    const items = [...this.instances.value];
+    const item = this.form.instances().value()[index];
+    const items = [...this.form.instances().value()];
     items.splice(index, 1);
     items.splice(index - 1, 0, item);
-    this.instances.setValue(items);
-    this.instances.updateValueAndValidity();
-    this.instances.markAsDirty();
+    this.form.instances().value.set(items);
+    this.form.instances().markAsDirty();
   }
 
   public moveInstanceDown(index: number): void {
-    if (index + 1 >= this.instances.value.length) {
+    if (index + 1 >= this.form.instances().value().length) {
       return;
     }
-    const item = this.instances.value[index];
-    const items = [...this.instances.value];
+    const item = this.form.instances().value()[index];
+    const items = [...this.form.instances().value()];
     items.splice(index, 1);
     items.splice(index + 1, 0, item);
-    this.instances.setValue(items);
-    this.instances.updateValueAndValidity();
-    this.instances.markAsDirty();
+    this.form.instances().value.set(items);
+    this.form.instances().markAsDirty();
   }
   //#endregion
 
@@ -406,15 +367,14 @@ export class CodHandComponent {
   }
 
   public onSubscriptionChange(subscription: CodHandSubscription): void {
-    const subscriptions = [...this.subscriptions.value];
+    const subscriptions = [...this.form.subscriptions().value()];
     if (this.editedSubIndex() > -1) {
       subscriptions.splice(this.editedSubIndex(), 1, subscription);
     } else {
       subscriptions.push(subscription);
     }
-    this.subscriptions.setValue(subscriptions);
-    this.subscriptions.updateValueAndValidity();
-    this.subscriptions.markAsDirty();
+    this.form.subscriptions().value.set(subscriptions);
+    this.form.subscriptions().markAsDirty();
     this.editSubscription(null);
   }
 
@@ -424,11 +384,10 @@ export class CodHandComponent {
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          const items = [...this.subscriptions.value];
+          const items = [...this.form.subscriptions().value()];
           items.splice(index, 1);
-          this.subscriptions.setValue(items);
-          this.subscriptions.updateValueAndValidity();
-          this.subscriptions.markAsDirty();
+          this.form.subscriptions().value.set(items);
+          this.form.subscriptions().markAsDirty();
         }
       });
   }
@@ -437,44 +396,52 @@ export class CodHandComponent {
     if (index < 1) {
       return;
     }
-    const item = this.subscriptions.value[index];
-    const items = [...this.subscriptions.value];
+    const item = this.form.subscriptions().value()[index];
+    const items = [...this.form.subscriptions().value()];
     items.splice(index, 1);
     items.splice(index - 1, 0, item);
-    this.subscriptions.setValue(items);
-    this.subscriptions.updateValueAndValidity();
-    this.subscriptions.markAsDirty();
+    this.form.subscriptions().value.set(items);
+    this.form.subscriptions().markAsDirty();
   }
 
   public moveSubscriptionDown(index: number): void {
-    if (index + 1 >= this.subscriptions.value.length) {
+    if (index + 1 >= this.form.subscriptions().value().length) {
       return;
     }
-    const item = this.subscriptions.value[index];
-    const items = [...this.subscriptions.value];
+    const item = this.form.subscriptions().value()[index];
+    const items = [...this.form.subscriptions().value()];
     items.splice(index, 1);
     items.splice(index + 1, 0, item);
-    this.subscriptions.setValue(items);
-    this.subscriptions.updateValueAndValidity();
-    this.subscriptions.markAsDirty();
+    this.form.subscriptions().value.set(items);
+    this.form.subscriptions().markAsDirty();
   }
   //#endregion
 
   public onReferencesChange(references: DocReference[]): void {
-    this.references.setValue(references);
-    this.references.updateValueAndValidity();
-    this.references.markAsDirty();
+    setFieldFromChild(this.form.references, copyFormValue(references || []));
   }
 
   public cancel(): void {
     this.editorClose.emit();
   }
 
-  public save(): void {
-    if (this.form.invalid) {
+  public onEnterKey(event: Event): void {
+    if (
+      !isImplicitSubmission(event) ||
+      this.form().invalid() ||
+      !this.form().dirty()
+    ) {
       return;
     }
-    const hand = this.getHand();
-    this.hand.set(hand);
+    event.preventDefault();
+    this.save();
+  }
+
+  public save(): void {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
+      return;
+    }
+    this.hand.set(this.getHand());
   }
 }

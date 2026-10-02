@@ -3,18 +3,19 @@ import {
   Component,
   effect,
   input,
+  linkedSignal,
   model,
-  OnDestroy,
+  untracked,
 } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import {
-  FormArray,
-  FormBuilder,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import { debounceTime, Subscription } from 'rxjs';
+  applyEach,
+  form,
+  FormField,
+  maxLength,
+  required,
+} from '@angular/forms/signals';
+import { debounceTime } from 'rxjs';
 
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -34,6 +35,45 @@ export interface CodImage {
   copyright?: string;
 }
 
+interface CodImageControls {
+  type: string;
+  id: string;
+  sourceId: string;
+  label: string;
+  copyright: string;
+}
+
+interface CodImagesControls {
+  images: CodImageControls[];
+}
+
+// maps an image into a fresh row object, so that the form never adopts
+// (and tags) the caller's own objects
+function toImageControls(image?: CodImage): CodImageControls {
+  return {
+    type: image?.type || '',
+    id: image?.id || '',
+    sourceId: image?.sourceId || '',
+    label: image?.label || '',
+    copyright: image?.copyright || '',
+  };
+}
+
+function toDraft(images: CodImage[] | undefined | null): CodImagesControls {
+  return { images: (images || []).map((i) => toImageControls(i)) };
+}
+
+function toImages(draft: CodImagesControls): CodImage[] | undefined {
+  const images = draft.images.map((g) => ({
+    type: g.type.trim(),
+    id: g.id.trim(),
+    sourceId: g.sourceId.trim() || undefined,
+    label: g.label.trim() || undefined,
+    copyright: g.copyright.trim() || undefined,
+  }));
+  return images.length ? images : undefined;
+}
+
 /**
  * A set of manuscript-related images.
  */
@@ -43,8 +83,7 @@ export interface CodImage {
   styleUrls: ['./cod-images.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatButton,
     MatIcon,
     MatIconButton,
@@ -57,10 +96,7 @@ export interface CodImage {
     MatInput,
   ],
 })
-export class CodImagesComponent implements OnDestroy {
-  private _subs: Subscription[];
-  private _dropNextInput?: boolean;
-
+export class CodImagesComponent {
   /**
    * The images edited.
    */
@@ -69,144 +105,100 @@ export class CodImagesComponent implements OnDestroy {
   // cod-image-types
   public readonly typeEntries = input<ThesaurusEntry[]>();
 
-  public imagesArr: FormArray;
-  public form: FormGroup;
+  /**
+   * The editable draft, derived from `images`. `previous` tells an external
+   * change apart from the echo of our own save: when the incoming images
+   * are just what the current draft maps to, keep the draft, which may
+   * differ from them (e.g. untrimmed text being typed).
+   */
+  private readonly _draft = linkedSignal<
+    CodImage[] | undefined,
+    CodImagesControls
+  >({
+    source: () => this.images(),
+    computation: (images, previous) =>
+      previous &&
+      JSON.stringify(images) === JSON.stringify(toImages(previous.value))
+        ? previous.value
+        : toDraft(images),
+  });
 
-  constructor(private _formBuilder: FormBuilder) {
-    this._subs = [];
-    // form
-    this.imagesArr = _formBuilder.array([]);
-    this.form = _formBuilder.group({
-      imagesArr: this.imagesArr,
+  public readonly form = form(this._draft, (p) => {
+    applyEach(p.images, (image) => {
+      required(image.type);
+      maxLength(image.type, 50);
+      required(image.id);
+      maxLength(image.id, 100);
+      maxLength(image.sourceId, 300);
+      maxLength(image.label, 100);
+      maxLength(image.copyright, 100);
     });
+  });
 
+  constructor() {
+    // the draft mirrors the bound images again: clear interaction state
     effect(() => {
-      if (this._dropNextInput) {
-        this._dropNextInput = false;
-        return;
-      }
-      this.updateForm(this.images());
+      const draft = this._draft();
+      untracked(() => {
+        if (this.isDraftInSync(draft)) {
+          this.form().reset();
+        }
+      });
     });
+
+    // autosave edits, once the draft has diverged from the bound images
+    toObservable(this._draft)
+      .pipe(debounceTime(300), takeUntilDestroyed())
+      .subscribe(() => {
+        if (!this.isDraftInSync(this._draft())) {
+          this.emitImagesChange();
+        }
+      });
   }
 
-  private unsubscribeEntries(): void {
-    for (let i = 0; i < this._subs.length; i++) {
-      this._subs[i].unsubscribe();
-    }
-  }
-
-  public ngOnDestroy(): void {
-    this.unsubscribeEntries();
-  }
-
-  private updateForm(images: CodImage[] | undefined | null): void {
-    this.imagesArr.clear();
-    if (images?.length) {
-      for (let image of images) {
-        const g = this.getImageGroup(image);
-        this.imagesArr.controls.push(g);
-        this._subs.push(
-          g.valueChanges.pipe(debounceTime(300)).subscribe((_) => {
-            this.emitImagesChange();
-          }),
-        );
-      }
-    }
-  }
-
-  private getImageGroup(item?: CodImage): FormGroup {
-    return this._formBuilder.group({
-      type: this._formBuilder.control(item?.type, [
-        Validators.required,
-        Validators.maxLength(50),
-      ]),
-      id: this._formBuilder.control(item?.id, [
-        Validators.required,
-        Validators.maxLength(100),
-      ]),
-      sourceId: this._formBuilder.control(
-        item?.sourceId,
-        Validators.maxLength(300),
-      ),
-      label: this._formBuilder.control(item?.label, Validators.maxLength(100)),
-      copyright: this._formBuilder.control(
-        item?.copyright,
-        Validators.maxLength(100),
-      ),
-    });
+  private isDraftInSync(draft: CodImagesControls): boolean {
+    return JSON.stringify(draft) === JSON.stringify(toDraft(this.images()));
   }
 
   public addImage(item?: CodImage): void {
-    const g = this.getImageGroup(item);
-    this._subs.push(
-      g.valueChanges.pipe(debounceTime(300)).subscribe((_) => {
-        this.emitImagesChange();
-      }),
-    );
-    this.imagesArr.push(g);
-    this.imagesArr.markAsDirty();
+    this._draft.update((v) => ({
+      images: [...v.images, toImageControls(item)],
+    }));
   }
 
   public removeImage(index: number): void {
-    this._subs[index].unsubscribe();
-    this._subs.splice(index, 1);
-
-    this.imagesArr.removeAt(index);
-    this.imagesArr.markAsDirty();
-
+    this._draft.update((v) => ({
+      images: v.images.filter((_, i) => i !== index),
+    }));
     this.emitImagesChange();
   }
 
-  private swapArrElems(a: any[], i: number, j: number): void {
-    if (i === j) {
-      return;
-    }
-    const t = a[i];
-    a[i] = a[j];
-    a[j] = t;
+  private moveImage(index: number, target: number): void {
+    this._draft.update((v) => {
+      const images = [...v.images];
+      const item = images[index];
+      images.splice(index, 1);
+      images.splice(target, 0, item);
+      return { images };
+    });
+    this.emitImagesChange();
   }
 
   public moveImageUp(index: number): void {
     if (index < 1) {
       return;
     }
-    const item = this.imagesArr.controls[index];
-    this.imagesArr.removeAt(index);
-    this.imagesArr.insert(index - 1, item);
-    this.swapArrElems(this._subs, index, index - 1);
-    this.imagesArr.markAsDirty();
-    this.emitImagesChange();
+    this.moveImage(index, index - 1);
   }
 
   public moveImageDown(index: number): void {
-    if (index + 1 >= this.imagesArr.length) {
+    if (index + 1 >= this._draft().images.length) {
       return;
     }
-    const item = this.imagesArr.controls[index];
-    this.imagesArr.removeAt(index);
-    this.imagesArr.insert(index + 1, item);
-    this.swapArrElems(this._subs, index, index + 1);
-    this.imagesArr.markAsDirty();
-    this.emitImagesChange();
-  }
-
-  private getImages(): CodImage[] | undefined {
-    const entries: CodImage[] = [];
-    for (let i = 0; i < this.imagesArr.length; i++) {
-      const g = this.imagesArr.at(i) as FormGroup;
-      entries.push({
-        type: g.controls['type'].value?.trim(),
-        id: g.controls['id'].value?.trim(),
-        sourceId: g.controls['sourceId'].value?.trim(),
-        label: g.controls['label'].value?.trim(),
-        copyright: g.controls['copyright'].value?.trim(),
-      });
-    }
-    return entries.length ? entries : undefined;
+    this.moveImage(index, index + 1);
   }
 
   private emitImagesChange(): void {
-    this._dropNextInput = true;
-    this.images.set(this.getImages());
+    this.images.set(toImages(this._draft()));
   }
 }

@@ -3,18 +3,12 @@ import {
   Component,
   effect,
   input,
+  linkedSignal,
   model,
-  OnInit,
   output,
+  untracked,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { form, FormField, maxLength, required } from '@angular/forms/signals';
 
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -30,17 +24,41 @@ import {
 import { Assertion, AssertionComponent } from '@myrmidon/cadmus-refs-assertion';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  copyFormValue,
+  isImplicitSubmission,
+  setFieldFromChild,
+} from '@myrmidon/cadmus-ui';
 
 import { CodDecorationArtistStyle } from '../cod-decorations-part';
 import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
+
+interface CodDecorationArtistStyleControls {
+  name: string;
+  hasChronotope: boolean;
+  chronotope: AssertedChronotope | null;
+  hasAssertion: boolean;
+  assertion: Assertion | null;
+}
+
+function toDraft(
+  style?: CodDecorationArtistStyle,
+): CodDecorationArtistStyleControls {
+  return {
+    name: style?.name || '',
+    hasChronotope: !!style?.chronotope,
+    chronotope: copyFormValue(style?.chronotope) || null,
+    hasAssertion: !!style?.assertion,
+    assertion: copyFormValue(style?.assertion) || null,
+  };
+}
 
 @Component({
   selector: 'cadmus-cod-decoration-artist-style',
   templateUrl: './cod-decoration-artist-style.component.html',
   styleUrls: ['./cod-decoration-artist-style.component.css'],
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatFormField,
     MatLabel,
     MatInput,
@@ -54,7 +72,7 @@ import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CodDecorationArtistStyleComponent implements OnInit {
+export class CodDecorationArtistStyleComponent {
   public readonly style = model<CodDecorationArtistStyle>();
 
   // chronotope-tags
@@ -72,70 +90,37 @@ export class CodDecorationArtistStyleComponent implements OnInit {
 
   public readonly editorClose = output();
 
-  public name: FormControl<string | null>;
-  public hasChronotope: FormControl<boolean>;
-  public chronotope: FormControl<AssertedChronotope | null>;
-  public hasAssertion: FormControl<boolean>;
-  public assertion: FormControl<Assertion | null>;
-  public form: FormGroup;
+  private readonly _draft = linkedSignal(() => toDraft(this.style()));
+  public readonly form = form(this._draft, (p) => {
+    required(p.name);
+    maxLength(p.name, 50);
+  });
 
-  constructor(formBuilder: FormBuilder) {
-    this.name = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
-    this.hasChronotope = formBuilder.control(false, { nonNullable: true });
-    this.chronotope = formBuilder.control(null);
-    this.hasAssertion = formBuilder.control(false, { nonNullable: true });
-    this.assertion = formBuilder.control(null);
-    this.form = formBuilder.group({
-      name: this.name,
-      hasChronotope: this.hasChronotope,
-      chronotope: this.chronotope,
-      hasAssertion: this.hasAssertion,
-      assertion: this.assertion,
-    });
-
+  constructor() {
+    // new style: clear the interaction state
     effect(() => {
-      this.updateForm(this.style());
+      this.style();
+      untracked(() => this.form().reset());
     });
-  }
-
-  ngOnInit(): void {}
-
-  private updateForm(style: CodDecorationArtistStyle | undefined): void {
-    if (!style) {
-      this.form.reset();
-      return;
-    }
-    this.name.setValue(style.name);
-    this.hasChronotope.setValue(style.chronotope ? true : false);
-    this.hasAssertion.setValue(style.assertion ? true : false);
-    this.chronotope.setValue(style.chronotope || null);
-    this.assertion.setValue(style.assertion || null);
-    this.form.markAsPristine();
   }
 
   public onChronotopeChange(chronotope: AssertedChronotope | undefined): void {
-    this.chronotope.setValue(chronotope || null);
-    this.chronotope.updateValueAndValidity();
-    this.chronotope.markAsDirty();
+    setFieldFromChild(this.form.chronotope, copyFormValue(chronotope) || null);
   }
 
   public onAssertionChange(assertion: Assertion | undefined): void {
-    this.assertion.setValue(assertion || null);
-    this.assertion.updateValueAndValidity();
-    this.assertion.markAsDirty();
+    setFieldFromChild(this.form.assertion, copyFormValue(assertion) || null);
   }
 
   private getStyle(): CodDecorationArtistStyle {
+    const draft = this._draft();
     return {
-      name: this.name.value?.trim() || '',
-      chronotope: this.hasChronotope.value
-        ? this.chronotope.value || undefined
+      name: draft.name.trim(),
+      chronotope: draft.hasChronotope
+        ? copyFormValue(draft.chronotope) || undefined
         : undefined,
-      assertion: this.hasAssertion.value
-        ? this.assertion.value || undefined
+      assertion: draft.hasAssertion
+        ? copyFormValue(draft.assertion) || undefined
         : undefined,
     };
   }
@@ -144,8 +129,21 @@ export class CodDecorationArtistStyleComponent implements OnInit {
     this.editorClose.emit();
   }
 
+  public onEnterKey(event: Event): void {
+    if (
+      !isImplicitSubmission(event) ||
+      this.form().invalid() ||
+      !this.form().dirty()
+    ) {
+      return;
+    }
+    event.preventDefault();
+    this.save();
+  }
+
   public save(): void {
-    if (this.form.invalid) {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
       return;
     }
     this.style.set(this.getStyle());

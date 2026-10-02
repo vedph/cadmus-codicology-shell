@@ -1,21 +1,15 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   input,
+  linkedSignal,
   model,
   output,
-  computed,
+  untracked,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { disabled, form, FormField, maxLength } from '@angular/forms/signals';
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 
 import { MatSelect } from '@angular/material/select';
@@ -26,16 +20,37 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  copyFormValue,
+  isImplicitSubmission,
+} from '@myrmidon/cadmus-ui';
 
 import { CodShelfmark } from '../cod-shelfmarks-part';
+
+interface CodShelfmarkControls {
+  tag: string;
+  city: string;
+  library: string;
+  fund: string;
+  location: string;
+}
+
+function toDraft(model?: CodShelfmark): CodShelfmarkControls {
+  return {
+    tag: model?.tag || '',
+    city: model?.city || '',
+    library: model?.library || '',
+    fund: model?.fund || '',
+    location: model?.location || '',
+  };
+}
 
 @Component({
   selector: 'cadmus-cod-shelfmark-editor',
   templateUrl: './cod-shelfmark-editor.component.html',
   styleUrls: ['./cod-shelfmark-editor.component.css'],
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatFormField,
     MatLabel,
     MatSelect,
@@ -50,6 +65,17 @@ import { CodShelfmark } from '../cod-shelfmarks-part';
 })
 export class CodShelfmarkEditorComponent {
   public readonly shelfmark = model<CodShelfmark>();
+
+  private readonly _draft = linkedSignal(() => toDraft(this.shelfmark()));
+  public readonly form = form(this._draft, (p) => {
+    maxLength(p.tag, 50);
+    maxLength(p.city, 100);
+    maxLength(p.library, 100);
+    maxLength(p.fund, 100);
+    maxLength(p.location, 100);
+    // the city is extracted from the library, when configured
+    disabled(p.city, () => this.shouldExtractCity());
+  });
 
   // cod-shelfmark-tags
   public readonly tagEntries = input<ThesaurusEntry[]>();
@@ -68,13 +94,6 @@ export class CodShelfmarkEditorComponent {
 
   public editorClose = output();
 
-  public tag: FormControl<string | null>;
-  public city: FormControl<string | null>;
-  public library: FormControl<string | null>;
-  public fund: FormControl<string | null>;
-  public location: FormControl<string | null>;
-  public form: FormGroup;
-
   /**
    * Computed signal to determine if city should be extracted from library.
    */
@@ -84,76 +103,28 @@ export class CodShelfmarkEditorComponent {
     return pattern !== undefined && entries !== undefined && entries.length > 0;
   });
 
-  constructor(formBuilder: FormBuilder) {
-    this.tag = formBuilder.control(null, Validators.maxLength(50));
-    this.city = formBuilder.control(null, Validators.maxLength(100));
-    this.library = formBuilder.control(null, Validators.maxLength(100));
-    this.fund = formBuilder.control(null, Validators.maxLength(100));
-    this.location = formBuilder.control(null, Validators.maxLength(100));
-
-    this.form = formBuilder.group({
-      tag: this.tag,
-      city: this.city,
-      library: this.library,
-      fund: this.fund,
-      location: this.location,
-    });
-
-    // convert library value changes to a signal
-    const libraryValue = toSignal(
-      this.library.valueChanges.pipe(takeUntilDestroyed()),
-    );
-
-    // effect to update form when shelfmark changes
-    effect(() => {
-      this.updateForm(this.shelfmark());
-    });
-
-    // effect to handle city control state and extraction based on cityFromLibPattern
-    effect(() => {
-      const shouldExtract = this.shouldExtractCity();
-
-      // handle city control state
-      if (shouldExtract) {
-        this.city.disable();
-
-        // extract city from current library value if available
-        const value = this.library.value;
-        if (value) {
-          this.extractAndSetCity(value);
-        }
-      } else {
-        this.city.enable();
-      }
-    });
-
-    // effect to extract city from library when library value changes
-    effect(() => {
-      const value = libraryValue();
-      if (this.shouldExtractCity() && value) {
-        this.extractAndSetCity(value);
-      }
-    });
-  }
-
-  private updateForm(model: CodShelfmark | undefined): void {
-    if (!model) {
-      this.form.reset();
-      return;
-    }
-
-    this.tag.setValue(model.tag || null);
-    this.city.setValue(model.city || null);
-    this.library.setValue(model.library || null);
-    this.fund.setValue(model.fund || null);
-    this.location.setValue(model.location || null);
-    this.form.markAsPristine();
-  }
-
   /**
    * Extract city from library name using the cityFromLibPattern.
    * @param libraryId The library ID to look up in libEntries.
    */
+  constructor() {
+    // new shelfmark: clear the interaction state
+    effect(() => {
+      this.shelfmark();
+      untracked(() => this.form().reset());
+    });
+
+    // extract the city from the library, when configured: whenever the
+    // library changes (also when a shelfmark is bound) or extraction gets
+    // enabled
+    effect(() => {
+      const library = this.form.library().value();
+      if (this.shouldExtractCity() && library) {
+        untracked(() => this.extractAndSetCity(library));
+      }
+    });
+  }
+
   private extractAndSetCity(libraryId: string): void {
     const pattern = this.cityFromLibPattern();
     const entries = this.libEntries();
@@ -175,10 +146,10 @@ export class CodShelfmarkEditorComponent {
 
       if (match && match[1]) {
         // set the city value to the first captured group
-        this.city.setValue(match[1].trim(), { emitEvent: false });
+        this.form.city().value.set(match[1].trim());
       } else {
         // clear city if no match found
-        this.city.setValue(null, { emitEvent: false });
+        this.form.city().value.set('');
       }
     } catch (error) {
       console.error('Invalid cityFromLibPattern regex:', error);
@@ -188,13 +159,14 @@ export class CodShelfmarkEditorComponent {
   }
 
   private getModel(): CodShelfmark {
+    const draft = this._draft();
     return {
-      tag: this.tag.value?.trim() || undefined,
-      // get city value directly from control (even if disabled)
-      city: this.city.value?.trim() || undefined,
-      library: this.library.value?.trim() || undefined,
-      fund: this.fund.value?.trim() || undefined,
-      location: this.location.value?.trim() || undefined,
+      tag: draft.tag.trim() || undefined,
+      // the city value is saved also when disabled
+      city: draft.city.trim() || undefined,
+      library: draft.library.trim() || undefined,
+      fund: draft.fund.trim() || undefined,
+      location: draft.location.trim() || undefined,
     };
   }
 
@@ -202,8 +174,21 @@ export class CodShelfmarkEditorComponent {
     this.editorClose.emit();
   }
 
+  public onEnterKey(event: Event): void {
+    if (
+      !isImplicitSubmission(event) ||
+      this.form().invalid() ||
+      !this.form().dirty()
+    ) {
+      return;
+    }
+    event.preventDefault();
+    this.save();
+  }
+
   public save(): void {
-    if (this.form.invalid) {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
       return;
     }
     this.shelfmark.set(this.getModel());

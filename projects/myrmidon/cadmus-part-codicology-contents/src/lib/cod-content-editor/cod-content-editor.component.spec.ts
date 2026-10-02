@@ -99,7 +99,7 @@ describe('CodContentEditorComponent', () => {
   // the content's own field with the specified name, excluding homonymous
   // fields of the nested work ID editor
   const textbox = (name: RegExp) => {
-    const workId = screen.getByRole('group', { name: 'work ID' });
+    const workId = screen.getByRole('group', { name: 'authority ID' });
     return screen
       .getAllByRole('textbox', { name })
       .find((e) => !workId.contains(e)) as HTMLInputElement;
@@ -192,6 +192,8 @@ describe('CodContentEditorComponent', () => {
   it('should save gaps edited in the gaps editor', async () => {
     const { user, model } = await setup(CONTENT);
 
+    // the gaps editor is in a collapsed panel
+    await user.click(screen.getByRole('button', { name: /^gaps/ }));
     await user.click(screen.getByRole('button', { name: /^gap$/ }));
     for (const [which, citation] of [
       ['start', 'Inf.3.1'],
@@ -368,5 +370,59 @@ describe('CodContentEditorComponent', () => {
     );
 
     expect(editorClose).toHaveBeenCalled();
+  });
+
+  // signal forms regressions
+
+  it('should ignore a child echo of its states', async () => {
+    const { fixture } = await setup(CONTENT);
+
+    fixture.componentInstance.onStateIdsChange(['complete']);
+    fixture.componentInstance.onGapsChange(undefined);
+    fixture.detectChanges();
+
+    expect(saveButton()).toBeDisabled();
+  });
+
+  it('should get dirty for a real child change', async () => {
+    const { fixture } = await setup(CONTENT);
+
+    fixture.componentInstance.onStateIdsChange(['complete', 'mutilated']);
+    fixture.detectChanges();
+
+    expect(saveButton()).toBeEnabled();
+  });
+
+  it('should save on Enter in a text input when dirty', async () => {
+    const { user, model } = await setup(CONTENT);
+
+    await user.type(textbox(/^author/), 'x{Enter}');
+
+    expect(model()!.author).toBe('Dantex');
+  });
+
+  it('should not save on Enter while pristine', async () => {
+    const { user, model } = await setup(CONTENT);
+
+    await user.type(textbox(/^author/), '{Enter}');
+
+    expect(model()).toBe(CONTENT);
+  });
+
+  it('should save annotations without the form identity tags', async () => {
+    const { user, model } = await setup(CONTENT);
+
+    await user.type(textbox(/^author/), 'x');
+    await user.click(saveButton());
+
+    for (const a of model()!.annotations!) {
+      expect(Object.getOwnPropertySymbols(a)).toHaveLength(0);
+    }
+    expect(model()!.annotations![0]).not.toBe(CONTENT.annotations![0]);
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup(CONTENT);
+    expect(container.querySelector('form')).toBeNull();
   });
 });

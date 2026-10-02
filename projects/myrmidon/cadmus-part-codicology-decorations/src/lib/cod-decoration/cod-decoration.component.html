@@ -1,24 +1,24 @@
-<form [formGroup]="form" (submit)="save(); $event.stopPropagation()">
+<div (keydown.enter)="onEnterKey($event)">
   <div class="form-row">
     <!-- id -->
     <mat-form-field>
       <mat-label>ID</mat-label>
-      <input matInput [formControl]="eid" />
-      @if ($any(eid).errors?.required && (eid.dirty || eid.touched)) {
+      <input matInput [formField]="form.eid" />
+      @if (form.eid().getError("required") && (form.eid().dirty() || form.eid().touched())) {
         <mat-error>EID required</mat-error>
       }
-      @if ($any(eid).errors?.maxLength && (eid.dirty || eid.touched)) {
+      @if (form.eid().getError("maxLength") && (form.eid().dirty() || form.eid().touched())) {
         <mat-error>EID too long</mat-error>
       }
     </mat-form-field>
     <!-- name -->
     <mat-form-field>
       <mat-label>name</mat-label>
-      <input matInput [formControl]="name" />
-      @if ($any(name).errors?.required && (name.dirty || name.touched)) {
+      <input matInput [formField]="form.name" />
+      @if (form.name().getError("required") && (form.name().dirty() || form.name().touched())) {
         <mat-error>name required</mat-error>
       }
-      @if ($any(name).errors?.maxLength && (name.dirty || name.touched)) {
+      @if (form.name().getError("maxLength") && (form.name().dirty() || form.name().touched())) {
         <mat-error>name too long</mat-error>
       }
     </mat-form-field>
@@ -29,7 +29,7 @@
     <legend>features</legend>
     <cadmus-ui-flag-set
       [flags]="decFlags()"
-      [checkedIds]="flags.value"
+      [checkedIds]="form.flags().value()"
       (checkedIdsChange)="onFlagIdsChange($event)"
     />
   </fieldset>
@@ -38,8 +38,8 @@
   <br />
   <mat-form-field class="long-text">
     <mat-label>note</mat-label>
-    <textarea rows="3" matInput [formControl]="note"></textarea>
-    @if ($any(note).errors?.maxLength && (note.dirty || note.touched)) {
+    <textarea rows="3" matInput [formField]="form.note"></textarea>
+    @if (form.note().getError("maxLength") && (form.note().dirty() || form.note().touched())) {
       <mat-error>note too long</mat-error>
     }
   </mat-form-field>
@@ -60,7 +60,7 @@
       [refTagEntries]="refTagEntries()"
       [refTypeEntries]="refTypeEntries()"
       [lookupProviderOptions]="lookupProviderOptions()"
-      [chronotopes]="chronotopes.value"
+      [chronotopes]="form.chronotopes().value()"
       (chronotopesChange)="onChronotopesChange($event!)"
     />
   </mat-expansion-panel>
@@ -80,7 +80,7 @@
       [typeEntries]="refTypeEntries()"
       [lookupProviderOptions]="lookupProviderOptions()"
       defaultPicker="lookup"
-      [references]="references.value"
+      [references]="form.references().value()"
       (referencesChange)="onReferencesChange($event)"
     />
   </mat-expansion-panel>
@@ -106,7 +106,7 @@
           <mat-icon>add_circle</mat-icon> artist
         </button>
       </div>
-      @if (artists.value && artists.value.length) {
+      @if (form.artists().value() && form.artists().value().length) {
         <table>
           <thead>
             <tr>
@@ -118,7 +118,7 @@
           </thead>
           <tbody>
             @for (
-              artist of artists.value;
+              artist of form.artists().value();
               track artist;
               let i = $index;
               let first = $first;
@@ -175,7 +175,7 @@
       }
       @if (editedArtist()) {
         <mat-expansion-panel
-          [expanded]="editedArtist()"
+          [expanded]="!!editedArtist()"
           [disabled]="!editedArtist()"
         >
           <mat-expansion-panel-header>
@@ -213,7 +213,7 @@
         <mat-icon>add_circle</mat-icon> element
       </button>
     </div>
-    @if (elements.value && elements.value.length) {
+    @if (form.elements().value() && form.elements().value().length) {
       <table>
         <thead>
           <tr>
@@ -227,7 +227,7 @@
         </thead>
         <tbody>
           @for (
-            element of elements.value;
+            element of form.elements().value();
             track element;
             let i = $index;
             let first = $first;
@@ -289,7 +289,7 @@
     <!-- ELEMENT -->
     <mat-expansion-panel
       [disabled]="!editedElement()"
-      [expanded]="editedElement()"
+      [expanded]="!!editedElement()"
     >
       <fieldset>
         <legend>element</legend>
@@ -332,13 +332,14 @@
       <mat-icon class="mat-warn">clear</mat-icon>
     </button>
     <button
-      type="submit"
+      type="button"
       mat-flat-button
       class="mat-primary"
       matTooltip="Accept decoration changes"
-      [disabled]="form.invalid || form.pristine"
+      [disabled]="form().invalid() || !form().dirty()"
+      (click)="save()"
     >
       <mat-icon>check_circle</mat-icon> decoration
     </button>
   </div>
-</form>
+</div>

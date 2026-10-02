@@ -1,10 +1,10 @@
-<form [formGroup]="form" (submit)="save(); $event.stopPropagation()">
+<div (keydown.enter)="onEnterKey($event)">
   <div>
     <!-- range -->
     <cadmus-cod-location
       label="ranges"
       [required]="true"
-      [location]="ranges.value"
+      [location]="form.ranges().value()"
       (locationChange)="onLocationChange($event)"
     />
   </div>
@@ -18,7 +18,7 @@
         [refTagEntries]="refTagEntries()"
         [refTypeEntries]="refTypeEntries()"
         [lookupProviderOptions]="lookupProviderOptions()"
-        [chronotope]="chronotope.value || undefined"
+        [chronotope]="form.chronotope().value() || undefined"
         (chronotopeChange)="onChronotopeChange($event!)"
       />
     </fieldset>
@@ -27,8 +27,8 @@
   <div style="margin-top: 8px">
     <mat-form-field class="long-text">
       <mat-label>note</mat-label>
-      <input matInput [formControl]="note" />
-      @if ($any(note).errors?.maxLength && (note.dirty || note.touched)) {
+      <input matInput [formField]="form.note" />
+      @if (form.note().getError("maxLength") && (form.note().dirty() || form.note().touched())) {
         <mat-error>note too long</mat-error>
       }
     </mat-form-field>
@@ -45,13 +45,14 @@
       <mat-icon class="mat-warn">clear</mat-icon>
     </button>
     <button
-      type="submit"
+      type="button"
       mat-icon-button
       matTooltip="Accept changes"
-      [disabled]="form.invalid || form.pristine"
+      [disabled]="form().invalid() || !form().dirty()"
+      (click)="save()"
     >
       <mat-icon class="mat-primary">check_circle</mat-icon>
     </button>
     palimpsest
   </div>
-</form>
+</div>

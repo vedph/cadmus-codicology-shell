@@ -4,17 +4,12 @@ import {
   computed,
   effect,
   input,
+  linkedSignal,
   model,
   output,
+  untracked,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { form, FormField, maxLength, required } from '@angular/forms/signals';
 
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -25,7 +20,7 @@ import { MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { NgxToolsSignalValidators } from '@myrmidon/ngx-tools';
 import {
   CodLocationRange,
   CodLocationComponent,
@@ -48,6 +43,11 @@ import {
 import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  copyFormValue,
+  isImplicitSubmission,
+  setFieldFromChild,
+} from '@myrmidon/cadmus-ui';
 
 import { CodEdit } from '../cod-edits-part';
 
@@ -58,13 +58,48 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   };
 }
 
+interface CodEditControls {
+  eid: string;
+  type: string;
+  tag: string;
+  authorIds: AssertedCompositeId[];
+  techniques: string[];
+  ranges: CodLocationRange[];
+  position: string;
+  language: string;
+  hasDate: boolean;
+  date: HistoricalDateModel | null;
+  colors: string[];
+  description: string;
+  text: string;
+  references: DocReference[];
+}
+
+function toDraft(edit?: CodEdit): CodEditControls {
+  return {
+    eid: edit?.eid || '',
+    type: edit?.type || '',
+    tag: edit?.tag || '',
+    authorIds: copyFormValue(edit?.authorIds || []),
+    techniques: [...(edit?.techniques || [])],
+    ranges: copyFormValue(edit?.ranges || []),
+    position: edit?.position || '',
+    language: edit?.language || '',
+    hasDate: edit?.date ? true : false,
+    date: copyFormValue(edit?.date) || null,
+    colors: [...(edit?.colors || [])],
+    description: edit?.description || '',
+    text: edit?.text || '',
+    references: copyFormValue(edit?.references || []),
+  };
+}
+
 @Component({
   selector: 'cadmus-cod-edit-editor',
   templateUrl: './cod-edit-editor.component.html',
   styleUrls: ['./cod-edit-editor.component.css'],
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatFormField,
     MatLabel,
     MatInput,
@@ -85,6 +120,19 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
 })
 export class CodEditEditorComponent {
   public readonly edit = model<CodEdit>();
+
+  private readonly _draft = linkedSignal(() => toDraft(this.edit()));
+  public readonly form = form(this._draft, (p) => {
+    maxLength(p.eid, 100);
+    required(p.type);
+    maxLength(p.type, 50);
+    maxLength(p.tag, 50);
+    NgxToolsSignalValidators.strictMinLength(p.ranges, 1);
+    maxLength(p.position, 50);
+    maxLength(p.language, 50);
+    maxLength(p.description, 1000);
+    maxLength(p.text, 1000);
+  });
 
   // cod-edit-colors
   public readonly colorEntries = input<ThesaurusEntry[]>();
@@ -115,22 +163,6 @@ export class CodEditEditorComponent {
 
   public editorClose = output();
 
-  public eid: FormControl<string | null>;
-  public type: FormControl<string | null>;
-  public tag: FormControl<string | null>;
-  public authorIds: FormControl<AssertedCompositeId[]>;
-  public techniques: FormControl<string[]>;
-  public ranges: FormControl<CodLocationRange[]>;
-  public position: FormControl<string | null>;
-  public language: FormControl<string | null>;
-  public hasDate: FormControl<boolean>;
-  public date: FormControl<HistoricalDateModel | null>;
-  public colors: FormControl<string[]>;
-  public description: FormControl<string | null>;
-  public text: FormControl<string | null>;
-  public references: FormControl<DocReference[]>;
-  public form: FormGroup;
-
   // flags
   public readonly colorFlags = computed<Flag[]>(() => {
     return this.colorEntries()?.map(entryToFlag) || [];
@@ -139,146 +171,85 @@ export class CodEditEditorComponent {
     return this.techEntries()?.map(entryToFlag) || [];
   });
 
-  constructor(formBuilder: FormBuilder) {
-    // form
-    this.eid = formBuilder.control(null, Validators.maxLength(100));
-    this.type = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
-    this.tag = formBuilder.control(null, Validators.maxLength(50));
-    this.authorIds = formBuilder.control([], { nonNullable: true });
-    this.techniques = formBuilder.control([], { nonNullable: true });
-    this.ranges = formBuilder.control([], {
-      validators: NgxToolsValidators.strictMinLengthValidator(1),
-      nonNullable: true,
-    });
-    this.position = formBuilder.control(null, Validators.maxLength(50));
-    this.language = formBuilder.control(null, Validators.maxLength(50));
-    this.colors = formBuilder.control([], { nonNullable: true });
-    this.hasDate = formBuilder.control(false, { nonNullable: true });
-    this.date = formBuilder.control(null);
-    this.description = formBuilder.control(null, Validators.maxLength(1000));
-    this.text = formBuilder.control(null, Validators.maxLength(1000));
-    this.references = formBuilder.control([], { nonNullable: true });
-    this.form = formBuilder.group({
-      eid: this.eid,
-      type: this.type,
-      tag: this.tag,
-      authorIds: this.authorIds,
-      techniques: this.techniques,
-      ranges: this.ranges,
-      position: this.position,
-      language: this.language,
-      hasDate: this.hasDate,
-      date: this.date,
-      colors: this.colors,
-      description: this.description,
-      text: this.text,
-      references: this.references,
-    });
-
+  constructor() {
+    // new edit: clear the interaction state
     effect(() => {
-      const edit = this.edit();
-      this.updateForm(edit);
+      this.edit();
+      untracked(() => this.form().reset());
     });
-  }
-
-  private updateForm(edit: CodEdit | undefined): void {
-    if (!edit) {
-      this.form.reset();
-      return;
-    }
-
-    this.eid.setValue(edit.eid || null);
-    this.type.setValue(edit.type);
-    this.tag.setValue(edit.tag || null);
-    this.authorIds.setValue(edit.authorIds || []);
-    this.techniques.setValue(edit.techniques || []);
-    this.ranges.setValue(edit.ranges || []);
-    this.position.setValue(edit.position || null);
-    this.language.setValue(edit.language || null);
-    this.hasDate.setValue(edit.date ? true : false);
-    this.date.setValue(edit.date || null);
-    this.colors.setValue(edit.colors || []);
-    this.description.setValue(edit.description || null);
-    this.text.setValue(edit.text || null);
-    this.references.setValue(edit.references || []);
-    this.form.markAsPristine();
   }
 
   private getEdit(): CodEdit {
+    const draft = this._draft();
     return {
-      eid: this.eid.value?.trim(),
-      type: this.type.value?.trim() || '',
-      tag: this.tag.value?.trim(),
-      authorIds: this.authorIds.value?.length
-        ? this.authorIds.value
-        : undefined,
-      techniques: this.techniques.value,
-      ranges: this.ranges.value,
-      position: this.position.value?.trim() || undefined,
-      language: this.language.value?.trim() || undefined,
-      date: this.hasDate.value ? this.date.value || undefined : undefined,
-      colors: this.colors.value,
-      description: this.description.value?.trim(),
-      text: this.text.value?.trim(),
-      references: this.references.value?.length
-        ? this.references.value
-        : undefined,
+      eid: draft.eid.trim() || undefined,
+      type: draft.type.trim(),
+      tag: draft.tag.trim() || undefined,
+      authorIds: draft.authorIds.length ? copyFormValue(draft.authorIds) : undefined,
+      techniques: [...draft.techniques],
+      ranges: copyFormValue(draft.ranges),
+      position: draft.position.trim() || undefined,
+      language: draft.language.trim() || undefined,
+      date: draft.hasDate ? copyFormValue(draft.date) || undefined : undefined,
+      colors: [...draft.colors],
+      description: draft.description.trim() || undefined,
+      text: draft.text.trim() || undefined,
+      references: draft.references.length ? copyFormValue(draft.references) : undefined,
     };
   }
 
   public onAuthorIdsChange(ids: AssertedCompositeId[]): void {
-    this.authorIds.setValue(ids);
-    this.authorIds.updateValueAndValidity();
-    this.authorIds.markAsDirty();
+    setFieldFromChild(this.form.authorIds, copyFormValue(ids || []));
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
     // ignore emissions not changing the location (the location editor
     // emits its initial value when initialized)
     if (
-      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
-      (CodLocationParser.rangesToString(this.ranges.value) || '')
+      (CodLocationParser.rangesToString(ranges) || '') ===
+      (CodLocationParser.rangesToString(this.form.ranges().value()) || '')
     ) {
       return;
     }
-    this.ranges.setValue(ranges || []);
-    this.ranges.updateValueAndValidity();
-    this.ranges.markAsDirty();
+    this.form.ranges().value.set(copyFormValue(ranges || []));
+    this.form.ranges().markAsDirty();
   }
 
   public onColorIdsChange(ids: string[]): void {
-    this.colors.setValue(ids);
-    this.colors.updateValueAndValidity();
-    this.colors.markAsDirty();
+    setFieldFromChild(this.form.colors, [...(ids || [])]);
   }
 
   public onTechniqueIdsChange(ids: string[]): void {
-    this.techniques.setValue(ids);
-    this.techniques.updateValueAndValidity();
-    this.techniques.markAsDirty();
+    setFieldFromChild(this.form.techniques, [...(ids || [])]);
   }
 
   public onReferencesChange(references: DocReference[]): void {
-    this.references.setValue(references);
-    this.references.updateValueAndValidity();
-    this.references.markAsDirty();
+    setFieldFromChild(this.form.references, copyFormValue(references || []));
   }
 
   public onDateChange(date: HistoricalDateModel): void {
-    this.date.setValue(date);
-    this.date.updateValueAndValidity();
-    this.date.markAsDirty();
+    setFieldFromChild(this.form.date, copyFormValue(date) || null);
   }
 
   public cancel(): void {
     this.editorClose.emit();
   }
 
+  public onEnterKey(event: Event): void {
+    if (
+      !isImplicitSubmission(event) ||
+      this.form().invalid() ||
+      !this.form().dirty()
+    ) {
+      return;
+    }
+    event.preventDefault();
+    this.save();
+  }
+
   public save(): void {
-    if (this.form.invalid) {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
       return;
     }
     this.edit.set(this.getEdit());

@@ -124,4 +124,38 @@ describe('CodQuireDescriptionComponent', () => {
 
     expect(descriptionCancel).toHaveBeenCalled();
   });
+
+  // signal forms regressions
+
+  it('should keep the same note set object while editing', async () => {
+    const { fixture } = await setup(DESCRIPTION);
+    const set = fixture.componentInstance.initialNoteSet();
+
+    fixture.componentInstance.onSetChange({
+      ...set,
+      notes: { ...set.notes, 1: 'first' },
+    });
+    fixture.detectChanges();
+
+    // the note set component resets on a new object
+    expect(fixture.componentInstance.initialNoteSet()).toBe(set);
+    expect(saveButton()).toBeEnabled();
+  });
+
+  it('should ignore an echo of its notes', async () => {
+    const { fixture } = await setup(DESCRIPTION);
+
+    fixture.componentInstance.onSetChange(
+      structuredClone(fixture.componentInstance.initialNoteSet()),
+    );
+    fixture.componentInstance.onFeatureCheckedIdsChange(['reg']);
+    fixture.detectChanges();
+
+    expect(saveButton()).toBeDisabled();
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup(DESCRIPTION);
+    expect(container.querySelector('form')).toBeNull();
+  });
 });

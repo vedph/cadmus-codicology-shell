@@ -9,7 +9,7 @@ export interface CodUnit {
   eid?: string;
   tag?: string;
   material: string;
-  format: string;
+  format?: string;
   state?: string;
   ranges: CodLocationRange[];
   chronotopes?: AssertedChronotope[];
@@ -98,7 +98,7 @@ export const COD_MATERIAL_DSC_PART_SCHEMA = {
         anyOf: [
           {
             type: 'object',
-            required: ['material', 'format', 'ranges'],
+            required: ['material', 'ranges'],
             properties: {
               eid: {
                 type: 'string',

@@ -3,19 +3,14 @@ import {
   Component,
   effect,
   input,
+  linkedSignal,
   model,
-  OnDestroy,
-  OnInit,
+  untracked,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ValidatorFn,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { AbstractControl, ValidatorFn } from '@angular/forms';
+import { form, FormField, validate } from '@angular/forms/signals';
+import { debounceTime } from 'rxjs/operators';
 
 import { MatFormField, MatError } from '@angular/material/form-field';
 import { MatSelect } from '@angular/material/select';
@@ -23,36 +18,34 @@ import { MatOption } from '@angular/material/core';
 import { MatInput } from '@angular/material/input';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
-import { Subscription } from 'rxjs';
 
 /**
  * The prefix added to a free text when emitting the idChange event.
  */
 const FREE_PREFIX = '$';
 
+interface TextOrEntryControls {
+  id: string;
+}
+
+function toDraft(id: string | undefined): TextOrEntryControls {
+  return { id: id || '' };
+}
+
+function toId(draft: TextOrEntryControls, free: boolean): string {
+  return free && !draft.id.startsWith(FREE_PREFIX)
+    ? FREE_PREFIX + draft.id
+    : draft.id;
+}
+
 @Component({
   selector: 'cadmus-text-or-entry-selector',
   templateUrl: './text-or-entry-selector.component.html',
   styleUrls: ['./text-or-entry-selector.component.css'],
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormField,
-    MatSelect,
-    MatOption,
-    MatError,
-    MatInput,
-  ],
+  imports: [FormField, MatFormField, MatSelect, MatOption, MatError, MatInput],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TextOrEntrySelectorComponent implements OnInit, OnDestroy {
-  private _sub?: Subscription;
-  private _id: string | undefined;
-  private _dropNextInput?: boolean;
-
-  public idCtl: FormControl<string | null>;
-  public form: FormGroup;
-
+export class TextOrEntrySelectorComponent {
   /**
    * The label for the entry.
    */
@@ -64,8 +57,9 @@ export class TextOrEntrySelectorComponent implements OnInit, OnDestroy {
   public readonly id = model<string>();
 
   /**
-   * The validators for the text or entry (required, maxLength,
-   * pattern).
+   * The validators for the text or entry (e.g. `Validators.required`,
+   * `Validators.maxLength(n)`, `Validators.pattern(p)`). They are applied
+   * to the entered value: each error they return is shown by its key.
    */
   public readonly validators = input<ValidatorFn[]>();
 
@@ -79,49 +73,53 @@ export class TextOrEntrySelectorComponent implements OnInit, OnDestroy {
    */
   public readonly entries = input<ThesaurusEntry[]>();
 
-  constructor(formBuilder: FormBuilder) {
-    // form
-    this.idCtl = formBuilder.control(null);
-    this.form = formBuilder.group({
-      id: this.idCtl,
-    });
+  /**
+   * The editable draft. The echo of our own emission (possibly prefixed)
+   * keeps the draft, which holds what the user entered.
+   */
+  private readonly _draft = linkedSignal<string | undefined, TextOrEntryControls>(
+    {
+      source: () => this.id(),
+      computation: (id, previous) =>
+        previous && id === toId(previous.value, untracked(this.free))
+          ? previous.value
+          : toDraft(id),
+    },
+  );
 
+  public readonly form = form(this._draft, (p) => {
+    validate(p.id, ({ value }) => {
+      const control = { value: value() } as AbstractControl;
+      const errors = (this.validators() || [])
+        .map((fn) => fn(control))
+        .filter((e) => !!e)
+        .flatMap((e) => Object.keys(e!).map((kind) => ({ kind })));
+      return errors.length ? errors : null;
+    });
+  });
+
+  constructor() {
+    // the draft mirrors the bound ID again: clear interaction state
     effect(() => {
-      if (this._dropNextInput) {
-        this._dropNextInput = false;
-        return;
-      }
-      const id = this.id();
-      this.idCtl.setValue(id || null);
-      this.idCtl.markAsPristine();
-    });
-
-    effect(() => {
-      this.idCtl.setValidators(this.validators() || []);
-    });
-  }
-
-  private emitIdChange(): void {
-    this._dropNextInput = true;
-    this.id.set(
-      this.free() && !this.idCtl.value?.startsWith(FREE_PREFIX)
-        ? FREE_PREFIX + this.idCtl.value
-        : this.idCtl.value!,
-    );
-  }
-
-  public ngOnInit(): void {
-    this._sub = this.idCtl.valueChanges
-      .pipe(distinctUntilChanged(), debounceTime(200))
-      .subscribe((_) => {
-        this.emitIdChange();
+      const draft = this._draft();
+      untracked(() => {
+        if (this.isDraftInSync(draft)) {
+          this.form().reset();
+        }
       });
-    if (this._id) {
-      this.emitIdChange();
-    }
+    });
+
+    // emit edits, once the draft has diverged from the bound ID
+    toObservable(this._draft)
+      .pipe(debounceTime(200), takeUntilDestroyed())
+      .subscribe((draft) => {
+        if (!this.isDraftInSync(draft)) {
+          this.id.set(toId(draft, this.free()));
+        }
+      });
   }
 
-  public ngOnDestroy(): void {
-    this._sub?.unsubscribe();
+  private isDraftInSync(draft: TextOrEntryControls): boolean {
+    return draft.id === toDraft(this.id()).id;
   }
 }

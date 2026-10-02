@@ -1,12 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {
-  FormControl,
-  FormBuilder,
-  FormGroup,
-  UntypedFormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, linkedSignal } from '@angular/core';
+import { FormField, maxLength } from '@angular/forms/signals';
 
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,13 +11,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 import {
   CloseSaveButtonsComponent,
   ModelEditorComponentBase,
   HelpLinkComponent,
+  copyFormValue,
 } from '@myrmidon/cadmus-ui';
-import { EditedObject } from '@myrmidon/cadmus-core';
 
 import {
   COD_LOCATION_RANGES_PART_TYPEID,
@@ -36,6 +28,20 @@ import {
   CodLocationParser,
 } from '@myrmidon/cadmus-cod-location';
 
+interface CodLocationRangesPartControls {
+  ranges: CodLocationRange[];
+  note: string;
+}
+
+function toDraft(
+  part?: CodLocationRangesPart | null,
+): CodLocationRangesPartControls {
+  return {
+    ranges: copyFormValue(part?.ranges || []),
+    note: part?.note || '',
+  };
+}
+
 /**
  * CodLocationRangesPart editor component.
  */
@@ -43,7 +49,7 @@ import {
   selector: 'cadmus-cod-location-ranges-part',
   imports: [
     CommonModule,
-    ReactiveFormsModule,
+    FormField,
     MatButtonModule,
     MatCardModule,
     MatExpansionModule,
@@ -59,67 +65,32 @@ import {
   templateUrl: './cod-location-ranges-part.html',
   styleUrl: './cod-location-ranges-part.css',
 })
-export class CodLocationRangesPartComponent
-  extends ModelEditorComponentBase<CodLocationRangesPart>
-  implements OnInit
-{
-  public ranges: FormControl<CodLocationRange[]>;
-  public note: FormControl<string | null>;
-
-  constructor(authService: AuthJwtService, formBuilder: FormBuilder) {
-    super(authService, formBuilder);
-    // form
-    this.ranges = formBuilder.control([], { nonNullable: true });
-    this.note = formBuilder.control(null, Validators.maxLength(5000));
-  }
-
-  public override ngOnInit(): void {
-    super.ngOnInit();
-  }
-
-  protected buildForm(formBuilder: FormBuilder): FormGroup | UntypedFormGroup {
-    return formBuilder.group({
-      ranges: this.ranges,
-      note: this.note,
-    });
-  }
-
-  private updateForm(part?: CodLocationRangesPart | null): void {
-    if (!part) {
-      this.form.reset();
-      return;
-    }
-    this.ranges.setValue(part.ranges || []);
-    this.note.setValue(part.note || null);
-    this.form.markAsPristine();
-  }
-
-  protected override onDataSet(
-    data?: EditedObject<CodLocationRangesPart>,
-  ): void {
-    // form
-    this.updateForm(data?.value);
-  }
+export class CodLocationRangesPartComponent extends ModelEditorComponentBase<CodLocationRangesPart> {
+  private readonly _draft = linkedSignal(() => toDraft(this.data()?.value));
+  public readonly form = this.createForm(this._draft, (p) => {
+    maxLength(p.note, 5000);
+  });
 
   public onLocationChange(location: CodLocationRange[]): void {
     // ignore emissions not changing the location (the location editor
     // emits its initial value when initialized)
     if (
-      (CodLocationParser.rangesToString(location as CodLocationRange[] | null) || '') ===
-      (CodLocationParser.rangesToString(this.ranges.value) || '')
+      (CodLocationParser.rangesToString(location) || '') ===
+      (CodLocationParser.rangesToString(this.form.ranges().value()) || '')
     ) {
       return;
     }
-    this.ranges.setValue(location || []);
-    this.ranges.markAsDirty();
+    this.form.ranges().value.set(copyFormValue(location || []));
+    this.form.ranges().markAsDirty();
   }
 
   protected getValue(): CodLocationRangesPart {
-    let part = this.getEditedPart(
+    const part = this.getEditedPart(
       COD_LOCATION_RANGES_PART_TYPEID,
     ) as CodLocationRangesPart;
-    part.ranges = this.ranges.value || [];
-    part.note = this.note.value?.trim() || undefined;
+    const draft = this._draft();
+    part.ranges = copyFormValue(draft.ranges);
+    part.note = draft.note.trim() || undefined;
     return part;
   }
 }

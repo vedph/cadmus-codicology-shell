@@ -4,17 +4,12 @@ import {
   computed,
   effect,
   input,
+  linkedSignal,
   model,
   output,
+  untracked,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { form, FormField, maxLength, min } from '@angular/forms/signals';
 
 import {
   MatFormField,
@@ -29,7 +24,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatInput } from '@angular/material/input';
 
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { NgxToolsSignalValidators } from '@myrmidon/ngx-tools';
 import {
   CodLocationRange,
   CodLocationComponent,
@@ -42,6 +37,11 @@ import {
 import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  copyFormValue,
+  isImplicitSubmission,
+  setFieldFromChild,
+} from '@myrmidon/cadmus-ui';
 import { CodImage, CodImagesComponent } from '@myrmidon/cadmus-codicology-ui';
 import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
@@ -54,14 +54,54 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   };
 }
 
+interface CodHandInstanceControls {
+  script: ThesaurusEntry | null;
+  scripts: ThesaurusEntry[];
+  typologies: string[];
+  colors: string[];
+  ranges: CodLocationRange[];
+  rank: number | null;
+  dscKey: string;
+  chronotope: AssertedChronotope | null;
+  images: CodImage[];
+  note: string;
+}
+
+/**
+ * Instance -> draft. Scripts are resolved into the entries of the
+ * cod-hand-scripts thesaurus, or into ad hoc entries when not found.
+ */
+function toDraft(
+  model?: CodHandInstance,
+  scriptEntries?: ThesaurusEntry[],
+): CodHandInstanceControls {
+  return {
+    script: null,
+    scripts: (model?.scripts || []).map(
+      (id) =>
+        copyFormValue(scriptEntries?.find((e) => e.id === id)) ?? {
+          id: id,
+          value: id,
+        },
+    ),
+    typologies: [...(model?.typologies || [])],
+    colors: [...(model?.colors || [])],
+    ranges: copyFormValue(model?.ranges || []),
+    rank: model?.rank || 0,
+    dscKey: model?.descriptionKey || '',
+    chronotope: copyFormValue(model?.chronotope) || null,
+    images: copyFormValue(model?.images || []),
+    note: model?.note || '',
+  };
+}
+
 @Component({
   selector: 'cadmus-cod-hand-instance',
   templateUrl: './cod-hand-instance.component.html',
   styleUrls: ['./cod-hand-instance.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     MatFormField,
     MatHint,
     MatLabel,
@@ -80,6 +120,17 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
 })
 export class CodHandInstanceComponent {
   public readonly instance = model<CodHandInstance>();
+
+  private readonly _draft = linkedSignal(() =>
+    toDraft(this.instance(), this.scriptEntries()),
+  );
+  public readonly form = form(this._draft, (p) => {
+    NgxToolsSignalValidators.strictMinLength(p.scripts, 1);
+    NgxToolsSignalValidators.strictMinLength(p.typologies, 1);
+    NgxToolsSignalValidators.strictMinLength(p.ranges, 1);
+    min(p.rank, 0);
+    maxLength(p.note, 1000);
+  });
 
   /**
    * The keys of all the descriptions entered in this part.
@@ -110,18 +161,6 @@ export class CodHandInstanceComponent {
 
   public readonly editorClose = output();
 
-  public script: FormControl<ThesaurusEntry | null>;
-  public scripts: FormControl<ThesaurusEntry[]>;
-  public typologies: FormControl<string[]>;
-  public colors: FormControl<string[]>;
-  public ranges: FormControl<CodLocationRange[]>;
-  public rank: FormControl<number>;
-  public dscKey: FormControl<string | null>;
-  public chronotope: FormControl<AssertedChronotope | null>;
-  public images: FormControl<CodImage[]>;
-  public note: FormControl<string | null>;
-  public form: FormGroup;
-
   // flags
   public readonly typologyFlags = computed(
     () => this.typeEntries()?.map(entryToFlag) || [],
@@ -130,182 +169,122 @@ export class CodHandInstanceComponent {
     () => this.colorEntries()?.map(entryToFlag) || [],
   );
 
-  constructor(formBuilder: FormBuilder) {
-    // form
-    this.script = formBuilder.control(null);
-    this.scripts = formBuilder.control([], {
-      validators: NgxToolsValidators.strictMinLengthValidator(1),
-      nonNullable: true,
-    });
-    this.rank = formBuilder.control(0, { nonNullable: true });
-    this.dscKey = formBuilder.control(null);
-    this.typologies = formBuilder.control([], {
-      validators: NgxToolsValidators.strictMinLengthValidator(1),
-      nonNullable: true,
-    });
-    this.colors = formBuilder.control([], { nonNullable: true });
-    this.ranges = formBuilder.control([], {
-      validators: NgxToolsValidators.strictMinLengthValidator(1),
-      nonNullable: true,
-    });
-    this.chronotope = formBuilder.control(null);
-    this.images = formBuilder.control([], { nonNullable: true });
-    this.note = formBuilder.control(null, {
-      validators: Validators.maxLength(1000),
-    });
-    this.form = formBuilder.group({
-      scripts: this.scripts,
-      rank: this.rank,
-      dscKey: this.dscKey,
-      typologies: this.typologies,
-      colors: this.colors,
-      ranges: this.ranges,
-      chronotope: this.chronotope,
-      images: this.images,
-      note: this.note,
-    });
-
+  constructor() {
+    // new instance: clear the interaction state
     effect(() => {
-      this.updateForm(this.instance());
+      this.instance();
+      untracked(() => this.form().reset());
     });
-  }
-
-  private updateForm(model: CodHandInstance | undefined): void {
-    if (!model) {
-      this.form.reset();
-      return;
-    }
-
-    this.scripts.setValue(
-      model.scripts.map(
-        (id) =>
-          this.scriptEntries()?.find((e) => e.id === id) ?? {
-            id: id,
-            value: id,
-          },
-      ),
-    );
-    this.rank.setValue(model.rank || 0);
-    this.dscKey.setValue(model.descriptionKey || null);
-    // update the typologies control while setting typologies,
-    // because it is involved in form's validation
-    this.typologies.setValue(model.typologies);
-    this.colors.setValue(model.colors || []);
-    this.ranges.setValue(model.ranges);
-    this.chronotope.setValue(model.chronotope || null);
-    this.images.setValue(model.images || []);
-    this.note.setValue(model.note || null);
-    this.form.markAsPristine();
   }
 
   private getInstance(): CodHandInstance {
+    const draft = this._draft();
     return {
-      scripts: this.scripts.value.map((e) => e.id),
-      rank: this.rank.value ? +this.rank.value : 0,
-      descriptionKey: this.dscKey.value || undefined,
-      typologies: this.typologies.value,
-      colors: this.colors.value?.length ? this.colors.value : undefined,
-      ranges: this.ranges.value || [],
-      chronotope: this.chronotope.value || undefined,
-      images: this.images.value?.length ? this.images.value : undefined,
-      note: this.note.value || undefined,
+      scripts: draft.scripts.map((e) => e.id),
+      rank: draft.rank ? +draft.rank : 0,
+      descriptionKey: draft.dscKey || undefined,
+      typologies: [...draft.typologies],
+      colors: draft.colors.length ? [...draft.colors] : undefined,
+      ranges: copyFormValue(draft.ranges),
+      chronotope: copyFormValue(draft.chronotope) || undefined,
+      images: draft.images.length ? copyFormValue(draft.images) : undefined,
+      note: draft.note || undefined,
     };
   }
 
   public onTypologyIdsChange(ids: string[]): void {
-    this.typologies.setValue(ids);
-    this.typologies.updateValueAndValidity();
-    this.typologies.markAsDirty();
+    setFieldFromChild(this.form.typologies, [...(ids || [])]);
   }
 
   public onColorIdsChange(ids: string[]): void {
-    this.colors.setValue(ids);
-    this.colors.updateValueAndValidity();
-    this.colors.markAsDirty();
+    setFieldFromChild(this.form.colors, [...(ids || [])]);
   }
 
   public onLocationChange(ranges: CodLocationRange[] | null): void {
     // ignore emissions not changing the location (the location editor
     // emits its initial value when initialized)
     if (
-      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) || '') ===
-      (CodLocationParser.rangesToString(this.ranges.value) || '')
+      (CodLocationParser.rangesToString(ranges) || '') ===
+      (CodLocationParser.rangesToString(this.form.ranges().value()) || '')
     ) {
       return;
     }
-    this.ranges.setValue(ranges || []);
-    this.ranges.updateValueAndValidity();
-    this.ranges.markAsDirty();
+    this.form.ranges().value.set(copyFormValue(ranges || []));
+    this.form.ranges().markAsDirty();
   }
 
-  public onChronotopeChange(chronotope: AssertedChronotope) {
-    this.chronotope.setValue(chronotope);
-    this.chronotope.updateValueAndValidity();
-    this.chronotope.markAsDirty();
+  public onChronotopeChange(chronotope: AssertedChronotope | undefined): void {
+    setFieldFromChild(this.form.chronotope, copyFormValue(chronotope) || null);
   }
 
   public onImagesChange(images: CodImage[] | undefined): void {
-    this.images.setValue(images || []);
-    this.images.updateValueAndValidity();
-    this.images.markAsDirty();
+    setFieldFromChild(this.form.images, copyFormValue(images || []));
   }
 
   public addScript(): void {
-    const entry = this.script.value;
+    const entry = this.form.script().value();
     if (!entry) {
       return;
     }
-    if (this.scripts.value.some((e) => e.id === entry.id)) {
+    if (this.form.scripts().value().some((e) => e.id === entry.id)) {
       return;
     }
-    this.scripts.setValue([...this.scripts.value, entry]);
-    this.scripts.updateValueAndValidity();
-    this.scripts.markAsDirty();
+    this.form.scripts().value.set([...this.form.scripts().value(), entry]);
+    this.form.scripts().markAsDirty();
   }
 
   public deleteScript(index: number): void {
-    const scripts = [...this.scripts.value];
+    const scripts = [...this.form.scripts().value()];
     scripts.splice(index, 1);
-    this.scripts.setValue(scripts);
-    this.scripts.updateValueAndValidity();
-    this.scripts.markAsDirty();
+    this.form.scripts().value.set(scripts);
+    this.form.scripts().markAsDirty();
   }
 
   public moveScriptUp(index: number): void {
     if (index < 1) {
       return;
     }
-    const scripts = [...this.scripts.value];
+    const scripts = [...this.form.scripts().value()];
     const e = scripts[index];
     scripts[index] = scripts[index - 1];
     scripts[index - 1] = e;
-    this.scripts.setValue(scripts);
-    this.scripts.updateValueAndValidity();
-    this.scripts.markAsDirty();
+    this.form.scripts().value.set(scripts);
+    this.form.scripts().markAsDirty();
   }
 
   public moveScriptDown(index: number): void {
-    if (index + 1 >= this.scripts.value.length) {
+    if (index + 1 >= this.form.scripts().value().length) {
       return;
     }
-    const scripts = [...this.scripts.value];
+    const scripts = [...this.form.scripts().value()];
     const e = scripts[index];
     scripts[index] = scripts[index + 1];
     scripts[index + 1] = e;
-    this.scripts.setValue(scripts);
-    this.scripts.updateValueAndValidity();
-    this.scripts.markAsDirty();
+    this.form.scripts().value.set(scripts);
+    this.form.scripts().markAsDirty();
   }
 
   public cancel(): void {
     this.editorClose.emit();
   }
 
-  public save(): void {
-    if (this.form.invalid) {
+  public onEnterKey(event: Event): void {
+    if (
+      !isImplicitSubmission(event) ||
+      this.form().invalid() ||
+      !this.form().dirty()
+    ) {
       return;
     }
-    const instance = this.getInstance();
-    this.instance.set(instance);
+    event.preventDefault();
+    this.save();
+  }
+
+  public save(): void {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
+      return;
+    }
+    this.instance.set(this.getInstance());
   }
 }

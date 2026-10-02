@@ -83,10 +83,12 @@ describe('CodShelfmarkEditorComponent', () => {
   });
 
   it('should show a max length error for a too long city', async () => {
-    const { user } = await setup({ shelfmark: SHELFMARK });
+    const { user, fixture } = await setup({ shelfmark: SHELFMARK });
 
-    await user.clear(textbox(/city/));
-    await user.type(textbox(/city/), 'x'.repeat(101));
+    // the maxLength rule also sets the native attribute
+    expect(textbox(/city/)).toHaveAttribute('maxlength', '100');
+    fixture.componentInstance.form.city().value.set('x'.repeat(101));
+    await user.click(textbox(/city/));
     await user.tab();
 
     expect(saveButton()).toBeDisabled();
@@ -165,5 +167,40 @@ describe('CodShelfmarkEditorComponent', () => {
     );
 
     expect(editorClose).toHaveBeenCalled();
+  });
+
+  // signal forms regressions
+
+  it('should extract the city on binding without getting dirty', async () => {
+    const { fixture } = await setup({
+      shelfmark: { library: 'bncf', city: 'x' },
+      libEntries: LIBRARIES,
+      cityFromLibPattern: CITY_PATTERN,
+    });
+
+    expect(fixture.componentInstance.form.city().value()).toBe('Florence');
+    expect(fixture.componentInstance.form.city().disabled()).toBe(true);
+    expect(saveButton()).toBeDisabled();
+  });
+
+  it('should save on Enter in a text input when dirty', async () => {
+    const { user, model } = await setup({ shelfmark: SHELFMARK });
+
+    await user.type(textbox(/^fund/), 'x{Enter}');
+
+    expect(model()!.fund).toBe('Lat.x');
+  });
+
+  it('should not save on Enter while pristine', async () => {
+    const { user, model } = await setup({ shelfmark: SHELFMARK });
+
+    await user.type(textbox(/^fund/), '{Enter}');
+
+    expect(model()).toBe(SHELFMARK);
+  });
+
+  it('should render no form element', async () => {
+    const { container } = await setup({ shelfmark: SHELFMARK });
+    expect(container.querySelector('form')).toBeNull();
   });
 });

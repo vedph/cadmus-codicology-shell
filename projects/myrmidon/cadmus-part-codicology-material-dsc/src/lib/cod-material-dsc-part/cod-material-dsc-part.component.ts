@@ -1,17 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  OnInit,
+  computed,
+  inject,
+  linkedSignal,
   signal,
 } from '@angular/core';
-import {
-  FormControl,
-  FormBuilder,
-  FormGroup,
-  UntypedFormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
 import { take } from 'rxjs';
 import { TitleCasePipe } from '@angular/common';
 
@@ -34,21 +28,17 @@ import {
   MatExpansionPanelTitle,
 } from '@angular/material/expansion';
 
-import { NgxToolsValidators, FlatLookupPipe } from '@myrmidon/ngx-tools';
+import { NgxToolsSignalValidators, FlatLookupPipe } from '@myrmidon/ngx-tools';
 import { DialogService } from '@myrmidon/ngx-mat-tools';
-import { AuthJwtService } from '@myrmidon/auth-jwt-login';
 import { HistoricalDatePipe } from '@myrmidon/cadmus-refs-historical-date';
 import { CodLocationRangePipe } from '@myrmidon/cadmus-cod-location';
 
-import {
-  ThesauriSet,
-  ThesaurusEntry,
-  EditedObject,
-} from '@myrmidon/cadmus-core';
+import { ThesaurusEntry } from '@myrmidon/cadmus-core';
 import {
   ModelEditorComponentBase,
   CloseSaveButtonsComponent,
   HelpLinkComponent,
+  copyFormValue,
 } from '@myrmidon/cadmus-ui';
 import { LookupProviderOptions } from '@myrmidon/cadmus-refs-lookup';
 
@@ -65,6 +55,19 @@ interface CodMaterialDscPartSettings {
   lookupProviderOptions?: LookupProviderOptions;
 }
 
+interface CodMaterialDscPartControls {
+  units: CodUnit[];
+  palimpsests: CodPalimpsest[];
+}
+
+function toDraft(part?: CodMaterialDscPart | null): CodMaterialDscPartControls {
+  // copy: the form tags the objects in its arrays
+  return {
+    units: copyFormValue(part?.units || []),
+    palimpsests: copyFormValue(part?.palimpsests || []),
+  };
+}
+
 /**
  * CodMaterialDsc part editor component.
  * Thesauri: cod-unit-tags, cod-unit-materials, cod-unit-formats,
@@ -77,8 +80,6 @@ interface CodMaterialDscPartSettings {
   styleUrls: ['./cod-material-dsc-part.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
     MatCard,
     MatCardHeader,
     MatCardAvatar,
@@ -105,46 +106,46 @@ interface CodMaterialDscPartSettings {
   ],
 })
 export class CodMaterialDscPartComponent
-  extends ModelEditorComponentBase<CodMaterialDscPart>
-  implements OnInit
-{
+  extends ModelEditorComponentBase<CodMaterialDscPart> {
+  private readonly _dialogService = inject(DialogService);
+
   public readonly editedUt = signal<CodUnit | undefined>(undefined);
   public readonly editedUtIndex = signal<number>(-1);
   public readonly editedPs = signal<CodPalimpsest | undefined>(undefined);
   public readonly editedPsIndex = signal<number>(-1);
 
-  public units: FormControl<CodUnit[]>;
-  public palimpsests: FormControl<CodPalimpsest[]>;
 
   // cod-unit-tags
-  public readonly tagEntries = signal<ThesaurusEntry[] | undefined>(undefined);
+  public readonly tagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-unit-tags']?.entries,
+  );
   // cod-unit-materials
-  public readonly materialEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly materialEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-unit-materials']?.entries,
   );
   // cod-unit-formats
-  public readonly formatEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly formatEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-unit-formats']?.entries,
   );
   // cod-unit-states
-  public readonly stateEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly stateEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['cod-unit-states']?.entries,
   );
   // chronotope-tags
-  public readonly ctTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly ctTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['chronotope-tags']?.entries,
   );
   // assertion-tags
-  public readonly assTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly assTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['assertion-tags']?.entries,
   );
   // doc-reference-types
-  public readonly refTypeEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly refTypeEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['doc-reference-types']?.entries,
   );
   // doc-reference-tags
-  public readonly refTagEntries = signal<ThesaurusEntry[] | undefined>(
-    undefined,
+  public readonly refTagEntries = computed<ThesaurusEntry[] | undefined>(
+    () => this.data()?.thesauri?.['doc-reference-tags']?.entries,
   );
 
   // lookup options depending on role
@@ -152,129 +153,43 @@ export class CodMaterialDscPartComponent
     LookupProviderOptions | undefined
   >(undefined);
 
-  constructor(
-    authService: AuthJwtService,
-    formBuilder: FormBuilder,
-    private _dialogService: DialogService,
-  ) {
-    super(authService, formBuilder);
-    // form
-    this.units = formBuilder.control([], {
-      validators: NgxToolsValidators.strictMinLengthValidator(1),
-      nonNullable: true,
-    });
-    this.palimpsests = formBuilder.control([], { nonNullable: true });
-  }
+  //#region Units
+  private readonly _draft = linkedSignal(() => toDraft(this.data()?.value));
+  public readonly form = this.createForm(this._draft, (p) => {
+    NgxToolsSignalValidators.strictMinLength(p.units, 1);
+  });
 
-  public override ngOnInit(): void {
-    super.ngOnInit();
-  }
-
-  protected buildForm(formBuilder: FormBuilder): FormGroup | UntypedFormGroup {
-    return formBuilder.group({
-      units: this.units,
-      palimpsests: this.palimpsests,
-    });
-  }
-
-  private updateThesauri(thesauri: ThesauriSet): void {
-    let key = 'cod-unit-tags';
-    if (this.hasThesaurus(key)) {
-      this.tagEntries.set(thesauri[key].entries);
-    } else {
-      this.tagEntries.set(undefined);
-    }
-    key = 'cod-unit-materials';
-    if (this.hasThesaurus(key)) {
-      this.materialEntries.set(thesauri[key].entries);
-    } else {
-      this.materialEntries.set(undefined);
-    }
-    key = 'cod-unit-formats';
-    if (this.hasThesaurus(key)) {
-      this.formatEntries.set(thesauri[key].entries);
-    } else {
-      this.formatEntries.set(undefined);
-    }
-    key = 'cod-unit-states';
-    if (this.hasThesaurus(key)) {
-      this.stateEntries.set(thesauri[key].entries);
-    } else {
-      this.stateEntries.set(undefined);
-    }
-    key = 'chronotope-tags';
-    if (this.hasThesaurus(key)) {
-      this.ctTagEntries.set(thesauri[key].entries);
-    } else {
-      this.ctTagEntries.set(undefined);
-    }
-    key = 'assertion-tags';
-    if (this.hasThesaurus(key)) {
-      this.assTagEntries.set(thesauri[key].entries);
-    } else {
-      this.assTagEntries.set(undefined);
-    }
-    key = 'doc-reference-types';
-    if (this.hasThesaurus(key)) {
-      this.refTypeEntries.set(thesauri[key].entries);
-    } else {
-      this.refTypeEntries.set(undefined);
-    }
-    key = 'doc-reference-tags';
-    if (this.hasThesaurus(key)) {
-      this.refTagEntries.set(thesauri[key].entries);
-    } else {
-      this.refTagEntries.set(undefined);
-    }
-  }
-
-  private updateForm(part?: CodMaterialDscPart | null): void {
-    if (!part) {
-      this.form.reset();
-      return;
-    }
-    this.units.setValue(part.units || []);
-    this.palimpsests.setValue(part.palimpsests || []);
-    this.form.markAsPristine();
-  }
-
-  protected override onDataSet(data?: EditedObject<CodMaterialDscPart>): void {
-    // thesauri
-    if (data?.thesauri) {
-      this.updateThesauri(data.thesauri);
-    }
-    // settings
-    this._appRepository
-      ?.getSettingFor<CodMaterialDscPartSettings>(
-        COD_MATERIAL_DSC_PART_TYPEID,
-        this.identity()?.roleId || undefined,
-      )
-      .then((settings) => {
-        const options = settings?.lookupProviderOptions;
-        this.lookupProviderOptions.set(options || undefined);
-      });
-    // form
-    this.updateForm(data?.value);
+  constructor() {
+    super();
+    this.initSettings<CodMaterialDscPartSettings>(COD_MATERIAL_DSC_PART_TYPEID, (settings) =>
+      this.lookupProviderOptions.set(settings?.lookupProviderOptions || undefined),
+    );
   }
 
   protected getValue(): CodMaterialDscPart {
-    let part = this.getEditedPart(
-      COD_MATERIAL_DSC_PART_TYPEID,
-    ) as CodMaterialDscPart;
-    part.units = this.units.value || [];
-    part.palimpsests = this.palimpsests.value?.length
-      ? this.palimpsests.value
+    const part = this.getEditedPart(COD_MATERIAL_DSC_PART_TYPEID) as CodMaterialDscPart;
+    part.units = copyFormValue(this._draft().units);
+    part.palimpsests = this._draft().palimpsests.length
+      ? copyFormValue(this._draft().palimpsests)
       : undefined;
     return part;
   }
 
-  //#region Units
+  private setUnits(units: CodUnit[]): void {
+    this.form.units().value.set(units);
+    this.form.units().markAsDirty();
+  }
+
+  private setPalimpsests(palimpsests: CodPalimpsest[]): void {
+    this.form.palimpsests().value.set(palimpsests);
+    this.form.palimpsests().markAsDirty();
+  }
+
   public addUnit(): void {
     this.editUnit({
       material: this.materialEntries()?.length
         ? this.materialEntries()![0].id
         : '',
-      format: this.formatEntries()?.length ? this.formatEntries()![0].id : '',
       state: this.stateEntries()?.length ? this.stateEntries()![0].id : '',
       ranges: [],
     });
@@ -294,7 +209,7 @@ export class CodMaterialDscPartComponent
   }
 
   public onUnitChange(unit: CodUnit): void {
-    const units = [...this.units.value];
+    const units = [...this.form.units().value()];
 
     if (this.editedUtIndex() > -1) {
       units.splice(this.editedUtIndex(), 1, unit);
@@ -302,9 +217,7 @@ export class CodMaterialDscPartComponent
       units.push(unit);
     }
 
-    this.units.setValue(units);
-    this.units.updateValueAndValidity();
-    this.units.markAsDirty();
+    this.setUnits(units);
     this.editUnit(null);
   }
 
@@ -314,11 +227,9 @@ export class CodMaterialDscPartComponent
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          const units = [...this.units.value];
+          const units = [...this.form.units().value()];
           units.splice(index, 1);
-          this.units.setValue(units);
-          this.units.updateValueAndValidity();
-          this.units.markAsDirty();
+          this.setUnits(units);
         }
       });
   }
@@ -327,26 +238,22 @@ export class CodMaterialDscPartComponent
     if (index < 1) {
       return;
     }
-    const unit = this.units.value[index];
-    const units = [...this.units.value];
+    const unit = this.form.units().value()[index];
+    const units = [...this.form.units().value()];
     units.splice(index, 1);
     units.splice(index - 1, 0, unit);
-    this.units.setValue(units);
-    this.units.updateValueAndValidity();
-    this.units.markAsDirty();
+    this.setUnits(units);
   }
 
   public moveUnitDown(index: number): void {
-    if (index + 1 >= this.units.value.length) {
+    if (index + 1 >= this.form.units().value().length) {
       return;
     }
-    const unit = this.units.value[index];
-    const units = [...this.units.value];
+    const unit = this.form.units().value()[index];
+    const units = [...this.form.units().value()];
     units.splice(index, 1);
     units.splice(index + 1, 0, unit);
-    this.units.setValue(units);
-    this.units.updateValueAndValidity();
-    this.units.markAsDirty();
+    this.setUnits(units);
   }
   //#endregion
 
@@ -371,7 +278,7 @@ export class CodMaterialDscPartComponent
   }
 
   public onPalimpsestChange(palimpsest: CodPalimpsest): void {
-    const palimpsests = [...this.palimpsests.value];
+    const palimpsests = [...this.form.palimpsests().value()];
 
     if (this.editedPsIndex() > -1) {
       palimpsests.splice(this.editedPsIndex(), 1, palimpsest);
@@ -379,9 +286,7 @@ export class CodMaterialDscPartComponent
       palimpsests.push(palimpsest);
     }
 
-    this.palimpsests.setValue(palimpsests);
-    this.palimpsests.updateValueAndValidity();
-    this.palimpsests.markAsDirty();
+    this.setPalimpsests(palimpsests);
     this.editPalimpsest(null);
   }
 
@@ -391,11 +296,9 @@ export class CodMaterialDscPartComponent
       .pipe(take(1))
       .subscribe((yes) => {
         if (yes) {
-          const palimpsests = [...this.palimpsests.value];
+          const palimpsests = [...this.form.palimpsests().value()];
           palimpsests.splice(index, 1);
-          this.palimpsests.setValue(palimpsests);
-          this.palimpsests.updateValueAndValidity();
-          this.palimpsests.markAsDirty();
+          this.setPalimpsests(palimpsests);
         }
       });
   }
@@ -404,26 +307,22 @@ export class CodMaterialDscPartComponent
     if (index < 1) {
       return;
     }
-    const palimpsest = this.palimpsests.value[index];
-    const palimpsests = [...this.palimpsests.value];
+    const palimpsest = this.form.palimpsests().value()[index];
+    const palimpsests = [...this.form.palimpsests().value()];
     palimpsests.splice(index, 1);
     palimpsests.splice(index - 1, 0, palimpsest);
-    this.palimpsests.setValue(palimpsests);
-    this.palimpsests.updateValueAndValidity();
-    this.palimpsests.markAsDirty();
+    this.setPalimpsests(palimpsests);
   }
 
   public movePalimpsestDown(index: number): void {
-    if (index + 1 >= this.palimpsests.value.length) {
+    if (index + 1 >= this.form.palimpsests().value().length) {
       return;
     }
-    const palimpsest = this.palimpsests.value[index];
-    const palimpsests = [...this.palimpsests.value];
+    const palimpsest = this.form.palimpsests().value()[index];
+    const palimpsests = [...this.form.palimpsests().value()];
     palimpsests.splice(index, 1);
     palimpsests.splice(index + 1, 0, palimpsest);
-    this.palimpsests.setValue(palimpsests);
-    this.palimpsests.updateValueAndValidity();
-    this.palimpsests.markAsDirty();
+    this.setPalimpsests(palimpsests);
   }
   //#endregion
 }

@@ -4,17 +4,12 @@ import {
   computed,
   effect,
   input,
+  linkedSignal,
   model,
   output,
+  untracked,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { form, FormField, maxLength, required } from '@angular/forms/signals';
 
 // material
 import { MatIconButton } from '@angular/material/button';
@@ -26,7 +21,7 @@ import { MatSelect } from '@angular/material/select';
 import { MatTooltip } from '@angular/material/tooltip';
 
 // myrmidon
-import { NgxToolsValidators } from '@myrmidon/ngx-tools';
+import { NgxToolsSignalValidators } from '@myrmidon/ngx-tools';
 
 // bricks
 import {
@@ -38,6 +33,11 @@ import { Flag, FlagSetComponent } from '@myrmidon/cadmus-ui-flag-set';
 
 // cadmus
 import { ThesaurusEntry } from '@myrmidon/cadmus-core';
+import {
+  copyFormValue,
+  isImplicitSubmission,
+  setFieldFromChild,
+} from '@myrmidon/cadmus-ui';
 
 // local
 import { CodContentAnnotation } from '../cod-contents-part';
@@ -49,13 +49,38 @@ function entryToFlag(entry: ThesaurusEntry): Flag {
   };
 }
 
+interface CodContentAnnotationControls {
+  type: string;
+  ranges: CodLocationRange[];
+  features: string[];
+  languages: string[];
+  incipit: string;
+  explicit: string;
+  text: string;
+  note: string;
+}
+
+function toDraft(
+  annotation?: CodContentAnnotation,
+): CodContentAnnotationControls {
+  return {
+    type: annotation?.type || '',
+    ranges: annotation?.range ? [copyFormValue(annotation.range)] : [],
+    features: [...(annotation?.features || [])],
+    languages: [...(annotation?.languages || [])],
+    incipit: annotation?.incipit || '',
+    explicit: annotation?.explicit || '',
+    text: annotation?.text || '',
+    note: annotation?.note || '',
+  };
+}
+
 @Component({
   selector: 'cadmus-cod-content-annotation',
   templateUrl: './cod-content-annotation.component.html',
   styleUrls: ['./cod-content-annotation.component.css'],
   imports: [
-    FormsModule,
-    ReactiveFormsModule,
+    FormField,
     // material
     MatError,
     MatFormField,
@@ -82,84 +107,48 @@ export class CodContentAnnotationComponent {
   // cod-content-annotation-languages
   public readonly langEntries = input<ThesaurusEntry[]>();
 
-  public editorClose = output();
+  public readonly editorClose = output();
 
-  public type: FormControl<string | null>;
-  public ranges: FormControl<CodLocationRange[]>;
-  public features: FormControl<string[]>;
-  public languages: FormControl<string[]>;
-  public incipit: FormControl<string | null>;
-  public explicit: FormControl<string | null>;
-  public text: FormControl<string | null>;
-  public note: FormControl<string | null>;
-  public form: FormGroup;
-
-  public featFlags = computed<Flag[]>(
+  public readonly featFlags = computed<Flag[]>(
     () => this.featureEntries()?.map((e) => entryToFlag(e)) || [],
   );
 
-  public langFlags = computed<Flag[]>(
+  public readonly langFlags = computed<Flag[]>(
     () => this.langEntries()?.map((e) => entryToFlag(e)) || [],
   );
 
-  constructor(formBuilder: FormBuilder) {
-    this.type = formBuilder.control(null, [
-      Validators.required,
-      Validators.maxLength(50),
-    ]);
-    this.ranges = formBuilder.control([], {
-      validators: NgxToolsValidators.strictMinLengthValidator(1),
-      nonNullable: true,
-    });
-    this.features = formBuilder.control([], { nonNullable: true });
-    this.languages = formBuilder.control([], { nonNullable: true });
-    this.incipit = formBuilder.control(null, Validators.maxLength(500));
-    this.explicit = formBuilder.control(null, Validators.maxLength(500));
-    this.text = formBuilder.control(null, Validators.maxLength(1000));
-    this.note = formBuilder.control(null, Validators.maxLength(5000));
-    this.form = formBuilder.group({
-      type: this.type,
-      ranges: this.ranges,
-      features: this.features,
-      languages: this.languages,
-      incipit: this.incipit,
-      explicit: this.explicit,
-      note: this.note,
-      text: this.text,
-    });
+  private readonly _draft = linkedSignal(() => toDraft(this.annotation()));
+  public readonly form = form(this._draft, (p) => {
+    required(p.type);
+    maxLength(p.type, 50);
+    NgxToolsSignalValidators.strictMinLength(p.ranges, 1);
+    maxLength(p.incipit, 500);
+    maxLength(p.explicit, 500);
+    maxLength(p.text, 1000);
+    maxLength(p.note, 5000);
+  });
 
+  constructor() {
+    // new annotation: clear the interaction state
     effect(() => {
-      this.updateForm(this.annotation());
+      this.annotation();
+      untracked(() => this.form().reset());
     });
-  }
-
-  private updateForm(model: CodContentAnnotation | undefined): void {
-    if (!model) {
-      this.form.reset();
-      return;
-    }
-
-    this.type.setValue(model.type);
-    this.ranges.setValue([model.range]);
-    this.features.setValue(model.features || []);
-    this.languages.setValue(model.languages || []);
-    this.incipit.setValue(model.incipit);
-    this.explicit.setValue(model.explicit || null);
-    this.text.setValue(model.text || null);
-    this.note.setValue(model.note || null);
-    this.form.markAsPristine();
   }
 
   private getAnnotation(): CodContentAnnotation {
+    const draft = this._draft();
     return {
-      type: this.type.value?.trim() || '',
-      range: this.ranges.value.length ? this.ranges.value[0] : (null as any),
-      features: this.features.value || [],
-      languages: this.languages.value || [],
-      incipit: this.incipit.value?.trim() || '',
-      explicit: this.explicit.value?.trim() || '',
-      text: this.text.value?.trim() || '',
-      note: this.note.value?.trim() || undefined,
+      type: draft.type.trim(),
+      range: draft.ranges.length
+        ? copyFormValue(draft.ranges[0])
+        : (null as any),
+      features: [...draft.features],
+      languages: [...draft.languages],
+      incipit: draft.incipit.trim(),
+      explicit: draft.explicit.trim(),
+      text: draft.text.trim(),
+      note: draft.note.trim() || undefined,
     };
   }
 
@@ -167,34 +156,42 @@ export class CodContentAnnotationComponent {
     // ignore emissions not changing the location (the location editor
     // emits its initial value when initialized)
     if (
-      (CodLocationParser.rangesToString(ranges as CodLocationRange[] | null) ||
-        '') === (CodLocationParser.rangesToString(this.ranges.value) || '')
+      (CodLocationParser.rangesToString(ranges) || '') ===
+      (CodLocationParser.rangesToString(this.form.ranges().value()) || '')
     ) {
       return;
     }
-    this.ranges.setValue(ranges || []);
-    this.ranges.updateValueAndValidity();
-    this.ranges.markAsDirty();
+    this.form.ranges().value.set(copyFormValue(ranges || []));
+    this.form.ranges().markAsDirty();
   }
 
   public onFeatCheckedIdsChange(ids: string[]): void {
-    this.features.setValue(ids);
-    this.features.markAsDirty();
-    this.features.updateValueAndValidity();
+    setFieldFromChild(this.form.features, [...(ids || [])]);
   }
 
   public onLangCheckedIdsChange(ids: string[]): void {
-    this.languages.setValue(ids);
-    this.languages.markAsDirty();
-    this.languages.updateValueAndValidity();
+    setFieldFromChild(this.form.languages, [...(ids || [])]);
   }
 
   public cancel(): void {
     this.editorClose.emit();
   }
 
+  public onEnterKey(event: Event): void {
+    if (
+      !isImplicitSubmission(event) ||
+      this.form().invalid() ||
+      !this.form().dirty()
+    ) {
+      return;
+    }
+    event.preventDefault();
+    this.save();
+  }
+
   public save(): void {
-    if (this.form.invalid) {
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
       return;
     }
     this.annotation.set(this.getAnnotation());
