@@ -1,6 +1,6 @@
 {
   "name": "@myrmidon/cadmus-part-codicology-pg",
-  "version": "15.0.3",
+  "version": "16.0.0",
   "description": "Cadmus codicology - wrappers for part editors.",
   "keywords": [
     "Cadmus"
@@ -14,23 +14,23 @@
     "name": "Daniele Fusi"
   },
   "peerDependencies": {
-    "@angular/common": "^22.2.0",
-    "@angular/core": "^22.2.0",
-    "@myrmidon/cadmus-core": "^13.0.1",
-    "@myrmidon/cadmus-state": "^16.0.1",
-    "@myrmidon/cadmus-ui": "^18.0.1",
-    "@myrmidon/cadmus-item-editor": "^18.0.1",
-    "@myrmidon/cadmus-part-codicology-bindings": "^15.0.1",
-    "@myrmidon/cadmus-part-codicology-contents": "^15.0.2",
-    "@myrmidon/cadmus-part-codicology-decorations": "^15.0.2",
-    "@myrmidon/cadmus-part-codicology-edits": "^15.0.1",
-    "@myrmidon/cadmus-part-codicology-hands": "^15.0.1",
-    "@myrmidon/cadmus-part-codicology-layouts": "^15.0.1",
-    "@myrmidon/cadmus-part-codicology-location-ranges": "^0.0.2",
-    "@myrmidon/cadmus-part-codicology-material-dsc": "^15.0.3",
-    "@myrmidon/cadmus-part-codicology-sheet-labels": "^15.0.2",
-    "@myrmidon/cadmus-part-codicology-shelfmarks": "^15.0.1",
-    "@myrmidon/cadmus-part-codicology-watermarks": "^15.0.2"
+    "@angular/common": "^22.2.1",
+    "@angular/core": "^22.2.1",
+    "@myrmidon/cadmus-core": "^20.0.0",
+    "@myrmidon/cadmus-state": "^20.0.0",
+    "@myrmidon/cadmus-ui": "^20.0.0",
+    "@myrmidon/cadmus-item-editor": "^20.0.0",
+    "@myrmidon/cadmus-part-codicology-bindings": "^16.0.0",
+    "@myrmidon/cadmus-part-codicology-contents": "^16.0.0",
+    "@myrmidon/cadmus-part-codicology-decorations": "^16.0.0",
+    "@myrmidon/cadmus-part-codicology-edits": "^16.0.0",
+    "@myrmidon/cadmus-part-codicology-hands": "^16.0.0",
+    "@myrmidon/cadmus-part-codicology-layouts": "^16.0.0",
+    "@myrmidon/cadmus-part-codicology-location-ranges": "^16.0.0",
+    "@myrmidon/cadmus-part-codicology-material-dsc": "^16.0.0",
+    "@myrmidon/cadmus-part-codicology-sheet-labels": "^16.0.0",
+    "@myrmidon/cadmus-part-codicology-shelfmarks": "^16.0.0",
+    "@myrmidon/cadmus-part-codicology-watermarks": "^16.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"

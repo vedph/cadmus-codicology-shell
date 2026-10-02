@@ -1,6 +1,6 @@
 # History
 
-- 2026-10-02: ⚠️ migrated to signal forms.
+- 2026-10-02: ⚠️ migrated to signal forms bumping all major versions to 16.
 
 ## 14.1.3
 
