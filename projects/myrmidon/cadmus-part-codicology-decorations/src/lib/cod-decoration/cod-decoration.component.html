@@ -119,7 +119,7 @@
           <tbody>
             @for (
               artist of form.artists().value();
-              track artist;
+              track $index;
               let i = $index;
               let first = $first;
               let last = $last
@@ -228,7 +228,7 @@
         <tbody>
           @for (
             element of form.elements().value();
-            track element;
+            track $index;
             let i = $index;
             let first = $first;
             let last = $last

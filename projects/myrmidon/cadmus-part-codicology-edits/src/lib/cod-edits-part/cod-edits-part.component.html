@@ -33,7 +33,7 @@
         <tbody>
           @for (
             entry of form.edits().value();
-            track entry;
+            track $index;
             let i = $index;
             let first = $first;
             let last = $last

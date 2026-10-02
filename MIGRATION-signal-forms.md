@@ -396,3 +396,41 @@ aligned) and watermarks (fixed by the owner).
   uncommitted `package.json` / `pnpm-workspace.yaml` changes (check with
   `git diff package.json pnpm-workspace.yaml`). Running the script with
   node directly works.
+
+## NG0956 on list rows (2026-10-02)
+
+- Cause (verified in the browser, on the old templates): lists of entries
+  tracked by identity (`track entry`). Every part save binds back a copy of
+  the data, and the draft clones every entry, so all rows are new objects.
+  That recreated every row and logged NG0956: bindings (3 rows), material
+  (units 4 + palimpsests 2), layouts, shelfmarks, watermarks, contents and
+  hands. Accepting an entry did the same in a list with a single row
+  (layouts, watermarks, hands), because that row's object was all the list
+  had.
+- Fix: `track $index` for every `@for` over entry objects that have no
+  stable ID: 23 lists in 18 templates. These are the part tables, the
+  nested lists (decoration artists/elements/styles, hand
+  descriptions/instances/subscriptions/signs/scripts, content annotations,
+  palimpsests, endleaves, formula dimensions) and the layout-figure rects
+  (recomputed, not editable). Lists of strings (`track k` / `s` / `l` / `c`)
+  are kept: strings compare by value. `cod-images` is kept: it iterates the
+  signal-forms field tree (`form.images`), whose items keep their identity
+  across edits.
+- Specs: bindings (2 rows) and layouts (1 row) check that the rows' DOM
+  elements survive binding back a `structuredClone` of the data. Verified
+  that both fail (and log NG0956) with `track entry` put back. All 878
+  tests pass after `node scripts/build-libs.mjs`.
+- Browser (verified, writes blocked at the network level): editing and
+  accepting the first entry, then saving the part, logs no NG0956 in
+  bindings, material, layouts, shelfmarks, watermarks, contents or hands.
+  Each save's `POST /api/parts` was blocked, and the parts'
+  `timeModified` did not change.
+- Incident: an earlier repro run (before writes were blocked) called
+  `data.set` on each part to imitate a save. The edit page saved that to
+  the local API, so 7 parts of item `8b5a2c56-…` (2026-10-02 15:20–15:21Z)
+  were saved with a test edit: `" x"` appended to the first text field of
+  their first entry (`units[0].eid` "in", `layouts[0].tag` null,
+  `shelfmarks[0].fund`, `watermarks[0].name`, `contents[0].eid`,
+  `hands[0].eid`; bindings: timestamps only). Each part's previous version
+  is in `history-parts` (Mongo `cadmus-codicology`). The automatic restore
+  was refused by the session's permission policy; left to the owner.

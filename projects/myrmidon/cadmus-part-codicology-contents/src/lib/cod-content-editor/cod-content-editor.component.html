@@ -224,7 +224,7 @@
         <tbody>
           @for (
             entry of form.annotations().value();
-            track entry;
+            track $index;
             let i = $index;
             let first = $first;
             let last = $last

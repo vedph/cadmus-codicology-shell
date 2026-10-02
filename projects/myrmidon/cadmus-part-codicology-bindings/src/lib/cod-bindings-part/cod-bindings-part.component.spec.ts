@@ -305,4 +305,20 @@ describe('CodBindingsPartComponent', () => {
     const { container } = await setup({ bindings: [B1] });
     expect(container.querySelector('form')).toBeNull();
   });
+
+  it('should keep its rows when the saved data is bound back (NG0956)', async () => {
+    const { data, fixture } = await setup({ bindings: [B1, B2] });
+    const before = rows();
+
+    // after a save the part gets back a copy of its data: every binding is a
+    // new object, which identity tracking would re-render from scratch
+    data.set(structuredClone(data()));
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const after = rows();
+    expect(after).toHaveLength(2);
+    expect(after[0]).toBe(before[0]);
+    expect(after[1]).toBe(before[1]);
+  });
 });

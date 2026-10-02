@@ -67,7 +67,7 @@
         <tbody>
           @for (
             description of form.descriptions().value();
-            track description;
+            track $index;
             let i = $index;
             let first = $first;
             let last = $last
@@ -165,7 +165,7 @@
         <tbody>
           @for (
             instance of form.instances().value();
-            track instance;
+            track $index;
             let i = $index;
             let first = $first;
             let last = $last
@@ -276,7 +276,7 @@
         <tbody>
           @for (
             subscription of form.subscriptions().value();
-            track subscription;
+            track $index;
             let i = $index;
             let first = $first;
             let last = $last

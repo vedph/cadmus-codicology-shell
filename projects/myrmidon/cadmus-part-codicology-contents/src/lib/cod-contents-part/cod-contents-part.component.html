@@ -31,7 +31,7 @@
         </tr>
       </thead>
       <tbody>
-        @for ( entry of form.contents().value(); track entry; let i = $index; let first
+        @for ( entry of form.contents().value(); track $index; let i = $index; let first
         = $first; let last = $last) {
         <tr [class.selected]="editedIndex() === i">
           <td class="fit-width">

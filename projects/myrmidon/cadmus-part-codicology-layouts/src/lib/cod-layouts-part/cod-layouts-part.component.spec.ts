@@ -244,4 +244,18 @@ describe('CodLayoutsPartComponent', () => {
     const { container } = await setup({ entries: [E1] });
     expect(container.querySelector('form')).toBeNull();
   });
+
+  it('should keep its row when the saved data is bound back (NG0956)', async () => {
+    const { data, fixture } = await setup({ entries: [E1] });
+    const before = rows();
+
+    // after a save the part gets back a copy of its data: the only layout is
+    // a new object, which identity tracking would re-render from scratch
+    data.set(structuredClone(data()));
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(rows()).toHaveLength(1);
+    expect(rows()[0]).toBe(before[0]);
+  });
 });

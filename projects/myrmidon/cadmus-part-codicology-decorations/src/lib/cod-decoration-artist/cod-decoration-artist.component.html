@@ -100,7 +100,7 @@
       <tbody>
         @for (
           s of form.styles().value();
-          track s;
+          track $index;
           let i = $index;
           let first = $first;
           let last = $last

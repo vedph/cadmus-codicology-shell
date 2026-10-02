@@ -92,7 +92,7 @@
         <tbody>
           @for (
             d of form.dimensions().value();
-            track d;
+            track $index;
             let i = $index;
             let first = $first;
             let last = $last

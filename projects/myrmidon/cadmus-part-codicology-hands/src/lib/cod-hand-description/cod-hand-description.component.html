@@ -54,7 +54,7 @@
           <tbody>
             @for (
               sign of form.signs().value();
-              track sign;
+              track $index;
               let i = $index;
               let first = $first;
               let last = $last
