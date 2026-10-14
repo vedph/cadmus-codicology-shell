@@ -1,5 +1,9 @@
 # History
 
+- 2026-10-14: `@myrmidon/cadmus-part-codicology-contents`:
+  - moved author ID after EID row of controls.
+  - wired ID tag settings to the author ID selector.
+  - added hide author setting.
 - 2026-10-02: ⚠️ migrated to signal forms bumping all major versions to 16.
 
 ## 14.1.3

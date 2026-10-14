@@ -47,9 +47,17 @@ import {
   COD_CONTENTS_PART_TYPEID,
 } from '../cod-contents-part';
 import { CodContentEditorComponent } from '../cod-content-editor/cod-content-editor.component';
+import { AssertedCompositeIdTagSettings } from '@myrmidon/cadmus-refs-asserted-ids';
 
+/**
+ * Settings for the CodContentsPart editor component.
+ */
 interface CodContentsPartSettings {
   lookupProviderOptions?: LookupProviderOptions;
+  // asserted composite ID tag settings (passed to the content editor)
+  idTagSettings?: AssertedCompositeIdTagSettings;
+  // whether to hide the author field in the content editor
+  hideAuthor?: boolean;
 }
 
 interface CodContentsPartControls {
@@ -101,6 +109,10 @@ export class CodContentsPartComponent extends ModelEditorComponentBase<CodConten
 
   public readonly editedIndex = signal<number>(-1);
   public readonly editedContent = signal<CodContent | undefined>(undefined);
+  public readonly idTagSettings = signal<
+    AssertedCompositeIdTagSettings | undefined
+  >(undefined);
+  public readonly hideAuthor = signal<boolean>(false);
 
   // cod-content-states
   public readonly stateEntries = computed<ThesaurusEntry[] | undefined>(
@@ -165,15 +177,20 @@ export class CodContentsPartComponent extends ModelEditorComponentBase<CodConten
     super();
     this.initSettings<CodContentsPartSettings>(
       COD_CONTENTS_PART_TYPEID,
-      (settings) =>
+      (settings) => {
         this.lookupProviderOptions.set(
           settings?.lookupProviderOptions || undefined,
-        ),
+        );
+        this.idTagSettings.set(settings?.idTagSettings || undefined);
+        this.hideAuthor.set(settings?.hideAuthor || false);
+      },
     );
   }
 
   protected getValue(): CodContentsPart {
-    const part = this.getEditedPart(COD_CONTENTS_PART_TYPEID) as CodContentsPart;
+    const part = this.getEditedPart(
+      COD_CONTENTS_PART_TYPEID,
+    ) as CodContentsPart;
     part.contents = copyFormValue(this._draft().contents);
     return part;
   }

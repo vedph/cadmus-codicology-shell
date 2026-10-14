@@ -42,6 +42,7 @@ import { DialogService } from '@myrmidon/ngx-mat-tools';
 import {
   AssertedCompositeId,
   AssertedCompositeIdComponent,
+  AssertedCompositeIdTagSettings,
 } from '@myrmidon/cadmus-refs-asserted-ids';
 import {
   CodLocationRange,
@@ -205,6 +206,12 @@ export class CodContentEditorComponent {
   public readonly lookupProviderOptions = input<
     LookupProviderOptions | undefined
   >();
+
+  public readonly idTagSettings = input<
+    AssertedCompositeIdTagSettings | undefined
+  >();
+
+  public readonly hideAuthor = input<boolean>();
 
   public readonly editorClose = output();
 

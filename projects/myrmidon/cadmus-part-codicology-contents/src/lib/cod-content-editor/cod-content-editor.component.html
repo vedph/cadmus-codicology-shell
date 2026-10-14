@@ -4,7 +4,10 @@
     <mat-form-field>
       <mat-label>EID</mat-label>
       <input matInput [formField]="form.eid" />
-      @if (form.eid().getError("maxLength") && (form.eid().dirty() || form.eid().touched())) {
+      @if (
+        form.eid().getError("maxLength") &&
+        (form.eid().dirty() || form.eid().touched())
+      ) {
         <mat-error>EID too long</mat-error>
       }
     </mat-form-field>
@@ -31,27 +34,59 @@
       <mat-form-field>
         <mat-label>tag</mat-label>
         <input matInput [formField]="form.tag" />
-        @if (form.tag().getError("maxLength") && (form.tag().dirty() || form.tag().touched())) {
+        @if (
+          form.tag().getError("maxLength") &&
+          (form.tag().dirty() || form.tag().touched())
+        ) {
           <mat-error>tag too long</mat-error>
         }
       </mat-form-field>
     }
   </div>
+
+  <!-- id -->
+  <div>
+    <fieldset>
+      <legend>authority ID</legend>
+      <cadmus-refs-asserted-composite-id
+        [idTagEntries]="idTagEntries()"
+        [assTagEntries]="assTagEntries()"
+        [refTagEntries]="refTagEntries()"
+        [idScopeEntries]="idScopeEntries()"
+        [refTypeEntries]="refTypeEntries()"
+        [tagSettings]="idTagSettings()"
+        [id]="form.workId().value() || undefined"
+        [canSwitchMode]="true"
+        [canEditTarget]="true"
+        [lookupProviderOptions]="lookupProviderOptions()"
+        (idChange)="onIdChange($event!)"
+      />
+    </fieldset>
+  </div>
+
   <div class="form-row">
     <!-- author -->
-    <mat-form-field>
-      <mat-label>author</mat-label>
-      <input matInput [formField]="form.author" />
-      @if (form.author().getError("maxLength") && (form.author().dirty() || form.author().touched())) {
-        <mat-error>author too long</mat-error>
-      }
-    </mat-form-field>
+    @if (!hideAuthor()) {
+      <mat-form-field>
+        <mat-label>author</mat-label>
+        <input matInput [formField]="form.author" />
+        @if (
+          form.author().getError("maxLength") &&
+          (form.author().dirty() || form.author().touched())
+        ) {
+          <mat-error>author too long</mat-error>
+        }
+      </mat-form-field>
+    }
 
     <!-- title -->
     <mat-form-field>
       <mat-label>title</mat-label>
       <input matInput [formField]="form.title" />
-      @if (form.title().getError("maxLength") && (form.title().dirty() || form.title().touched())) {
+      @if (
+        form.title().getError("maxLength") &&
+        (form.title().dirty() || form.title().touched())
+      ) {
         <mat-error>title too long</mat-error>
       }
     </mat-form-field>
@@ -61,7 +96,8 @@
       <mat-label>location</mat-label>
       <input matInput [formField]="form.location" />
       @if (
-        form.location().getError("maxLength") && (form.location().dirty() || form.location().touched())
+        form.location().getError("maxLength") &&
+        (form.location().dirty() || form.location().touched())
       ) {
         <mat-error>location too long</mat-error>
       }
@@ -123,7 +159,10 @@
     <mat-form-field class="long-text">
       <mat-label>note</mat-label>
       <input matInput [formField]="form.note" />
-      @if (form.note().getError("maxLength") && (form.note().dirty() || form.note().touched())) {
+      @if (
+        form.note().getError("maxLength") &&
+        (form.note().dirty() || form.note().touched())
+      ) {
         <mat-error>note too long</mat-error>
       }
     </mat-form-field>
@@ -134,7 +173,8 @@
       <mat-label>incipit</mat-label>
       <textarea rows="2" matInput [formField]="form.incipit"></textarea>
       @if (
-        form.incipit().getError("maxLength") && (form.incipit().dirty() || form.incipit().touched())
+        form.incipit().getError("maxLength") &&
+        (form.incipit().dirty() || form.incipit().touched())
       ) {
         <mat-error>incipit too long</mat-error>
       }
@@ -146,29 +186,12 @@
       <mat-label>explicit</mat-label>
       <textarea rows="2" matInput [formField]="form.explicit"></textarea>
       @if (
-        form.explicit().getError("maxLength") && (form.explicit().dirty() || form.explicit().touched())
+        form.explicit().getError("maxLength") &&
+        (form.explicit().dirty() || form.explicit().touched())
       ) {
         <mat-error>explicit too long</mat-error>
       }
     </mat-form-field>
-  </div>
-  <div>
-    <!-- id -->
-    <fieldset>
-      <legend>authority ID</legend>
-      <cadmus-refs-asserted-composite-id
-        [idTagEntries]="idTagEntries()"
-        [assTagEntries]="assTagEntries()"
-        [refTagEntries]="refTagEntries()"
-        [idScopeEntries]="idScopeEntries()"
-        [refTypeEntries]="refTypeEntries()"
-        [id]="form.workId().value() || undefined"
-        [canSwitchMode]="true"
-        [canEditTarget]="true"
-        [lookupProviderOptions]="lookupProviderOptions()"
-        (idChange)="onIdChange($event!)"
-      />
-    </fieldset>
   </div>
   <div>
     <!-- states -->
